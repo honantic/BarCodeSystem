@@ -1,0 +1,283 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  >
+    <!--Menu控件模板-->
+        <ControlTemplate x:Key="mycontroltemplate" TargetType="{x:Type Menu}">
+            <Border Margin="2"
+                Background="Chocolate"
+                CornerRadius="3"
+                SnapsToDevicePixels="True">
+                <ItemsPresenter/>
+            </Border>
+        </ControlTemplate>
+
+        <!--MenuItem控件模板-->
+        <ControlTemplate x:Key="mymenuitemtemplate"
+                   TargetType="MenuItem">
+            <Border Name="Border">
+                <Grid>
+                    <ContentPresenter
+          Margin="10"
+          ContentSource="Header"
+          RecognizesAccessKey="True"/>
+                    <Popup 
+                    AllowsTransparency="True"
+          Name="Popup"
+          Placement="Top"
+          IsOpen="{TemplateBinding IsSubmenuOpen}"
+          Focusable="False"
+          PopupAnimation="Slide">
+                        <Border
+            CornerRadius="30"
+            Name="SubmenuBorder"
+            SnapsToDevicePixels="True">
+                            <StackPanel
+              IsItemsHost="True"
+              KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            <Border.Background>
+                                <DrawingBrush>
+                                    <DrawingBrush.Drawing>
+                                        <GeometryDrawing Brush="YellowGreen">
+                                            <GeometryDrawing.Geometry>
+                                                <CombinedGeometry GeometryCombineMode="Exclude">
+                                                    <CombinedGeometry.Geometry1>
+                                                        <EllipseGeometry RadiusX="20" RadiusY="20"/>
+                                                    </CombinedGeometry.Geometry1>
+                                                    <CombinedGeometry.Geometry2>
+                                                        <EllipseGeometry RadiusX="10" RadiusY="10"/>
+                                                    </CombinedGeometry.Geometry2>
+                                                </CombinedGeometry>
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Border.Background>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </Border>
+            <!--可有可无________________________________________________________________________________-->
+            <ControlTemplate.Triggers>
+            <Trigger Property="IsSuspendingPopupAnimation" Value="true">
+                <Setter TargetName="Popup" Property="PopupAnimation" Value="None"/>
+            </Trigger>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background"
+                Value="Transparent"/>
+                <Setter TargetName="Border" Property="BorderBrush"
+                Value="Transparent"/>
+            </Trigger>
+            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
+                <Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="0,0,4,4"/>
+                <Setter TargetName="SubmenuBorder" Property="Padding" Value="0,0,0,3"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+            <!--可有可无________________________________________________________________________________-->
+        </ControlTemplate>
+
+
+        <Style TargetType="{x:Type Grid}">
+        <Style.Triggers>
+        </Style.Triggers>
+    </Style>
+
+    <!-- textblock 点击样式-->
+    <Style TargetType="{x:Type TextBlock}" x:Key="txtb_Foreground">
+        <Setter Property="Foreground" Value="Blue"/>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="LightBlue"></Setter>
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--textblock普通样式-->
+    <Style TargetType="TextBlock" x:Key="textb_NormalStyle">
+        <Setter Property="FontSize" Value="14"></Setter>
+        <!--<Setter Property="Margin" Value="5"></Setter>-->
+        <Setter Property="Foreground" Value="Blue"/>
+        <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+    
+    <!-- 普通按钮样式-->
+    <Style TargetType="Button" x:Key="btn_NormalStyle">
+        <Setter Property="Width" Value="80"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+
+    <!--小按钮样式-->
+    <Style TargetType="Button" x:Key="btn_SmallStyle">
+        <Setter Property="Width" Value="40"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+    
+    <!--文本框普通样式-->
+    <Style TargetType="TextBox" x:Key="txtb_NormalStyle">
+        <Setter Property="Width" Value="80"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+    </Style>
+
+    <!--文本框小样式-->
+    <Style TargetType="TextBox" x:Key="txtb_SmallStyle">
+        <Setter Property="MinWidth" Value="60"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+    </Style>
+
+    <!--折叠框样式-->
+    <Style TargetType="Expander" x:Key="Exp_NormalStyle">
+        <Setter Property="Margin" Value="5"></Setter>
+        <Setter Property="Padding" Value="5"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="Background" Value="Burlywood"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="LightBlue"></Setter>
+                </Trigger.Setters>
+            </Trigger>
+            <Trigger Property="IsExpanded" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="Black"></Setter>
+                    <Setter Property="Background" Value="Lavender"></Setter>
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--单选框样式-->
+    <Style TargetType="CheckBox" x:Key="CB_NormalStyle">
+        <Setter Property="Margin" Value="5"></Setter>
+        <Setter Property="Padding" Value="5"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
+                    <Setter Property="Foreground" Value="LightBlue"></Setter>
+                </Trigger.Setters>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="Blue"></Setter>
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--网格边框样式-->
+    <Style TargetType="Border" x:Key="bd_NormalStyle">
+        <Setter Property="BorderBrush" Value="Gray"></Setter>
+    </Style>
+
+    <!--登录框下拉按钮 -->
+    <Style TargetType="Button" x:Key="btn_LoginCancelStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"></Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
+    
+    <!--登陆按钮样式-->
+    <Style TargetType="Button" x:Key="bd_LoginStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#458B00"></Setter>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard x:Name="growStoryBoard">
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             To="160" Duration="0:0:1.5">
+                                <DoubleAnimation.EasingFunction>
+                                    <ElasticEase EasingMode="EaseOut" Oscillations="8"></ElasticEase>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard x:Name="fadeStoryBoard">
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             To="150" Duration="0:0:1.5">
+                                <DoubleAnimation.EasingFunction>
+                                    <ElasticEase EasingMode="EaseOut" Oscillations="4" Springiness="5"></ElasticEase>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--listviewitem样式，没用着。-->
+    <Style TargetType="ListViewItem" x:Key="lbi_NormalStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="ListBoxItem.MouseEnter">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="FontSize"
+                                                         To="20" Duration="0:0:1"></DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="ListBoxItem.MouseLeave">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="FontSize"
+                                                         BeginTime="0:0:0.5" Duration="0:0:0.2"></DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
+    
+    

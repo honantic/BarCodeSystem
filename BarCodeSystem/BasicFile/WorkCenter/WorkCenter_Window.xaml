@@ -1,0 +1,46 @@
+﻿<Window x:Class="BarCodeSystem.WorkCenter_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        Title="工作中心" Height="800" Width="600"
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" xmlns:my="clr-namespace:System;assembly=mscorlib"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
+    </Window.Resources>
+
+        <Grid>
+        <Grid Name="TopGrid" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions >
+                <RowDefinition Height="60"  ></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="60"  ></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Name="Bottom"  Grid.Row="1"  >
+                <ListView Margin="5,5,5,5" Name="listView1" ItemsSource="{Binding}"
+                          ItemContainerStyleSelector="{DynamicResource mySelector}" MouseDoubleClick="listView1_MouseDoubleClick" MouseLeftButtonDown="listView1_MouseLeftButtonDown">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="工作中心编码" DisplayMemberBinding="{Binding Path=department_code}" ></GridViewColumn>
+                            <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=department_name}" Width="80"></GridViewColumn>
+                            <GridViewColumn Header="启用标识"      DisplayMemberBinding="{Binding Path=isvalidated}"  Width="60"></GridViewColumn>
+                            <GridViewColumn Header="是否工作中心" DisplayMemberBinding="{Binding Path=isworkcenter}" Width="60"></GridViewColumn>
+                            <GridViewColumn Header="是否按照领料单控制派工数量" DisplayMemberBinding="{Binding Path=isordercontroled}" Width="100" ></GridViewColumn>
+                            <GridViewColumn Header="最新修改时间"   DisplayMemberBinding="{Binding Path=lastoperatetime}" Width="100"></GridViewColumn>
+                            <GridViewColumn Header="最新修改人员" DisplayMemberBinding="{Binding Path=lastoperateby}" Width="100"></GridViewColumn>                            
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+            <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" >
+                <Button  Height="30" Width="80" Margin="5 5 170 5" Name="btn_Modify" Content="修改信息" Click="btn_Modify_Click"></Button>
+                <Button  Height="30" Width="80" Margin="5 5 170 5" Name="btn_Import" Content="导入工作中心" Click="btn_Import_Click"></Button>
+                <Button Name="btn_Close" Height="30" Width="80" Content="关闭" Click="btn_Close_Click"></Button>
+            </StackPanel>
+            
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--This file is the remembered user name and password of BCS-->
+<Accounts>
+  <Account IsRemembered="True" IsAutoLogin="True" IsLastAccount="true">
+    <UserName>钱康</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>汪梦秋</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="false" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>俞小康</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>丁超军</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>陈志英</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>马骥</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>丁芳芳</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>何陈熠</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>俞金洋</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>方立波</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+  <Account IsRemembered="true" IsLastAccount="False" IsAutoLogin="false">
+    <UserName>蔡煜煜</UserName>
+    <PassWord>NjU0MTIz</PassWord>
+  </Account>
+</Accounts>

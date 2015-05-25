@@ -1,0 +1,34 @@
+﻿<Window x:Class="BarCodeSystem.TechRouteItemList_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        Title="料品清单" Height="600" Width="400">
+    <Window.Resources>
+        <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ListView Name="listview1" Margin="5" Grid.Row="1" Grid.ColumnSpan="2"
+                  ItemContainerStyleSelector="{DynamicResource mySelector}" ItemsSource="{Binding}" MouseDoubleClick="listview1_MouseDoubleClick" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="料品编码" Width="180" DisplayMemberBinding="{Binding Path=II_Code}"></GridViewColumn>
+                    <GridViewColumn Header="料品名称" Width="180" DisplayMemberBinding="{Binding Path=II_Name}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Name="btn_Chose" Click="btn_Chose_Click" Grid.Row="2" Height="30" Width="80" Content="选择"></Button>
+        <Button Name="btn_Close" Click="btn_Close_Click" Grid.Row="2" Grid.Column="1" Height="30" Width="80" Content="关闭"></Button>
+    </Grid>
+</Window>

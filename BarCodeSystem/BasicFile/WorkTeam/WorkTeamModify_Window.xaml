@@ -1,0 +1,66 @@
+﻿<Window x:Class="BarCodeSystem.WorkTeamModify_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Title="WorkTeamModify_Window" Height="400" Width="600" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="txtbForeground">
+            <Setter Property="Foreground" Value="Blue"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.Setters>
+                        <Setter Property="Foreground" Value="LightBlue"></Setter>
+                    </Trigger.Setters>    
+                </Trigger>
+            </Style.Triggers>
+        </Style>      
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="1" Name="InfoGrid" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="LightGray" BorderThickness="1" Grid.ColumnSpan="4"></Border>
+            <Border BorderBrush="LightGray" BorderThickness="1 0 1 1" Grid.Row="1" Grid.ColumnSpan="4"></Border>
+            <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="1" Grid.RowSpan="2"></Border>
+            <Border BorderBrush="LightGray" BorderThickness="1 0 0 0" Grid.Column="3" Grid.RowSpan="2"></Border>
+            
+            <TextBlock Text="班组名称:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="班组编码:" Grid.Column="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="工作中心名称:" Grid.Row="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="工作中心编码:" Grid.Column="2" Grid.Row="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+
+            <TextBox Name="txtb_TeamCode" Grid.Column="3"  Height="30" Margin="5 " FontSize="14" TabIndex="1"></TextBox>
+            <TextBox Name="txtb_TeamName" MaxLines="5" Margin="5" Grid.Column="1" FontSize="14" TabIndex="0" GotFocus="txtb_TeamName_GotFocus"  MouseDoubleClick="txtb_TeamName_MouseDoubleClick"></TextBox>
+
+            <TextBox Name="txtb_DepartName"  GotFocus="txtb_TeamName_GotFocus"  MouseDoubleClick="txtb_TeamName_MouseDoubleClick" TextWrapping="WrapWithOverflow"  MaxLines="5" Margin="5" Grid.Row="1" Grid.Column="1" FontSize="14" TabIndex="2"></TextBox>
+            <StackPanel Grid.Row="1" Grid.Column="3">
+                <TextBox Name="txtb_DepartCode"  Height="30" Margin="5 45 5 5"  FontSize="14" LostFocus="txtb_DepartCode_LostFocus"  GotFocus="txtb_DepartCode_GotFocus" TabIndex="3"></TextBox>
+                <TextBlock Name="textb_GetName" Margin="5" FontSize="14" Cursor="Hand" 
+                        Text="快捷获取编码" ToolTip="不想手输？不知道编码？点它吧！" HorizontalAlignment="Center"  PreviewMouseLeftButtonDown="txtb_GetName_PreviewMouseLeftButtonDown"
+                        Style="{StaticResource txtbForeground}"></TextBlock>
+            </StackPanel>
+            
+            
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button  Name="btn_Save" Height="30" Width="80" Margin="5 5 165 5" Content="保存" Click="btn_Save_Click" TabIndex="4"></Button>
+            <Button  Name="btn_ReWrite" Click="btn_ReWrite_Click" Height="30" Width="80" Content="重新填写" Margin="5 5 165 5" TabIndex="5"></Button>
+            <Button  Name="btn_Close" Height="30" Width="80" Margin="5" Content="关闭" Click="btn_Close_Click" TabIndex="6"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

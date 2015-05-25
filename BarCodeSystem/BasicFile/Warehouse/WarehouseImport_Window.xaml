@@ -1,0 +1,45 @@
+﻿<Window x:Class="BarCodeSystem.WarehouseImport_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        ResizeMode="NoResize"
+        Title="仓库导入窗体" Height="600" Width="600" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
+        <DataTemplate x:Key="FirstCell" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <CheckBox  IsChecked="{Binding Path=IsSelected}" Cursor="Hand"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListView Name="listview1" Grid.Row="1" ItemContainerStyleSelector="{DynamicResource mySelector}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}"></GridViewColumn>
+                    <GridViewColumn Header="仓库编码" DisplayMemberBinding="{Binding Path=W_Code}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="仓库名称" DisplayMemberBinding="{Binding Path=W_Name}" Width="150"></GridViewColumn>
+                    <GridViewColumn Header="仓库ID"   DisplayMemberBinding="{Binding Path=W_ID}" Width="150"></GridViewColumn>
+                    <GridViewColumn Header="仓库信息来源"   DisplayMemberBinding="{Binding Path=W_SourceType}" Width="150"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Name="btn_FetchU9List" Click="btn_FetchU9List_Click" Height="30" Width="80" Margin="5" Content="U9仓库清单"></Button>
+            <Button Name="btn_SelectAll" Click="btn_SelectAll_Click" Height="30" Width="40" Margin="5" Content="全选"></Button>
+            <Button Name="btn_ReverseSelect" Click="btn_ReverseSelect_Click" Height="30" Width="40" Margin="5" Content="反选"></Button>
+            <Button Name="btn_ReSelectAll" Click="btn_ReSelectAll_Click" Height="30" Width="40" Margin="5" Content="重选"></Button>
+            <TextBox Name="txtb_Search" FontSize="14" Height="30" Margin="30 5 5 5" Width="80" TextChanged="txtb_Search_TextChanged"></TextBox>
+            <Button Name="btn_Search" Click="btn_Search_Click" Height="30" Width="40" Margin="5" Content="搜索"></Button>
+            <Button Name="btn_Improt" Click="btn_Improt_Click" Height="30" Content="导入" Margin="5" Width="80" ></Button>
+            <Button Name="btn_Close" Click="btn_Close_Click" Height="30" Width="80" Content="关闭" Margin="5"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

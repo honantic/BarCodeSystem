@@ -1,0 +1,14 @@
+﻿<Page x:Class="BarCodeSystem.Test.Test_page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+	Title="Test_page">
+
+    <Grid>
+        <TextBox Text="你是傻逼吗？"></TextBox>
+        <Button Content="你来点我啊~！" Height="30" Width="80" Name="btn_ClickMe" Click="btn_ClickMe_Click"></Button>
+    </Grid>
+</Page>

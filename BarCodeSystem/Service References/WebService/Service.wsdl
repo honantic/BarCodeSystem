@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="U9_LoginNameJudge">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="remark" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="U9_LoginNameJudgeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="U9_LoginNameJudgeResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetU9UserList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user_name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetU9UserListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetU9UserListResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSupplierList_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Supplier_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Supplier_Name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSupplierList_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSupplierList_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCustomerList_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Customer_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Customer_Name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCustomerList_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCustomerList_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetItemmasterlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Itemmaster_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Itemmaster_Name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Itemmaster_Specs" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Itemmaster_Descflexfield" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetItemmasterlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetItemmasterlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetWhlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Wh_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Wh_Name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetWhlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetWhlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUomlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Uom_Code" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUomlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUomlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Date" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Doc_No" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProductlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDepartmentlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Department_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Department_Name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDepartmentlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDepartmentlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetItemmasterModifiedOnlist_ForMES">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ModifiedOn" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetItemmasterModifiedOnlist_ForMESResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetItemmasterModifiedOnlist_ForMESResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="sOSOLinesID" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="U9_LoginNameJudgeSoapIn">
+    <wsdl:part name="parameters" element="tns:U9_LoginNameJudge" />
+  </wsdl:message>
+  <wsdl:message name="U9_LoginNameJudgeSoapOut">
+    <wsdl:part name="parameters" element="tns:U9_LoginNameJudgeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetU9UserListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetU9UserList" />
+  </wsdl:message>
+  <wsdl:message name="GetU9UserListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetU9UserListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSupplierList_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSupplierList_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetSupplierList_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSupplierList_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCustomerList_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCustomerList_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetCustomerList_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCustomerList_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetItemmasterlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetItemmasterlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetItemmasterlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetItemmasterlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetWhlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetWhlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetWhlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetWhlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUomlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUomlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetUomlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUomlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProductlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProductlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetProductlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProductlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDepartmentlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDepartmentlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetDepartmentlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDepartmentlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetItemmasterModifiedOnlist_ForMESSoapIn">
+    <wsdl:part name="parameters" element="tns:GetItemmasterModifiedOnlist_ForMES" />
+  </wsdl:message>
+  <wsdl:message name="GetItemmasterModifiedOnlist_ForMESSoapOut">
+    <wsdl:part name="parameters" element="tns:GetItemmasterModifiedOnlist_ForMESResponse" />
+  </wsdl:message>
+  <wsdl:message name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapIn">
+    <wsdl:part name="parameters" element="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO" />
+  </wsdl:message>
+  <wsdl:message name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapOut">
+    <wsdl:part name="parameters" element="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="U9_LoginNameJudge">
+      <wsdl:input message="tns:U9_LoginNameJudgeSoapIn" />
+      <wsdl:output message="tns:U9_LoginNameJudgeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetU9UserList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9操作员清单 user_name为空得到全部数据</wsdl:documentation>
+      <wsdl:input message="tns:GetU9UserListSoapIn" />
+      <wsdl:output message="tns:GetU9UserListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSupplierList_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9供应商,返回列：组织id,组织代码(740为先途电子)，组织名称，供应商id,供应商代码，供应商名称,当Supplier_Code=''值时，得到组织下全部供应商清单</wsdl:documentation>
+      <wsdl:input message="tns:GetSupplierList_ForMESSoapIn" />
+      <wsdl:output message="tns:GetSupplierList_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomerList_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9客户,返回列：组织id,组织代码(740为先途电子)，组织名称，客户id,客户代码，客户名称,当Customer_Code=''值时，得到组织下全部客户清单</wsdl:documentation>
+      <wsdl:input message="tns:GetCustomerList_ForMESSoapIn" />
+      <wsdl:output message="tns:GetCustomerList_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9物料,返回列：组织id,组织代码(740为先途电子)，组织名称，物料id,物料代码，物料名称，规格，型号，计量单位,修改日期,描述,生产厂商,当Itemmaster_Code=''值时，得到组织下全部物料清单</wsdl:documentation>
+      <wsdl:input message="tns:GetItemmasterlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetItemmasterlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetWhlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9存储地点,返回列：组织id,组织代码，组织名称，存储地点id,存储地点代码，存储地点名称,当Wh_Code=''值时，得到组织下全部存储地点清单</wsdl:documentation>
+      <wsdl:input message="tns:GetWhlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetWhlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUomlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9计量单位,返回列：组织id,组织代码，组织名称，计量单位id,计量单位代码，计量单位名称,当Uom_Code=''值时，得到组织下全部计量单位清单</wsdl:documentation>
+      <wsdl:input message="tns:GetUomlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetUomlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProductlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9生产订单,返回列：组织id,组织代码，组织名称，生产订单号，产品代码,产品名称,产品计量单位,计划数量,生产订单日期,物料代码,物料名称,需求数量,库存单位,单据状态,当Doc_No=''值时，得到组织下全部生产订单清单</wsdl:documentation>
+      <wsdl:input message="tns:GetProductlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetProductlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9部门,返回列：组织id,组织代码，组织名称，部门id,部门代码，部门名称,当Department_Code=''值时，得到组织下全部部门清单</wsdl:documentation>
+      <wsdl:input message="tns:GetDepartmentlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetDepartmentlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterModifiedOnlist_ForMES">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9物料,返回列：组织id,组织代码(740为先途电子)，组织名称，物料id,物料代码，物料名称，规格，型号，计量单位,计量单位代码,计量单位Id,修改时间，当ModifiedOn=''值时，得到组织下全部物料清单</wsdl:documentation>
+      <wsdl:input message="tns:GetItemmasterModifiedOnlist_ForMESSoapIn" />
+      <wsdl:output message="tns:GetItemmasterModifiedOnlist_ForMESSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">更新销售订单子行已入库数量,传入参数sOSOLinesID为销售订单子行id,qty为入库数量，返回值false表示更新不成功，并抛出异常</wsdl:documentation>
+      <wsdl:input message="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapIn" />
+      <wsdl:output message="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="U9_LoginNameJudge">
+      <soap:operation soapAction="http://tempuri.org/U9_LoginNameJudge" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetU9UserList">
+      <soap:operation soapAction="http://tempuri.org/GetU9UserList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSupplierList_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetSupplierList_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomerList_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetCustomerList_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetItemmasterlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWhlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetWhlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUomlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetUomlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetProductlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetDepartmentlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterModifiedOnlist_ForMES">
+      <soap:operation soapAction="http://tempuri.org/GetItemmasterModifiedOnlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO">
+      <soap:operation soapAction="http://tempuri.org/upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="U9_LoginNameJudge">
+      <soap12:operation soapAction="http://tempuri.org/U9_LoginNameJudge" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetU9UserList">
+      <soap12:operation soapAction="http://tempuri.org/GetU9UserList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSupplierList_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetSupplierList_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomerList_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetCustomerList_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetItemmasterlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWhlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetWhlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUomlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetUomlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetProductlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetDepartmentlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetItemmasterModifiedOnlist_ForMES">
+      <soap12:operation soapAction="http://tempuri.org/GetItemmasterModifiedOnlist_ForMES" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO">
+      <soap12:operation soapAction="http://tempuri.org/upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://172.16.100.123:2001/newsite/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://172.16.100.123:2001/newsite/Service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

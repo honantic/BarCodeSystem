@@ -1,0 +1,86 @@
+﻿<Window x:Class="BarCodeSystem.Login_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SanHua Bar Code System" Height="350" Width="525"
+        Icon="Images\burn.ico" Name="Signin_Window" WindowStyle="None" ResizeMode="NoResize" 
+        Loaded="Login_Window_Loaded"
+        MouseMove="Window_MouseMove"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate x:Key="LoginComboBoxData" >
+            <StackPanel Orientation="Horizontal" Background="Transparent" VerticalAlignment="Center">
+                <TextBlock FontSize="16" Width="180" Text="{Binding Path=UserName}" VerticalAlignment="Center"></TextBlock>
+                <Button  Margin="5" Background="Transparent" Width="30" 
+                         Foreground="White" Content="X" BorderBrush="Transparent" BorderThickness="0">
+                </Button>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid Name="TopGrid"  Height="200"  VerticalAlignment="Top">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="125"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="175"/>
+            </Grid.RowDefinitions>
+
+            <Image Source="Images\Login_Windowbg.jpg" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Stretch="Fill" />
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="btn_Close"  Background="#E0EEE0" ToolTip="关闭" Opacity="0.5" Click="btn_Close_Click">
+                    <Button.Content>
+                        <Image Source="Images\close.png"></Image>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Name="BottomGrid" Height="150" VerticalAlignment="Bottom" >
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#8B6969" Offset="1"/>
+                    <GradientStop Color="AntiqueWhite" Offset="0"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.Resources>
+                <Style x:Key="btn_LoginStyle" TargetType="Button">
+                    <Style.Triggers>
+                        <Trigger Property="Button.IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="225"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+
+            <ComboBox   Name="txtBox_Uid" Grid.Column="1" Margin="2 2 2 0" Height="30" FontSize="16" VerticalAlignment="Center" 
+                     Background="White" IsEditable="True"  SelectionChanged="txtBox_Uid_SelectionChanged" MaxDropDownHeight="120" KeyDown="txtBox_Uid_KeyDown">
+                <!--<ComboBoxItem PreviewMouseLeftButtonDown="ComboBoxItem_PreviewMouseLeftButtonDown"></ComboBoxItem>-->
+            </ComboBox>
+
+            <TextBlock Grid.Column="2" Text="注册账号" VerticalAlignment="Center" Margin="10" Foreground="#1C86EE"/>
+            <PasswordBox  Name="pdBox_Pwd"  Height="30" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Margin="2 0 2 2"  FontSize="16" KeyDown="pdBox_Pwd_KeyDown">
+            </PasswordBox>
+            <TextBlock Grid.Column="2" Grid.Row="1" Text="找回密码" VerticalAlignment="Center" Margin="10" Foreground="#1C86EE"/>
+            <CheckBox  Name="cBox_KeepPassWord" Width="100"  FontSize="14" Content="记住密码" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="5 5" />
+            <CheckBox Name="cBox_AutoLogin" FontSize="14" Content="自动登录" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 5"/>
+            <Button Style="{StaticResource bd_LoginStyle}" Width="150" Name="btn_Login" FontSize="14" Content="登  录"  Background="#458B00" Foreground="White" Click="btn_Login_Click" Grid.Column="1" Grid.Row="3" Margin="2 2 2 5" Cursor="Hand" BorderThickness="0">
+            </Button>
+        </Grid>
+
+    </Grid>
+</Window>

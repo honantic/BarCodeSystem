@@ -1,0 +1,88 @@
+﻿<Window x:Class="BarCodeSystem.Main_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        xmlns:AvalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        Title="三花条码系统"   Height="600" Width="800" WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized" Icon="Images\burn.ico" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SystemResource\My_Dictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Name="FatherGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition ></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--<Image Source="Images\Main_Windowbg.jpg" Stretch="Fill"  Opacity="0.5"/>-->
+        <DockPanel Name="TopGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="50">
+            <Menu DockPanel.Dock="Top"
+                  Template="{StaticResource mycontroltemplate}" Name="System_Menu" IsEnabled="True">
+                <MenuItem Name="item_SysManage"     Header="系统管理(_S)"  IsEnabled="True">
+                    <MenuItem Name="item_U9Account"  MenuItem.Click="item_U9Account_Click"  IsEnabled="False"     Header="U9账号导入(_D)"></MenuItem>
+                    <MenuItem Name="item_AccountAuthority" IsEnabled="False" Header="系统授权(_F)" MenuItem.Click="item_AccountAuthority_Click"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="item_Close" Header="退出(_C)" MenuItem.Click="item_Close_Click"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_SysPara" Header="系统参数(_P)">
+                    <MenuItem Name="item_SysParaManage" IsEnabled="False"    Header="系统参数管理1(_M)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_BasicFile"     Header="基础档案(_B)" >
+                    <MenuItem Name="item_WorkCenter" IsEnabled="False" Click="item_WorkCenterImport_Click"   Header="工作中心(_D)"></MenuItem>
+                    <MenuItem Name="item_StaffInfoManage"  IsEnabled="False" Click="item_StaffInfoManage_Click"    Header="员工信息管理(_G)"></MenuItem>
+                    <MenuItem Name="item_WorkTeamManage"   IsEnabled="False" Click="item_WorkTeamManage_Click"     Header="车间班组管理(_H)"></MenuItem>
+                    <MenuItem Name="item_BeltlineManage"   IsEnabled="False" Click="item_BeltlineManage_Click"     Header="生产线管理(_J)"  ></MenuItem>
+                    <MenuItem Name="item_WorkEquipManage"  IsEnabled="False" Click="item_WorkEquipManage_Click"   Header="报工设备管理(_K)"></MenuItem>
+                    <MenuItem Name="item_StockLocManage"   IsEnabled="False" Click="item_WarehouseManage_Click"  Header="仓库管理(_L)"></MenuItem>
+                    <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量档案管理(_Q)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_MateAndRoute"  Header="物料和工艺路线(_M)">
+                    <MenuItem Name="item_MaterialManage"   IsEnabled="False" Click="item_MaterialManage_Click" Header="料品档案(_M)"></MenuItem>
+                    <MenuItem Name="item_ProcedureManage"  IsEnabled="False" Click="item_ProcedureManage_Click"  Header="工序管理(_P)"></MenuItem>
+                    <MenuItem Name="item_TechRouteVersion" IsEnabled="False" Header="工艺路线版本(_T)"></MenuItem>
+                    <MenuItem Name="item_TechRouteManage"  IsEnabled="False" Click="item_TechRouteManage_Click" Header="工艺路线管理(_R)"></MenuItem>
+                    <MenuItem Name="item_DistFormula"      IsEnabled="False" Header="配额计算公式(_D)"></MenuItem>
+                    <MenuItem Name="item_WorkHourManage"   IsEnabled="False" Header="工时管理(_W)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_FileQuery"     Header="档案查询(_F)">
+                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="档案查询1(_S)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_MaterialQuery" Header="物料查询(_Q)">
+                    <MenuItem Name="item_MaterialQuery1" IsEnabled="False" Header="物料查询1(_S)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_ProdDispatch"  Header="生产订单及派工管理(_P)">
+                    <MenuItem Name="item_ProdOrderImport"  IsEnabled="False" Header="生产订单导入(_O)"></MenuItem>
+                    <MenuItem Name="item_WorkCardCompose"  IsEnabled="False" Header="流转卡编制(_C)"></MenuItem>
+                    <MenuItem Name="item_WorkCardInfo"     IsEnabled="False" Header="流转卡信息采集(_I)"></MenuItem>
+                    <MenuItem Name="item_FinishReport"     IsEnabled="False" Header="完工报告(_R)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_TotalQuery"    Header="综合查询(_T)">
+                    <MenuItem Name="item_TotalQuery1" IsEnabled="False" Header="综合查询1(_S)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery2" IsEnabled="False" Header="综合查询2(_D)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery3" IsEnabled="False" Header="综合查询3(_G)"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <Popup></Popup>
+        </DockPanel>
+        <namespc:NotificationAreaIcon  
+                    Text="三花生产条码系统"
+                    Icon="Images\burn.ico"
+                    MouseDoubleClick="OnNotificationAreaIconDoubleClick">
+            <namespc:NotificationAreaIcon.MenuItems>
+                <forms:MenuItem Text="关于作者" Name="item_About" Click="item_About_Click"></forms:MenuItem>
+                <forms:MenuItem Text="-" ></forms:MenuItem>
+                <forms:MenuItem Text="设置" Name="item_Options" Click="item_Options_Click"></forms:MenuItem>
+                <forms:MenuItem Text="-" ></forms:MenuItem>
+                <forms:MenuItem Text="显示" Name="item_Show" Click="item_Show_Click" ></forms:MenuItem>
+                <forms:MenuItem Text="-" ></forms:MenuItem>
+                <forms:MenuItem Text="退出" Name="item_Quit" Click="item_Quit_Click"></forms:MenuItem>
+            </namespc:NotificationAreaIcon.MenuItems>
+        </namespc:NotificationAreaIcon>
+        
+        <AvalonDock:DockingManager x:Name="dockingManager"   ClipToBounds="True" Grid.Row="1"></AvalonDock:DockingManager>
+    </Grid>
+</Window>
