@@ -204,6 +204,26 @@
         </Style.Triggers>
     </Style>
     
+    <!--文本框内嵌搜索按钮样式-->
+    <Style TargetType="Button" x:Key="btn_SearchStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="Black"></Setter>
+                <Setter Property="BorderBrush" Value="LightGray"></Setter>
+                <Setter Property="BorderThickness" Value="1"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     
     
     <!--登陆按钮样式-->

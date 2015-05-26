@@ -24,7 +24,7 @@
         <GridSplitter Grid.Row="2" Height="4" Foreground="DarkGray" VerticalAlignment="Center" HorizontalAlignment="Stretch"></GridSplitter>
         <GroupBox Grid.Row="1"  >
             <GroupBox.Header>
-                <TextBlock FontSize="14" Foreground="Brown">料品及版本信息</TextBlock>
+                <TextBlock Style="{StaticResource textb_NormalStyle}">料品及版本信息</TextBlock>
             </GroupBox.Header>
             <Grid Name="SubGrid1">
             <Grid.RowDefinitions>
@@ -69,7 +69,7 @@
         </StackPanel>
         <GroupBox Grid.Row="3" >
             <GroupBox.Header>
-                <TextBlock FontSize="14" Foreground="Brown">工艺路线信息</TextBlock>
+                <TextBlock  Style="{StaticResource textb_NormalStyle}">工艺路线信息</TextBlock>
             </GroupBox.Header>
             <ListView Name="listview2"  
                   ItemContainerStyleSelector="{DynamicResource mySelector}">

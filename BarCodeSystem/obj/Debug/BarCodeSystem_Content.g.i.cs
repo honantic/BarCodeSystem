@@ -8,10 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/burn.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/close.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/close1.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/login_windowbg.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/main_windowbg.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("xceed.wpf.avalondock.resources.dll")]
 
 

@@ -92,8 +92,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>Service References\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.0.2000.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\东西在这里\avalondock-102592\Version2.0\AvalonDock.TestApp\bin\Debug\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +102,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ProductDispatch\FlowCard\FlowCard_Page.xaml.cs">
+      <DependentUpon>FlowCard_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PublicClass\DeviceLists.cs" />
     <Compile Include="PublicClass\EncodeHelper.cs" />
     <Compile Include="PublicClass\GridHelper.cs" />
@@ -147,9 +151,6 @@
     </Compile>
     <Compile Include="Test\Test_page.xaml.cs">
       <DependentUpon>Test_page.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Test\Test_Window.xaml.cs">
-      <DependentUpon>Test_Window.xaml</DependentUpon>
     </Compile>
     <Page Include="BasicFile\Device\DeviceExcelImport_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -338,6 +339,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ProductDispatch\FlowCard\FlowCard_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SystemManage\Authority_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -371,10 +376,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Test\Test_page.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Test\Test_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -467,6 +468,12 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\zoom47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Zoom.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

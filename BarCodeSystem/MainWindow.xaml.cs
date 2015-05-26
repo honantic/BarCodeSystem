@@ -7,6 +7,8 @@ using Xceed.Wpf.AvalonDock.Layout;
 using BarCodeSystem.Test;
 using Xceed.Wpf.AvalonDock;
 using System.ComponentModel;
+using System.Windows.Media;
+using BarCodeSystem.ProductDispatch.FlowCard;
 
 namespace BarCodeSystem
 {
@@ -23,14 +25,15 @@ namespace BarCodeSystem
         #region 变量
         int xxxcount = 0;
         //DockingManager dockingManager = new DockingManager() {};
-        LayoutRoot lr = new LayoutRoot() { };
-        LayoutDocumentPane ldp = new LayoutDocumentPane() { 
-            DockWidth = new GridLength(300) 
-        };
-        LayoutPanel lp = new LayoutPanel()
-        {
-            Orientation = Orientation.Horizontal
-        };
+        //LayoutRoot lr = new LayoutRoot() { };
+        //LayoutDocumentPane ldp = new LayoutDocumentPane()
+        //{
+        //    DockWidth = new GridLength(300)
+        //};
+        //LayoutPanel lp = new LayoutPanel()
+        //{
+        //    Orientation = Orientation.Horizontal
+        //};
 
         private List<MenuItem> MainMenuItemList = new List<MenuItem> { };
         List<string> AuthorityList = new List<string> { };
@@ -57,6 +60,7 @@ namespace BarCodeSystem
             User_Info.User_Name = "钱康";
 
             SetUser_Authority();
+            //AvalonSetting();
         }
 
         #region 菜单权限管控
@@ -390,34 +394,30 @@ namespace BarCodeSystem
             xxxcount++;
 
             Frame topFrame = new Frame();
-            topFrame.Content = new Test_page() { ShowsNavigationUI = true };
+            topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
 
-            if (dockingManager.Layout.ActiveContent == null)
+            if (dockingManager.Layout.ActiveContent == null && xxxcount == 1)
             {
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "新的测试页" + xxxcount;
                 la.Content = topFrame;
                 la.Closing += la_Closing;
 
+                
                 ldp.Children.Add(la);
-                la.ToggleAutoHide();
-                lp.Children.Add(ldp);
-
-                lr.RootPanel = lp;
-                //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
-
-                dockingManager.Layout = lr;
                 la.IsSelected = true;
             }
             else
             {
                 topFrame = new Frame();
-                topFrame.Content = new Test_page() { ShowsNavigationUI = true };
+                topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
 
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "新的测试页" + xxxcount;
                 la.Content = topFrame;
                 la.Closing += la_Closing;
+
+                
 
                 ldp.Children.Add(la);
                 la.IsSelected = true;
@@ -425,18 +425,41 @@ namespace BarCodeSystem
             #endregion
         }
 
+        /// <summary>
+        /// 标签页关闭事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void la_Closing(object sender, CancelEventArgs e)
         {
+            object cm = dockingManager.DataContext;
             if (MessageBox.Show("关我干啥呢？", "提示", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
-                
+
             }
             else
             {
                 e.Cancel = true;
             }
+        }
+
+        /// <summary>
+        /// 对MainWindow的AvalonDock进行设置
+        /// </summary>
+        private void AvalonSetting()
+        {
+            lp.Children.Add(ldp);
+
+            lr.RootPanel = lp;
+            //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
+
+            dockingManager.Layout = lr;
 
         }
+
+
         #endregion
+
+
     }
 }

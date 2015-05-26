@@ -5,7 +5,7 @@
         xmlns:AvalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         Title="三花条码系统"   Height="600" Width="800" WindowStartupLocation="CenterScreen" 
-        WindowState="Maximized" Icon="Images\burn.ico" Loaded="Window_Loaded" Closing="Window_Closing">
+        WindowState="Maximized" Icon="Images\burn.ico" Loaded="Window_Loaded" Closing="Window_Closing" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,13 +15,13 @@
     </Window.Resources>
     <Grid Name="FatherGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"></RowDefinition>
-            <RowDefinition ></RowDefinition>
+            <RowDefinition Height="25" ></RowDefinition>
+            <RowDefinition  ></RowDefinition>
         </Grid.RowDefinitions>
         <!--<Image Source="Images\Main_Windowbg.jpg" Stretch="Fill"  Opacity="0.5"/>-->
-        <DockPanel Name="TopGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="50">
+        <DockPanel Name="TopGrid" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch" >
             <Menu DockPanel.Dock="Top"
-                  Template="{StaticResource mycontroltemplate}" Name="System_Menu" IsEnabled="True">
+                  Template="{StaticResource mycontroltemplate}" Name="System_Menu" IsEnabled="True" >
                 <MenuItem Name="item_SysManage"     Header="系统管理(_S)"  IsEnabled="True">
                     <MenuItem Name="item_U9Account"  MenuItem.Click="item_U9Account_Click"  IsEnabled="False"     Header="U9账号导入(_D)"></MenuItem>
                     <MenuItem Name="item_AccountAuthority" IsEnabled="False" Header="系统授权(_F)" MenuItem.Click="item_AccountAuthority_Click"></MenuItem>
@@ -83,6 +83,13 @@
             </namespc:NotificationAreaIcon.MenuItems>
         </namespc:NotificationAreaIcon>
         
-        <AvalonDock:DockingManager x:Name="dockingManager"   ClipToBounds="True" Grid.Row="1"></AvalonDock:DockingManager>
+        <AvalonDock:DockingManager x:Name="dockingManager"   ClipToBounds="True" Grid.Row="1">
+            <AvalonDock:LayoutRoot x:Name="lr">
+                <AvalonDock:LayoutPanel x:Name="lp" Orientation="Horizontal">
+                    <AvalonDock:LayoutDocumentPane x:Name="ldp">
+                    </AvalonDock:LayoutDocumentPane>
+                </AvalonDock:LayoutPanel>
+            </AvalonDock:LayoutRoot>
+        </AvalonDock:DockingManager>
     </Grid>
 </Window>
