@@ -24,11 +24,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             InitializeComponent();
         }
 
-        private void btn_ItemSearch_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("?");
-        }
+        #region 变量设置
+        /// <summary>
+        /// 获取料品信息的函数，返回信息为 料号+名称+规格
+        /// 委托在ItemSearch_Page中执行，返回值填在表头的产品信息中
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        delegate string FetchItemInfo();
+        #endregion
 
+        #region 初始化设置
         /// <summary>
         /// 加载事件
         /// </summary>
@@ -56,9 +63,36 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            CardHeaderGrid.Width = Math.Max((this.ActualWidth) * 0.8, 600);
+            //CardHeaderGrid.Width = Math.Max((this.ActualWidth) * 0.8, 600);
+        }
+        #endregion
+
+        #region 流转卡表头操作
+        /// <summary>
+        /// 料品信息查询按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_ItemSearch_Click(object sender, RoutedEventArgs e)
+        {
+            List<Page> li = MyDBController.FindVisualChild<Page>(frame_SearchInfo);
+            if (li.Count == 0)
+            {
+                textb_SearchInfo.Text = "料品筛选";
+                ItemSearch_Page isp = new ItemSearch_Page(SetItemInfo);
+                frame_SearchInfo.Navigate(isp);
+            }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string SetItemInfo(string value)
+        {
+            this.txtb_ItemInfo.Text = value;
+            return value;
+        }
+        #endregion
     }
 }

@@ -184,7 +184,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Log
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\ListView.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\My_Dictionary.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\SimpleStyles.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\App.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.g.cs
@@ -217,7 +216,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Sys
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\App.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.cache
@@ -263,3 +261,5 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ro\
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.g.cs

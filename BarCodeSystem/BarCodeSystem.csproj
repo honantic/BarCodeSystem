@@ -105,6 +105,9 @@
     <Compile Include="ProductDispatch\FlowCard\FlowCard_Page.xaml.cs">
       <DependentUpon>FlowCard_Page.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCard\ItemSearch_Page.xaml.cs">
+      <DependentUpon>ItemSearch_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PublicClass\DeviceLists.cs" />
     <Compile Include="PublicClass\EncodeHelper.cs" />
     <Compile Include="PublicClass\GridHelper.cs" />
@@ -148,9 +151,6 @@
     </Compile>
     <Compile Include="TechRoute\TechRoute\TechRoute_Window.xaml.cs">
       <DependentUpon>TechRoute_Window.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Test\Test_page.xaml.cs">
-      <DependentUpon>Test_page.xaml</DependentUpon>
     </Compile>
     <Page Include="BasicFile\Device\DeviceExcelImport_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -343,6 +343,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProductDispatch\FlowCard\ItemSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SystemManage\Authority_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -374,10 +378,6 @@
     <Page Include="TechRoute\TechRoute\TechRoute_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Test\Test_page.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Data;
 using Xceed.Wpf.AvalonDock.Layout;
-using BarCodeSystem.Test;
 using Xceed.Wpf.AvalonDock;
 using System.ComponentModel;
 using System.Windows.Media;

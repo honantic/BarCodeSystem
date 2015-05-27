@@ -14,14 +14,14 @@ using System.Windows.Media;
 /// </summary>
 public class MyDBController
 {
-	public MyDBController()
-	{}
-		
-    
+    public MyDBController()
+    { }
+
+
     #region 模块级变量
 
     private static string server = ".";         //服务器
-    public static string Server 
+    public static string Server
     {
         get { return MyDBController.server; }
         set { MyDBController.server = value; }
@@ -57,20 +57,20 @@ public class MyDBController
     {
         try
         {
-            string M_str_connstr = "server=" + Server + ";database=" 
+            string M_str_connstr = "server=" + Server + ";database="
                 + Database + ";uid="
                 + Uid + ";pwd=" + Pwd;          //数据库连接字符串
             M_scn_myConn = new SqlConnection(M_str_connstr);
             M_scn_myConn.Open();
         }
         catch                                   //异常处理
-        { 
+        {
         }
     }
 
     public static void CloseConnection()        //关闭数据库连接
     {
-        if (M_scn_myConn.State==ConnectionState.Open)
+        if (M_scn_myConn.State == ConnectionState.Open)
         {
             M_scn_myConn.Close();
             M_scn_myConn.Dispose();
@@ -82,9 +82,9 @@ public class MyDBController
     /// </summary>
     /// <param name="commandstring">SQL命令字符串</param>
     /// <returns>SQL命令</returns>
-    public static SqlCommand CreateCommand(string commandstring) 
+    public static SqlCommand CreateCommand(string commandstring)
     {
-        SqlCommand M_scm = new SqlCommand(commandstring,M_scn_myConn);
+        SqlCommand M_scm = new SqlCommand(commandstring, M_scn_myConn);
         return M_scm;
     }
 
@@ -126,7 +126,7 @@ public class MyDBController
     /// <returns>默认结果集DataSet</returns>
     public static DataSet GetDataSet(string commandstring)
     {
-        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring,M_scn_myConn);
+        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring, M_scn_myConn);
         try
         {
             M_sda.Fill(M_ds);
@@ -134,9 +134,9 @@ public class MyDBController
         catch (Exception ee)
         {
 
-            MessageBox.Show(ee.Message,"错误提示",MessageBoxButton.OK,MessageBoxImage.Error);
+            MessageBox.Show(ee.Message, "错误提示", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        
+
         return M_ds;
     }
 
@@ -149,8 +149,8 @@ public class MyDBController
     /// <returns>默认结果集DataSet</returns>
     public static DataSet GetDataSet(string commandstring, string tablename)
     {
-        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring,M_scn_myConn);
-        M_sda.Fill(M_ds,tablename);
+        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring, M_scn_myConn);
+        M_sda.Fill(M_ds, tablename);
         return M_ds;
     }
 
@@ -162,7 +162,7 @@ public class MyDBController
     /// <returns>自己定义结果集DataSet</returns>
     public static DataSet GetDataSet(string commandstring, DataSet data_set)
     {
-        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring,M_scn_myConn);
+        SqlDataAdapter M_sda = new SqlDataAdapter(commandstring, M_scn_myConn);
         M_sda.Fill(data_set);
         return data_set;
     }
@@ -177,7 +177,7 @@ public class MyDBController
     public static DataSet GetDataSet(string commandstring, DataSet data_set, string tablename)
     {
         SqlDataAdapter M_sda = new SqlDataAdapter(commandstring, M_scn_myConn);
-        M_sda.Fill(data_set,tablename);
+        M_sda.Fill(data_set, tablename);
         return data_set;
     }
 
@@ -190,15 +190,15 @@ public class MyDBController
     /// 存图像。参数1：SQL语句；参数2：图像转换的数组。
     public static int SaveImage(string sql, object bytes)
     {
-        SqlCommand scm = new SqlCommand(sql,M_scn_myConn);
-        SqlParameter imgsp = new SqlParameter("@imgBytes",SqlDbType.Image);//设置参数的值
+        SqlCommand scm = new SqlCommand(sql, M_scn_myConn);
+        SqlParameter imgsp = new SqlParameter("@imgBytes", SqlDbType.Image);//设置参数的值
         imgsp.Value = (byte[])bytes;
         scm.Parameters.Add(imgsp);
         return scm.ExecuteNonQuery();
     }
-    
 
-    
+
+
     /// <summary>
     /// 将更新的数据存入目标数据表。参数DataTable为数据表，其表名、列顺序等等一定要和数据库中要更新的目标表一致
     /// 如果目标表有主键，则在dt原有的列后面为每一列主键添加一个数据类型、数据一样的影射列，影射列名命名规则为
@@ -207,7 +207,7 @@ public class MyDBController
     /// <param name="dt">源数据表</param>
     /// <param name="colList">数据库目标表中要变动的列，包括insert 和update所涉及到的所有列</param>
     /// <returns></returns>
-    public static void InsertSqlBulk(DataTable dt,List<string> colList ,out int updateNum,out int insertNum)
+    public static void InsertSqlBulk(DataTable dt, List<string> colList, out int updateNum, out int insertNum)
     {
         updateNum = insertNum = 0;
         try
@@ -259,9 +259,9 @@ public class MyDBController
                     {
                         /* 如果当前列是主键,set命令字符串跳过不作处理,
                          * 临时表获取表结构命令字符串不论何种情况都不跳过 */
-                        if (colList[i]!=pk.Rows[j]["Name"].ToString())
+                        if (colList[i] != pk.Rows[j]["Name"].ToString())
                         {
-                            filedsetstr += colList[i]+"= t."+colList[i];
+                            filedsetstr += colList[i] + "= t." + colList[i];
                             colmunstr += colList[i];
                             colmunstrs += colList[i];
                         }
@@ -271,7 +271,7 @@ public class MyDBController
                     {
                         filedstr += ",";
                     }
-                    filedstr += "s."+colList[i];
+                    filedstr += "s." + colList[i];
                 }
                 #endregion
 
@@ -290,7 +290,7 @@ public class MyDBController
                     {
                         pkfiledwherestr += " and ";
                     }
-                    string newColName = pk.Rows[i]["name"].ToString()+"New";
+                    string newColName = pk.Rows[i]["name"].ToString() + "New";
                     sb = new StringBuilder();
                     sb.AppendFormat("alter table {0} add {1} {2}",
                                     tempTableName, newColName, pk.Rows[i]["Type"].ToString());
@@ -341,17 +341,17 @@ public class MyDBController
                     //MessageBox.Show("共用时"+sw.Elapsed+"\n 共新增:"+insertNum+"条记录,更新:"+updateNum+"条记录！");
                 }
                 #endregion
-            }   
+            }
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
-        }         
+            MessageBox.Show(e.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
 
     /// <summary>
-    /// 利用visualtreehelper寻找窗体中的控件
+    /// 利用visualtreehelper寻找窗体中的子控件
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>
@@ -384,6 +384,44 @@ public class MyDBController
             MessageBox.Show(ee.Message);
             return null;
         }
+    }
 
+
+    /// <summary>
+    /// 利用VisualTreeHelper寻找指定依赖对象的父级对象
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static List<T> FindVisualParent<T>(DependencyObject obj) where T : DependencyObject
+    {
+        try
+        {
+            List<T> TList = new List<T> { };
+            DependencyObject parent = VisualTreeHelper.GetParent(obj);
+            if (parent != null && parent is T)
+            {
+                TList.Add((T)parent);
+                List<T> parentOfParent = FindVisualParent<T>(parent);
+                if (parentOfParent != null)
+                {
+                    TList.AddRange(parentOfParent);
+                }
+            }
+            else if(parent !=null)
+            {
+                List<T> parentOfParent = FindVisualParent<T>(parent);
+                if (parentOfParent != null)
+                {
+                    TList.AddRange(parentOfParent);
+                }
+            }
+            return TList;
+        }
+        catch (Exception ee)
+        {
+            MessageBox.Show(ee.Message);
+            return null;
+        }
     }
 }
