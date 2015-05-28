@@ -263,3 +263,9 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\sv\
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.xml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.g.cs

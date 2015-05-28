@@ -6,44 +6,50 @@
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       ShowsNavigationUI="False"
-	  Title="ItemSearch_Page"
+	  Title="料品选择页面"
       Loaded="itemSearch_Page_Loaded"
       Name="itemSearch_Page">
 
     <Grid>
-        <ScrollViewer>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition Height="10*"></RowDefinition>
-                    <RowDefinition Height="2*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Label >
-                    <TextBlock Foreground="White">选择料品信息</TextBlock>
-                    <Label.Background>
-                        <LinearGradientBrush>
-                            <LinearGradientBrush.GradientStops>
-                                <GradientStop Offset="1" Color="Chocolate"></GradientStop>
-                                <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
-                                <GradientStop Color="Crimson"></GradientStop>
-                            </LinearGradientBrush.GradientStops>
-                        </LinearGradientBrush>
-                    </Label.Background>
-                </Label>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition ></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label >
+                <TextBlock Foreground="White">选择料品信息</TextBlock>
+                <Label.Background>
+                    <LinearGradientBrush>
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="1" Color="Chocolate"></GradientStop>
+                            <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
+                            <GradientStop Color="Crimson"></GradientStop>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
 
-                <DataGrid Name="dg_ItemInfo" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="料品编号"></DataGridTextColumn>
-                        <DataGridTextColumn Header="料品名称"></DataGridTextColumn>
-                        <DataGridTextColumn Header="料品规格"></DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <StackPanel Grid.Row="2">
-                    <Button Name="btn_Submit" Click="btn_Submit_Click" Content="点我"></Button>
+            <DataGrid Name="datagrid_ItemInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="料品编号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料品名称" Binding="{Binding Path=II_Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料品规格" Binding="{Binding Path=II_Spec}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Name="btn_Submit" Grid.Column="1" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定料品"></Button>
+                <StackPanel   Orientation="Horizontal" VerticalAlignment="Center" Height="30">
+                    <TextBox Margin="0 5"  Name="txtb_ItemInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_ItemInfo_KeyUp"></TextBox>
+                    <Button Name="btn_ItemSearch" Cursor="Hand" Click="btn_ItemSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                        <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                    </Button>
                 </StackPanel>
             </Grid>
-        </ScrollViewer>
-
-
+        </Grid>
     </Grid>
 </Page>

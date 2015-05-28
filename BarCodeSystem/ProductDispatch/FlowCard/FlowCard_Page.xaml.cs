@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -43,17 +44,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            InitFlowCardType();
+            InitFlowCardHeader();
         }
 
 
         /// <summary>
-        /// 初始化流转卡类型，为Combobox关联items
+        /// 初始化流转卡表头，为Combobox关联items。带入编制人员信息
         /// </summary>
-        private void InitFlowCardType()
+        private void InitFlowCardHeader()
         {
             List<string> typeList = new List<string>() { "普通流转卡", "分批流转卡", "无来源流转卡" };
             cb_FlowCardType.ItemsSource = typeList;
+            textb_CreatedBy.Text ="  "+ User_Info.User_Name;
         }
 
         /// <summary>
@@ -75,9 +77,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_ItemSearch_Click(object sender, RoutedEventArgs e)
         {
-            List<Page> li = MyDBController.FindVisualChild<Page>(frame_SearchInfo);
-            if (li.Count == 0)
+            if (!textb_SearchInfo.Text.Equals("料品筛选"))
             {
+                Frame frame_SearchInfo = new Frame();
+                gb_SearchInfo.Content = frame_SearchInfo;
                 textb_SearchInfo.Text = "料品筛选";
                 ItemSearch_Page isp = new ItemSearch_Page(SetItemInfo);
                 frame_SearchInfo.Navigate(isp);
@@ -85,7 +88,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
 
         /// <summary>
-        /// 
+        /// 料品信息查询函数委托实例
         /// </summary>
         /// <returns></returns>
         public string SetItemInfo(string value)
@@ -93,6 +96,69 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             this.txtb_ItemInfo.Text = value;
             return value;
         }
+
+        /// <summary>
+        /// 料品工艺路线信息查询按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_TechRouteSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtb_ItemInfo.Text))
+            {
+                string itemCode = txtb_ItemInfo.Text.Split('|')[0].Trim();
+                if (Regex.IsMatch(itemCode,User_Info.pattern[0]))
+                {
+                    if (!textb_SearchInfo.Text.Equals("工艺路线筛选"))
+                    {
+                        Frame frame_SearchInfo = new Frame();
+                        gb_SearchInfo.Content = frame_SearchInfo;
+                        textb_SearchInfo.Text = "工艺路线筛选";
+                        TechRouteSearch_Page trsp = new TechRouteSearch_Page(itemCode, FecthTechRouteInfo);
+                        frame_SearchInfo.Navigate(trsp);
+                    }
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// 工艺路线查询委托函数实例
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="trls"></param>
+        private void FecthTechRouteInfo(string value, List<TechRouteLists> trls)
+        {
+            txtb_TechRouteVersion.Text = value;
+            datagrid_TechRouteInfo.ItemsSource = trls;
+        }
+
+        /// <summary>
+        /// 生产订单查询按钮，只能查询 订单数量>派工数量 的生产订单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_SourceOrderSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!textb_SearchInfo.Text.Equals("生产订单筛选"))
+            {
+                Frame frame_SearchInfo = new Frame();
+                gb_SearchInfo.Content = frame_SearchInfo;
+                textb_SearchInfo.Text = "生产订单筛选";
+                ItemSearch_Page isp = new ItemSearch_Page(SetItemInfo);
+                frame_SearchInfo.Navigate(isp);
+            }
+        }
+
+
         #endregion
+
+
+
+
+
     }
 }

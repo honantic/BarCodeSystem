@@ -104,6 +104,7 @@
         <Setter Property="FontSize" Value="14"></Setter>
         <!--<Setter Property="Margin" Value="5"></Setter>-->
         <Setter Property="Foreground" Value="Blue"/>
+        <Setter Property="FontFamily" Value="华文行楷"></Setter>
         <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
     </Style>

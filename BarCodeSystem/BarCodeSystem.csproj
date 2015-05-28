@@ -72,10 +72,17 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -102,11 +109,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ProductDispatch\FlowCard\FlowCardDelegete.cs" />
     <Compile Include="ProductDispatch\FlowCard\FlowCard_Page.xaml.cs">
       <DependentUpon>FlowCard_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProductDispatch\FlowCard\ItemSearch_Page.xaml.cs">
       <DependentUpon>ItemSearch_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml.cs">
+      <DependentUpon>ProduceOrderSearch_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCard\TechRouteSearch_Page.xaml.cs">
+      <DependentUpon>TechRouteSearch_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublicClass\DeviceLists.cs" />
     <Compile Include="PublicClass\EncodeHelper.cs" />
@@ -347,6 +361,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\TechRouteSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SystemManage\Authority_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -399,6 +421,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="BarCodeSystem_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
