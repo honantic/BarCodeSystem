@@ -122,30 +122,32 @@
     <Compile Include="ProductDispatch\FlowCard\TechRouteSearch_Page.xaml.cs">
       <DependentUpon>TechRouteSearch_Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PublicClass\DeviceLists.cs" />
-    <Compile Include="PublicClass\EncodeHelper.cs" />
-    <Compile Include="PublicClass\GridHelper.cs" />
-    <Compile Include="PublicClass\ItemInfoLists.cs" />
-    <Compile Include="PublicClass\ListViewItemStyleSelector.cs" />
-    <Compile Include="PublicClass\Login_Check.cs" />
-    <Compile Include="PublicClass\MainMenuList.cs" />
-    <Compile Include="PublicClass\MyDBController.cs" />
-    <Compile Include="PublicClass\NotificationAreaIcon.cs" />
-    <Compile Include="PublicClass\PersonLists.cs" />
-    <Compile Include="PublicClass\ProcessNameLists.cs" />
-    <Compile Include="PublicClass\QkRowChangeToColClass.cs" />
-    <Compile Include="PublicClass\QualityIssuesLists.cs" />
-    <Compile Include="PublicClass\RememberedUser.cs" />
-    <Compile Include="PublicClass\TechRouteLists.cs" />
-    <Compile Include="PublicClass\TechRoute_ProcessSequenceConverter.cs" />
-    <Compile Include="PublicClass\TechVersion.cs" />
-    <Compile Include="PublicClass\UserAccountLists.cs" />
-    <Compile Include="PublicClass\UserAuthorityLists.cs" />
-    <Compile Include="PublicClass\User_Info.cs" />
-    <Compile Include="PublicClass\ValueConverters.cs" />
-    <Compile Include="PublicClass\WarehouseLists.cs" />
-    <Compile Include="PublicClass\WorkCenterLists.cs" />
-    <Compile Include="PublicClass\WorkTeamLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\DeviceLists.cs" />
+    <Compile Include="PublicClass\HelperClass\EncodeHelper.cs" />
+    <Compile Include="PublicClass\HelperClass\GridHelper.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\ItemInfoLists.cs" />
+    <Compile Include="PublicClass\HelperClass\ListViewItemStyleSelector.cs" />
+    <Compile Include="PublicClass\HelperClass\Login_Check.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\MainMenuList.cs" />
+    <Compile Include="PublicClass\HelperClass\MyDBController.cs" />
+    <Compile Include="PublicClass\HelperClass\NotificationAreaIcon.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\PersonLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\ProcessNameLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\ProduceOrderLists.cs" />
+    <Compile Include="PublicClass\HelperClass\QkRowChangeToColClass.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\QualityIssuesLists.cs" />
+    <Compile Include="PublicClass\HelperClass\RememberedUser.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\TechRouteLists.cs" />
+    <Compile Include="PublicClass\ValueConverters\TechRoute_ProcessSequenceConverter.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\TechVersion.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\UserAccountLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\UserAuthorityLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\User_Info.cs" />
+    <Compile Include="PublicClass\ValueConverters\TrueOrFalseConverter.cs" />
+    <Compile Include="PublicClass\ValueConverters\ValueConverters.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\WarehouseLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\WorkCenterLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\WorkTeamLists.cs" />
     <Compile Include="Service References\WebService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

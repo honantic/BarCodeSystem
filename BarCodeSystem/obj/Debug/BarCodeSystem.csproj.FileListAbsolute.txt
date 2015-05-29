@@ -172,7 +172,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Bar
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.pdb
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.baml
@@ -269,3 +268,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Ent
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache

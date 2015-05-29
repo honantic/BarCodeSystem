@@ -487,6 +487,7 @@ namespace BarCodeSystem
                     MessageBox.Show("工序序号和工时必须是数字! \n请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            txtb_TechSequence.Text = "";
         }
 
         /// <summary>

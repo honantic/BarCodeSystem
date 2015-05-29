@@ -8,13 +8,13 @@ using System.Windows.Data;
 
 namespace BarCodeSystem
 {
-    public class ValueConverters 
+    public class ValueConverters
     {
 
         /// <summary>
         /// 料品编码的转换器
         /// </summary>
-        public class TechRoute_ItemCodeConverter
+        public class TechRoute_ItemCodeConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
@@ -26,5 +26,8 @@ namespace BarCodeSystem
                 throw new NotImplementedException();
             }
         }
+
+
+
     }
 }

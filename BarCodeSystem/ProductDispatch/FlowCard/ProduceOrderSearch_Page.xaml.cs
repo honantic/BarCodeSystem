@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -19,9 +21,98 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// </summary>
     public partial class ProduceOrderSearch_Page : Page
     {
+
         public ProduceOrderSearch_Page()
         {
             InitializeComponent();
         }
+
+        public ProduceOrderSearch_Page(SubmitProduceOrderInfo _spoi)
+        {
+            InitializeComponent();
+            spoi = _spoi;
+        }
+        #region 变量
+        SubmitProduceOrderInfo spoi;
+        List<ProduceOrderLists> pols = new List<ProduceOrderLists>();
+        DataSet ds = new DataSet();
+        #endregion
+        /// <summary>
+        /// 加载事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            datagrid_ProduceOrderInfo.ItemsSource = FetchProduceOrderInfo();
+        }
+
+        private List<ProduceOrderLists> FetchProduceOrderInfo()
+        {
+            string SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount]");//订单数量>开工数量
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "ProduceOrder");
+            MyDBController.CloseConnection();
+
+            DataRowCollection drc = ds.Tables["ProduceOrder"].Rows;
+            foreach (DataRow row in drc)
+            {
+                pols.Add(new ProduceOrderLists() {
+                     ID=Convert.ToInt64(row["ID"]),
+                     PO_ID = Convert.ToInt64(row["PO_ID"]),
+                     PO_Code = row["PO_Code"].ToString(),
+                     PO_ItemID = row["PO_ItemID"].ToString(),
+                     PO_ItemCode = row["PO_ItemCode"].ToString(),
+                     PO_ItemSpec = row["PO_ItemSpec"].ToString(),
+                     PO_ItemVersion = row["PO_ItemVersion"].ToString(),
+                     PO_ProjectNum = row["PO_ProjectNum"].ToString(),
+                     PO_WorkCenter = Convert.ToInt64(row["PO_WorkCenter"]),
+                     PO_ItemName = row["PO_ItemName"].ToString(),
+                     PO_Itemunit = row["PO_Itemunit"].ToString(),
+                     PO_CreateTime = Convert.ToDateTime(row["PO_CreateTime"]),
+                     PO_CreateBy = row["PO_CreateBy"].ToString(),
+                     PO_DemandDate = Convert.ToDateTime(row["PO_DemandDate"]),
+                     PO_ModifyTime = Convert.ToDateTime(row["PO_ModifyTime"]),
+                     PO_ModifyBy = row["PO_ModifyBy"].ToString(),
+                     PO_StartDate = Convert.ToDateTime(row["PO_StartDate"]),
+                     PO_OrderAmount = Convert.ToInt32(row["PO_OrderAmount"]),
+                     PO_StartAmount = Convert.ToInt32(row["PO_StartAmount"]),
+                     PO_FinishedAmount = Convert.ToInt32(row["PO_FinishedAmount"]),
+                     PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]),
+                     PO_ProduceDepart = row["PO_ProduceDepart"].ToString(),
+                     PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]),
+                });
+            }
+            return pols;
+        }
+
+        /// <summary>
+        /// 提交按钮提交选定的生产订单信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Submit_Click(object sender, RoutedEventArgs e)
+        {
+            if (spoi != null && datagrid_ProduceOrderInfo.SelectedItem != null)
+            {
+                spoi.Invoke((ProduceOrderLists)datagrid_ProduceOrderInfo.SelectedItem);
+            }
+        }
+
+        private void btn_ItemSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void txtb_ItemInfo_KeyUp(object sender, KeyEventArgs e)
+        {
+
+        }
+
+
+
+
+
+
     }
 }

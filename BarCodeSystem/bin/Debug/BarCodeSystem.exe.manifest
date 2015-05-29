@@ -63,14 +63,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="BarCodeSystem.exe" size="876472">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="BarCodeSystem.exe" size="890296">
       <assemblyIdentity name="BarCodeSystem" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>9setbs7Jg/5jFnso4obrDDJwuYA=</dsig:DigestValue>
+        <dsig:DigestValue>MM7XXm4oVju5eYdltFPHOwFI8Js=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -51,6 +51,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             datagrid_RouteVersion.ItemsSource = FetchTechRouteInfo(itemCode);
+            if (datagrid_RouteVersion.Items.Count == 0)
+            {
+                label_ErrorInfo.Visibility = Visibility.Visible;
+            }
         }
         #endregion
 
@@ -76,6 +80,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <returns></returns>
         private List<TechVersion> FetchTechRouteInfo(string str)
         {
+            //工艺路线版本datagrid数据源
             string SQl = string.Format(@"Select A.[ID],A.[TRV_Version] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRouteVersion");
@@ -89,7 +94,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 });
             }
 
-            SQl = string.Format(@"Select [TR_VersionID],[TR_ProcessSequence],[TR_ProcessName],[TR_WagePerPiece] from [TechRoute] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
+            //工艺路线的工序信息
+            SQl = string.Format(@"Select A.[ID],A.[TR_ItemID],A.[TR_VersionID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsReportPoint],A.[TR_IsExProcess],A.[TR_WorkCenterID],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_WagePerPiece],A.[TR_WorkHour],A.[TR_WageAllotScheme],A.[TR_AllotFormulaID],A.[TR_IsReportDevice],A.[TR_IsDeviceCharging],B.[WC_Department_Name] from [TechRoute] A left join [WorkCenter] B on A.[TR_WorkCenterID]=B.[WC_Department_ID] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
             MyDBController.GetDataSet(SQl, ds, "TechRouteInfo");
             MyDBController.CloseConnection();
 
@@ -100,7 +106,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     TR_VersionID = Convert.ToInt64(row["TR_VersionID"]),
                     TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]),
                     TR_ProcessName = row["TR_ProcessName"].ToString(),
-                    TR_WagePerPiece = Convert.ToDecimal(row["TR_WagePerPiece"])
+                    TR_WagePerPiece = Convert.ToDecimal(row["TR_WagePerPiece"]),
+                    TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]),
+                    TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]),
+                    WC_Department_Name = row["WC_Department_Name"].ToString()
                 });
             }
             return tvl;

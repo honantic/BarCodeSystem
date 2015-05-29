@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass;
+using BarCodeSystem.PublicClass.ValueConverters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,14 +28,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
 
         #region 变量设置
-        /// <summary>
-        /// 获取料品信息的函数，返回信息为 料号+名称+规格
-        /// 委托在ItemSearch_Page中执行，返回值填在表头的产品信息中
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        delegate string FetchItemInfo();
+        string amount = "";
+        ProduceOrderLists selectedOrder = new ProduceOrderLists();
         #endregion
 
         #region 初始化设置
@@ -55,8 +51,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             List<string> typeList = new List<string>() { "普通流转卡", "分批流转卡", "无来源流转卡" };
             cb_FlowCardType.ItemsSource = typeList;
-            textb_CreatedBy.Text ="  "+ User_Info.User_Name;
+            textb_CreatedBy.Text = "  " + User_Info.User_Name;
         }
+
 
         /// <summary>
         /// 页面大小改变事件
@@ -65,7 +62,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //CardHeaderGrid.Width = Math.Max((this.ActualWidth) * 0.8, 600);
         }
         #endregion
 
@@ -107,7 +103,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             if (!string.IsNullOrEmpty(txtb_ItemInfo.Text))
             {
                 string itemCode = txtb_ItemInfo.Text.Split('|')[0].Trim();
-                if (Regex.IsMatch(itemCode,User_Info.pattern[0]))
+                if (Regex.IsMatch(itemCode, User_Info.pattern[0]))
                 {
                     if (!textb_SearchInfo.Text.Equals("工艺路线筛选"))
                     {
@@ -121,7 +117,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
             else
             {
-
             }
         }
 
@@ -148,16 +143,63 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 Frame frame_SearchInfo = new Frame();
                 gb_SearchInfo.Content = frame_SearchInfo;
                 textb_SearchInfo.Text = "生产订单筛选";
-                ItemSearch_Page isp = new ItemSearch_Page(SetItemInfo);
-                frame_SearchInfo.Navigate(isp);
+                ProduceOrderSearch_Page posp = new ProduceOrderSearch_Page(FecthProduceOrderInfo);
+                frame_SearchInfo.Navigate(posp);
             }
         }
 
+        /// <summary>
+        /// 工艺路线查询委托函数实例
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="trls"></param>
+        private void FecthProduceOrderInfo(ProduceOrderLists pol)
+        {
+            selectedOrder = pol;
+            txtb_ProduceOrderInfo.Text = pol.PO_Code;
+            txtb_ItemInfo.Text = pol.PO_ItemCode + " | " + pol.PO_ItemName + " | " + pol.PO_ItemSpec;
+            textb_Amount.Text = (pol.PO_OrderAmount - pol.PO_StartAmount).ToString();
+        }
 
         #endregion
 
 
+        /// <summary>
+        /// 不能输入非数字的字符，不能输入超过可派工总数的数字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textb_Amount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textb_Amount.Text))
+            {
+                if (Regex.IsMatch(textb_Amount.Text, User_Info.pattern[0]))
+                {
+                    if (Convert.ToInt32(textb_Amount.Text) <= (selectedOrder.PO_OrderAmount - selectedOrder.PO_StartAmount))
+                    {
+                        toolTip_Amount.Visibility = Visibility.Hidden;
+                        amount = textb_Amount.Text;
+                        textb_Amount.SelectionStart = textb_Amount.Text.Length;
+                    }
+                    else
+                    {
+                        textb_Amount.Text = amount;
+                        toolTip_Amount.Visibility = Visibility.Visible;
+                        toolTip_Amount.IsOpen = true;
+                    }
+                }
+                else
+                {
+                    textb_Amount.Text = amount;
+                    toolTip_Amount.Visibility = Visibility.Hidden;
+                    textb_Amount.SelectionStart = textb_Amount.Text.Length;
+                }
+            }
+            else
+            {
+            }
 
+        }
 
 
     }

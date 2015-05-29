@@ -22,17 +22,7 @@ namespace BarCodeSystem
         }
 
         #region 变量
-        int xxxcount = 0;
-        //DockingManager dockingManager = new DockingManager() {};
-        //LayoutRoot lr = new LayoutRoot() { };
-        //LayoutDocumentPane ldp = new LayoutDocumentPane()
-        //{
-        //    DockWidth = new GridLength(300)
-        //};
-        //LayoutPanel lp = new LayoutPanel()
-        //{
-        //    Orientation = Orientation.Horizontal
-        //};
+
 
         private List<MenuItem> MainMenuItemList = new List<MenuItem> { };
         List<string> AuthorityList = new List<string> { };
@@ -390,36 +380,22 @@ namespace BarCodeSystem
 
             #region 将各个page加载进工作区域
 
-            xxxcount++;
 
-            Frame topFrame = new Frame();
-            topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
-
-            if (dockingManager.Layout.ActiveContent == null && xxxcount == 1)
+            if (dockingManager.Layout.ActiveContent == null && MyDBController.FindVisualChild<FlowCard_Page>(dockingManager).Count == 0)
             {
+                Frame topFrame = new Frame();
+                topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
                 LayoutAnchorable la = new LayoutAnchorable();
-                la.Title = "新的测试页" + xxxcount;
+                la.Title = "流转卡编制*";
                 la.Content = topFrame;
                 la.Closing += la_Closing;
 
-                
                 ldp.Children.Add(la);
                 la.IsSelected = true;
             }
             else
             {
-                topFrame = new Frame();
-                topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
-
-                LayoutAnchorable la = new LayoutAnchorable();
-                la.Title = "新的测试页" + xxxcount;
-                la.Content = topFrame;
-                la.Closing += la_Closing;
-
-                
-
-                ldp.Children.Add(la);
-                la.IsSelected = true;
+                ((FlowCard_Page)MyDBController.FindVisualChild<FlowCard_Page>(dockingManager)[0]).Focus();
             }
             #endregion
         }

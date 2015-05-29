@@ -37,7 +37,7 @@ namespace BarCodeSystem
         public static string[] pwd = { "Aa1","Bb123"};
         //U9测试库密码；条码测试库密码
 
-        public static string[] pattern = {@"^\d+\z" ,@"^\d+\.?\d*\z"};
+        public static string[] pattern = { @"^\d+\z", @"^\d+\.?\d*\z", @"^[-]?[1-9]{1}\d*$|^[0]{1}$", @"^([0-9.]+)$" };
         //编码文本框校验表达式；
 
         public static string rememberedAccountFileName = "D:/Program Files/BarCodeSystem/SysPara/RememberedAccount.xml";

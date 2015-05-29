@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
+      Loaded="Page_Loaded"
 	  Title="生产订单筛选页面">
 
     <Grid>
@@ -29,10 +30,12 @@
 
             <DataGrid Name="datagrid_ProduceOrderInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="订单编号" ></DataGridTextColumn>
-                    <DataGridTextColumn Header="料品编号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="料品名称" Binding="{Binding Path=II_Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="料品规格" Binding="{Binding Path=II_Spec}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="订单编号" Binding="{Binding Path=PO_Code}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料品编号" Binding="{Binding Path=PO_ItemCode}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料品名称" Binding="{Binding Path=PO_ItemName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料品规格" Binding="{Binding Path=PO_ItemSpec}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="订单数量" Binding="{Binding Path=PO_OrderAmount}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="已开工数量" Binding="{Binding Path=PO_StartAmount}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="2">
