@@ -1,7 +1,10 @@
 ﻿using BarCodeSystem.PublicClass;
+using BarCodeSystem.PublicClass.DatabaseEntity;
 using BarCodeSystem.PublicClass.ValueConverters;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,6 +33,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         #region 变量设置
         string amount = "";
         ProduceOrderLists selectedOrder = new ProduceOrderLists();
+        List<TechRouteLists> selectedTechRoute = new List<TechRouteLists>();
         #endregion
 
         #region 初始化设置
@@ -67,7 +71,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
 
         #region 流转卡表头操作
         /// <summary>
-        /// 料品信息查询按钮
+        /// 料品信息查询按钮(逻辑修改后程序没有用到这部分)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -84,7 +88,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
 
         /// <summary>
-        /// 料品信息查询函数委托实例
+        /// 料品信息查询函数委托实例(逻辑修改后程序没有用到这部分)
         /// </summary>
         /// <returns></returns>
         public string SetItemInfo(string value)
@@ -127,8 +131,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="trls"></param>
         private void FecthTechRouteInfo(string value, List<TechRouteLists> trls)
         {
+            selectedTechRoute = trls;
             txtb_TechRouteVersion.Text = value;
             datagrid_TechRouteInfo.ItemsSource = trls;
+            txtb_Department.Text = trls[0].WC_Department_Name;
         }
 
         /// <summary>
@@ -149,7 +155,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
 
         /// <summary>
-        /// 工艺路线查询委托函数实例
+        /// 生产订单查询委托函数实例
         /// </summary>
         /// <param name="value"></param>
         /// <param name="trls"></param>
@@ -160,9 +166,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             txtb_ItemInfo.Text = pol.PO_ItemCode + " | " + pol.PO_ItemName + " | " + pol.PO_ItemSpec;
             textb_Amount.Text = (pol.PO_OrderAmount - pol.PO_StartAmount).ToString();
         }
-
-        #endregion
-
 
         /// <summary>
         /// 不能输入非数字的字符，不能输入超过可派工总数的数字
@@ -200,7 +203,238 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
 
         }
+        #endregion
 
+        #region 行表信息
+
+        /// <summary>
+        /// 查询人员信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_PersonSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!textb_SearchInfo.Text.Equals("人员信息筛选"))
+            {
+                PersonSearch_Page ps = new PersonSearch_Page(FetchPersonInfo);
+                Frame frame_SearchInfo = new Frame();
+                gb_SearchInfo.Content = frame_SearchInfo;
+                textb_SearchInfo.Text = "人员信息筛选";
+                frame_SearchInfo.Navigate(ps);
+            }
+        }
+        /// <summary>
+        /// 接收人员信息的委托
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
+        private void FetchPersonInfo(PersonLists person)
+        {
+            ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName = person.name;
+            ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personCode = person.code;
+            datagrid_TechRouteInfo.Items.Refresh();
+        }
+        #endregion
+
+        #region 生成流转卡编号并派工
+        /// <summary>
+        /// 流转卡派工
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_DisFlowCard_Click(object sender, RoutedEventArgs e)
+        {
+            string message = "";
+            if (CheckIfCanLegal(out message))
+            {
+                int flowNum = GetCurrentFlowNum();
+                string flowCode = GenerateCode(flowNum);
+                List<FlowCardLists> flowCardList = GenerateFlowCardInfo(flowNum, flowCode);
+                FlowCardInfoToDatabase(flowCardList);
+                UpdateSourceOrderInfo(Convert.ToInt32(textb_Amount.Text));
+            }
+            else
+            {
+                MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// 检查当前流转卡信息是否满足派工条件，满足返回true否则返回false
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIfCanLegal(out string message)
+        {
+            message = "";
+            bool flag = true;
+            if (!string.IsNullOrEmpty(selectedOrder.PO_ItemCode) && selectedTechRoute.Count != 0 && selectedOrder.PO_ItemCode.Equals(selectedTechRoute[0].TR_ItemCode))
+            {
+                if (!string.IsNullOrEmpty(datepicker_CreateDate.Text))
+                {
+                }
+                else
+                {
+                    message = "请选择日期！";
+                    flag = false;
+                }
+            }
+            else
+            {
+                message = "缺少生产订单或者工艺路线信息,请检查！";
+                flag = false;
+            }
+
+            if (flag)
+            {
+                foreach (TechRouteLists item in selectedTechRoute)
+                {
+                    if (string.IsNullOrEmpty(item.personName))
+                    {
+                        flag = false;
+                        message = "请为每道工序选择操作人员！";
+                        break;
+                    }
+                }
+            }
+
+            return flag;
+        }
+
+        /// <summary>
+        /// 获得条码系统中当前日期的流转卡最大流水号，并加1，用来作为新的流转卡流水号
+        /// </summary>
+        /// <returns></returns>
+        private int GetCurrentFlowNum()
+        {
+            int currentFlowNum = 0;
+            string SQl = string.Format(@"select max(FC_FlowNum) FC_FlowNum from FlowCard where convert(date,FC_Createtime,102)=Convert(date,getDate(),102) group by Fc_Createtime");
+            MyDBController.GetConnection();
+            SqlDataReader sqlReader = MyDBController.GetDataReader(SQl);
+            while (sqlReader.Read())
+            {
+                currentFlowNum = (int)sqlReader["FC_FlowNum"] + 1;
+            }
+            sqlReader.Close();
+            MyDBController.CloseConnection();
+            return currentFlowNum;
+        }
+
+        /// <summary>
+        /// 生成流转卡流水号
+        /// </summary>
+        /// <param name="maxNum">四位尾号</param>
+        /// <param name="type">流转卡类型缩写</param>
+        /// <returns></returns>
+        private string GenerateCode(int maxNum)
+        {
+            string type = "";
+            switch (cb_FlowCardType.SelectedValue.ToString())
+            {
+                case "普通流转卡":
+                    type = "PT";
+                    break;
+                case "分批流转卡":
+                    type = "FP";
+                    break;
+                case "无来源流转卡":
+                    type = "WLY";
+                    break;
+                default:
+                    break;
+            }
+            txtb_FlowCode.Text = type + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + maxNum.ToString();
+            return type + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + maxNum.ToString();
+        }
+
+        /// <summary>
+        /// 生成流转卡表头信息
+        /// </summary>
+        private List<FlowCardLists> GenerateFlowCardInfo(int maxNum, string flowCode)
+        {
+            List<FlowCardLists> flowCardList = new List<FlowCardLists>();
+            foreach (TechRouteLists item in selectedTechRoute)
+            {
+                flowCardList.Add(new FlowCardLists()
+                {
+                    FC_CardType = cb_FlowCardType.SelectedIndex,
+                    FC_SourceOrderID = selectedOrder.PO_ID,
+                    FC_ItemID = Convert.ToInt64(selectedOrder.PO_ItemID),
+                    FC_Amount = Convert.ToInt32(textb_Amount.Text),
+                    FC_WorkCenter = selectedTechRoute[0].TR_WorkCenterID,
+                    FC_CardState = 0,
+                    FC_DistriSourceCard = 0,
+                    FC_FlowNum = maxNum,
+                    FC_CreateBy = User_Info.User_Name,
+                    FC_CreateTime = DateTime.Now,
+                    FC_Code = flowCode
+                });
+            }
+            return flowCardList;
+        }
+
+        /// <summary>
+        /// 将流转卡信息存入数据库
+        /// </summary>
+        private void FlowCardInfoToDatabase(List<FlowCardLists> flowCardList)
+        {
+            try
+            {
+                string SQl = "select top 0 * from FlowCard";
+                DataSet ds = new DataSet();
+                List<string> colList = new List<string>();
+
+                MyDBController.GetConnection();
+                MyDBController.GetDataSet(SQl, ds, "FlowCard");
+                foreach (DataColumn column in ds.Tables["FlowCard"].Columns)
+                {
+                    colList.Add(column.ColumnName);
+                }
+
+                ds.Tables["FlowCard"].Columns.Add("IDNew", typeof(Int64));
+                foreach (FlowCardLists item in flowCardList)
+                {
+                    DataRow row = ds.Tables["FlowCard"].NewRow();
+                    row["ID"] = row["IDNew"] = item.ID;
+                    row["FC_CardType"] = item.FC_CardType;
+                    row["FC_SourceOrderID"] = item.FC_SourceOrderID;
+                    row["FC_Code"] = item.FC_Code;
+                    row["FC_ItemID"] = item.FC_ItemID;
+                    row["FC_Amount"] = item.FC_Amount;
+                    row["FC_WorkCenter"] = item.FC_WorkCenter;
+                    row["FC_CardState"] = item.FC_CardState;
+                    row["FC_DistriSourceCard"] = item.FC_DistriSourceCard;
+                    row["FC_FlowNum"] = item.FC_FlowNum;
+                    row["FC_CreateBy"] = item.FC_CreateBy;
+                    row["FC_CheckTime"] = row["FC_CreateTime"] = item.FC_CreateTime;
+                    row["FC_CheckBy"] = item.FC_CheckBy;
+                    ds.Tables["FlowCard"].Rows.Add(row);
+                }
+
+                int updateNum, insertNum;
+                MyDBController.InsertSqlBulk(ds.Tables["FlowCard"], colList, out updateNum, out insertNum);
+                MyDBController.CloseConnection();
+
+                string message = string.Format(@"共更新{0}条记录，新增{1}条记录", updateNum, insertNum);
+                MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// 派工结束之后返填生产订单信息，更新派工数量
+        /// </summary>
+        /// <param name="para"></param>
+        private void UpdateSourceOrderInfo(int para)
+        {
+            string SQl = string.Format(@"update [ProduceOrder] set [PO_StartAmount]=[PO_StartAmount]+{0} where [PO_ID]={1}", para, selectedOrder.PO_ID);
+            MyDBController.GetConnection();
+            MyDBController.ExecuteNonQuery(SQl);
+            MyDBController.CloseConnection();
+        }
+        #endregion
 
     }
 }

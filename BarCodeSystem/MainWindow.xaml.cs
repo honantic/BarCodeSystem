@@ -386,7 +386,7 @@ namespace BarCodeSystem
                 Frame topFrame = new Frame();
                 topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
                 LayoutAnchorable la = new LayoutAnchorable();
-                la.Title = "流转卡编制*";
+                la.Title = "流转卡编制";
                 la.Content = topFrame;
                 la.Closing += la_Closing;
 
@@ -424,12 +424,9 @@ namespace BarCodeSystem
         private void AvalonSetting()
         {
             lp.Children.Add(ldp);
-
             lr.RootPanel = lp;
             //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
-
             dockingManager.Layout = lr;
-
         }
 
 

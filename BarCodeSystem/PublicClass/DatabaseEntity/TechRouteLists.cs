@@ -234,5 +234,20 @@ namespace BarCodeSystem
             get;
             set;
         }
+
+        public bool TR_IsBackProcess
+        { get; set; }
+
+        public bool TR_IsTestProcess
+        {
+            get;
+            set;
+        }
+
+        public string personCode
+        { get; set; }
+
+        public string personName
+        { get; set; }
     }
 }

@@ -303,13 +303,13 @@ namespace BarCodeSystem
                         SQl = string.Format(@"INSERT INTO [TechRoute]([TR_ItemID],[TR_ItemCode],[TR_VersionID],[TR_ProcessSequence],
                                         [TR_ProcessName],[TR_ProcessCode],[TR_ProcessID],[TR_IsReportPoint],[TR_IsExProcess],
                                         [TR_WorkCenterID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_WagePerPiece],[TR_WorkHour],
-                                        [TR_WageAllotScheme],[TR_AllotFormulaID],[TR_IsReportDevice],TR_IsDeviceCharging) 
+                                        [TR_WageAllotScheme],[TR_AllotFormulaID],[TR_IsReportDevice],[TR_IsDeviceCharging],[TR_IsTestProcess],[TR_IsBackProcess]) 
                                         VALUES( {0},'{1}',{2},{3},'{4}','{5}',{6},'{7}','{8}',{9},'{10}','{11}',{12},
-                                        {13},'{14}','{15}','{16}','{17}')",
+                                        {13},'{14}','{15}','{16}','{17}','{18}','{19}')",
                                             trl.TR_ItemID, trl.TR_ItemCode, trv_versionID, trl.TR_ProcessSequence, trl.TR_ProcessName,
                                             trl.TR_ProcessCode, trl.TR_ProcessID, trl.TR_IsReportPoint, trl.TR_IsExProcess, trl.TR_WorkCenterID,
                                             trl.TR_IsFirstProcess, trl.TR_IsLastProcess, trl.TR_WagePerPiece, trl.TR_WorkHour,
-                                            trl.TR_WageAllotScheme, (Int64)trl.TR_WageAllotScheme, trl.TR_IsReportDevice, trl.TR_IsDeviceCharging);
+                                            trl.TR_WageAllotScheme, (Int64)trl.TR_WageAllotScheme, trl.TR_IsReportDevice, trl.TR_IsDeviceCharging,trl.TR_IsTestProcess,trl.TR_IsBackProcess);
                         MyDBController.ExecuteNonQuery(SQl);
                     }
                     //将本来的默认工艺路线改为不是默认工艺路线
@@ -427,6 +427,8 @@ namespace BarCodeSystem
                                 trl.TRV_Version = txtb_TechVersion.Text.Trim();
                                 trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
                                 trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                                trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
+                                trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                             }
                             else//新工序
                             {
@@ -446,6 +448,8 @@ namespace BarCodeSystem
                                 trl.TRV_Version = txtb_TechVersion.Text.Trim();
                                 trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
                                 trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                                trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
+                                trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                                 trls.Add(trl);
                             }
 
@@ -473,6 +477,8 @@ namespace BarCodeSystem
                             trl.TRV_Version = txtb_TechVersion.Text.Trim();
                             trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
                             trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                            trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
+                            trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                             trls.Add(trl);
                             trls.Sort(delegate(TechRouteLists x, TechRouteLists y)
                             {

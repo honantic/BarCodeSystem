@@ -99,9 +99,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.0.2000.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.6.15111.10510, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\东西在这里\avalondock-102592\Version2.0\AvalonDock.TestApp\bin\Debug\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\packages\Xceed.Wpf.AvalonDock.2.6.15111.10510\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +119,9 @@
     <Compile Include="ProductDispatch\FlowCard\ItemSearch_Page.xaml.cs">
       <DependentUpon>ItemSearch_Page.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCard\PersonSearch_Page.xaml.cs">
+      <DependentUpon>PersonSearch_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml.cs">
       <DependentUpon>ProduceOrderSearch_Page.xaml</DependentUpon>
     </Compile>
@@ -123,6 +129,7 @@
       <DependentUpon>TechRouteSearch_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\DeviceLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\FlowCardLists.cs" />
     <Compile Include="PublicClass\HelperClass\EncodeHelper.cs" />
     <Compile Include="PublicClass\HelperClass\GridHelper.cs" />
     <Compile Include="PublicClass\DatabaseEntity\ItemInfoLists.cs" />
@@ -363,6 +370,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProductDispatch\FlowCard\PersonSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -439,6 +450,7 @@
     <Folder Include="BasicFile\ProduceLine\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\FLowCardWatermark.png" />
     <Resource Include="SysPara\LastAccount.xml" />
   </ItemGroup>
   <ItemGroup>

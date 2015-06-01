@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
+      xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       Title="流转卡编制页面"
       Loaded="Page_Loaded"
@@ -59,13 +60,12 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-
                     <TextBlock Grid.Row="1" Text="流转卡类型:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"></TextBlock>
-                    <ComboBox VerticalAlignment="Center" ItemsSource="{Binding}"  Grid.Row="1"  Name="cb_FlowCardType" Grid.Column="1" Margin="0 0 20 0">
+                    <ComboBox VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding}"  Grid.Row="1"  Name="cb_FlowCardType" Grid.Column="1" Margin="0 0 20 0">
                     </ComboBox>
 
                     <TextBlock Text="流转卡编号:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"></TextBlock>
-                    <TextBox  Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"   IsReadOnly="True" Text="系统自动生成" TextAlignment="Center" Background="LightGray" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBox>
+                    <TextBox Name="txtb_FlowCode" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"   IsReadOnly="True" Text="系统自动生成" TextAlignment="Center" Background="LightGray" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBox>
 
                     <TextBlock Text="产品:" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"></TextBlock>
                     <StackPanel  Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
@@ -85,11 +85,11 @@
                     </StackPanel>
 
                     <TextBlock Text="编制日期:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="2" Grid.Row="1"></TextBlock>
-                    <DatePicker Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Cursor="Hand" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>
+                    <DatePicker Name="datepicker_CreateDate"  Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Cursor="Hand" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>
 
                     <TextBlock Text="生产车间:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="4" Grid.Row="1"></TextBlock>
                     <StackPanel Grid.Column="5" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
-                        <TextBox  VerticalAlignment="Center" IsReadOnly="True" Text="点击放大镜选择" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
+                        <TextBox Name="txtb_Department" VerticalAlignment="Center" IsReadOnly="True" Text="点击放大镜选择" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
                         <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Name="btn_WorkCenterSearch" Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
@@ -130,19 +130,18 @@
                     <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CardState" Grid.Column="5" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                 </Grid>
             </GroupBox>
-
             <GroupBox Name="gb_SearchInfo" Grid.Column="2">
                 <GroupBox.Header>
                     <TextBlock Name="textb_SearchInfo"  Style="{StaticResource textb_NormalStyle}" FontFamily="华文行楷"></TextBlock>
                 </GroupBox.Header>
                 <!--<Frame Name="frame_SearchInfo" JournalOwnership="OwnsJournal" ></Frame>-->
             </GroupBox>
-
         </Grid>
 
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="15"></ColumnDefinition>
                 <ColumnDefinition ></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GroupBox >
@@ -154,22 +153,25 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition Height="40"></RowDefinition>
                     </Grid.RowDefinitions>
+
+                    <Image Name="img_Watermark" Source="../../Images/FlowCardWatermark.png" Panel.ZIndex="0" 
+                           VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="300" Height="100"></Image>
                     <DataGrid  CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False" 
                                AutoGenerateColumns="False" ColumnWidth="Auto" Name="datagrid_TechRouteInfo" RowHeaderWidth="30">
                         <DataGrid.Columns >
                             <DataGridTextColumn Header="行号" IsReadOnly="True" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
                             <DataGridTextColumn Header="工序名称" IsReadOnly="True" Binding="{Binding Path=TR_ProcessName}"></DataGridTextColumn>
-                            <DataGridTemplateColumn Header="操作工">
+                            <DataGridTemplateColumn  Header="操作工">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=TR_ItemCode}" Name="textb_Person" VerticalAlignment="Center"  ></TextBlock>
+                                        <TextBlock Text="{Binding Path=personName}" Name="textb_Person" VerticalAlignment="Center"  ></TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                                 <DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
                                         <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" >
-                                            <TextBox Width="80" Text="{Binding Path=TR_ItemCode,Mode=TwoWay}" VerticalAlignment="Center" ></TextBox>
-                                            <Button Name="btn_ItemSearch" Cursor="Hand" Click="btn_ItemSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                                            <TextBox Width="80" Text="{Binding Path=personName,Mode=TwoWay}" VerticalAlignment="Center" ></TextBox>
+                                            <Button Name="btn_PersonSearch" Cursor="Hand" Click="btn_PersonSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
                                                 <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                                             </Button>
                                         </StackPanel>
@@ -177,6 +179,7 @@
                                 </DataGridTemplateColumn.CellEditingTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTextColumn Header="投入数"></DataGridTextColumn>
+
                             <DataGridTextColumn Header="合格数"></DataGridTextColumn>
                             <DataGridTextColumn Header="报废数"></DataGridTextColumn>
                             <DataGridTextColumn Header="责废数"></DataGridTextColumn>
@@ -184,21 +187,29 @@
                             <DataGridTextColumn Header="不良数"></DataGridTextColumn>
                             <DataGridTextColumn Header="待处理数"></DataGridTextColumn>
                             <DataGridTextColumn Header="生产车间" Binding="{Binding Path=WC_Department_Name}" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否测试工序" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否返工工序" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="是否测试工序" Binding="{Binding Path=IsTestProcess, Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="是否返工工序" Binding="{Binding Path=IsBackProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是首道工工序" Binding="{Binding Path=TR_IsFirstProcess, Converter={StaticResource ResourceKey=boolConvert}}"  IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是末道工工序" Binding="{Binding Path=TR_IsLastProcess, Converter={ StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="日期"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Name="btn_DisFlowCard" Click="btn_DisFlowCard_Click" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="生成流转卡编号并派工" ></Button>
+                    </Grid>
                 </Grid>
             </GroupBox>
-
-            <GroupBox  Grid.Column="1">
+            <GridSplitter Grid.Column="1" Width="5" Foreground="AliceBlue" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+            <GroupBox  Grid.Column="2">
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡质量信息</TextBlock>
                 </GroupBox.Header>
-
                 <DataGrid ColumnWidth="Auto" RowHeaderWidth="30">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="行号"></DataGridTextColumn>

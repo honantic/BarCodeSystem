@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("xceed.wpf.avalondock.resources.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/flowcardwatermark.png")]
 
 

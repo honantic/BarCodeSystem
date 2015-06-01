@@ -325,8 +325,10 @@ namespace BarCodeSystem
             trm.ShowDialog();
             if ((bool)trm.DialogResult)
             {
-                Window_Loaded(sender, e);
-                btn_GetVersion_Click(sender, e);
+                //Window_Loaded(sender, e);
+                GetBCSItemTechRoute();
+                //btn_GetVersion_Click(sender, e);
+                formClickCount = 0;
             }
         }
 

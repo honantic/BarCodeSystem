@@ -249,7 +249,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bar
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.application
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\FlowCard_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\FlowCard_Page.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.AvalonDock.pdb
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
@@ -271,3 +270,6 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Pro
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\PersonSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\PersonSearch_Page.g.cs

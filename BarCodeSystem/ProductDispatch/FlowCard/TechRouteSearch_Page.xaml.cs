@@ -95,7 +95,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
 
             //工艺路线的工序信息
-            SQl = string.Format(@"Select A.[ID],A.[TR_ItemID],A.[TR_VersionID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsReportPoint],A.[TR_IsExProcess],A.[TR_WorkCenterID],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_WagePerPiece],A.[TR_WorkHour],A.[TR_WageAllotScheme],A.[TR_AllotFormulaID],A.[TR_IsReportDevice],A.[TR_IsDeviceCharging],B.[WC_Department_Name] from [TechRoute] A left join [WorkCenter] B on A.[TR_WorkCenterID]=B.[WC_Department_ID] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
+            SQl = string.Format(@"Select A.[ID],A.[TR_ItemID],A.[TR_ItemCode],A.[TR_VersionID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsReportPoint],A.[TR_IsExProcess],A.[TR_WorkCenterID],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_WagePerPiece],A.[TR_WorkHour],A.[TR_WageAllotScheme],A.[TR_AllotFormulaID],A.[TR_IsReportDevice],A.[TR_IsDeviceCharging],B.[WC_Department_Name] from [TechRoute] A left join [WorkCenter] B on A.[TR_WorkCenterID]=B.[WC_Department_ID] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
             MyDBController.GetDataSet(SQl, ds, "TechRouteInfo");
             MyDBController.CloseConnection();
 
@@ -109,7 +109,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     TR_WagePerPiece = Convert.ToDecimal(row["TR_WagePerPiece"]),
                     TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]),
                     TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]),
-                    WC_Department_Name = row["WC_Department_Name"].ToString()
+                    WC_Department_Name = row["WC_Department_Name"].ToString(),
+                    TR_ItemID = Convert.ToInt64(row["TR_ItemID"]),
+                    TR_ItemCode = row["TR_ItemCode"].ToString()
                 });
             }
             return tvl;
