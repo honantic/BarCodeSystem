@@ -23,5 +23,5 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// 接收人员信息的委托
     /// </summary>
     /// <param name="person"></param>
-    public delegate void SubmitPersonInfo(PersonLists person);
+    public delegate void SubmitPersonInfo(List<PersonLists> person);
 }

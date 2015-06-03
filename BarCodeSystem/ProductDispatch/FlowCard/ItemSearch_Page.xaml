@@ -31,7 +31,7 @@
                 </Label.Background>
             </Label>
 
-            <DataGrid Name="datagrid_ItemInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_ItemInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="料品编号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
                     <DataGridTextColumn Header="料品名称" Binding="{Binding Path=II_Name}"></DataGridTextColumn>

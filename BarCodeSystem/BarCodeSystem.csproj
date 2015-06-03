@@ -125,6 +125,9 @@
     <Compile Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml.cs">
       <DependentUpon>ProduceOrderSearch_Page.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCard\SaveWorkTeam_Page.xaml.cs">
+      <DependentUpon>SaveWorkTeam_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCard\TechRouteSearch_Page.xaml.cs">
       <DependentUpon>TechRouteSearch_Page.xaml</DependentUpon>
     </Compile>
@@ -376,6 +379,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\SaveWorkTeam_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

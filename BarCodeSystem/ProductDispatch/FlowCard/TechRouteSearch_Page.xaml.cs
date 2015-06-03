@@ -55,8 +55,27 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 label_ErrorInfo.Visibility = Visibility.Visible;
             }
+            FecthDefaultInfo();
         }
         #endregion
+
+        /// <summary>
+        /// 在页面加载的时候，获取该料品的默认工艺路线信息，直接返填
+        /// </summary>
+        private void FecthDefaultInfo()
+        {
+            for (int i = 0; i < tvl.Count; i++)
+            {
+                if (tvl[i].TRV_IsDefaultVer)
+                {
+                    datagrid_RouteVersion.SelectedIndex = i;
+                    break;
+                }
+            }
+            object sender = new object();
+            RoutedEventArgs e = new RoutedEventArgs();
+            btn_Submit_Click(sender, e);
+        }
 
         /// <summary>
         /// 选定工艺路线，提交工艺路线信息
@@ -81,7 +100,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private List<TechVersion> FetchTechRouteInfo(string str)
         {
             //工艺路线版本datagrid数据源
-            string SQl = string.Format(@"Select A.[ID],A.[TRV_Version] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
+            string SQl = string.Format(@"Select A.[ID],A.[TRV_Version],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRouteVersion");
 
@@ -90,7 +109,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 tvl.Add(new TechVersion()
                 {
                     TR_VersionID = Convert.ToInt64(row["ID"]),
-                    TRV_Version = row["TRV_Version"].ToString()
+                    TRV_Version = row["TRV_Version"].ToString(),
+                    TRV_IsDefaultVer = (bool)row["TRV_IsDefaultVer"]
                 });
             }
 
@@ -109,6 +129,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     TR_WagePerPiece = Convert.ToDecimal(row["TR_WagePerPiece"]),
                     TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]),
                     TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]),
+                     TR_WorkCenterID=Convert.ToInt64(row["TR_WorkCenterID"]),
                     WC_Department_Name = row["WC_Department_Name"].ToString(),
                     TR_ItemID = Convert.ToInt64(row["TR_ItemID"]),
                     TR_ItemCode = row["TR_ItemCode"].ToString()

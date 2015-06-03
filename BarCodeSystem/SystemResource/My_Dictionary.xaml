@@ -2,62 +2,62 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   >
     <!--Menu控件模板-->
-        <ControlTemplate x:Key="mycontroltemplate" TargetType="{x:Type Menu}">
-            <Border Margin="2"
+    <ControlTemplate x:Key="mycontroltemplate" TargetType="{x:Type Menu}">
+        <Border Margin="2"
                 Background="Chocolate"
                 CornerRadius="3"
                 SnapsToDevicePixels="True">
-                <ItemsPresenter/>
-            </Border>
-        </ControlTemplate>
+            <ItemsPresenter/>
+        </Border>
+    </ControlTemplate>
 
-        <!--MenuItem控件模板-->
-        <ControlTemplate x:Key="mymenuitemtemplate"
+    <!--MenuItem控件模板-->
+    <ControlTemplate x:Key="mymenuitemtemplate"
                    TargetType="MenuItem">
-            <Border Name="Border">
-                <Grid>
-                    <ContentPresenter
+        <Border Name="Border">
+            <Grid>
+                <ContentPresenter
           Margin="10"
           ContentSource="Header"
           RecognizesAccessKey="True"/>
-                    <Popup 
+                <Popup 
                     AllowsTransparency="True"
           Name="Popup"
           Placement="Top"
           IsOpen="{TemplateBinding IsSubmenuOpen}"
           Focusable="False"
           PopupAnimation="Slide">
-                        <Border
+                    <Border
             CornerRadius="30"
             Name="SubmenuBorder"
             SnapsToDevicePixels="True">
-                            <StackPanel
+                        <StackPanel
               IsItemsHost="True"
               KeyboardNavigation.DirectionalNavigation="Cycle" />
-                            <Border.Background>
-                                <DrawingBrush>
-                                    <DrawingBrush.Drawing>
-                                        <GeometryDrawing Brush="YellowGreen">
-                                            <GeometryDrawing.Geometry>
-                                                <CombinedGeometry GeometryCombineMode="Exclude">
-                                                    <CombinedGeometry.Geometry1>
-                                                        <EllipseGeometry RadiusX="20" RadiusY="20"/>
-                                                    </CombinedGeometry.Geometry1>
-                                                    <CombinedGeometry.Geometry2>
-                                                        <EllipseGeometry RadiusX="10" RadiusY="10"/>
-                                                    </CombinedGeometry.Geometry2>
-                                                </CombinedGeometry>
-                                            </GeometryDrawing.Geometry>
-                                        </GeometryDrawing>
-                                    </DrawingBrush.Drawing>
-                                </DrawingBrush>
-                            </Border.Background>
-                        </Border>
-                    </Popup>
-                </Grid>
-            </Border>
-            <!--可有可无________________________________________________________________________________-->
-            <ControlTemplate.Triggers>
+                        <Border.Background>
+                            <DrawingBrush>
+                                <DrawingBrush.Drawing>
+                                    <GeometryDrawing Brush="YellowGreen">
+                                        <GeometryDrawing.Geometry>
+                                            <CombinedGeometry GeometryCombineMode="Exclude">
+                                                <CombinedGeometry.Geometry1>
+                                                    <EllipseGeometry RadiusX="20" RadiusY="20"/>
+                                                </CombinedGeometry.Geometry1>
+                                                <CombinedGeometry.Geometry2>
+                                                    <EllipseGeometry RadiusX="10" RadiusY="10"/>
+                                                </CombinedGeometry.Geometry2>
+                                            </CombinedGeometry>
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Border.Background>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+        <!--可有可无________________________________________________________________________________-->
+        <ControlTemplate.Triggers>
             <Trigger Property="IsSuspendingPopupAnimation" Value="true">
                 <Setter TargetName="Popup" Property="PopupAnimation" Value="None"/>
             </Trigger>
@@ -75,11 +75,11 @@
                 <Setter Property="Foreground" Value="Black"/>
             </Trigger>
         </ControlTemplate.Triggers>
-            <!--可有可无________________________________________________________________________________-->
-        </ControlTemplate>
+        <!--可有可无________________________________________________________________________________-->
+    </ControlTemplate>
 
 
-        <Style TargetType="{x:Type Grid}">
+    <Style TargetType="{x:Type Grid}">
         <Style.Triggers>
         </Style.Triggers>
     </Style>
@@ -98,7 +98,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <!--textblock普通样式-->
     <Style TargetType="TextBlock" x:Key="textb_NormalStyle">
         <Setter Property="FontSize" Value="14"></Setter>
@@ -108,7 +108,7 @@
         <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
     </Style>
-    
+
     <!-- 普通按钮样式-->
     <Style TargetType="Button" x:Key="btn_NormalStyle">
         <Setter Property="Width" Value="80"></Setter>
@@ -122,7 +122,7 @@
         <Setter Property="Height" Value="30"></Setter>
         <Setter Property="Margin" Value="5"></Setter>
     </Style>
-    
+
     <!--文本框普通样式-->
     <Style TargetType="TextBox" x:Key="txtb_NormalStyle">
         <Setter Property="Width" Value="80"></Setter>
@@ -163,7 +163,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <!--单选框样式-->
     <Style TargetType="CheckBox" x:Key="CB_NormalStyle">
         <Setter Property="Margin" Value="5"></Setter>
@@ -183,7 +183,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <!--网格边框样式-->
     <Style TargetType="Border" x:Key="bd_NormalStyle">
         <Setter Property="BorderBrush" Value="Gray"></Setter>
@@ -204,7 +204,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <!--文本框内嵌搜索按钮样式-->
     <Style TargetType="Button" x:Key="btn_SearchStyle">
         <Setter Property="Template">
@@ -225,8 +225,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    
+
+
     <!--登陆按钮样式-->
     <Style TargetType="Button" x:Key="bd_LoginStyle">
         <Setter Property="Template">

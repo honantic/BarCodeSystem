@@ -4,10 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
+      xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
       d:DesignHeight="300" d:DesignWidth="300"
       Loaded="Page_Loaded"
 	  Title="工艺路线选择页面">
     <Grid>
+        <Grid.Resources>
+            <local:TrueOrFalseConverter x:Key="boolConvert"></local:TrueOrFalseConverter>
+        </Grid.Resources>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="15"></ColumnDefinition>
@@ -35,9 +40,10 @@
             <GroupBox.Header>
                 <TextBlock  Style="{StaticResource textb_NormalStyle}" >选择工艺版本</TextBlock>
             </GroupBox.Header>
-            <DataGrid Name="datagrid_RouteVersion" IsReadOnly="True" CanUserAddRows="False" ColumnWidth="Auto" RowHeaderWidth="30" AutoGenerateColumns="False" SelectionChanged="datagrid_RouteVersion_SelectionChanged">
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_RouteVersion" IsReadOnly="True" CanUserAddRows="False" ColumnWidth="Auto" RowHeaderWidth="30" AutoGenerateColumns="False" SelectionChanged="datagrid_RouteVersion_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="工艺版本" Binding="{Binding Path=TRV_Version}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="是否默认版本" Binding="{Binding Path=TRV_IsDefaultVer,Converter={StaticResource boolConvert}}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
@@ -46,7 +52,7 @@
             <GroupBox.Header>
                 <TextBlock  Style="{StaticResource textb_NormalStyle}" >工序信息</TextBlock>
             </GroupBox.Header>
-            <DataGrid Name="datagrid_RouteProcess" CanUserAddRows="False" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False">
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_RouteProcess" CanUserAddRows="False" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="行号" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
                     <DataGridTextColumn Header="工序名称" Binding="{Binding Path=TR_ProcessName}"></DataGridTextColumn>

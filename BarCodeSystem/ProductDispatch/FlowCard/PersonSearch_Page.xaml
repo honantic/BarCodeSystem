@@ -29,7 +29,7 @@
                 </Label.Background>
             </Label>
 
-            <DataGrid Name="datagrid_PersonInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_PersonInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="人员编号" Binding="{Binding Path=code}"></DataGridTextColumn>
                     <DataGridTextColumn Header="人员姓名" Binding="{Binding Path=name}"></DataGridTextColumn>

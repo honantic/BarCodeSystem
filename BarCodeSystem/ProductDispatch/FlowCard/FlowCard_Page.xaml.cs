@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace BarCodeSystem.ProductDispatch.FlowCard
 {
@@ -35,6 +37,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         ProduceOrderLists selectedOrder = new ProduceOrderLists();
         List<TechRouteLists> selectedTechRoute = new List<TechRouteLists>();
         List<List<PersonLists>> techRoutePerson = new List<List<PersonLists>>();
+        DispatcherTimer timer1 = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
         #endregion
 
         #region 初始化设置
@@ -46,6 +49,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             InitFlowCardHeader();
+            timer1.Tick += timer1_Tick;
+        }
+
+        /// <summary>
+        /// 定时器跳转
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (tooltip_SaveAsTeam.IsOpen)
+            {
+                tooltip_SaveAsTeam.IsOpen = false;
+                timer1.IsEnabled = false;
+                tooltip_SaveAsTeam.Visibility = Visibility.Hidden;
+            }
         }
 
 
@@ -54,9 +73,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         private void InitFlowCardHeader()
         {
-            List<string> typeList = new List<string>() { "普通流转卡", "分批流转卡", "无来源流转卡" };
+            List<string> typeList = new List<string>() { "普通流转卡", "无来源流转卡" };
             cb_FlowCardType.ItemsSource = typeList;
             textb_CreatedBy.Text = "  " + User_Info.User_Name;
+            datepicker_CreateDate.SelectedDate = DateTime.Now;
         }
 
 
@@ -212,6 +232,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
 
         }
+        /// <summary>
+        /// 料品信息改变事件，自动获取其工艺路线信息，并且将默认工艺路线信息带入行表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtb_ItemInfo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btn_TechRouteSearch_Click(sender, e);
+        }
         #endregion
 
         #region 行表信息
@@ -237,22 +266,25 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         /// <param name="person"></param>
         /// <returns></returns>
-        private void FetchPersonInfo(PersonLists person)
+        private void FetchPersonInfo(List<PersonLists> personList)
         {
             if (datagrid_TechRouteInfo.SelectedIndex != -1)
             {
-                if (techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count == 0)
+                foreach (PersonLists person in personList)
                 {
-                    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += person.name;
-                    techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
-                    datagrid_TechRouteInfo.Items.Refresh();
-                }
-                else if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
-                {
-                    int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
-                    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
-                    techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
-                    datagrid_TechRouteInfo.Items.Refresh();
+                    if (techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count == 0)
+                    {
+                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += person.name;
+                        techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                        datagrid_TechRouteInfo.Items.Refresh();
+                    }
+                    else if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
+                    {
+                        int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
+                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
+                        techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                        datagrid_TechRouteInfo.Items.Refresh();
+                    }
                 }
             }
         }
@@ -476,13 +508,49 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
         #endregion
 
-
         #region 班组信息操作
+        /// <summary>
+        /// 将选中的行的人员保存为班组
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_SaveAsTeam_Click(object sender, RoutedEventArgs e)
+        {
+            bool canSave = CheckIfProcessSelected();
+            if (canSave)
+            {
+                textb_SearchInfo.Text = "保存班组信息";
+                SaveWorkTeam_Page swp = new SaveWorkTeam_Page(techRoutePerson[datagrid_TechRouteInfo.SelectedIndex], selectedTechRoute[datagrid_TechRouteInfo.SelectedIndex].TR_WorkCenterID, selectedTechRoute[datagrid_TechRouteInfo.SelectedIndex].WC_Department_Name);
+                Frame frame_SaveTeam = new Frame();
+                gb_SearchInfo.Content = frame_SaveTeam;
+                frame_SaveTeam.Navigate(swp);
+            }
+        }
+
+        /// <summary>
+        /// 点击保存班组的时候，检查是否选择了工序。选择了工序就继续往下走，否则停住
+        /// </summary>
+        private bool CheckIfProcessSelected()
         {
             int count = datagrid_TechRouteInfo.SelectedIndex;
             if (count != -1)
             {
+                timer1.IsEnabled = false;
+                if (tooltip_SaveAsTeam.IsOpen)
+                {
+                    tooltip_SaveAsTeam.IsOpen = false;
+                }
+                return true;
+            }
+            else
+            {
+                tooltip_SaveAsTeam.Visibility = Visibility.Visible;
+                tooltip_SaveAsTeam.IsOpen = true;
+                if (!timer1.IsEnabled)
+                {
+                    timer1.IsEnabled = true;
+                }
+                return false;
             }
         }
 
@@ -496,5 +564,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
 
         }
         #endregion
+
+
+
     }
 }

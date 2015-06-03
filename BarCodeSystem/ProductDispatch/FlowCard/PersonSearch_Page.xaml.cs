@@ -12,7 +12,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// </summary>
     public partial class PersonSearch_Page : Page
     {
-        PersonLists person;
+        List<PersonLists> person = new List<PersonLists>();
         SubmitPersonInfo spi;
         List<PersonLists> personOCL = new List<PersonLists>();
         DataSet ds = new DataSet();
@@ -59,9 +59,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_Submit_Click(object sender, RoutedEventArgs e)
         {
+            person.Clear();
             if (datagrid_PersonInfo.SelectedIndex > -1)
             {
-                person = (PersonLists)datagrid_PersonInfo.SelectedItem;
+                foreach (var item in datagrid_PersonInfo.SelectedItems)
+                {
+                    person.Add((PersonLists)item);
+                }
                 spi.Invoke(person);
             }
 
