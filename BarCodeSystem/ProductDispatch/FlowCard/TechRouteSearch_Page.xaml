@@ -58,9 +58,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Label Name="label_ErrorInfo" Background="DodgerBlue" Visibility="Hidden">没有工艺信息，请先在系统中录入工艺信息</Label>
-            <Button Grid.Column="1" Content="选定工艺路线"  Margin="10 0" Name="btn_Submit" Click="btn_Submit_Click"></Button>
+            <Button Grid.Column="2" Content="选定工艺路线"  Margin="10 0" Name="btn_Submit" Click="btn_Submit_Click"></Button>
+            <Button Grid.Column="1" Content="刷新列表"  Margin="10 0" Name="btn_Refresh" Click="btn_Refresh_Click"></Button>
         </Grid>
     </Grid>
 </Page>

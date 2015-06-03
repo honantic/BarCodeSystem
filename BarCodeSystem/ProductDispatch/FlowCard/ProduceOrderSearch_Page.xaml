@@ -43,11 +43,13 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Name="btn_Submit" Grid.Column="1" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定生产订单"></Button>
+                <Button Name="btn_Submit" Grid.Column="2" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定生产订单"></Button>
+                <Button Name="btn_Refresh" Grid.Column="1" Click="btn_Refresh_Click" Margin="10 0 10 0" Content="刷新列表"></Button>
                 <StackPanel   Orientation="Horizontal" VerticalAlignment="Center" Height="30">
-                    <extool:WatermarkTextBox Watermark="请输入搜索信息" Margin="0 5"  Name="txtb_ItemInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_ItemInfo_KeyUp"></extool:WatermarkTextBox>
-                    <Button Name="btn_ItemSearch" Cursor="Hand" Click="btn_ItemSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                    <extool:WatermarkTextBox Watermark="请输入搜索信息" Margin="0 5"  Name="txtb_ProduceOrderInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_ProduceOrderInfo_KeyUp"></extool:WatermarkTextBox>
+                    <Button Name="btn_ProduceOrderSearch" Cursor="Hand" Click="btn_ProduceOrderSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
                         <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                     </Button>
                 </StackPanel>

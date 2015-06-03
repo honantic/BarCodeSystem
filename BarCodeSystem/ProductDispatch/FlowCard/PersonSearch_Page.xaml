@@ -39,8 +39,10 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Name="btn_Submit" Grid.Column="1" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定人员"></Button>
+                <Button Name="btn_Refresh" Grid.Column="2" Click="btn_Refresh_Click" Margin="10 0 10 0" Content="刷新列表"></Button>
+                <Button Name="btn_Submit" Grid.Column="2" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定人员"></Button>
                 <StackPanel   Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                     <extool:WatermarkTextBox Watermark="输入搜索信息" Margin="0 5"  Name="txtb_PersonInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_PersonInfo_KeyUp"></extool:WatermarkTextBox>
                     <Button Name="btn_ItemSearch" Cursor="Hand" Click="btn_PersonSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">

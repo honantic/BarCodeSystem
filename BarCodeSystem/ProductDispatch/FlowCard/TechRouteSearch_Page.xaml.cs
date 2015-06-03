@@ -135,5 +135,23 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
 
+        /// <summary>
+        /// 刷新列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            datagrid_RouteVersion.ItemsSource = FetchTechRouteInfo(itemCode);
+            if (datagrid_RouteVersion.Items.Count == 0)
+            {
+                label_ErrorInfo.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                label_ErrorInfo.Visibility = Visibility.Hidden;
+            }
+        }
+
     }
 }

@@ -142,6 +142,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
 
+        /// <summary>
+        /// 刷新列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            datagrid_ItemInfo.ItemsSource = FetchItemInfo();
+            datagrid_ItemInfo.Items.Refresh();
+        }
+
 
     }
 }

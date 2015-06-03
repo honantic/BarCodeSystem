@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\DeviceLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\FlowCardLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\WorkTeamMemberLists.cs" />
     <Compile Include="PublicClass\HelperClass\EncodeHelper.cs" />
     <Compile Include="PublicClass\HelperClass\GridHelper.cs" />
     <Compile Include="PublicClass\DatabaseEntity\ItemInfoLists.cs" />

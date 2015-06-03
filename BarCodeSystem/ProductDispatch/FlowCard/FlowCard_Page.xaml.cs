@@ -34,6 +34,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         string amount = "";
         ProduceOrderLists selectedOrder = new ProduceOrderLists();
         List<TechRouteLists> selectedTechRoute = new List<TechRouteLists>();
+        List<List<PersonLists>> techRoutePerson = new List<List<PersonLists>>();
         #endregion
 
         #region 初始化设置
@@ -135,6 +136,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             txtb_TechRouteVersion.Text = value;
             datagrid_TechRouteInfo.ItemsSource = trls;
             txtb_Department.Text = trls[0].WC_Department_Name;
+
+            #region 根据工艺路线信息初始化人员列表
+            techRoutePerson.Clear();
+            for (int i = 0; i < trls.Count; i++)
+            {
+                techRoutePerson.Add(new List<PersonLists>());
+            }
+            #endregion
         }
 
         /// <summary>
@@ -230,9 +239,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <returns></returns>
         private void FetchPersonInfo(PersonLists person)
         {
-            ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName = person.name;
-            ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personCode = person.code;
-            datagrid_TechRouteInfo.Items.Refresh();
+            if (datagrid_TechRouteInfo.SelectedIndex != -1)
+            {
+                if (techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count == 0)
+                {
+                    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += person.name;
+                    techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                    datagrid_TechRouteInfo.Items.Refresh();
+                }
+                else if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
+                {
+                    int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
+                    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
+                    techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                    datagrid_TechRouteInfo.Items.Refresh();
+                }
+            }
         }
         #endregion
 
@@ -252,6 +274,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 List<FlowCardLists> flowCardList = GenerateFlowCardInfo(flowNum, flowCode);
                 FlowCardInfoToDatabase(flowCardList);
                 UpdateSourceOrderInfo(Convert.ToInt32(textb_Amount.Text));
+                SwitchReadOnlyPro();
             }
             else
             {
@@ -434,7 +457,44 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             MyDBController.ExecuteNonQuery(SQl);
             MyDBController.CloseConnection();
         }
+
+        /// <summary>
+        ///派工后将当前页面设置为只读状态 
+        /// </summary>
+        private void SwitchReadOnlyPro()
+        {
+            Panel.SetZIndex(img_Watermark, 1);
+            datagrid_TechRouteInfo.IsReadOnly = true;
+
+            foreach (Button item in MyDBController.FindVisualChild<Button>(gb_header))
+            {
+                item.IsEnabled = false;
+            }
+            btn_DisFlowCard.IsEnabled = false;
+            gb_SearchInfo.Content = null;
+            cb_FlowCardType.IsReadOnly = true;
+        }
         #endregion
 
+
+        #region 班组信息操作
+        private void btn_SaveAsTeam_Click(object sender, RoutedEventArgs e)
+        {
+            int count = datagrid_TechRouteInfo.SelectedIndex;
+            if (count != -1)
+            {
+            }
+        }
+
+        private void btn_GetDisPlan_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_GetTeam_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
     }
 }

@@ -98,5 +98,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 btn_PersonSearch_Click(sender, e);
             }
         }
+        /// <summary>
+        /// 刷新列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            datagrid_PersonInfo.ItemsSource = FetchPersonInfo();
+            datagrid_PersonInfo.Items.Refresh();
+        }
     }
 }

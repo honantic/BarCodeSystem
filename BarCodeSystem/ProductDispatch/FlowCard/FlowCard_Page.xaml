@@ -41,7 +41,7 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GridSplitter Grid.Column="1" Width="5" Foreground="AliceBlue" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
-            <GroupBox >
+            <GroupBox Name="gb_header" >
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}" >流转卡表头信息</TextBlock>
                 </GroupBox.Header>
@@ -97,7 +97,8 @@
 
                     <TextBlock Text="生产订单:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Row="2"></TextBlock>
                     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
-                        <TextBox VerticalAlignment="Center" Name="txtb_ProduceOrderInfo" IsReadOnly="True" Text="点击放大镜选择" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
+                        <TextBox VerticalAlignment="Center" Name="txtb_ProduceOrderInfo" IsReadOnly="True" Text="点击放大镜选择" 
+                                 Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
                         <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Name="btn_SourceOrderSearch" Click="btn_SourceOrderSearch_Click" Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
@@ -127,7 +128,7 @@
                     <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CheckedBy" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 
                     <TextBlock Text="流转卡状态:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Column="4" Grid.Row="3"></TextBlock>
-                    <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CardState" Grid.Column="5" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                    <TextBlock Text="开立" Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CardState" Grid.Column="5" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                 </Grid>
             </GroupBox>
             <GroupBox Name="gb_SearchInfo" Grid.Column="2">
@@ -200,8 +201,12 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Name="btn_DisFlowCard" Click="btn_DisFlowCard_Click" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="生成流转卡编号并派工" ></Button>
+                        <Button Content="保存为班组" Name="btn_SaveAsTeam" Click="btn_SaveAsTeam_Click" VerticalAlignment="Center" HorizontalAlignment="Center"></Button>
+                        <Button Content="选取班组" Grid.Column="1" Name="btn_GetTeam" Click="btn_GetTeam_Click" VerticalAlignment="Center" HorizontalAlignment="Center"></Button>
+                        <Button Content="选取派工方案" Name="btn_GetDisPlan" Click="btn_GetDisPlan_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2"></Button>
+                        <Button Name="btn_DisFlowCard" Click="btn_DisFlowCard_Click" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Content="生成流转卡编号并派工" ></Button>
                     </Grid>
                 </Grid>
             </GroupBox>
