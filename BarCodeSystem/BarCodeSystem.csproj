@@ -31,8 +31,8 @@
     <PublisherName>FreeStyle</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.5.21.2</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.6.4.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -112,6 +112,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BasicFile\Organization\OrgInfoImport_Window.xaml.cs">
+      <DependentUpon>OrgInfoImport_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFile\Organization\OrgInfoList_Window.xaml.cs">
+      <DependentUpon>OrgInfoList_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFile\Organization\OrgInfoModify_Window.xaml.cs">
+      <DependentUpon>OrgInfoModify_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFile\QualitySort\QualitySortModify_Window.xaml.cs">
+      <DependentUpon>QualitySortModify_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFile\QualitySort\QualitySort_Window.xaml.cs">
+      <DependentUpon>QualitySort_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCard\FlowCardDelegete.cs" />
     <Compile Include="ProductDispatch\FlowCard\FlowCard_Page.xaml.cs">
       <DependentUpon>FlowCard_Page.xaml</DependentUpon>
@@ -133,6 +148,8 @@
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\DeviceLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\FlowCardLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\OrgInfoList.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\QualitySortList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\WorkTeamMemberLists.cs" />
     <Compile Include="PublicClass\HelperClass\EncodeHelper.cs" />
     <Compile Include="PublicClass\HelperClass\GridHelper.cs" />
@@ -195,6 +212,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="BasicFile\Organization\OrgInfoImport_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\Organization\OrgInfoList_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\Organization\OrgInfoModify_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="BasicFile\Person\PersonImport_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -232,6 +261,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="BasicFile\QualityIssues\QualityIssues_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\QualitySort\QualitySortModify_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\QualitySort\QualitySort_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

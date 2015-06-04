@@ -4,6 +4,9 @@ FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\De
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Device\Device_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\ItemInfo\ItemInfoImport_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\ItemInfo\ItemInfo_Window.xaml;;
+FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Organization\OrgInfoImport_Window.xaml;;
+FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Organization\OrgInfoList_Window.xaml;;
+FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Organization\OrgInfoModify_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Person\PersonImport_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\Person\Person_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\ProcessName\ProcessNameImport_Window.xaml;;
@@ -25,4 +28,5 @@ FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\SystemManage
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteItemList_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteModify_Window.xaml;;
 FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRoute_Window.xaml;;
+FC:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\BasicFile\QualitySort\QualitySort_Window.xaml;;
 

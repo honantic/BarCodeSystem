@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Windows;
@@ -43,6 +44,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 personOCL.Add(new PersonLists()
                 {
+                    ID = Convert.ToInt64(row["ID"]),
                     code = row["P_Code"].ToString(),
                     name = row["P_Name"].ToString(),
                 });

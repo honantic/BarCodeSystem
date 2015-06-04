@@ -29,7 +29,7 @@
                     <MenuItem Name="item_Close" Header="退出(_C)" MenuItem.Click="item_Close_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_SysPara" Header="系统参数(_P)">
-                    <MenuItem Name="item_SysParaManage" IsEnabled="False"    Header="系统参数管理1(_M)"></MenuItem>
+                    <MenuItem Name="item_SysParaManage" IsEnabled="False" Click="item_SysParaManage_Click"   Header="组织信息(_M)"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_BasicFile"     Header="基础档案(_B)" >
                     <MenuItem Name="item_WorkCenter" IsEnabled="False" Click="item_WorkCenterImport_Click"   Header="工作中心(_D)"></MenuItem>
@@ -39,7 +39,8 @@
                     <MenuItem Name="item_WorkEquipManage"  IsEnabled="False" Click="item_WorkEquipManage_Click"   Header="报工设备管理(_K)"></MenuItem>
                     <MenuItem Name="item_StockLocManage"   IsEnabled="False" Click="item_WarehouseManage_Click"  Header="仓库管理(_L)"></MenuItem>
                     <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量档案管理(_Q)"></MenuItem>
-                </MenuItem>
+                    <MenuItem Name="item_QualitySort"  Click="item_QualitySort_Click" Header="质检分类(_O)"></MenuItem>
+                 </MenuItem>
                 <MenuItem Name="item_MateAndRoute"  Header="物料和工艺路线(_M)">
                     <MenuItem Name="item_MaterialManage"   IsEnabled="False" Click="item_MaterialManage_Click" Header="料品档案(_M)"></MenuItem>
                     <MenuItem Name="item_ProcedureManage"  IsEnabled="False" Click="item_ProcedureManage_Click"  Header="工序管理(_P)"></MenuItem>

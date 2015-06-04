@@ -300,6 +300,33 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 组织信息点击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_SysParaManage_Click(object sender, RoutedEventArgs e)
+        {
+            OrgInfoList_Window oi = new OrgInfoList_Window();
+            oi.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            oi.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            oi.ShowDialog();
+        }
+
+        /// <summary>
+        /// 质检分类点击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_QualitySort_Click(object sender, RoutedEventArgs e)
+        {
+            QualitySort_Window qs = new QualitySort_Window();
+            qs.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            qs.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            qs.ShowDialog();
+        }
+
+
+        /// <summary>
         /// 关闭事件
         /// </summary>
         /// <param name="sender"></param>
@@ -431,6 +458,9 @@ namespace BarCodeSystem
 
 
         #endregion
+
+
+
 
 
     }

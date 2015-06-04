@@ -275,3 +275,13 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bar
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.pdb
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.baml

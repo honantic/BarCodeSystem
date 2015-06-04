@@ -10,6 +10,7 @@ namespace BarCodeSystem
 {
     public class PersonLists : StyleSelector
     {
+        public Int64 ID { get; set; }
         public bool IsSelected
         {
             get;

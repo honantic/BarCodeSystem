@@ -31,6 +31,31 @@
 
             <DataGrid ClipboardCopyMode="None" Name="datagrid_WorkTeamInfo"  AutoGenerateColumns="False" ItemsSource="{Binding}" 
                       CanUserAddRows="False" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                                                </Expander.Header>
+                                                <ItemsPresenter></ItemsPresenter>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <DataGridRowsPresenter/>
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="车间"    IsReadOnly="True" Binding="{Binding Path=WTM_WorkCenterName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="班组编号" Binding="{Binding Path=WTM_WorkTeamCode}"></DataGridTextColumn>
@@ -49,7 +74,7 @@
                 <Button Name="btn_SaveWorkTeam" Grid.Column="2" Click="btn_SaveWorkTeam_Click" Margin="10 0" Content="保存班组"></Button>
                 <Button Name="btn_Submit" Grid.Column="2" Click="btn_Submit_Click" Margin="10 0 10 0" Content="选定班组"></Button>
                 <StackPanel Name="panel_Search"  Orientation="Horizontal" VerticalAlignment="Center" Height="30">
-                    <extool:WatermarkTextBox Watermark="输入搜索信息" Margin="0 5"  Name="txtb_TeamInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_TeamInfo_KeyUp">
+                    <extool:WatermarkTextBox Watermark="搜索班组信息" Margin="0 5"  Name="txtb_TeamInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" BorderBrush="White" KeyUp="txtb_TeamInfo_KeyUp">
                     </extool:WatermarkTextBox>
                     <Button Name="btn_TeamSearch" Cursor="Hand" Click="btn_TeamSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
                         <Image Height="15" Source="../../Images/Zoom.ico"></Image>
@@ -68,7 +93,7 @@
 
                 <StackPanel Name="panel_AddTeamName" Grid.Column="1"  Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                     <extool:WatermarkTextBox Watermark="批量设置班组名称" Margin="0 5"  Name="txtb_TeamNameInfo" Width="{Binding Path=ActualWidth,ElementName=btn_Submit}" 
-                                             BorderBrush="White" KeyUp="txtb_TeamCodeInfo_KeyUp">
+                                             BorderBrush="White" KeyUp="txtb_TeamNameInfo_KeyUp">
                     </extool:WatermarkTextBox>
                     <Button Name="btn_TeamNameAdd" Cursor="Hand" Click="btn_TeamNameAdd_Click"
                             ToolTip="批量设置名称" Style="{StaticResource btn_SearchStyle}"  Background="White" 

@@ -1,23 +1,13 @@
 ﻿using BarCodeSystem.PublicClass;
 using BarCodeSystem.PublicClass.DatabaseEntity;
-using BarCodeSystem.PublicClass.ValueConverters;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace BarCodeSystem.ProductDispatch.FlowCard
@@ -272,20 +262,19 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 foreach (PersonLists person in personList)
                 {
-                    if (techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count == 0)
-                    {
-                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += person.name;
-                        techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
-                        datagrid_TechRouteInfo.Items.Refresh();
-                    }
-                    else if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
+                    //if (techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count == 0)
+                    //{
+                    //    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += person.name;
+                    //    techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                    //}
+                    if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
                     {
                         int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
                         ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
                         techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
-                        datagrid_TechRouteInfo.Items.Refresh();
                     }
                 }
+                datagrid_TechRouteInfo.Items.Refresh();
             }
         }
         #endregion
@@ -554,18 +543,62 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
 
+
+        /// <summary>
+        /// 选取班组按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_GetTeam_Click(object sender, RoutedEventArgs e)
+        {
+            if (!textb_SearchInfo.Text.Equals("选取班组信息"))
+            {
+                textb_SearchInfo.Text = "选取班组信息";
+                SaveWorkTeam_Page swtp = new SaveWorkTeam_Page(selectedTechRoute[0].TR_WorkCenterID, FetchPersonInfo);
+                Frame frameSearch = new Frame();
+                //frameSearch.Content = swtp;
+                gb_SearchInfo.Content = frameSearch;
+                frameSearch.Navigate(swtp);
+            }
+        }
+
+        /// <summary>
+        /// 接收筛选班组的人员信息的函数
+        /// </summary>
+        /// <param name="personList"></param>
+        private void FectchTeamPerson(List<PersonLists> personList)
+        {
+            if (datagrid_TechRouteInfo.SelectedIndex != -1)
+            {
+                int x = datagrid_TechRouteInfo.SelectedIndex;
+                foreach (PersonLists item in personList)
+                {
+                    if (techRoutePerson[x].Contains(item))
+                    {
+                        //什么都不做
+                    }
+                    else
+                    {
+                        int count = techRoutePerson[x].Count;
+                        techRoutePerson[x].Add(item);
+                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? item.name : "、" + item.name;
+                    }
+                }
+                datagrid_TechRouteInfo.Items.Refresh();
+            }
+        }
+        #endregion
+
+        #region 生成派工方案、获取派工方案
+        /// <summary>
+        /// 获取派工方案
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_GetDisPlan_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
-        private void btn_GetTeam_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         #endregion
-
-
-
     }
 }

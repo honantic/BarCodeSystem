@@ -1,6 +1,7 @@
 ﻿using BarCodeSystem.PublicClass.DatabaseEntity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         string departName = "";
         List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
         DataSet ds = new DataSet();
+        SubmitPersonInfo spi;
         #endregion
 
         #region 构造函数
@@ -40,13 +42,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// 筛选班组的构造函数
         /// </summary>
         /// <param name="_departID"></param>
-        public SaveWorkTeam_Page(Int64 _departID)
+        public SaveWorkTeam_Page(Int64 _departID, SubmitPersonInfo _spi)
         {
             InitializeComponent();
             departID = _departID;
             textb_Header.Text = "选择班组信息";
-            Panel.SetZIndex(panel_AddTeamCode, 0);
-            Panel.SetZIndex(panel_AddTeamName, 0);
+            Panel.SetZIndex(panel_Search, 1);
+            Panel.SetZIndex(btn_Refresh, 1);
+            panel_AddTeamName.Visibility = Visibility.Hidden;
+            datagrid_WorkTeamInfo.Columns[1].DisplayIndex = 0;
+            spi = _spi;
+
         }
 
         /// <summary>
@@ -75,6 +81,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             datagrid_WorkTeamInfo.ItemsSource = string.IsNullOrEmpty(departName) ? FetchWorkTeamInfo() : SaveWorkTeamInit();
+            ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
         }
 
         /// <summary>
@@ -88,6 +96,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 {
                     WTM_WorkCenterID = departID,
                     WTM_WorkCenterName = departName,
+                    WTM_MemberPersonID = item.ID,
                     WTM_MemberPersonCode = item.code,
                     WTM_MemberPersonName = item.name,
                 });
@@ -101,7 +110,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <returns></returns>
         private List<WorkTeamMemberLists> FetchWorkTeamInfo()
         {
-            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", departID);
+            ds = new DataSet();
+            teamMemberList.Clear();
+            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", departID);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
             MyDBController.CloseConnection();
@@ -123,6 +134,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
         #endregion
 
+        #region 保存班组信息
         /// <summary>
         /// 保存班组信息
         /// </summary>
@@ -130,11 +142,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_SaveWorkTeam_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Hand;
             if (CheckIfCanSave())
             {
                 SaveTeam();
                 SaveTeamMember();
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -142,6 +156,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         private void SaveTeamMember()
         {
+            ds = new DataSet();
             MyDBController.GetConnection();
             string SQl = "Select top 0 * from [WorkTeamMember]";
             MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
@@ -164,6 +179,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["WorkTeamMember"], colList, out updateNum, out insertNum);
             MyDBController.CloseConnection();
+            MessageBox.Show(string.Format(@"成功保存班组：{0},该班组共有{1}个成员！", txtb_TeamCodeInfo.Text, insertNum), "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>
@@ -171,6 +187,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         private void SaveTeam()
         {
+            ds = new DataSet();
             MyDBController.GetConnection();
             string SQl = "Select top 0 * from [WorkTeam]";
             MyDBController.GetDataSet(SQl, ds, "WorkTeam");
@@ -190,6 +207,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["WorkTeam"], colList, out updateNum, out insertNum);
 
+            MyDBController.GetConnection();
             SQl = string.Format(@"Select [ID] from [WorkTeam] where [WT_Code]='{0}'", teamMemberList[0].WTM_WorkTeamCode);
             SqlDataReader reader = MyDBController.GetDataReader(SQl);
             while (reader.Read())
@@ -222,13 +240,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 }
                 if (flag)
                 {
-                    string SQl = string.Format("Select ID from [WorkTeam] where [WT_Code]='{0}'", teamMemberList[0].WTM_WorkTeamCode);
+                    string SQl = string.Format("Select count(ID) from [WorkTeam] where [WT_Code]='{0}'", teamMemberList[0].WTM_WorkTeamCode);
                     MyDBController.GetConnection();
-                    int count = MyDBController.ExecuteNonQuery(SQl);
-                    if (count > 0)
+                    SqlDataReader reader = MyDBController.GetDataReader(SQl);
+                    while (reader.Read())
                     {
-                        MessageBox.Show("当前班组编号重复，不可用！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                        flag = false;
+                        if (Convert.ToInt32(reader[0]) > 0)
+                        {
+                            MessageBox.Show("当前班组编号重复，不可用！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            flag = false;
+                        }
                     }
                     MyDBController.CloseConnection();
                 }
@@ -237,7 +258,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 flag = false;
             }
-
             return flag;
         }
 
@@ -254,28 +274,30 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
             else
             {
-                string SQl = string.Format("Select ID from [WorkTeam] where [WT_Code]='{0}'", txtb_TeamCodeInfo.Text.Trim());
+                string SQl = string.Format("Select Count(ID) from [WorkTeam] where [WT_Code]='{0}'", txtb_TeamCodeInfo.Text.Trim());
                 MyDBController.GetConnection();
-                int count = MyDBController.ExecuteNonQuery(SQl);
-                MyDBController.CloseConnection();
-                if (count > 0)
+                SqlDataReader reader = MyDBController.GetDataReader(SQl);
+                while (reader.Read())
                 {
-                    MessageBox.Show("当前班组编号重复，不可用！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else
-                {
-                    foreach (WorkTeamMemberLists item in teamMemberList)
+                    if (Convert.ToInt32(reader[0]) > 0)
                     {
-                        item.WTM_WorkTeamCode = txtb_TeamCodeInfo.Text.Trim();
+                        MessageBox.Show("当前班组编号重复，不可用！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    datagrid_WorkTeamInfo.Items.Refresh();
+                    else
+                    {
+                        foreach (WorkTeamMemberLists item in teamMemberList)
+                        {
+                            item.WTM_WorkTeamCode = txtb_TeamCodeInfo.Text.Trim();
+                        }
+                        datagrid_WorkTeamInfo.Items.Refresh();
+                    }
                 }
+                MyDBController.CloseConnection();
             }
-
         }
 
         /// <summary>
-        /// 回车快捷搜索
+        /// 回车快捷设置编号
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -288,33 +310,107 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         }
 
         /// <summary>
+        /// 批量设置名称的按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_TeamNameAdd_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (WorkTeamMemberLists item in teamMemberList)
+            {
+                item.WTM_WorkTeamName = txtb_TeamNameInfo.Text;
+            }
+            datagrid_WorkTeamInfo.Items.Refresh();
+        }
+
+        /// <summary>
+        /// 回车快捷设置名称
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtb_TeamNameInfo_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btn_TeamNameAdd_Click(sender, e);
+            }
+        }
+        #endregion
+
+        #region 搜索班组信息
+        /// <summary>
         /// 搜索班组信息
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btn_TeamSearch_Click(object sender, RoutedEventArgs e)
         {
-
+            if (!string.IsNullOrEmpty(txtb_TeamInfo.Text))
+            {
+                string key = txtb_TeamInfo.Text;
+                datagrid_WorkTeamInfo.ItemsSource = teamMemberList.FindAll(p => p.WTM_WorkTeamCode.IndexOf(key) != -1 || p.WTM_WorkTeamName.IndexOf(key) != -1);
+                datagrid_WorkTeamInfo.Items.Refresh();
+            }
+            else
+            {
+                datagrid_WorkTeamInfo.ItemsSource = teamMemberList;
+            }
         }
-
+        /// <summary>
+        /// 回车快捷搜索
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtb_TeamInfo_KeyUp(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Enter)
+            {
+                btn_TeamSearch_Click(sender, e);
+            }
         }
 
+        /// <summary>
+        /// 刷新按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_Refresh_Click(object sender, RoutedEventArgs e)
         {
-
+            FetchWorkTeamInfo();
         }
 
+        /// <summary>
+        /// 选择班组
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_Submit_Click(object sender, RoutedEventArgs e)
         {
-
+            if (datagrid_WorkTeamInfo.SelectedIndex != -1)
+            {
+                string code = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamCode;
+                int count = teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)).Count;
+                if (MessageBox.Show(string.Format(@"选取的班组为{0}，共有{1}人。 确定选取吗？", code, count), "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                {
+                    List<PersonLists> personList = new List<PersonLists>();
+                    foreach (WorkTeamMemberLists item in teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)))
+                    {
+                        personList.Add(new PersonLists()
+                        {
+                            name = item.WTM_MemberPersonName,
+                            code = item.WTM_MemberPersonCode,
+                            ID = item.WTM_MemberPersonID
+                        });
+                    }
+                    spi.Invoke(personList);
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择一个班组！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
-
-
-
+        #endregion
 
     }
 }
