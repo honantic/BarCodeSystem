@@ -50,8 +50,14 @@ namespace BarCodeSystem
             string SQl = @"SELECT [ID],[OI_ID],[OI_Code],[OI_Name],[OI_Remark] FROM [OrgInfo]";
             dt = MyDBController.GetDataSet(SQl, ds, "OrgInfo").Tables["OrgInfo"];
 
+
+            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            ds = ws.GetOrglist_ForBarCode("");
+
+            U9dt = ds.Tables["U9OrgInfo"];
+
             //因条码测试数据库上没有U9的表，故建了一张表模拟U9组织表，正式环境中将被注释掉，测试用
-            SQl = @"select A.ID,A.Org_Code,A.Org_Name from Test_Org as A";
+           // SQl = @"select A.ID,A.Org_Code,A.Org_Name from Test_Org as A";
 
 
             //正式环境连接语句
@@ -59,7 +65,7 @@ namespace BarCodeSystem
             //              from Base_Organization as A 
             //              left join [Base_Organization_Trl] as A1 on (A1.SysMlFlag = 'zh-CN') and (A.[ID] = A1.[ID])";
 
-            U9dt = MyDBController.GetDataSet(SQl, ds, "U9OrgInfo").Tables["U9OrgInfo"];
+            //U9dt = MyDBController.GetDataSet(SQl, ds, "U9OrgInfo").Tables["U9OrgInfo"];
             MyDBController.CloseConnection();
             U9listBeforeSearch.Clear();
             int x = U9dt.Rows.Count;
@@ -68,7 +74,7 @@ namespace BarCodeSystem
                 if (dt.Select("OI_Code = '" + U9dt.Rows[i]["Org_Code"].ToString() + "'").Length == 0)
                 {
                     OrgInfoList oil = new OrgInfoList();
-                    oil.OI_ID = (Int64)U9dt.Rows[i]["ID"];
+                    oil.OI_ID = (Int64)U9dt.Rows[i]["Org_ID"];
                     oil.OI_Code = U9dt.Rows[i]["Org_Code"].ToString();
                     oil.OI_Name = U9dt.Rows[i]["Org_Name"].ToString();
                     U9listBeforeSearch.Add(oil);

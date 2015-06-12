@@ -116,6 +116,12 @@
         <Setter Property="Margin" Value="5 0"></Setter>
     </Style>
 
+    <!-- 自适应居中按钮样式-->
+    <Style TargetType="Button" x:Key="btn_CenterStyle">
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+
     <!--小按钮样式-->
     <Style TargetType="Button" x:Key="btn_SmallStyle">
         <Setter Property="Width" Value="40"></Setter>

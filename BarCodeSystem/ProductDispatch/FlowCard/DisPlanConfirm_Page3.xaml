@@ -1,0 +1,77 @@
+﻿<Page x:Class="BarCodeSystem.ProductDispatch.FlowCard.DisPlanConfirm_Page3"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      Loaded="Page_Loaded"
+      d:DesignHeight="600" d:DesignWidth="400"
+	Title="覆盖派工方案">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label>
+            <Label.Background>
+                <LinearGradientBrush >
+                    <GradientStop Color="AliceBlue" Offset="0.2"></GradientStop>
+                    <GradientStop Color="BlanchedAlmond" Offset="0.6"></GradientStop>
+                    <GradientStop Color="SandyBrown" Offset="1"></GradientStop>
+                </LinearGradientBrush>
+            </Label.Background>
+            <Label.Content>
+                <TextBlock Text="请选则需要覆盖的派工方案！"></TextBlock>
+            </Label.Content>
+        </Label>
+        <Button Grid.Row="2" Style="{StaticResource btn_CenterStyle}" Content="覆盖选定方案" Name="btn_Save" Click="btn_Save_Click"></Button>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="15"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <GridSplitter Grid.Column="1" Width="5" Foreground="Chocolate" Grid.RowSpan="2"  HorizontalAlignment="Stretch"></GridSplitter>
+            <Label>
+                <Label.Background>
+                    <LinearGradientBrush >
+                        <GradientStop Color="AliceBlue" Offset="1"></GradientStop>
+                        <GradientStop Color="BlanchedAlmond" Offset="0.4"></GradientStop>
+                        <GradientStop Color="SandyBrown" Offset="0.2"></GradientStop>
+                    </LinearGradientBrush>
+                </Label.Background>
+                <TextBlock Text="方案名称"></TextBlock>
+            </Label>
+            <Label Grid.Column="2">
+                <Label.Background>
+                    <LinearGradientBrush >
+                        <GradientStop Color="Salmon" Offset="0.2"></GradientStop>
+                        <GradientStop Color="BlanchedAlmond" Offset="0.6"></GradientStop>
+                        <GradientStop Color="Moccasin" Offset="1"></GradientStop>
+                    </LinearGradientBrush>
+                </Label.Background>
+                <TextBlock Text="方案详细信息"></TextBlock>
+            </Label>
+            <DataGrid Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False"  Name="datagrid_PlanName" ColumnWidth="Auto" SelectionChanged="datagrid_PlanName_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="派工方案名称" Binding="{Binding Path=DPV_VersionName}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <DataGrid Grid.Row="1" Grid.Column="2" AutoGenerateColumns="False"  IsReadOnly="True" ColumnWidth="Auto" Name="datagrid_PlanDetail">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="工序名称" Binding="{Binding Path=DP_ProcessName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="工序序号" Binding="{Binding Path=DP_ProcessSequence}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="员工名称" Binding="{Binding Path=DP_PersonName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="员工编号" Binding="{Binding Path=DP_PersonCode}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Page>

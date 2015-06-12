@@ -40,7 +40,7 @@
                     <MenuItem Name="item_StockLocManage"   IsEnabled="False" Click="item_WarehouseManage_Click"  Header="仓库管理(_L)"></MenuItem>
                     <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量档案管理(_Q)"></MenuItem>
                     <MenuItem Name="item_QualitySort"  Click="item_QualitySort_Click" Header="质检分类(_O)"></MenuItem>
-                 </MenuItem>
+                </MenuItem>
                 <MenuItem Name="item_MateAndRoute"  Header="物料和工艺路线(_M)">
                     <MenuItem Name="item_MaterialManage"   IsEnabled="False" Click="item_MaterialManage_Click" Header="料品档案(_M)"></MenuItem>
                     <MenuItem Name="item_ProcedureManage"  IsEnabled="False" Click="item_ProcedureManage_Click"  Header="工序管理(_P)"></MenuItem>
@@ -49,8 +49,8 @@
                     <MenuItem Name="item_DistFormula"      IsEnabled="False" Header="配额计算公式(_D)"></MenuItem>
                     <MenuItem Name="item_WorkHourManage"   IsEnabled="False" Header="工时管理(_W)"></MenuItem>
                 </MenuItem>
-                <MenuItem Name="item_FileQuery"     Header="档案查询(_F)">
-                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="档案查询1(_S)"></MenuItem>
+                <MenuItem Name="item_FileQuery"     Header="生产派工(_F)">
+                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="流转卡编制(_S)"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_MaterialQuery" Header="物料查询(_Q)">
                     <MenuItem Name="item_MaterialQuery1" IsEnabled="False" Header="物料查询1(_S)"></MenuItem>
@@ -72,6 +72,7 @@
         <namespc:NotificationAreaIcon  
                     Text="三花生产条码系统"
                     Icon="Images\burn.ico"
+                    x:Name="notification"
                     MouseDoubleClick="OnNotificationAreaIconDoubleClick">
             <namespc:NotificationAreaIcon.MenuItems>
                 <forms:MenuItem Text="关于作者" Name="item_About" Click="item_About_Click"></forms:MenuItem>
@@ -83,7 +84,7 @@
                 <forms:MenuItem Text="退出" Name="item_Quit" Click="item_Quit_Click"></forms:MenuItem>
             </namespc:NotificationAreaIcon.MenuItems>
         </namespc:NotificationAreaIcon>
-        
+
         <AvalonDock:DockingManager x:Name="dockingManager"   ClipToBounds="True" Grid.Row="1">
             <AvalonDock:LayoutRoot x:Name="lr">
                 <AvalonDock:LayoutPanel x:Name="lp" Orientation="Horizontal">

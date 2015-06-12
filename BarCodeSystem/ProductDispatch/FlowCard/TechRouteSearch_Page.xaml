@@ -40,7 +40,9 @@
             <GroupBox.Header>
                 <TextBlock  Style="{StaticResource textb_NormalStyle}" >选择工艺版本</TextBlock>
             </GroupBox.Header>
-            <DataGrid ClipboardCopyMode="None" Name="datagrid_RouteVersion" IsReadOnly="True" CanUserAddRows="False" ColumnWidth="Auto" RowHeaderWidth="30" AutoGenerateColumns="False" SelectionChanged="datagrid_RouteVersion_SelectionChanged">
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_RouteVersion" IsReadOnly="True" CanUserAddRows="False" 
+                      ColumnWidth="Auto" RowHeaderWidth="30" AutoGenerateColumns="False" 
+                      SelectionChanged="datagrid_RouteVersion_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="工艺版本" Binding="{Binding Path=TRV_Version}"></DataGridTextColumn>
                     <DataGridTextColumn Header="是否默认版本" Binding="{Binding Path=TRV_IsDefaultVer,Converter={StaticResource boolConvert}}"></DataGridTextColumn>

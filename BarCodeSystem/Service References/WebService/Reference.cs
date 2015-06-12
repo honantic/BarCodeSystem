@@ -59,6 +59,18 @@ namespace BarCodeSystem.WebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         bool upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO(long sOSOLinesID, decimal qty);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetProjectlist_ForBarCode", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet GetProjectlist_ForBarCode(string Org_Code, string Project_Code);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetStaffRecordList", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet GetStaffRecordList(string StaffID, System.DateTime StartDate, System.DateTime EndDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetOrglist_ForBarCode", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet GetOrglist_ForBarCode(string Org_Code);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -130,6 +142,18 @@ namespace BarCodeSystem.WebService {
         
         public bool upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO(long sOSOLinesID, decimal qty) {
             return base.Channel.upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO(sOSOLinesID, qty);
+        }
+        
+        public System.Data.DataSet GetProjectlist_ForBarCode(string Org_Code, string Project_Code) {
+            return base.Channel.GetProjectlist_ForBarCode(Org_Code, Project_Code);
+        }
+        
+        public System.Data.DataSet GetStaffRecordList(string StaffID, System.DateTime StartDate, System.DateTime EndDate) {
+            return base.Channel.GetStaffRecordList(StaffID, StartDate, EndDate);
+        }
+        
+        public System.Data.DataSet GetOrglist_ForBarCode(string Org_Code) {
+            return base.Channel.GetOrglist_ForBarCode(Org_Code);
         }
     }
 }

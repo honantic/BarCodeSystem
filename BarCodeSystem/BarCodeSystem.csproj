@@ -32,7 +32,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.6.4.0</ApplicationVersion>
+    <ApplicationVersion>1.6.12.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -127,6 +127,18 @@
     <Compile Include="BasicFile\QualitySort\QualitySort_Window.xaml.cs">
       <DependentUpon>QualitySort_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCard\DisPlanConfirm_Page1.xaml.cs">
+      <DependentUpon>DisPlanConfirm_Page1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCard\DisPlanConfirm_Page2.xaml.cs">
+      <DependentUpon>DisPlanConfirm_Page2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCard\DisPlanConfirm_Page3.xaml.cs">
+      <DependentUpon>DisPlanConfirm_Page3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCard\DisPlanConfirm_Window.xaml.cs">
+      <DependentUpon>DisPlanConfirm_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCard\FlowCardDelegete.cs" />
     <Compile Include="ProductDispatch\FlowCard\FlowCard_Page.xaml.cs">
       <DependentUpon>FlowCard_Page.xaml</DependentUpon>
@@ -140,6 +152,9 @@
     <Compile Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml.cs">
       <DependentUpon>ProduceOrderSearch_Page.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCard\SaveDisPlan_Page.xaml.cs">
+      <DependentUpon>SaveDisPlan_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCard\SaveWorkTeam_Page.xaml.cs">
       <DependentUpon>SaveWorkTeam_Page.xaml</DependentUpon>
     </Compile>
@@ -147,7 +162,10 @@
       <DependentUpon>TechRouteSearch_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\DeviceLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\DisPlanLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\DisPlanVersionLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\FlowCardLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\FlowCardSubLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\OrgInfoList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\QualitySortList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\WorkTeamMemberLists.cs" />
@@ -403,6 +421,22 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ProductDispatch\FlowCard\DisPlanConfirm_Page1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\DisPlanConfirm_Page2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\DisPlanConfirm_Page3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\DisPlanConfirm_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProductDispatch\FlowCard\FlowCard_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -416,6 +450,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProductDispatch\FlowCard\ProduceOrderSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCard\SaveDisPlan_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -556,6 +594,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Zoom.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\yes.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

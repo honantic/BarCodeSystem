@@ -39,7 +39,7 @@
                 <ColumnDefinition Width="150"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Name="btn_Import" Content="显示U9组织信息" Height="30" Width="100" Margin="5" Click="btn_Import_Click" Grid.Column="0"></Button>
-            
+            <Button Name="btn_Delete" Content="删除信息" Height="30" Width="80" Margin="5" Click="btn_Delete_Click" Grid.Column="1"></Button>
             <Button Name="btn_Modify" Content="修改信息" Height="30" Width="80"  Click="btn_Modify_Click" Grid.Column="2"></Button>
             <Button x:Name="btn_Close" Content="关闭" Height="30" Width="80"  Click="btn_Close_Click" Grid.Column="3"/>
 

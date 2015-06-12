@@ -116,6 +116,7 @@ namespace BarCodeSystem
         private void listview1_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             OrgInfoModify_Window oimw = new OrgInfoModify_Window() { oil = (OrgInfoList)listview1.SelectedItem };
+            oimw.Title = "组织信息修改窗口";
             oimw.ShowDialog();
 
             if ((bool)oimw.DialogResult)
@@ -194,6 +195,7 @@ namespace BarCodeSystem
             if (x > -1)
             {
                 OrgInfoModify_Window oimw = new OrgInfoModify_Window() { oil = (OrgInfoList)listview1.SelectedItem };
+                oimw.Title = "组织信息修改窗口";
                 oimw.ShowDialog();
 
                 if ((bool)oimw.DialogResult)
@@ -208,6 +210,34 @@ namespace BarCodeSystem
             else
             {
                 MessageBox.Show("请选择一项进行修改!", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        /// <summary>
+        /// 删除按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            int x = listview1.SelectedIndex;
+            if (x > -1)
+            {
+                OrgInfoModify_Window oimw = new OrgInfoModify_Window() { oil = (OrgInfoList)listview1.SelectedItem };
+                oimw.Title = "组织信息删除窗口";
+                oimw.ShowDialog();
+
+                if ((bool)oimw.DialogResult)
+                {
+                    listview1.ItemsSource = null;
+                    listview1.Items.Refresh();
+                    ds.Clear();
+
+                    GetBCSOrgInfoList();
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择一项进行删除!", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

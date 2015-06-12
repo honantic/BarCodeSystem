@@ -237,6 +237,72 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetProjectlist_ForBarCode">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Project_Code" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectlist_ForBarCodeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectlist_ForBarCodeResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStaffRecordList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StaffID" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="StartDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="EndDate" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStaffRecordListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetStaffRecordListResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOrglist_ForBarCode">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Org_Code" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOrglist_ForBarCodeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOrglist_ForBarCodeResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="U9_LoginNameJudgeSoapIn">
@@ -305,6 +371,24 @@
   <wsdl:message name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapOut">
     <wsdl:part name="parameters" element="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOResponse" />
   </wsdl:message>
+  <wsdl:message name="GetProjectlist_ForBarCodeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectlist_ForBarCode" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectlist_ForBarCodeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectlist_ForBarCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetStaffRecordListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetStaffRecordList" />
+  </wsdl:message>
+  <wsdl:message name="GetStaffRecordListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetStaffRecordListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetOrglist_ForBarCodeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOrglist_ForBarCode" />
+  </wsdl:message>
+  <wsdl:message name="GetOrglist_ForBarCodeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOrglist_ForBarCodeResponse" />
+  </wsdl:message>
   <wsdl:portType name="ServiceSoap">
     <wsdl:operation name="U9_LoginNameJudge">
       <wsdl:input message="tns:U9_LoginNameJudgeSoapIn" />
@@ -359,6 +443,21 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">更新销售订单子行已入库数量,传入参数sOSOLinesID为销售订单子行id,qty为入库数量，返回值false表示更新不成功，并抛出异常</wsdl:documentation>
       <wsdl:input message="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapIn" />
       <wsdl:output message="tns:upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SOSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectlist_ForBarCode">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9项目信息,返回列：组织id,组织代码，组织名称，项目id,项目代码，项目名称,修改时间 当Project_Code =''值时，得到U9组织下全部项目清单</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectlist_ForBarCodeSoapIn" />
+      <wsdl:output message="tns:GetProjectlist_ForBarCodeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStaffRecordList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到员工考勤记录,返回列：日期,时间,员工编号,员工名字,员工所在组织,员工所在部门,员工打卡地点,事件编号.当StartDate=''值且EndDate=''时，得到该员工全部打卡记录</wsdl:documentation>
+      <wsdl:input message="tns:GetStaffRecordListSoapIn" />
+      <wsdl:output message="tns:GetStaffRecordListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOrglist_ForBarCode">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">得到U9组织,返回列：组织id,组织代码，组织名称，当Org_Code=空值时，得到全部组织信息</wsdl:documentation>
+      <wsdl:input message="tns:GetOrglist_ForBarCodeSoapIn" />
+      <wsdl:output message="tns:GetOrglist_ForBarCodeSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
@@ -462,6 +561,33 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetProjectlist_ForBarCode">
+      <soap:operation soapAction="http://tempuri.org/GetProjectlist_ForBarCode" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStaffRecordList">
+      <soap:operation soapAction="http://tempuri.org/GetStaffRecordList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOrglist_ForBarCode">
+      <soap:operation soapAction="http://tempuri.org/GetOrglist_ForBarCode" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -557,6 +683,33 @@
     </wsdl:operation>
     <wsdl:operation name="upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO">
       <soap12:operation soapAction="http://tempuri.org/upDate_PrivateDescSeg1_PrivateDescSeg2_In_SM_SO" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectlist_ForBarCode">
+      <soap12:operation soapAction="http://tempuri.org/GetProjectlist_ForBarCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStaffRecordList">
+      <soap12:operation soapAction="http://tempuri.org/GetStaffRecordList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOrglist_ForBarCode">
+      <soap12:operation soapAction="http://tempuri.org/GetOrglist_ForBarCode" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

@@ -1,0 +1,29 @@
+﻿<Page x:Class="BarCodeSystem.ProductDispatch.FlowCard.DisPlanConfirm_Page1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="选择操作类型" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 20" Grid.Row="1" Content="保存为新版本" Name="btn_SaveAsNew" Click="btn_SaveAsNew_Click"></Button>
+        <Button VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 20" Grid.Row="1" Grid.Column="1" Content="覆盖原有版本" Name="btn_SaveAsOld" Click="btn_SaveAsOld_Click"></Button>
+        <Label Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Label.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="AliceBlue" Offset="0.2"></GradientStop>
+                    <GradientStop Color="BlanchedAlmond" Offset="0.6"></GradientStop>
+                    <GradientStop Color="SandyBrown" Offset="1"></GradientStop>
+                </LinearGradientBrush>
+            </Label.Background>
+            <Label.Content>
+                <TextBlock Text="当前料品工艺版本已经存在派工方案，请选择你要进行的操作！" TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+            </Label.Content>
+        </Label>
+    </Grid>
+</Page>

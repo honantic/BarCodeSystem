@@ -390,20 +390,20 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 string code = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamCode;
                 int count = teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)).Count;
-                if (MessageBox.Show(string.Format(@"选取的班组为{0}，共有{1}人。 确定选取吗？", code, count), "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                //if (MessageBox.Show(string.Format(@"选取的班组为{0}，共有{1}人。 确定选取吗？", code, count), "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                //{
+                List<PersonLists> personList = new List<PersonLists>();
+                foreach (WorkTeamMemberLists item in teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)))
                 {
-                    List<PersonLists> personList = new List<PersonLists>();
-                    foreach (WorkTeamMemberLists item in teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)))
+                    personList.Add(new PersonLists()
                     {
-                        personList.Add(new PersonLists()
-                        {
-                            name = item.WTM_MemberPersonName,
-                            code = item.WTM_MemberPersonCode,
-                            ID = item.WTM_MemberPersonID
-                        });
-                    }
-                    spi.Invoke(personList);
+                        name = item.WTM_MemberPersonName,
+                        code = item.WTM_MemberPersonCode,
+                        ID = item.WTM_MemberPersonID
+                    });
                 }
+                spi.Invoke(personList);
+                //}
             }
             else
             {

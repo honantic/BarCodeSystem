@@ -345,6 +345,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_Close_Click(object sender, RoutedEventArgs e)
         {
+            notification.IsEnabled = false;
             App.Current.Shutdown();
         }
 
@@ -377,6 +378,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_Quit_Click(object sender, EventArgs e)
         {
+            notification.IsEnabled = false;
             App.Current.Shutdown();
         }
 

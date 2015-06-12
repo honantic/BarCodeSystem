@@ -249,5 +249,10 @@ namespace BarCodeSystem
 
         public string personName
         { get; set; }
+
+        ///// <summary>
+        ///// 工艺路线派工的时候，改道工序的操作人员列表
+        ///// </summary>
+        //public List<PersonLists> personList { get; set; }
     }
 }

@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/flowcardwatermark.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/yes.ico")]
 
 
