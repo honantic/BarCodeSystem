@@ -36,31 +36,32 @@
                     <MenuItem Name="item_StaffInfoManage"  IsEnabled="False" Click="item_StaffInfoManage_Click"    Header="员工信息管理(_G)"></MenuItem>
                     <MenuItem Name="item_WorkTeamManage"   IsEnabled="False" Click="item_WorkTeamManage_Click"     Header="车间班组管理(_H)"></MenuItem>
                     <MenuItem Name="item_BeltlineManage"   IsEnabled="False" Click="item_BeltlineManage_Click"     Header="生产线管理(_J)"  ></MenuItem>
-                    <MenuItem Name="item_WorkEquipManage"  IsEnabled="False" Click="item_WorkEquipManage_Click"   Header="报工设备管理(_K)"></MenuItem>
+                    <MenuItem Name="item_WorkEquipManage"  IsEnabled="False" Click="item_WorkEquipManage_Click"   Header="设备管理(_K)"></MenuItem>
                     <MenuItem Name="item_StockLocManage"   IsEnabled="False" Click="item_WarehouseManage_Click"  Header="仓库管理(_L)"></MenuItem>
-                    <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量档案管理(_Q)"></MenuItem>
+                    <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量问题原因(_Q)"></MenuItem>
                     <MenuItem Name="item_QualitySort"  Click="item_QualitySort_Click" Header="质检分类(_O)"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_MateAndRoute"  Header="物料和工艺路线(_M)">
                     <MenuItem Name="item_MaterialManage"   IsEnabled="False" Click="item_MaterialManage_Click" Header="料品档案(_M)"></MenuItem>
                     <MenuItem Name="item_ProcedureManage"  IsEnabled="False" Click="item_ProcedureManage_Click"  Header="工序管理(_P)"></MenuItem>
-                    <MenuItem Name="item_TechRouteVersion" IsEnabled="False" Header="工艺路线版本(_T)"></MenuItem>
                     <MenuItem Name="item_TechRouteManage"  IsEnabled="False" Click="item_TechRouteManage_Click" Header="工艺路线管理(_R)"></MenuItem>
                     <MenuItem Name="item_DistFormula"      IsEnabled="False" Header="配额计算公式(_D)"></MenuItem>
                     <MenuItem Name="item_WorkHourManage"   IsEnabled="False" Header="工时管理(_W)"></MenuItem>
                 </MenuItem>
-                <MenuItem Name="item_FileQuery"     Header="生产派工(_F)">
-                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="流转卡编制(_S)"></MenuItem>
+                <MenuItem Name="item_ProdDispatch"  Header="生产订单及派工管理(_P)">
+                    <MenuItem Name="item_ProdOrderImport"  IsEnabled="False" Header="生产订单导入(_O)"></MenuItem>
+                    <MenuItem Name="item_WorkCardCompose" Click="item_WorkCardCompose_Click" IsEnabled="False" Header="流转卡编制(_C)"></MenuItem>
+                    <MenuItem Name="item_WorkCardReport"  Click="item_WorkCardReport_Click"    Header="流转卡报工(_R)"></MenuItem>
+                    <MenuItem Name="item_WorkCardInfo"     IsEnabled="False" Header="流转卡信息采集(_I)"></MenuItem>
+                    <MenuItem Name="item_FinishReport"     IsEnabled="False" Header="完工报告(_R)"></MenuItem>
+                </MenuItem>
+                <MenuItem Name="item_FileQuery"     Header="档案查询(_F)">
+                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="查询(_S)"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_MaterialQuery" Header="物料查询(_Q)">
                     <MenuItem Name="item_MaterialQuery1" IsEnabled="False" Header="物料查询1(_S)"></MenuItem>
                 </MenuItem>
-                <MenuItem Name="item_ProdDispatch"  Header="生产订单及派工管理(_P)">
-                    <MenuItem Name="item_ProdOrderImport"  IsEnabled="False" Header="生产订单导入(_O)"></MenuItem>
-                    <MenuItem Name="item_WorkCardCompose"  IsEnabled="False" Header="流转卡编制(_C)"></MenuItem>
-                    <MenuItem Name="item_WorkCardInfo"     IsEnabled="False" Header="流转卡信息采集(_I)"></MenuItem>
-                    <MenuItem Name="item_FinishReport"     IsEnabled="False" Header="完工报告(_R)"></MenuItem>
-                </MenuItem>
+
                 <MenuItem Name="item_TotalQuery"    Header="综合查询(_T)">
                     <MenuItem Name="item_TotalQuery1" IsEnabled="False" Header="综合查询1(_S)"></MenuItem>
                     <MenuItem Name="item_TotalQuery2" IsEnabled="False" Header="综合查询2(_D)"></MenuItem>

@@ -40,6 +40,9 @@ namespace BarCodeSystem
         public static string[] pattern = { @"^\d+\z", @"^\d+\.?\d*\z", @"^[-]?[1-9]{1}\d*$|^[0]{1}$", @"^([0-9.]+)$" };
         //编码文本框校验表达式；
 
+        public static string Org_Inof = "";
+        //当前组织的组织信息：组织名称
+
         public static string rememberedAccountFileName = "D:/Program Files/BarCodeSystem/SysPara/RememberedAccount.xml";
 
         public static string sysPara = "D:/Program Files/BarCodeSystem/Syspara";

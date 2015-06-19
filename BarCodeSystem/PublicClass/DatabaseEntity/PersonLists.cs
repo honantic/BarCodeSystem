@@ -49,6 +49,15 @@ namespace BarCodeSystem
             set;
         }
 
+        /// <summary>
+        /// 员工岗位
+        /// </summary>
+        public string position
+        {
+            get;
+            set;
+        }
+
 
     }
 }

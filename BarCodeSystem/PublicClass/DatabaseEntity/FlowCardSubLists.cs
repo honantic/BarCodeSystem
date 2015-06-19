@@ -40,6 +40,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         public string FCS_PersonName { get; set; }
         /// <summary>
+        /// 工序投入数量
+        /// </summary>
+        public int FCS_BeginAmount { get; set; }
+        /// <summary>
         /// 合格数量、
         /// </summary>
         public int FCS_QulifiedAmount { get; set; }
@@ -47,18 +51,18 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 报废数量、
         /// </summary>
         public int FCS_ScrappedAmount { get; set; }
-        /// <summary>
-        /// 责废数量
-        /// </summary>
-        public int FCS_ProcessScrap { get; set; }
-        /// <summary>
-        /// 料废数量
-        /// </summary>
-        public int FCS_ItemScrap { get; set; }
-        /// <summary>
-        /// 退回供方数量
-        /// </summary>
-        public int FCS_SendBackAmount { get; set; }
+        ///// <summary>
+        ///// 责废数量
+        ///// </summary>
+        //public int FCS_ProcessScrap { get; set; }
+        ///// <summary>
+        ///// 料废数量
+        ///// </summary>
+        //public int FCS_ItemScrap { get; set; }
+        ///// <summary>
+        ///// 退回供方数量
+        ///// </summary>
+        //public int FCS_SendBackAmount { get; set; }
         /// <summary>
         /// 待处理数量
         /// </summary>
@@ -79,10 +83,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 计件除数、用来计算计件工资的，为该道工序加工的人数
         /// </summary>
         public int FCS_PieceDivNum { get; set; }
-        /// <summary>
-        /// 单件工资、(来自工艺路线表)
-        /// </summary>
-        public decimal FCS_WagePerPiece { get; set; }
+        ///// <summary>
+        ///// 单件工资、(来自工艺路线表)
+        ///// </summary>
+        //public decimal FCS_WagePerPiece { get; set; }
         /// <summary>
         /// 是否首道工序、（来自工艺路线表）
         /// </summary>
@@ -91,6 +95,13 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 是否未道工序、（来自工艺路线表）
         /// </summary>
         public bool FCS_IsLastProcess { get; set; }
-
+        /// <summary>
+        /// 该道工序是否已经报工
+        /// </summary>
+        public bool FCS_IsReported { get; set; }
+        /// <summary>
+        /// 来自工艺路线表，工序号
+        /// </summary>
+        public int FCS_ProcessSequanece { get; set; }
     }
 }

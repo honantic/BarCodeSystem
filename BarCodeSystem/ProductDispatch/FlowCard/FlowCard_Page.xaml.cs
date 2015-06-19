@@ -78,6 +78,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            textb_CheckedBy.Width = textb_Amount.Width = datepicker_CreateDate.Width = txtb_ItemInfo.Width = fourthCol.ActualWidth * 0.9;
+        }
+
+        /// <summary>
+        /// 表头大小改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CardHeaderGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            textb_CheckedBy.Width = textb_Amount.Width = datepicker_CreateDate.Width = txtb_ItemInfo.Width = fourthCol.ActualWidth * 0.9;
         }
         #endregion
 
@@ -384,7 +395,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 default:
                     break;
             }
-            txtb_FlowCode.Text = type + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}",maxNum);
+            txtb_FlowCode.Text = type + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", maxNum);
             return type + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", maxNum);
         }
 
@@ -399,6 +410,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 FC_CardType = cb_FlowCardType.SelectedIndex,
                 FC_SourceOrderID = selectedOrder.PO_ID,
                 FC_ItemID = Convert.ToInt64(selectedOrder.PO_ItemID),
+                FC_ItemTechVersionID = Convert.ToInt64(selectedTechRoute[0].TR_VersionID),
                 FC_Amount = Convert.ToInt32(textb_Amount.Text),
                 FC_WorkCenter = selectedTechRoute[0].TR_WorkCenterID,
                 FC_CardState = 0,
@@ -438,6 +450,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     row["FC_SourceOrderID"] = item.FC_SourceOrderID;
                     row["FC_Code"] = item.FC_Code;
                     row["FC_ItemID"] = item.FC_ItemID;
+                    row["FC_ItemTechVersionID"] = item.FC_ItemTechVersionID;
                     row["FC_Amount"] = item.FC_Amount;
                     row["FC_WorkCenter"] = item.FC_WorkCenter;
                     row["FC_CardState"] = item.FC_CardState;
@@ -477,7 +490,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 flowCardID = Convert.ToInt64(reader[0]);
             }
             reader.Close();
-            SQl = string.Format(@"Select top 0 [ID],[FCS_FlowCradID],[FCS_ItemId],[FCS_TechRouteID],[FCS_ProcessID],[FCS_ProcessName],[FCS_PersonCode],[FCS_PersonName],[FCS_QulifiedAmount],[FCS_ScrappedAmount],[FCS_ProcessScrap],[FCS_ItemScrap],[FCS_BadAmount],[FCS_SendBackAmount],[FCS_UnprocessedAm],[FCS_CheckByID],[FCS_CheckByName],[FCS_PieceAmount],[FCS_PieceDivNum],[FCS_WagePerPiece],[FCS_WageAllotScheme],[FCS_AllotFormulaID],[FCS_IsFirstProcess],[FCS_IsLastProcess] from [FlowCardSub]");
+            SQl = string.Format(@"Select top 0 [ID],[FCS_FlowCradID],[FCS_ItemId],[FCS_TechRouteID],[FCS_ProcessID],[FCS_ProcessName],[FCS_PersonCode],[FCS_PersonName],[FCS_BeginAmount],[FCS_QulifiedAmount],[FCS_ScrappedAmount],[FCS_UnprocessedAm],[FCS_CheckByID],[FCS_CheckByName],[FCS_PieceAmount],[FCS_PieceDivNum],[FCS_IsFirstProcess],[FCS_IsLastProcess],[FCS_IsReported] from [FlowCardSub]");
 
             MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
 
@@ -498,26 +511,21 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     row["FCS_TechRouteID"] = selectedTechRoute[i].ID;
                     row["FCS_ProcessID"] = selectedTechRoute[i].TR_ProcessID;
                     row["FCS_ProcessName"] = selectedTechRoute[i].TR_ProcessName;
-                    row["FCS_PersonCode"] = techRoutePerson[i][j].name;
-                    row["FCS_PersonName"] = techRoutePerson[i][j].code;
+                    row["FCS_PersonCode"] = techRoutePerson[i][j].code;
+                    row["FCS_PersonName"] = techRoutePerson[i][j].name;
                     #region 这段代码为初始化代码，这些数据在派工的时候为空置的
                     row["FCS_QulifiedAmount"] = 0;
                     row["FCS_ScrappedAmount"] = 0;
-                    row["FCS_ProcessScrap"] = 0;
-                    row["FCS_ItemScrap"] = 0;
-                    row["FCS_SendBackAmount"] = 0;
                     row["FCS_UnprocessedAm"] = 0;
-                    row["FCS_BadAmount"] = 0;
                     row["FCS_CheckByID"] = 0;
+                    row["FCS_BeginAmount"] = 0;
                     row["FCS_CheckByName"] = 0;
                     row["FCS_PieceAmount"] = 0;
                     row["FCS_PieceDivNum"] = 0;
-                    row["FCS_WageAllotScheme"] = 0;
-                    row["FCS_AllotFormulaID"] = 0;
                     #endregion
-                    row["FCS_WagePerPiece"] = Convert.ToDecimal(selectedTechRoute[i].TR_WagePerPiece);
                     row["FCS_IsFirstProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsFirstProcess);
-                    row["FCS_IsLastProcess"] = Convert.ToBoolean(selectedTechRoute[i].tr_IsLastProcess);
+                    row["FCS_IsLastProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsLastProcess);
+                    row["FCS_IsReported"] = false;
                     ds.Tables["FlowCardSub"].Rows.Add(row);
                 }
             }
@@ -612,7 +620,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 try
                 {
                     textb_SearchInfo.Text = "选取班组信息";
-                    SaveWorkTeam_Page swtp = new SaveWorkTeam_Page(selectedTechRoute[0].TR_WorkCenterID, FetchPersonInfo);
+                    SaveWorkTeam_Page swtp = new SaveWorkTeam_Page(selectedTechRoute[0].TR_WorkCenterID, FectchTeamPerson);
                     Frame frameSearch = new Frame();
                     //frameSearch.Content = swtp;
                     gb_SearchInfo.Content = frameSearch;
@@ -764,7 +772,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                      DPV_TechRouteVersionID = selectedTechRoute[0].TR_VersionID,
                      DPV_ItemCode = selectedTechRoute[0].TR_ItemCode,
                      DPV_ItemName = selectedTechRoute[0].II_Name,
-                     DPV_TechRouteVersionName = selectedTechRoute[0].TRV_Version
+                     DPV_TechRouteVersionName = selectedTechRoute[0].TRV_VersionCode
                  });
                 return disPlanVersion;
             }

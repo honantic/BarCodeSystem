@@ -11,11 +11,11 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="60"></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"> 
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="btn_Save" Margin="10 5 10 5 " Height="30" Width="80" Content="保存" Click="btn_Save_Click"></Button>
                 <Button Name="btn_Quit" Margin="10 5 10 5" Height="30" Width="80" Content="关闭" Click="btn_Quit_Click"></Button>
             </StackPanel>
-            <Grid Grid.Row="1" Name="bottomGrid" Margin="5" >   
+            <Grid Grid.Row="1" Name="bottomGrid" Margin="5" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition ></ColumnDefinition>
                     <ColumnDefinition ></ColumnDefinition>
@@ -34,9 +34,11 @@
                 <Border BorderBrush="LightGray" BorderThickness="0 1 0 1" Grid.Row="3" Grid.ColumnSpan="5"></Border>
                 <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="1" Grid.RowSpan="4" ></Border>
                 <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="4" Grid.RowSpan="4"></Border>
-                
+
                 <TextBlock TextWrapping="Wrap" Text="工作中心名称："  VerticalAlignment="Center"  Grid.Column="2" HorizontalAlignment="Center"></TextBlock>
-                <TextBlock Name="txtb_name" TextWrapping="Wrap"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" ></TextBlock>
+                <!--<TextBlock Name="txtb_name" TextWrapping="Wrap"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" ></TextBlock>-->
+
+                <TextBox Name="txt_name" Grid.Column="3" Grid.Row="0" Height="25" Width="130"></TextBox>
                 <TextBlock TextWrapping="Wrap" Text="工作中心编号："  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0"></TextBlock>
                 <TextBlock Name="txtb_code" TextWrapping="Wrap"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"></TextBlock>
                 <TextBlock TextWrapping="Wrap" Text="是否启用："  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1"></TextBlock>
@@ -57,6 +59,8 @@
                     <RadioButton Name="rbtn_isworkcenter"  Content="是" Margin="5" ></RadioButton>
                     <RadioButton Name="rbtn_notworkcenter"  Content="否" Margin="5" ></RadioButton>
                 </StackPanel>
+                <TextBlock TextWrapping="Wrap" Text="工作中心简称: " VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="2"></TextBlock>
+                <TextBox Name="txt_department_shortname"  Grid.Column="3" Grid.Row="2" Height="25" Width="100"></TextBox>
 
                 <TextBlock TextWrapping="Wrap" Text="最新修改时间："  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="3"></TextBlock>
                 <TextBlock Name="txtb_modifytime" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="1"></TextBlock>

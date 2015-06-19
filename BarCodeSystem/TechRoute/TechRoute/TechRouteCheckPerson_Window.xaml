@@ -1,0 +1,29 @@
+﻿<Window x:Class="BarCodeSystem.TechRoute.TechRoute.TechRouteCheckPerson_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="检验员选择窗体" Height="600" Width="400"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Name="listview1" MouseDoubleClick="listview1_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="检验员名称" Width="180" DisplayMemberBinding="{Binding Path=name}"></GridViewColumn>
+                    <GridViewColumn Header="检验员编号" Width="180" DisplayMemberBinding="{Binding Path=code}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Grid.Row="2" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
+        <Button Grid.Row="2" Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+    </Grid>
+</Window>

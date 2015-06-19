@@ -23,7 +23,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// </summary>
     /// <param name="value"></param>
     /// <param name="trls"></param>
-    public delegate void SubmitTechRouteInfo(string value,List<TechRouteLists> trls);
+    public delegate void SubmitTechRouteInfo(string value, List<TechRouteLists> trls);
 
     /// <summary>
     ///  接收生产订单查询函数的委托
@@ -47,4 +47,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// </summary>
     /// <param name="list"></param>
     public delegate void FillDisPlan(List<DisPlanLists> list);
+
+    /// <summary>
+    /// 流转卡报工的时候选取流转卡的委托
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="tv"></param>
+    public delegate void SubmitFlowCard(FlowCardLists fc, List<FlowCardSubLists> fcslist, TechVersion tv);
+
+    /// <summary>
+    /// 流转卡报工的时候选取质量问题信息的委托
+    /// </summary>
+    /// <param name="qil"></param>
+    public delegate void SubmitQualityIssue(QualityIssuesLists qil);
 }

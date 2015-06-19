@@ -1,0 +1,268 @@
+﻿<Page x:Class="BarCodeSystem.ProductDispatch.FlowCardReport.FlowCardReport_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      mc:Ignorable="d" 
+      Loaded="Page_Loaded"  
+      d:DesignHeight="768" d:DesignWidth="1024"
+	Title="流转卡报工页面">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="3">
+            <TextBlock FontSize="15" Foreground="White">流转卡报工页面</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop  Offset="1" Color="LightGreen"></GradientStop>
+                        <GradientStop Color="Green"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition  Height="60"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <GroupBox Margin="5">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡表头信息</TextBlock>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="流转卡号：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="15"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <extool:WatermarkTextBox Watermark="点击右边按钮搜索流转卡号"  Name="textb_FlowCard" VerticalAlignment="Center"></extool:WatermarkTextBox>
+                        <Button Name="btn_FlowCardSearch" Height="{Binding Path=ActualHeight,ElementName=textb_FlowCard}" Grid.Column="1" Cursor="Hand" Click="btn_FlowCardSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                            <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                        </Button>
+                    </Grid>
+
+
+                    <TextBlock Text="日期：" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <DatePicker Grid.Column="1" Grid.Row="1" Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Today}" VerticalAlignment="Center" ></DatePicker>
+
+                    <TextBlock Text="工序序号：" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <ComboBox Name="cb_ProcessSequence" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
+
+                    <TextBlock Text="派工数量：" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_Amount" Grid.Column="3" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                    <TextBlock Text="料品信息：" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_ItemInfo" Grid.Column="3"  Grid.Row="1" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                    <TextBlock Text="单据状态：" Grid.Row="2" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_CardState" Grid.Column="5"  Grid.Row="2" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                    <TextBlock Text="报工方式：" Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_ReportWay" Grid.Column="5"  Grid.Row="0" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                    <TextBlock Text="是否特殊工艺路线：" TextWrapping="Wrap" Margin="5 0" TextAlignment="Center" Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_IsSpecialTechVersion" Grid.Column="5"  Grid.Row="1" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                    <TextBlock Text="工序名称：" TextWrapping="Wrap"  TextAlignment="Center" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <TextBox Name="txtb_ProcessName" Grid.Column="3"  Grid.Row="2" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+
+                </Grid>
+            </GroupBox>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Margin="5" Name="gb_PersonInfo">
+                    <GroupBox.Header>
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">工序操作人员信息</TextBlock>
+                    </GroupBox.Header>
+                    <DataGrid Name="datagrid_PersonInfo" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="员工编号" Binding="{Binding Path=FCS_PersonCode}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="员工名称" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+                <GroupBox Grid.Column="1" Margin="5" Name="gb_ScrapInfo">
+                    <GroupBox.Header>
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">报废信息</TextBlock>
+                    </GroupBox.Header>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid  CanUserAddRows="False" Grid.ColumnSpan="2" Name="datagrid_AmountInfo" ItemsSource="{Binding}" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="编号">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=QI_Code,Mode=TwoWay}"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                    <ColumnDefinition Width="15"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Name="txtb_QICode" TextWrapping="Wrap" Text="{Binding Path=QI_Code,Mode=TwoWay}"  VerticalAlignment="Center" ></TextBox>
+                                                <Button Name="btn_QISearch" Grid.Column="1" Cursor="Hand" Click="btn_QualityIssueSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                                                    <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="质量原因名称" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=QI_Name,Mode=TwoWay}"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <Grid >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                    <ColumnDefinition Width="15"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Name="txtb_QualityIssue" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Path=QI_Name,Mode=TwoWay}"  VerticalAlignment="Center" ></TextBox>
+                                                <Button Name="btn_QualityIssueSearch" Height="{Binding Path=ActualHeight,ElementName=txtb_QualityIssue}" Grid.Column="1" Cursor="Hand" Click="btn_QualityIssueSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                                                    <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="数量">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=FCQ_ScrapAmount,Mode=TwoWay}"  ></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <extool:IntegerUpDown Name="integer_Amount" Minimum="0" DefaultValue="0" ValueChanged="integer_Amount_ValueChanged"  Value="{Binding Path=FCQ_ScrapAmount,Mode=TwoWay}" ></extool:IntegerUpDown>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Button Content="添加行" Grid.Row="1" VerticalAlignment="Center" Name="btn_AddScrapInfo" Click="btn_AddScrapInfo_Click" Margin="5"></Button>
+                        <Button Grid.Column="1" Grid.Row="1" Content="删除行" VerticalAlignment="Center" Name="btn_DeleteScrapInfo" Click="btn_DeleteScrapInfo_Click"  Margin="5"></Button>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Margin="5" Grid.Column="2" Name="gb_AmountInfo">
+                    <GroupBox.Header>
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">数量信息</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="投入数:" VerticalAlignment="Center"  HorizontalAlignment="Right"></TextBlock>
+                        <TextBox  Grid.Column="1" Name="txtb_BeginAmount" TextAlignment="Left"  IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+
+                        <TextBlock Text="报废数:" Grid.Row="1"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox  Grid.Column="1" Grid.Row="1" Text="0" TextAlignment="Left"  Name="txtb_ScrappedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+
+                        <TextBlock Text="待处理数:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <extool:IntegerUpDown DefaultValue="0"  Minimum="0" TextAlignment="Left" Text="{Binding Path=DefaultValue,ElementName=txtb_UnprocessedAm}" Grid.Column="1" Grid.Row="2" Name="txtb_UnprocessedAm" VerticalAlignment="Center"></extool:IntegerUpDown>
+
+                        <TextBlock Text="合格数:" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox  Grid.Column="1" Grid.Row="3" TextAlignment="Left"  Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="3" Name="gb_CheckInfo" Margin="5">
+                    <GroupBox.Header>
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">检验人员</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="检验员：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="15"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="txtb_CheckPerson" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Path=QI_Code,Mode=TwoWay}"  VerticalAlignment="Center" ></TextBox>
+                            <Button Name="btn_CheckPersonSearch" Height="{Binding Path=ActualHeight,ElementName=txtb_CheckPerson}" Grid.Column="1" Cursor="Hand" Click="btn_QISearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
+                                <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                            </Button>
+                        </Grid>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Center">
+                            注：检验员名称为工艺路线中绑定的默认检验员，这里也可以手动修改，点击放大镜选择检验员。
+                        </TextBlock>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            <GroupBox Grid.Row="2">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}">选择操作</TextBlock>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btn_Report" Click="btn_Report_Click" Grid.Column="3" Content="报工" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="40 5"></Button>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="3" Name="gb_SearchInfo">
+                <GroupBox.Header>
+                    <TextBlock Name="textb_SearchInfo" Style="{StaticResource textb_NormalStyle}"></TextBlock>
+                </GroupBox.Header>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Page>

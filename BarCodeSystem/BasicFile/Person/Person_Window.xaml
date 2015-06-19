@@ -25,8 +25,10 @@
                     <GridViewColumn Header="选择" Width="30" CellTemplate="{StaticResource FirstCell}" ></GridViewColumn>
                     <GridViewColumn Header="员工编号" DisplayMemberBinding="{Binding Path=code}" Width="100"></GridViewColumn>
                     <GridViewColumn Header="员工姓名" DisplayMemberBinding="{Binding Path=name}" Width="100"></GridViewColumn>
-                    <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=departName}" Width="200"></GridViewColumn>
+                    <GridViewColumn Header="岗位" DisplayMemberBinding="{Binding Path=position}" Width="60"></GridViewColumn>
                     <GridViewColumn Header="工作中心编号" DisplayMemberBinding="{Binding Path=departCode}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=departName}" Width="200"></GridViewColumn>
+                    
                 </GridView>
             </ListView.View>
         </ListView>
@@ -37,7 +39,8 @@
             <Button Content="修改信息" Name="btn_Modify" Click="btn_Modify_Click" Height="30" Width="60" Margin="5"></Button>
             <Button Content="新增人员" Name="btn_Add" Click="btn_Add_Click" Height="30" Width="60" Margin="5"></Button>
             <TextBox Width="80" FontSize="14" Height="30" Name="txtb_SearchKey" TextChanged="txtb_SearchKey_TextChanged" Margin="5 5 5 5"></TextBox>
-            <Button Content="搜索" Height="30" Width="40" Name="btn_Search" Click="btn_Search_Click" Margin="0 5 5 5"></Button>   
+            <Button Content="搜索" Height="30" Width="40" Name="btn_Search" Click="btn_Search_Click" Margin="0 5 5 5"></Button>
+            <Button Content="导出Excel模板" Height="30" Width="100" Name="btn_Export" Click="btn_Export_Click"></Button>
         </StackPanel>
     </Grid>
 </Window>

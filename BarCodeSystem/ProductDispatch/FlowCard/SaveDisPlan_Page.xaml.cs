@@ -245,30 +245,37 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <returns></returns>
         private List<DisPlanLists> FetchDisPlan(List<DisPlanVersionLists> disPlanVersion)
         {
-            ds.Clear();
-            disPlanList = new List<DisPlanLists>();
-            MyDBController.GetConnection();
-            foreach (DisPlanVersionLists item in disPlanVersion)
+            try
             {
-                string SQl = string.Format(@"Select A.[ID],A.[DP_TechRouteID],A.[DP_PersonID],A.[DP_DisPlanVersionID],B.[P_Code],B.[P_Name],C.[TR_ProcessSequence],C.[TR_ProcessName] from [DisPlan]  A left join [Person] B on A.[DP_PersonID]=B.[ID] left join [TechRoute] C on A.[DP_TechRouteID] =C.[ID] where A.[DP_DisPlanVersionID]={0}", item.ID);
-                MyDBController.GetDataSet(SQl, ds, "DisPlan");
-            }
-            MyDBController.CloseConnection();
-
-            foreach (DataRow row in ds.Tables["DisPlan"].Rows)
-            {
-                disPlanList.Add(new DisPlanLists()
+                ds.Clear();
+                disPlanList = new List<DisPlanLists>();
+                MyDBController.GetConnection();
+                foreach (DisPlanVersionLists item in disPlanVersion)
                 {
-                    ID = Convert.ToInt64(row["ID"]),
-                    DP_DisPlanVersionID = Convert.ToInt64(row["DP_DisPlanVersionID"]),
-                    DP_PersonCode = row["P_Code"].ToString(),
-                    DP_PersonID = Convert.ToInt64(row["DP_PersonID"]),
-                    DP_PersonName = row["P_Name"].ToString(),
-                    DP_ProcessName = row["TR_ProcessName"].ToString(),
-                    DP_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]),
-                    DP_TechRouteID = Convert.ToInt64(row["DP_TechRouteID"])
-                });
+                    string SQl = string.Format(@"Select A.[ID],A.[DP_TechRouteID],A.[DP_PersonID],A.[DP_DisPlanVersionID],B.[P_Code],B.[P_Name],C.[TR_ProcessSequence],C.[TR_ProcessName] from [DisPlan]  A left join [Person] B on A.[DP_PersonID]=B.[ID] left join [TechRoute] C on A.[DP_TechRouteID] =C.[ID] where A.[DP_DisPlanVersionID]={0}", item.ID);
+                    MyDBController.GetDataSet(SQl, ds, "DisPlan");
+                }
+                MyDBController.CloseConnection();
+
+                foreach (DataRow row in ds.Tables["DisPlan"].Rows)
+                {
+                    disPlanList.Add(new DisPlanLists()
+                    {
+                        ID = Convert.ToInt64(row["ID"]),
+                        DP_DisPlanVersionID = Convert.ToInt64(row["DP_DisPlanVersionID"]),
+                        DP_PersonCode = row["P_Code"].ToString(),
+                        DP_PersonID = Convert.ToInt64(row["DP_PersonID"]),
+                        DP_PersonName = row["P_Name"].ToString(),
+                        DP_ProcessName = row["TR_ProcessName"].ToString(),
+                        DP_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]),
+                        DP_TechRouteID = Convert.ToInt64(row["DP_TechRouteID"])
+                    });
+                }
             }
+            catch (Exception)
+            {
+            }
+
             return disPlanList;
         }
 

@@ -224,12 +224,12 @@ namespace BarCodeSystem
                     item.isvalidated = item.isworkcenter = item.isordercontroled = "false";
                     item.lastoperateby = User_Info.User_Name;
                     item.lastoperatetime_DB = DateTime.Now;
-                    SQl = string.Format(@"insert into [WorkCenter](WC_Department_Code,WC_Department_Name,
+                    SQl = string.Format(@"insert into [WorkCenter](WC_Department_Code,WC_Department_Name,WC_Department_ShortName,
                                     WC_Department_ID,WC_IsValidated,WC_IsOrderControled,
                                     WC_IsWorkCenter,WC_LastOperateTime,WC_LastOprateBy)
-                                    values('{0}','{1}',{2},'{3}','{4}','{5}','{6}','{7}')", item.department_code,
-                    item.department_name, item.department_id, item.isvalidated,
-                    item.isordercontroled, item.isworkcenter, item.lastoperatetime, item.lastoperateby);
+                                    values('{0}','{1}',{2},'{3}','{4}','{5}','{6}','{7}','{8}')", item.department_code,
+                    item.department_name, "''",item.department_id, item.isvalidated,
+                    item.isordercontroled, item.isworkcenter, item.lastoperatetime_DB, item.lastoperateby);
                     try
                     {
                         MyDBController.ExecuteNonQuery(SQl);

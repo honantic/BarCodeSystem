@@ -8,6 +8,7 @@ using Xceed.Wpf.AvalonDock;
 using System.ComponentModel;
 using System.Windows.Media;
 using BarCodeSystem.ProductDispatch.FlowCard;
+using BarCodeSystem.ProductDispatch.FlowCardReport;
 
 namespace BarCodeSystem
 {
@@ -29,7 +30,12 @@ namespace BarCodeSystem
         DataSet ds = new DataSet();
         #endregion
 
-
+        #region 初始化
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //this.Title = User_Info.User_ID;
@@ -49,8 +55,26 @@ namespace BarCodeSystem
             User_Info.User_Name = "钱康";
 
             SetUser_Authority();
-            //AvalonSetting();
+
+            GetOrgInfo();
         }
+
+        /// <summary>
+        /// 获得U9组织信息并显示在主窗口
+        /// </summary>
+        private void GetOrgInfo()
+        {
+            string SQl = @"SELECT [ID],[OI_ID],[OI_Code],[OI_Name],[OI_Remark]
+                            FROM [OrgInfo]";
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "OrgInfo");
+            MyDBController.CloseConnection();
+
+            User_Info.Org_Inof = ds.Tables["OrgInfo"].Rows[0]["OI_Name"].ToString();
+
+            this.Title = User_Info.Org_Inof + "生产条码系统";
+        }
+        #endregion
 
         #region 菜单权限管控
         /// <summary>
@@ -407,10 +431,45 @@ namespace BarCodeSystem
         private void item_FileQuery1_Click(object sender, RoutedEventArgs e)
         {
 
+
+        }
+
+        /// <summary>
+        /// 流转卡报工
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkCardReport_Click(object sender, RoutedEventArgs e)
+        {
             #region 将各个page加载进工作区域
+            if (MyDBController.FindVisualChild<FlowCardReport_Page>(dockingManager).Count == 0)
+            {
+                Frame topFrame = new Frame();
+                topFrame.Content = new FlowCardReport_Page() { ShowsNavigationUI = true };
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡报工";
+                la.Content = topFrame;
+                la.Closing += la_Closing;
 
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+                ((FlowCardReport_Page)MyDBController.FindVisualChild<FlowCardReport_Page>(dockingManager)[0]).Focus();
+            }
+            #endregion
+        }
 
-            if (dockingManager.Layout.ActiveContent == null && MyDBController.FindVisualChild<FlowCard_Page>(dockingManager).Count == 0)
+        /// <summary>
+        /// 派工
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkCardCompose_Click(object sender, RoutedEventArgs e)
+        {
+            #region 将各个page加载进工作区域
+            if (MyDBController.FindVisualChild<FlowCard_Page>(dockingManager).Count == 0)
             {
                 Frame topFrame = new Frame();
                 topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
@@ -428,7 +487,6 @@ namespace BarCodeSystem
             }
             #endregion
         }
-
         /// <summary>
         /// 标签页关闭事件
         /// </summary>
@@ -447,22 +505,19 @@ namespace BarCodeSystem
             }
         }
 
-        /// <summary>
-        /// 对MainWindow的AvalonDock进行设置
-        /// </summary>
-        private void AvalonSetting()
-        {
-            lp.Children.Add(ldp);
-            lr.RootPanel = lp;
-            //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
-            dockingManager.Layout = lr;
-        }
+        ///// <summary>
+        ///// 对MainWindow的AvalonDock进行设置
+        ///// </summary>
+        //private void AvalonSetting()
+        //{
+        //    lp.Children.Add(ldp);
+        //    lr.RootPanel = lp;
+        //    //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
+        //    dockingManager.Layout = lr;
+        //}
 
 
         #endregion
-
-
-
 
 
     }

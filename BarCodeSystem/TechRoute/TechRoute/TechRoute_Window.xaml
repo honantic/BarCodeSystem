@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
+        xmlns:converter="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
         Title="工艺路线中心" Height="800" Width="600" MouseMove="Window_MouseMove" >
@@ -11,6 +12,7 @@
         <DataTemplate x:Key="FirstCell" >
             <ComboBox Name="combobox"  Width="80"  />
         </DataTemplate>
+        <converter:TrueOrFalseConverter x:Key="boolConvert"></converter:TrueOrFalseConverter>
     </Window.Resources>
     <Grid Name="Grid1">
         <Grid.RowDefinitions>
@@ -27,42 +29,42 @@
                 <TextBlock Style="{StaticResource textb_NormalStyle}">料品及版本信息</TextBlock>
             </GroupBox.Header>
             <Grid Name="SubGrid1">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-            </Grid.RowDefinitions>
-            <ListView Name="listview1" Margin="5" ItemContainerStyleSelector="{DynamicResource mySelector}" 
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ListView Name="listview1" Margin="5" ItemContainerStyleSelector="{DynamicResource mySelector}" 
                       SelectionChanged="listview1_SelectionChanged"  
                       PreviewMouseDoubleClick="listview1_PreviewMouseDoubleClick">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="料品编码" DisplayMemberBinding="{Binding Path=II_Code}" ></GridViewColumn>
-                        <GridViewColumn Header="料品名称" DisplayMemberBinding="{Binding Path=II_Name}" ></GridViewColumn>
-                        <GridViewColumn Header="料品规格" DisplayMemberBinding="{Binding Path=II_Spec}" ></GridViewColumn>
-                        <GridViewColumn Header="料品型号" DisplayMemberBinding="{Binding Path=II_Version}" ></GridViewColumn>
-                        <GridViewColumn Header="料品计量单位" DisplayMemberBinding="{Binding Path=II_UnitName}" ></GridViewColumn>
-                        <GridViewColumn Header="工艺路线版本" CellTemplate="{StaticResource FirstCell}">
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBox Name="txtb_SearchKey" Height="30" Margin="5" Width="80" FontSize="14" TextChanged="txtb_SearchKey_TextChanged"></TextBox>
-                    <Button Content="搜索" Style="{StaticResource btn_SmallStyle}" Name="btn_Search" Click="btn_Search_Click" Margin="5"></Button>
-                </StackPanel>
-                <Button Content="编辑工艺信息" Grid.Column="1" Name="btn_Modify" Click="btn_Modify_Click" Width="80" Height="30" Margin="5"></Button>
-                <Button Content="新增料品" Name="btn_AddItem" Grid.Column="2" Click="btn_AddItem_Click" Height="30" Width="80" Margin="5"></Button>
-                <Button Content="获取版本信息" Name="btn_GetVersion" Grid.Column="3" Click="btn_GetVersion_Click" Style="{StaticResource btn_NormalStyle}"></Button>
-            </Grid>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="料品编码" DisplayMemberBinding="{Binding Path=II_Code}" ></GridViewColumn>
+                            <GridViewColumn Header="名称" DisplayMemberBinding="{Binding Path=II_Name}" ></GridViewColumn>
+                            <GridViewColumn Header="规格" DisplayMemberBinding="{Binding Path=II_Spec}" ></GridViewColumn>
+                            <GridViewColumn Header="型号" DisplayMemberBinding="{Binding Path=II_Version}" ></GridViewColumn>
+                            <GridViewColumn Header="计量单位" DisplayMemberBinding="{Binding Path=II_UnitName}" ></GridViewColumn>
+                            <GridViewColumn Header="工艺路线版本" CellTemplate="{StaticResource FirstCell}">
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBox Name="txtb_SearchKey" Height="30" Margin="5" Width="80" FontSize="14" TextChanged="txtb_SearchKey_TextChanged"></TextBox>
+                        <Button Content="搜索" Style="{StaticResource btn_SmallStyle}" Name="btn_Search" Click="btn_Search_Click" Margin="5"></Button>
+                    </StackPanel>
+                    <Button Content="编辑工艺信息" Grid.Column="1" Name="btn_Modify" Click="btn_Modify_Click" Width="80" Height="30" Margin="5"></Button>
+                    <Button Content="新增料品" Name="btn_AddItem" Grid.Column="2" Click="btn_AddItem_Click" Height="30" Width="80" Margin="5"></Button>
+                    <Button Content="获取版本信息" Name="btn_GetVersion" Grid.Column="3" Click="btn_GetVersion_Click" Style="{StaticResource btn_NormalStyle}"></Button>
+                </Grid>
 
-        </Grid>
+            </Grid>
         </GroupBox>
         <StackPanel Grid.Row="4" Orientation="Horizontal" >
             <Button  Name="btn_Close" Click="btn_Close_Click" Content="关闭" Style="{StaticResource btn_NormalStyle}" ></Button>
@@ -73,17 +75,20 @@
             </GroupBox.Header>
             <ListView Name="listview2"  
                   ItemContainerStyleSelector="{DynamicResource mySelector}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="工序序号" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
-                    <GridViewColumn Header="工序名称" DisplayMemberBinding="{Binding Path=TR_ProcessName}"></GridViewColumn>
-                    <GridViewColumn Header="单件工资" DisplayMemberBinding="{Binding Path=TR_WagePerPiece}"></GridViewColumn>
-                    <GridViewColumn Header="工作中心" DisplayMemberBinding="{Binding Path=WC_Department_Name}"></GridViewColumn>
-                    <GridViewColumn Header="工艺路线版本" DisplayMemberBinding="{Binding Path=TRV_Version}"></GridViewColumn>
-                    <GridViewColumn Header="计件工资方式" DisplayMemberBinding="{Binding Path=TR_WageAllotScheme_Show}"></GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="工序序号" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
+                        <GridViewColumn Header="工序名称" DisplayMemberBinding="{Binding Path=TR_ProcessName}"></GridViewColumn>
+                        <GridViewColumn Header="工时" DisplayMemberBinding="{Binding Path=TR_WorkHour}"></GridViewColumn>
+                        <GridViewColumn Header="工作中心" DisplayMemberBinding="{Binding Path=WC_Department_Name}"></GridViewColumn>
+                        <GridViewColumn Header="版本编码" DisplayMemberBinding="{Binding Path=TRV_VersionCode}"></GridViewColumn>
+                        <GridViewColumn Header="版本名称" DisplayMemberBinding="{Binding Path=TRV_VersionName}"></GridViewColumn>
+                        <GridViewColumn Header="检验员" DisplayMemberBinding="{Binding Path=TR_DefaultCheckPersonName}"></GridViewColumn>
+                        <GridViewColumn Header="是否测试" DisplayMemberBinding="{Binding Path=TR_IsTestProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
+                        <GridViewColumn Header="是否返工" DisplayMemberBinding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </GroupBox>
     </Grid>
 </Window>

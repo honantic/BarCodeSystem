@@ -367,6 +367,11 @@ public class MyDBController
                 if (child != null && child is T)
                 {
                     TList.Add((T)child);
+                    List<T> childOfChildren = FindVisualChild<T>(child);
+                    if (childOfChildren != null)
+                    {
+                        TList.AddRange(childOfChildren);
+                    }
                 }
                 else
                 {
@@ -408,7 +413,7 @@ public class MyDBController
                     TList.AddRange(parentOfParent);
                 }
             }
-            else if(parent !=null)
+            else if (parent != null)
             {
                 List<T> parentOfParent = FindVisualParent<T>(parent);
                 if (parentOfParent != null)
@@ -421,6 +426,45 @@ public class MyDBController
         catch (Exception ee)
         {
             MessageBox.Show(ee.Message);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 利用logictreehelper寻找子对象
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static List<T> FindLogicChild<T>(DependencyObject obj) where T : DependencyObject
+    {
+        try
+        {
+            List<T> childList = new List<T>();
+            foreach (DependencyObject item in LogicalTreeHelper.GetChildren(obj))
+            {
+                if (item is T)
+                {
+                    childList.Add((T)item);
+                    List<T> childOfChild = FindLogicChild<T>(item);
+                    if (childOfChild != null)
+                    {
+                        childList.AddRange(childOfChild);
+                    }
+                }
+                else
+                {
+                    List<T> childOfChild = FindLogicChild<T>(item);
+                    if (childOfChild != null)
+                    {
+                        childList.AddRange(childOfChild);
+                    }
+                }
+            }
+            return childList;
+        }
+        catch (Exception)
+        {
             return null;
         }
     }

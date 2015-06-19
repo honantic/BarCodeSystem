@@ -17,8 +17,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" ></RowDefinition>
-            <RowDefinition Height="3*" ></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="2.6*" ></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
 
         <GroupBox  Margin="5 0 5 0" >
@@ -57,7 +57,7 @@
                          MinWidth="80" TextWrapping="Wrap"></TextBox>-->
                 <extool:IntegerUpDown Name="txtb_TechSequence"  
                          Grid.Column="5" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                         MinWidth="80" Increment="10" DefaultValue="10"></extool:IntegerUpDown>
+                         MinWidth="80" Increment="10" DefaultValue="10" Text="{Binding Path=DefaultValue,ElementName=txtb_TechSequence}"></extool:IntegerUpDown>
                 <TextBlock Text="工序名称:" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="6" TextWrapping="Wrap" ></TextBlock>
                 <StackPanel Grid.Column="7"  VerticalAlignment="Center" >
                     <TextBox Name="txtb_ProcessName"  MouseDoubleClick="txtb_ItemCode_MouseDoubleClick"  Margin="5" MinWidth="80" FontSize="14" VerticalAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" ></TextBox>
@@ -73,26 +73,24 @@
                            Style="{StaticResource txtb_Foreground}" PreviewMouseLeftButtonDown="textb_GetWorkCenter_PreviewMouseLeftButtonDown"></TextBlock>
                 </StackPanel>
 
-                <TextBlock Text="单件工资:" TextWrapping="Wrap" Grid.Column="2" Grid.Row="1" Margin="5" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Center"></TextBlock>
-                <!--<TextBox Name="txtb_WagePerPiece" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" 
-                         TextWrapping="Wrap" MinWidth="80" Grid.Row="1" Margin="5" FontSize="14" 
-                         VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3"></TextBox>-->
-                <extool:DecimalUpDown DefaultValue="0.0" Grid.Column="3" Name="txtb_WagePerPiece" Grid.Row="1" MinWidth="80" Margin="5" FontSize="14" 
+                <TextBlock Text="工时:" TextWrapping="Wrap" Grid.Column="2" Grid.Row="1" Margin="5" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Center"></TextBlock>
+                <extool:DecimalUpDown DefaultValue="0.0" IsReadOnly="True" Grid.Column="3" Name="txtb_WorkHour" Grid.Row="1" MinWidth="80" Margin="5" FontSize="14" 
                          VerticalAlignment="Center" HorizontalAlignment="Center"  ></extool:DecimalUpDown>
-                
-                <TextBlock Text="工艺路线版本:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="4" Grid.Row="1"></TextBlock>
+
+                <TextBlock Text="版本编码:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="4" Grid.Row="1"></TextBlock>
                 <TextBox Name="txtb_TechVersion" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="80" Grid.Column="5" Grid.Row="1"></TextBox>
 
-                <TextBlock Text="计件工资方式:" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1" ></TextBlock>
+                <TextBlock Text="版本名称:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="4" Grid.Row="2"></TextBlock>
+                <TextBox Name="txtb_TechVersionName" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="80" Grid.Column="5" Grid.Row="2"></TextBox>
+
+                <TextBlock Text="绑定工序:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="6" Grid.Row="2"></TextBlock>
+                <TextBox Name="txtb_BindingProcess" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="80" Grid.Column="7" Grid.Row="2"></TextBox>
+
+                <TextBlock Text="默认检验员:" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1" ></TextBlock>
                 <StackPanel Grid.Column="7" Grid.Row="1"  VerticalAlignment="Center">
-                    <ComboBox Name="cb_WageAllotScheme"  Opacity="0.8" FontSize="14" HorizontalAlignment="Center" MinWidth="80"
-                          ItemsSource="{Binding}" SelectedValuePath="TR_WageAllotScheme">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=TR_WageAllotScheme_Show}" TextWrapping="Wrap" MaxHeight="80"></TextBlock>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <TextBox Name="txtb_TR_DefaultCheckPersonName"  MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" IsReadOnly="True" MaxLines="1" FontSize="14"  TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="80"></TextBox>
+                    <TextBlock Text="选择检验员"   Name="textb_ChooseCheckPerson"
+                           Style="{StaticResource txtb_Foreground}" PreviewMouseLeftButtonDown="textb_ChooseCheckPerson_PreviewMouseLeftButtonDown" ></TextBlock>
                 </StackPanel>
                 <TextBlock Text="是否测试工序:" TextWrapping="Wrap" Grid.Row="2"  VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Center"></TextBlock>
                 <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5">
@@ -104,27 +102,59 @@
                     <RadioButton GroupName="BackProcess" Content="否" IsChecked="True" Name="radio_IsBackProcess_False" ></RadioButton>
                     <RadioButton GroupName="BackProcess" Content="是" Name="radio_IsBackProcess_True" ></RadioButton>
                 </StackPanel>
-                <Button Content="保存工序" Style="{StaticResource btn_NormalStyle}" Name="btn_SaveProcess" Click="btn_SaveProcess_Click" Grid.Row="3" Grid.Column="1"></Button>
-                <Button Content="删除工序" Style="{StaticResource btn_NormalStyle}" Name="btn_DeleteProcess" Click="btn_DeleteProcess_Click" Grid.Row="3" Grid.Column="3"></Button>
-                <Button Content="清空信息" Style="{StaticResource btn_NormalStyle}" Click="btn_ClearInfo_Click" Name="btn_ClearInfo" Grid.Row="3" Grid.Column="5"></Button>
-                <Button Content="添加新版本" Style="{StaticResource btn_NormalStyle}" Name="btn_AddVersion" Click="btn_AddVersion_Click" Grid.Row="3" Grid.Column="7"></Button>
+
+                <Button Content="保存工序" Style="{StaticResource btn_CenterStyle}" Name="btn_SaveProcess" Click="btn_SaveProcess_Click" Grid.Row="3" Grid.Column="1"></Button>
+                <Button Content="删除工序" Style="{StaticResource btn_CenterStyle}" Name="btn_DeleteProcess" Click="btn_DeleteProcess_Click" Grid.Row="3" Grid.Column="3"></Button>
+                <Button Content="清空信息" Style="{StaticResource btn_CenterStyle}" Click="btn_ClearInfo_Click" Name="btn_ClearInfo" Grid.Row="3" Grid.Column="5"></Button>
+                <Button Content="添加新版本" Style="{StaticResource btn_CenterStyle}" Name="btn_AddVersion" Click="btn_AddVersion_Click" Grid.Row="3" Grid.Column="7"></Button>
             </Grid>
         </GroupBox>
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <CheckBox Name="cb_IsDefaultVersion" IsChecked="False" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                <CheckBox.Content>
-                    <TextBlock  Text="作为默认版本" Foreground="Blue" FontSize="14" TextWrapping="Wrap"></TextBlock>
-                </CheckBox.Content>
-            </CheckBox>
-            <Button Name="btn_Save" Grid.Column="1" Click="btn_Save_Click"    Content="保存工艺路线" Style="{StaticResource btn_NormalStyle}"></Button>
-            <Button Name="btn_Close" Click="btn_Close_Click" Grid.Column="3"  Content="关闭" Style="{StaticResource btn_NormalStyle}" ></Button>
-        </Grid>
+        <GroupBox Grid.Row="3" Margin="5 0">
+            <GroupBox.Header>
+                <TextBlock Foreground="Brown"  FontSize="14">保存工艺路线</TextBlock>
+            </GroupBox.Header>
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <CheckBox Name="cb_IsDefaultVersion" IsChecked="False" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <CheckBox.Content>
+                        <TextBlock  Text="设为默认版本" Foreground="Blue" FontSize="14" TextWrapping="Wrap"></TextBlock>
+                    </CheckBox.Content>
+                </CheckBox>
+                <TextBlock Grid.Column="1" Text="报工方式：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <StackPanel Grid.Column="2">
+                    <RadioButton GroupName="ReportWay" Content="离散报工" IsChecked="True" Name="radio_ReportWay_Scatter" ></RadioButton>
+                    <RadioButton GroupName="ReportWay" Content="流水线报工" Name="radio_ReportWay_Flow" ></RadioButton>
+                </StackPanel>
+
+                <TextBlock Text="是否返工版本：" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <StackPanel Grid.Column="4">
+                    <RadioButton GroupName="IsBackVersion" Content="否" IsChecked="True" Name="radio_IsBackVersion_False"></RadioButton>
+                    <RadioButton GroupName="IsBackVersion" Content="是" Name="radio_IsBackVersion_True"></RadioButton>
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Center">
+                    注：特殊版本在完工后不生成完工报告和入库单
+                </TextBlock>
+                <TextBlock Text="是否特殊版本：" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <StackPanel Grid.Column="2" Grid.Row="1">
+                    <RadioButton GroupName="IsSpecialVersion" Content="否" IsChecked="True" Name="cb_IsSpecialVersion_False"></RadioButton>
+                    <RadioButton GroupName="IsSpecialVersion" Content="是" Name="cb_IsSpecialVersion_True"></RadioButton>
+                </StackPanel>
+                <Button Name="btn_Save" Grid.Column="3" Click="btn_Save_Click"  Grid.Row="1"   Content="保存工艺路线" Style="{StaticResource btn_CenterStyle}" ></Button>
+                <Button Name="btn_Close" Click="btn_Close_Click" Grid.Column="4"  Grid.Row="1"  Content="关闭" Style="{StaticResource btn_CenterStyle}" ></Button>
+            </Grid>
+        </GroupBox>
+
         <GroupBox Margin="5 0 5 0" Grid.Row="1" >
             <GroupBox.Header>
                 <TextBlock Foreground="Brown"  FontSize="14">工艺路线信息</TextBlock>
@@ -136,13 +166,13 @@
                     <GridView>
                         <GridViewColumn Header="工序序号" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
                         <GridViewColumn Header="工序名称" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ProcessName}"></GridViewColumn>
-                        <GridViewColumn Header="单件工资" Width="Auto" DisplayMemberBinding="{Binding Path=TR_WagePerPiece}"></GridViewColumn>
                         <GridViewColumn Header="工作中心" Width="Auto" DisplayMemberBinding="{Binding Path=WC_Department_Name}"></GridViewColumn>
-                        <GridViewColumn Header="工艺路线版本" Width="Auto" DisplayMemberBinding="{Binding Path=TRV_Version}"></GridViewColumn>
-                        <GridViewColumn Header="计件工资方式" Width="Auto" DisplayMemberBinding="{Binding Path=TR_WageAllotScheme_Show}"></GridViewColumn>
+                        <GridViewColumn Header="版本编码" Width="Auto" DisplayMemberBinding="{Binding Path=TRV_VersionCode}"></GridViewColumn>
+                        <GridViewColumn Header="版本名称" Width="Auto" DisplayMemberBinding="{Binding Path=TRV_VersionName}"></GridViewColumn>
                         <GridViewColumn Header="料品编码" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ItemCode}"></GridViewColumn>
-                        <GridViewColumn Header="是否测试工序" Width="Auto" DisplayMemberBinding="{Binding Path=TR_IsTestProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
-                        <GridViewColumn Header="是否返工工序" Width="Auto" DisplayMemberBinding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
+                        <GridViewColumn Header="检验员" Width="Auto" DisplayMemberBinding="{Binding Path=TR_DefaultCheckPersonName}"></GridViewColumn>
+                        <GridViewColumn Header="是否测试" Width="Auto" DisplayMemberBinding="{Binding Path=TR_IsTestProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
+                        <GridViewColumn Header="是否返工" Width="Auto" DisplayMemberBinding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}"></GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>

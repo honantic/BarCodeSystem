@@ -44,8 +44,9 @@
                       ColumnWidth="Auto" RowHeaderWidth="30" AutoGenerateColumns="False" 
                       SelectionChanged="datagrid_RouteVersion_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="工艺版本" Binding="{Binding Path=TRV_Version}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="是否默认版本" Binding="{Binding Path=TRV_IsDefaultVer,Converter={StaticResource boolConvert}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="编号" Binding="{Binding Path=TRV_VersionCode}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="名称" Binding="{Binding Path=TRV_VersionName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="是否默认" Binding="{Binding Path=TRV_IsDefaultVer,Converter={StaticResource boolConvert}}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
@@ -58,7 +59,6 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="行号" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
                     <DataGridTextColumn Header="工序名称" Binding="{Binding Path=TR_ProcessName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="单件工资" Binding="{Binding Path=TR_WagePerPiece}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>

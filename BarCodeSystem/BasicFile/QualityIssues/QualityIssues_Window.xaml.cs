@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 
 namespace BarCodeSystem
@@ -52,11 +47,13 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             listBeforeSearch.Clear();
             ds.Clear();
-            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue],
-                            CASE [QI_IsItemIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsItemIssue_Show],
-                            CASE [QI_IsProduceIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsProduceIssue_Show],
-                            CASE [QI_IsPreviousIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS[QI_IsPreviousIssue_Show]
-                            FROM [QualityIssue]";
+//            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue],
+//                            CASE [QI_IsItemIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsItemIssue_Show],
+//                            CASE [QI_IsProduceIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsProduceIssue_Show],
+//                            CASE [QI_IsPreviousIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS[QI_IsPreviousIssue_Show]
+//                            FROM [QualityIssue]";
+
+            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode] FROM [QualityIssue]";
             MyDBController.GetDataSet(SQl, ds, "QualityIssue");
             dt = ds.Tables["QualityIssue"];
             int x = dt.Rows.Count;
@@ -67,12 +64,12 @@ namespace BarCodeSystem
                 qil.QI_Code = dt.Rows[i]["QI_Code"].ToString();
                 qil.QI_Name = dt.Rows[i]["QI_Name"].ToString();
                 qil.QI_BarCode = dt.Rows[i]["QI_BarCode"].ToString();
-                qil.QI_IsItemIssue = (bool)dt.Rows[i]["QI_IsItemIssue"];
-                qil.QI_IsPreviousIssue = (bool)dt.Rows[i]["QI_IsPreviousIssue"];
-                qil.QI_IsProduceIssue = (bool)dt.Rows[i]["QI_IsProduceIssue"];
-                qil.QI_IsItemIssue_Show = dt.Rows[i]["QI_IsItemIssue_Show"].ToString();
-                qil.QI_IsPreviousIssue_Show = dt.Rows[i]["QI_IsPreviousIssue_Show"].ToString();
-                qil.QI_IsProduceIssue_Show = dt.Rows[i]["QI_IsProduceIssue_Show"].ToString();
+                //qil.QI_IsItemIssue = (bool)dt.Rows[i]["QI_IsItemIssue"];
+                //qil.QI_IsPreviousIssue = (bool)dt.Rows[i]["QI_IsPreviousIssue"];
+                //qil.QI_IsProduceIssue = (bool)dt.Rows[i]["QI_IsProduceIssue"];
+                //qil.QI_IsItemIssue_Show = dt.Rows[i]["QI_IsItemIssue_Show"].ToString();
+                //qil.QI_IsPreviousIssue_Show = dt.Rows[i]["QI_IsPreviousIssue_Show"].ToString();
+                //qil.QI_IsProduceIssue_Show = dt.Rows[i]["QI_IsProduceIssue_Show"].ToString();
                 listBeforeSearch.Add(qil);     
             }
 
@@ -202,9 +199,7 @@ namespace BarCodeSystem
                 string key = txtb_SearchKey.Text;
                 IEnumerable<QualityIssuesLists> IEqils =
                     from item in listBeforeSearch
-                    where (item.QI_Name.IndexOf(key) != -1 || item.QI_Code.IndexOf(key) != -1 ||
-                        item.QI_IsItemIssue_Show.IndexOf(key) != -1 || item.QI_IsPreviousIssue_Show.IndexOf(key) != -1 ||
-                        item.QI_IsProduceIssue_Show.IndexOf(key) != -1)
+                    where (item.QI_Name.IndexOf(key) != -1 || item.QI_Code.IndexOf(key) != -1 )
                     select item;
                 foreach (QualityIssuesLists item in IEqils)
                 {
@@ -240,7 +235,7 @@ namespace BarCodeSystem
             }
             else
             {
-                btn_Modify_Click(sender, e);
+                //btn_Modify_Click(sender, e);
             }
         }
 

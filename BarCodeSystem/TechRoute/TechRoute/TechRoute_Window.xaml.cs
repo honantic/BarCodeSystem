@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,8 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Data;
-using System.Threading;
 
 namespace BarCodeSystem
 {
@@ -67,14 +67,7 @@ namespace BarCodeSystem
             itemList.Clear();
             techList.Clear();
             MyDBController.GetConnection();
-            string SQl = @" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],A.[TR_VersionID],B.[TRV_Version],B.[TRV_IsDefaultVer],D.                 [WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],
-                            A.[TR_ProcessID],A.[TR_WagePerPiece],A.[TR_WorkHour],A.[TR_WageAllotScheme],
-                            CASE A.[TR_WageAllotScheme] WHEN 0 THEN '独立分配' WHEN 1 THEN '平均分配' WHEN 2 THEN '按合作人数分配配额公式计算'
-                            END  AS [TR_WageAllotScheme_Show] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B 
-                            ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]
-                            LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID]
-                            LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] 
-                            ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc";
+            string SQl = @" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc";
             itemTech = MyDBController.GetDataSet(SQl, ds, "itemTech").Tables["itemTech"];
 
             SQl = @" SELECT [PN_Code],[PN_Name] FROM [ProcessName]";
@@ -121,10 +114,16 @@ namespace BarCodeSystem
                         iil.ID = (Int64)dt.Rows[i]["TR_ItemID"];
                         iil.II_Code = dt.Rows[i]["TR_ItemCode"].ToString();
                         iil.II_Name = dt.Rows[i]["II_Name"].ToString();
+                        iil.II_Spec = dt.Rows[i]["II_Spec"].ToString();
+                        iil.II_UnitName = dt.Rows[i]["II_UnitName"].ToString();
+                        iil.II_Version = dt.Rows[i]["II_Version"].ToString();
                         TechVersion tv = new TechVersion();
-                        tv.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                        tv.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                        tv.ID = (Int64)dt.Rows[i]["TR_VersionID"];
+                        tv.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                        tv.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                         tv.TRV_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
+                        tv.TRV_IsSpecialVersion = (bool)dt.Rows[i]["TRV_IsSpecialVersion"];
+                        tv.TRV_ReportWay = Convert.ToInt32(dt.Rows[i]["TRV_ReportWay"]);
                         iil.TechVersionList.Add(tv);
                         iils.Add(iil);
 
@@ -141,11 +140,12 @@ namespace BarCodeSystem
                         trl.TR_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
                         trl.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
                         trl.TR_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
-                        trl.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
-                        trl.TR_WagePerPiece = (decimal)dt.Rows[i]["TR_WagePerPiece"];
+                        trl.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                        trl.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                         trl.TR_WorkHour = (decimal)dt.Rows[i]["TR_WorkHour"];
-                        trl.TR_WageAllotScheme = (int)dt.Rows[i]["TR_WageAllotScheme"];
-                        trl.TR_WageAllotScheme_Show = dt.Rows[i]["TR_WageAllotScheme_Show"].ToString();
+                        trl.TR_IsBackProcess = (bool)dt.Rows[i]["TR_IsBackProcess"];
+                        trl.TR_IsTestProcess = (bool)dt.Rows[i]["TR_IsTestProcess"];
+                        trl.TR_DefaultCheckPersonName = dt.Rows[i]["TR_DefaultCheckPersonName"].ToString();
                         trl.TR_WorkCenterID = (Int64)dt.Rows[i]["TR_WorkCenterID"];
                         trl.WC_Department_Name = dt.Rows[i]["WC_Department_Name"].ToString();
                         trls_local.Add(trl);
@@ -171,12 +171,13 @@ namespace BarCodeSystem
                                 trl.TR_ProcessID = (Int64)dt.Rows[i]["TR_ProcessID"];
                                 trl.TR_ProcessSequence = (int)dt.Rows[i]["TR_ProcessSequence"];
                                 trl.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                                trl.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                                trl.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                                trl.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                                 trl.TR_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
-                                trl.TR_WagePerPiece = (decimal)dt.Rows[i]["TR_WagePerPiece"];
                                 trl.TR_WorkHour = (decimal)dt.Rows[i]["TR_WorkHour"];
-                                trl.TR_WageAllotScheme = (int)dt.Rows[i]["TR_WageAllotScheme"];
-                                trl.TR_WageAllotScheme_Show = dt.Rows[i]["TR_WageAllotScheme_Show"].ToString();
+                                trl.TR_IsBackProcess = (bool)dt.Rows[i]["TR_IsBackProcess"];
+                                trl.TR_IsTestProcess = (bool)dt.Rows[i]["TR_IsTestProcess"];
+                                trl.TR_DefaultCheckPersonName = dt.Rows[i]["TR_DefaultCheckPersonName"].ToString();
                                 trl.TR_WorkCenterID = (Int64)dt.Rows[i]["TR_WorkCenterID"];
                                 trl.WC_Department_Name = dt.Rows[i]["WC_Department_Name"].ToString();
                                 trls_local.Add(trl);
@@ -185,9 +186,11 @@ namespace BarCodeSystem
                             {
                                 //增加料品的工艺版本信息
                                 TechVersion tv = new TechVersion();
-                                tv.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                                tv.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                                tv.ID = (Int64)dt.Rows[i]["TR_VersionID"];
+                                tv.TRV_VersionCode = dt.Rows[i]["TRV_Version"].ToString();
                                 tv.TRV_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
+                                tv.TRV_IsSpecialVersion = (bool)dt.Rows[i]["TRV_IsSpecialVersion"];
+                                tv.TRV_ReportWay = Convert.ToInt32(dt.Rows[i]["TRV_ReportWay"]);
                                 iils[y - 1].TechVersionList.Add(tv);
 
                                 //增加工序信息
@@ -201,12 +204,13 @@ namespace BarCodeSystem
                                 trl.TR_ProcessID = (Int64)dt.Rows[i]["TR_ProcessID"];
                                 trl.TR_ProcessSequence = (int)dt.Rows[i]["TR_ProcessSequence"];
                                 trl.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                                trl.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                                trl.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                                trl.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                                 trl.TR_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
-                                trl.TR_WagePerPiece = (decimal)dt.Rows[i]["TR_WagePerPiece"];
                                 trl.TR_WorkHour = (decimal)dt.Rows[i]["TR_WorkHour"];
-                                trl.TR_WageAllotScheme = (int)dt.Rows[i]["TR_WageAllotScheme"];
-                                trl.TR_WageAllotScheme_Show = dt.Rows[i]["TR_WageAllotScheme_Show"].ToString();
+                                trl.TR_IsBackProcess = (bool)dt.Rows[i]["TR_IsBackProcess"];
+                                trl.TR_IsTestProcess = (bool)dt.Rows[i]["TR_IsTestProcess"];
+                                trl.TR_DefaultCheckPersonName = dt.Rows[i]["TR_DefaultCheckPersonName"].ToString();
                                 trl.TR_WorkCenterID = (Int64)dt.Rows[i]["TR_WorkCenterID"];
                                 trl.WC_Department_Name = dt.Rows[i]["WC_Department_Name"].ToString();
                                 trls_local.Add(trl);
@@ -223,10 +227,16 @@ namespace BarCodeSystem
                             iil.ID = (Int64)dt.Rows[i]["TR_ItemID"];
                             iil.II_Code = dt.Rows[i]["TR_ItemCode"].ToString();
                             iil.II_Name = dt.Rows[i]["II_Name"].ToString();
+                            iil.II_Spec = dt.Rows[i]["II_Spec"].ToString();
+                            iil.II_UnitName = dt.Rows[i]["II_UnitName"].ToString();
+                            iil.II_Version = dt.Rows[i]["II_Version"].ToString();
                             TechVersion tv = new TechVersion();
-                            tv.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                            tv.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                            tv.ID = (Int64)dt.Rows[i]["TR_VersionID"];
+                            tv.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                            tv.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                             tv.TRV_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
+                            tv.TRV_IsSpecialVersion = (bool)dt.Rows[i]["TRV_IsSpecialVersion"];
+                            tv.TRV_ReportWay = Convert.ToInt32(dt.Rows[i]["TRV_ReportWay"]);
                             iil.TechVersionList.Add(tv);
 
                             iils.Add(iil);
@@ -241,12 +251,13 @@ namespace BarCodeSystem
                             trl.TR_ProcessID = (Int64)dt.Rows[i]["TR_ProcessID"];
                             trl.TR_ProcessSequence = (int)dt.Rows[i]["TR_ProcessSequence"];
                             trl.TR_VersionID = (Int64)dt.Rows[i]["TR_VersionID"];
-                            trl.TRV_Version = dt.Rows[i]["TRV_Version"].ToString();
+                            trl.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                            trl.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                             trl.TR_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
-                            trl.TR_WagePerPiece = (decimal)dt.Rows[i]["TR_WagePerPiece"];
                             trl.TR_WorkHour = (decimal)dt.Rows[i]["TR_WorkHour"];
-                            trl.TR_WageAllotScheme = (int)dt.Rows[i]["TR_WageAllotScheme"];
-                            trl.TR_WageAllotScheme_Show = dt.Rows[i]["TR_WageAllotScheme_Show"].ToString();
+                            trl.TR_IsBackProcess = (bool)dt.Rows[i]["TR_IsBackProcess"];
+                            trl.TR_IsTestProcess = (bool)dt.Rows[i]["TR_IsTestProcess"];
+                            trl.TR_DefaultCheckPersonName = dt.Rows[i]["TR_DefaultCheckPersonName"].ToString();
                             trl.TR_WorkCenterID = (Int64)dt.Rows[i]["TR_WorkCenterID"];
                             trl.WC_Department_Name = dt.Rows[i]["WC_Department_Name"].ToString();
                             trls_local.Add(trl);
@@ -398,6 +409,7 @@ namespace BarCodeSystem
                     trm.Title = "工艺路线修改窗口";
                     trm.trls = trls;
                     trm.selectedItem = listview1.SelectedItem as ItemInfoLists;
+                    trm.techversion = cbl[0].SelectedItem as TechVersion;
                     trm.ShowDialog();
                     if ((bool)trm.DialogResult)
                     {
@@ -580,7 +592,7 @@ namespace BarCodeSystem
                 //这段代码将combobox和listviewitem内容一一对应起来。
                 ItemInfoLists item = listview1.Items[i] as ItemInfoLists;
                 cbl[i].ItemsSource = item.TechVersionList;
-                cbl[i].DisplayMemberPath = "TRV_Version";
+                cbl[i].DisplayMemberPath = "TRV_VersionName";
                 cbl[i].SelectedValuePath = "TR_VersionID";
                 cbl[i].SelectedIndex = 0;
             }
@@ -625,8 +637,8 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void listview1_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Point formPoint = e.GetPosition(this);
-            if (formPoint.Y > 60 && formPoint.Y < 80)//表头部分不作响应
+            Point formPoint = e.GetPosition(listview1);
+            if (formPoint.Y > 0 && formPoint.Y < 20)//表头部分不作响应
             {
             }
             else

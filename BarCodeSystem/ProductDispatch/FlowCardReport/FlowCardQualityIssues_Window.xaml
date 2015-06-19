@@ -1,0 +1,34 @@
+﻿<Window x:Class="BarCodeSystem.ProductDispatch.FlowCardReport.FlowCardQualityIssues_Window"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      Width="400"
+        Height="600"
+        Loaded="Window_Loaded"  
+        WindowStartupLocation="CenterScreen"
+	Title="质量问题筛选">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Name="listview1" MouseDoubleClick="listview1_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="质量问题编码" Width="180" DisplayMemberBinding="{Binding Path=QI_Code}"></GridViewColumn>
+                    <GridViewColumn Header="质量问题原因" Width="180" DisplayMemberBinding="{Binding Path=QI_Name}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Grid.Row="2" Padding="20 5" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
+        <Button Grid.Row="2" Padding="20 5"  Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+    </Grid>
+</Window>

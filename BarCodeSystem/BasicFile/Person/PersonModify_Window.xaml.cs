@@ -48,11 +48,17 @@ namespace BarCodeSystem
         //部门编码文本框内容检验标识
         bool IsRightCode = false;
 
+        //岗位编码文板框内容检验标识
+
+        bool IsRightPosition = false;
+
         //检验结果错误的时候，文本框闪烁次数
         int twinklecount = 0;
 
         //闪烁用的计时器
         System.Windows.Forms.Timer t1 = new System.Windows.Forms.Timer();
+
+        System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer();
 
         public PersonModify_Window()
         {
@@ -82,6 +88,12 @@ namespace BarCodeSystem
 
             t1.Interval = 100;
             t1.Tick += new EventHandler(t1_Tick);
+
+
+            t2.Interval = 100;
+            t2.Tick += new EventHandler(t2_Tick);
+
+            
         }
 
         //去除关闭按钮
@@ -125,6 +137,33 @@ namespace BarCodeSystem
         }
 
 
+
+        private void t2_Tick(object sender, EventArgs e)
+        {
+            if (twinklecount < 7)
+            {
+                txtb_WorkCenterCode.BorderThickness = new Thickness(2);
+                switch (twinklecount % 2)
+                {
+                    case 0:
+                        txtb_Position.BorderBrush = Brushes.Salmon;
+                        break;
+                    case 1:
+                        txtb_Position.BorderBrush = txtb_WorkCenterCode.BorderBrush;
+                        break;
+
+                    default:
+                        break;
+                }
+                twinklecount++;
+            }
+            else
+            {
+                t2.Enabled = false;
+            }
+        }
+
+
         /// <summary>
         /// 保存按钮,检查人员编码是否存在,存在以update方式更新,不存在,以insert方式更新
         /// </summary>
@@ -133,13 +172,13 @@ namespace BarCodeSystem
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
             //如果IsRightCode为false,调用部门编码文本框市区焦点事件,检查
-            if (!IsRightCode)
+            if (!IsRightCode || !IsRightPosition)
             {
                 txtb_WorkCenterCode_LostFocus(sender,e);
             }
 
             //1.IsRightCode本身为true 2.检查过后再校验IsRightCode为true.
-            if (IsRightCode)
+            if (IsRightCode && IsRightPosition)
             {
                 string SQl = "";
                 bool IsExisit = false;
@@ -154,8 +193,8 @@ namespace BarCodeSystem
                 if (IsExisit)
                 {
                     MyDBController.GetConnection();
-                    SQl = string.Format(@"UPDATE [PERSON] SET [P_NAME]='{0}',[P_WorkCenterID]={1} WHERE [P_Code]='{2}'"
-                                        ,txtb_PersonName.Text,pl.departid,txtb_PersonCode.Text);
+                    SQl = string.Format(@"UPDATE [PERSON] SET [P_NAME]='{0}',[P_WorkCenterID]={1},[P_Position]='{2}' WHERE [P_Code]='{3}'"
+                                        ,txtb_PersonName.Text,pl.departid,txtb_Position.Text.Trim(),txtb_PersonCode.Text);
                     try
                     {
                         int count= MyDBController.ExecuteNonQuery(SQl);
@@ -176,8 +215,8 @@ namespace BarCodeSystem
                 else
                 {
                     MyDBController.GetConnection();
-                    SQl = string.Format(@"INSERT INTO [PERSON]([P_Code],[P_Name],[P_WorkCenterID]) 
-                                        VALUES('{0}','{1}',{2})",txtb_PersonCode.Text,txtb_PersonName.Text,pl.departid);
+                    SQl = string.Format(@"INSERT INTO [PERSON]([P_Code],[P_Name],[P_WorkCenterID],[P_Position]) 
+                                        VALUES('{0}','{1}',{2},'{3}')",txtb_PersonCode.Text,txtb_PersonName.Text,pl.departid,txtb_Position.Text.Trim());
                     try
                     {
                         int count=MyDBController.ExecuteNonQuery(SQl);
@@ -204,7 +243,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_ReWrite_Click(object sender, RoutedEventArgs e)
         {
-            txtb_WorkCenterName.Text = txtb_WorkCenterCode.Text = txtb_PersonName.Text = txtb_PersonCode.Text = "";
+            txtb_WorkCenterName.Text = txtb_WorkCenterCode.Text = txtb_Position.Text = "";
             txtb_WorkCenterCode.ToolTip = txtb_WorkCenterName.ToolTip = null;
             txtb_WorkCenterCode.BorderBrush = txtb_WorkCenterName.BorderBrush;
             txtb_WorkCenterCode.BorderThickness = new Thickness(1);
@@ -264,6 +303,7 @@ namespace BarCodeSystem
                 txtb_PersonName.Text = pl.name;
                 txtb_WorkCenterCode.Text = pl.departCode;
                 txtb_WorkCenterName.Text = pl.departName;
+                txtb_Position.Text = pl.position;
             }
         }
 
@@ -287,6 +327,8 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_WorkCenterCode_LostFocus(object sender, RoutedEventArgs e)
         {
+
+            IsRightPosition = false;
             IsRightCode = false;
             twinklecount = 0;
             if (txtb_WorkCenterCode.Text != "")
@@ -307,12 +349,30 @@ namespace BarCodeSystem
             { 
             }
 
+            if (txtb_Position.Text.Trim().Equals("检验员") || txtb_Position.Text.Trim().Equals("操作工") || string.IsNullOrEmpty(txtb_Position.Text.Trim()))
+            {
+                IsRightPosition  = true;
+            }
+            else
+            {
+                IsRightPosition = false;
+            }
+
             if (!IsRightCode)
             {
                 System.Windows.Controls.ToolTip tt = new System.Windows.Controls.ToolTip();
                 tt.Content = "输入的编码有误！请检查";
                 txtb_WorkCenterCode.ToolTip = tt;
                 t1.Enabled = true;
+            }
+
+            if (!IsRightPosition)
+            {
+                System.Windows.Controls.ToolTip tt = new System.Windows.Controls.ToolTip();
+                tt.Content = "输入的岗位有误！请检查";
+                txtb_Position.ToolTip = tt;
+                //txtb_WorkCenterCode.ToolTip = tt;
+                t2.Enabled = true;
             }
         }
 

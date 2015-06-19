@@ -51,10 +51,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，此处供测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             t1.Interval = 100;
             t1.Tick += new EventHandler(t1_Tick);
@@ -63,7 +63,7 @@ namespace BarCodeSystem
             var hwnd = new WindowInteropHelper(this).Handle;
             SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
             InitShow();
-            
+
         }
 
 
@@ -79,21 +79,12 @@ namespace BarCodeSystem
 
         private void InitShow()
         {
-            if (qil!=null)//修改窗体，三个文本框只读
+            if (qil != null)//修改窗体，三个文本框只读
             {
                 txtb_BarCode.Text = qil.QI_BarCode;
                 txtb_Code.Text = qil.QI_Code;
                 txtb_Name.Text = qil.QI_Name;
                 txtb_Name.IsReadOnly = txtb_Code.IsReadOnly = txtb_BarCode.IsReadOnly = true;
-
-                rbtn_IsItemIssueYes.IsChecked = qil.QI_IsItemIssue;
-                rbtn_IsItemIssueNo.IsChecked = !qil.QI_IsItemIssue;
-
-                rbtn_IsPreviousIssueYes.IsChecked = qil.QI_IsPreviousIssue;
-                rbtn_IsPreviousIssueNo.IsChecked = !qil.QI_IsPreviousIssue;
-
-                rbtn_IsProduceIssueYes.IsChecked = qil.QI_IsProduceIssue;
-                rbtn_IsProduceIssueNo.IsChecked = !qil.QI_IsProduceIssue;
             }
 
             MyDBController.GetConnection();
@@ -128,37 +119,41 @@ namespace BarCodeSystem
             {
                 if (!IsExist)
                 {
-                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue])
-                                VALUES('{0}','{1}','{2}','{3}','{4}','{5}')"
-                                , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, rbtn_IsItemIssueYes.IsChecked, rbtn_IsProduceIssueYes.IsChecked, rbtn_IsPreviousIssueYes.IsChecked);
+                    //                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue])
+                    //                                VALUES('{0}','{1}','{2}','{3}','{4}','{5}')"
+                    //                                , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, rbtn_IsItemIssueYes.IsChecked, rbtn_IsProduceIssueYes.IsChecked, rbtn_IsPreviousIssueYes.IsChecked);
+
+                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode])
+                                VALUES('{0}','{1}','{2}')"
+                                  , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text);
                     int x = MyDBController.ExecuteNonQuery(SQl);
-                    if (x>0)
+                    if (x > 0)
                     {
-                        if (MessageBox.Show("信息新增成功！","提示",MessageBoxButton.OK,MessageBoxImage.Information)==
+                        if (MessageBox.Show("信息新增成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                             MessageBoxResult.OK)
                         {
                             this.DialogResult = true;
-                        }  
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("该档案编码已经存在，请更改！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                    MessageBox.Show("该档案编码已经存在，请更改！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else 
+            else//不存在修改的情况 只有新增和删除
             {
-                SQl = string.Format(@"UPDATE [QualityIssue] SET [QI_IsItemIssue]='{0}',[QI_IsProduceIssue]='{1}',[QI_IsPreviousIssue]='{2}'
-                            WHERE [ID]={3}",rbtn_IsItemIssueYes.IsChecked,rbtn_IsProduceIssueYes.IsChecked,rbtn_IsPreviousIssueYes.IsChecked,qil.ID);
-                int x = MyDBController.ExecuteNonQuery(SQl);
-                if (x > 0)
-                {
-                    if (MessageBox.Show("信息修改成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
-                        MessageBoxResult.OK)
-                    {
-                        this.DialogResult = true;
-                    }
-                }
+//                SQl = string.Format(@"UPDATE [QualityIssue] SET [QI_IsItemIssue]='{0}',[QI_IsProduceIssue]='{1}',[QI_IsPreviousIssue]='{2}'
+//                            WHERE [ID]={3}", "", "", "", qil.ID);
+//                int x = MyDBController.ExecuteNonQuery(SQl);
+//                if (x > 0)
+//                {
+//                    if (MessageBox.Show("信息修改成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
+//                        MessageBoxResult.OK)
+//                    {
+//                        this.DialogResult = true;
+//                    }
+//                }
             }
             MyDBController.CloseConnection();
         }
@@ -180,19 +175,19 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_ReWrite_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Title=="质量档案新增窗口")//新增的时候全部文本框均可编辑
+            if (this.Title == "质量档案新增窗口")//新增的时候全部文本框均可编辑
             {
-                txtb_BarCode.Text = txtb_Code.Text 
+                txtb_BarCode.Text = txtb_Code.Text
                     = txtb_Name.Text = "";
-                rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
-                    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
-                    = false;
+                //rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
+                //    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
+                //    = false;
             }
             else//修改的时候，编码、名称、条码文本框不可编辑
             {
-                rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
-                    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
-                    = false;
+                //rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
+                //    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
+                //    = false;
             }
         }
 
@@ -203,7 +198,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_Code_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (this.Title=="质量档案新增窗口")
+            if (this.Title == "质量档案新增窗口")
             {
                 bool checkresult = CheckCode();
                 if (checkresult)
@@ -218,11 +213,11 @@ namespace BarCodeSystem
         /// </summary>
         /// <returns></returns>
         private bool CheckCode()
-        {         
+        {
             int x = dt.Rows.Count;
-            IsExist= false;
+            IsExist = false;
             TwinkleCount = 0;
-            if (txtb_Code.Text.Length>0)
+            if (txtb_Code.Text.Length > 0)
             {
                 for (int i = 0; i < x; i++)
                 {
@@ -238,7 +233,7 @@ namespace BarCodeSystem
             {
                 IsExist = true;
                 return IsExist;
-            }    
+            }
         }
 
         /// <summary>

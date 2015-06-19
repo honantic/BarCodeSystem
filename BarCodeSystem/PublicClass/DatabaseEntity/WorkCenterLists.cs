@@ -28,6 +28,13 @@ namespace BarCodeSystem
             set;
         }
 
+        //部门简称
+        public string department_shortname
+        {
+            get;
+            set;
+        }
+
         //部门id
         public Int64 department_id
         {

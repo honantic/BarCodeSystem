@@ -90,6 +90,23 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 质检分类ID
+        /// </summary>
+        public Int64 II_QualitySortID
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 质检分类名称
+        /// </summary>
+        public string II_QualitySortName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// 料品的工艺路线版本中文描述
         /// </summary>
         public List<string> TRV_Version = new List<string> { };

@@ -4,7 +4,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
         ResizeMode="NoResize"
-        Title="质量档案中心" Height="800" Width="600" Loaded="Window_Loaded">
+        Title="质量问题信息中心" Height="800" Width="600" Loaded="Window_Loaded">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >
@@ -25,18 +25,18 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}" Width="30"></GridViewColumn>
-                    <GridViewColumn Header="质量信息编码" DisplayMemberBinding="{Binding Path=QI_Code}" Width="100"></GridViewColumn>
-                    <GridViewColumn Header="质量信息名称" DisplayMemberBinding="{Binding Path=QI_Name}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="质量信息条码" DisplayMemberBinding="{Binding Path=QI_BarCode}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="是否材料问题" DisplayMemberBinding="{Binding Path=QI_IsItemIssue_Show}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="是否加工问题" DisplayMemberBinding="{Binding Path=QI_IsProduceIssue_Show}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="是否上道工序问题" DisplayMemberBinding="{Binding Path=QI_IsPreviousIssue_Show}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="质量问题编码" DisplayMemberBinding="{Binding Path=QI_Code}" Width="180"></GridViewColumn>
+                    <GridViewColumn Header="质量问题原因" DisplayMemberBinding="{Binding Path=QI_Name}" Width="180"></GridViewColumn>
+                    <GridViewColumn Header="质量问题条码" DisplayMemberBinding="{Binding Path=QI_BarCode}" Width="180"></GridViewColumn>
+                    <!--<GridViewColumn Header="是否材料问题" DisplayMemberBinding="{Binding Path=QI_IsItemIssue_Show}" Width="80"></GridViewColumn>-->
+                    <!--<GridViewColumn Header="是否加工问题" DisplayMemberBinding="{Binding Path=QI_IsProduceIssue_Show}" Width="80"></GridViewColumn>-->
+                    <!--<GridViewColumn Header="是否上道工序问题" DisplayMemberBinding="{Binding Path=QI_IsPreviousIssue_Show}" Width="100"></GridViewColumn>-->
                 </GridView>
             </ListView.View>
         </ListView>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button Name="btn_Add" Click="btn_Add_Click" Height="30" Width="80" Margin="5" Content="新增档案信息"></Button>
-            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30" Margin="5" Content="修改选中信息"></Button>
+            <Button Name="btn_Add" Click="btn_Add_Click" Height="30" Width="80" Margin="5" Content="新增问题信息"></Button>
+            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30" Margin="5" Content="修改选中问题" Visibility="Hidden"></Button>
             <Button Name="btn_Import" Click="btn_Import_Click" Height="30" Margin="5" Content="Excel导入信息" ></Button>
             <Button Name="btn_SelectAll" Click="btn_SelectAll_Click" Height="30" Margin="5" Width="40" Content="全选"></Button>
             <Button Name="btn_ReSelect" Click="btn_ReSelect_Click" Height="30" Margin="5" Width="40" Content="重选"></Button>

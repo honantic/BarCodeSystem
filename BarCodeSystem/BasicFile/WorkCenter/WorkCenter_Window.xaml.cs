@@ -44,6 +44,9 @@ namespace BarCodeSystem
                                [WC_Department_ID],
                                [WC_LastOprateBy],
                                [WC_Department_Name],
+
+                               [WC_Department_ShortName],                        
+
                                [WC_LastOperateTime],
                                case [WC_IsValidated]
                                when 1 then '是'
@@ -76,6 +79,9 @@ namespace BarCodeSystem
                 wcl1.department_id = (Int64)dt.Rows[i]["WC_Department_ID"];
                 wcl1.department_code = dt.Rows[i]["WC_Department_Code"].ToString();
                 wcl1.department_name = dt.Rows[i]["WC_Department_Name"].ToString();
+
+                wcl1.department_shortname = dt.Rows[i]["WC_Department_ShortName"].ToString();
+
                 wcl1.isordercontroled = dt.Rows[i]["WC_IsOrderControled"].ToString();
                 wcl1.isworkcenter = dt.Rows[i]["WC_IsWorkCenter"].ToString();
                 wcl1.isvalidated = dt.Rows[i]["WC_IsValidated"].ToString();

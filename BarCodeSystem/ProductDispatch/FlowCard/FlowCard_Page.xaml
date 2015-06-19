@@ -52,7 +52,7 @@
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}" >流转卡表头信息</TextBlock>
                 </GroupBox.Header>
-                <Grid Name="CardHeaderGrid">
+                <Grid Name="CardHeaderGrid" SizeChanged="CardHeaderGrid_SizeChanged">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
@@ -77,7 +77,7 @@
                     <TextBlock Text="产品:" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"></TextBlock>
                     <StackPanel  Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" >
                         <TextBox  TextWrapping="Wrap" TextChanged="txtb_ItemInfo_TextChanged" VerticalAlignment="Center" Name="txtb_ItemInfo" Text="来自生产订单" IsReadOnly="True" 
-                                  Width="{Binding Path=ActualWidth,ElementName=fourthCol}" BorderBrush="White"></TextBox>
+                                  Width="{Binding Path=Width,ElementName=fourthCol}" BorderBrush="White"></TextBox>
                         <!--<Button Name="btn_ItemSearch" Cursor="Hand" Click="btn_ItemSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>-->
@@ -86,7 +86,7 @@
                     <TextBlock TextWrapping="Wrap" Text="工艺路线版本:" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right" ></TextBlock>
                     <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                         <TextBox  VerticalAlignment="Center" Name="txtb_TechRouteVersion" IsReadOnly="True" Text="点击放大镜选择" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
-                        <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Click="btn_TechRouteSearch_Click" Name="btn_TechRouteSearch"  Background="White" BorderBrush="White">
+                        <Button Cursor="Hand" Height="{Binding Path=ActualHeight,ElementName=txtb_ProduceOrderInfo}" Style="{StaticResource btn_SearchStyle}" Click="btn_TechRouteSearch_Click" Name="btn_TechRouteSearch"  Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
                     </StackPanel>
@@ -106,7 +106,7 @@
                     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                         <TextBox VerticalAlignment="Center" Name="txtb_ProduceOrderInfo" IsReadOnly="True" Text="点击放大镜选择" 
                                  Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
-                        <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Name="btn_SourceOrderSearch" Click="btn_SourceOrderSearch_Click" Background="White" BorderBrush="White">
+                        <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Height="{Binding Path=ActualHeight,ElementName=txtb_ProduceOrderInfo}" Name="btn_SourceOrderSearch" Click="btn_SourceOrderSearch_Click" Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
                     </StackPanel>
@@ -132,7 +132,7 @@
                     <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CreatedBy" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 
                     <TextBlock Text="审核人员:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Column="2" Grid.Row="3"></TextBlock>
-                    <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=fourthCol}" Name="textb_CheckedBy" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                    <TextBlock Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=fourthCol,Mode=OneWay}" Name="textb_CheckedBy" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 
                     <TextBlock Text="流转卡状态:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Column="4" Grid.Row="3"></TextBlock>
                     <TextBlock Text="开立" Background="LightGray" Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}" Name="textb_CardState" Grid.Column="5" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
@@ -188,13 +188,10 @@
                             <DataGridTextColumn Header="投入数"></DataGridTextColumn>
                             <DataGridTextColumn Header="合格数"></DataGridTextColumn>
                             <DataGridTextColumn Header="报废数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="责废数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="料废数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="不良数"></DataGridTextColumn>
                             <DataGridTextColumn Header="待处理数"></DataGridTextColumn>
                             <DataGridTextColumn Header="生产车间" Binding="{Binding Path=WC_Department_Name}" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否测试工序" Binding="{Binding Path=IsTestProcess, Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否返工工序" Binding="{Binding Path=IsBackProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="是否测试工序" Binding="{Binding Path=TR_IsTestProcess, Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="是否返工工序" Binding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是首道工工序" Binding="{Binding Path=TR_IsFirstProcess, Converter={StaticResource ResourceKey=boolConvert}}"  IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是末道工工序" Binding="{Binding Path=TR_IsLastProcess, Converter={ StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="日期"></DataGridTextColumn>

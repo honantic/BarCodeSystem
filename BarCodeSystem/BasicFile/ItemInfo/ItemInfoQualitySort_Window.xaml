@@ -1,0 +1,36 @@
+﻿<Window x:Class="BarCodeSystem.BasicFile.ItemInfo.ItemInfoQualitySort_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Title="质检分类清单" Height="600" Width="400" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <ListView  Name="listview1" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" ItemContainerStyleSelector="{DynamicResource mySelector}" PreviewMouseDoubleClick="listview1_PreviewMouseDoubleClick" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="质检分类编码" Width="180" DisplayMemberBinding="{Binding Path=QS_Code}"></GridViewColumn>
+                    <GridViewColumn Header="质检分类名称" Width="180" DisplayMemberBinding="{Binding Path=QS_Name}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Button Name="btn_Chose" Grid.Row="2" Height="30" Width="80" Content="选择" Click="btn_Chose_Click"></Button>
+        <Button Name="btn_Close" Grid.Row="2" Grid.Column="1" Height="30" Width="80" Content="关闭" Click="btn_Close_Click"></Button>
+    </Grid>
+</Window>

@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
+using BarCodeSystem.TechRoute.TechRoute;
 
 namespace BarCodeSystem
 {
@@ -22,20 +23,26 @@ namespace BarCodeSystem
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 维护工时的构造函数
+        /// </summary>
+        /// <param name="str"></param>
+        public TechRouteModify_Window(string str)
+        {
+            InitializeComponent();
+            this.Title = "工艺路线修改窗口";
+            btn_AddVersion.IsEnabled = btn_ClearInfo.IsEnabled = btn_DeleteProcess.IsEnabled = false;
+            radio_IsBackProcess_False.IsEnabled = radio_IsBackProcess_True.IsEnabled = radio_IsBackVersion_False.IsEnabled = radio_IsBackVersion_True.IsEnabled = radio_IsTestProcess_False.IsEnabled = radio_IsTestProcess_True.IsEnabled = radio_ReportWay_Flow.IsEnabled = radio_ReportWay_Scatter.IsEnabled = false;
+            textb_ChooseItem.IsEnabled = textb_GetProcess.IsEnabled = textb_GetWorkCenter.IsEnabled = false;
+            txtb_ProcessName.IsReadOnly = txtb_ItemCode.IsReadOnly = txtb_ItemName.IsReadOnly = txtb_TechSequence.IsReadOnly = txtb_TechVersion.IsReadOnly = txtb_TechVersionName.IsReadOnly = txtb_WorkCenterName.IsReadOnly = true;
+            cb_IsDefaultVersion.IsEnabled = false;
+        }
+
         //选择的工序ID、工作中心ID
         Int64 choosedProcessID, choosedWorkCenterID, choosedItemID, trv_versionID;
         string choosedProcessCode;
         DataTable dt = new DataTable();
         DataSet ds = new DataSet();
-
-        /// <summary>
-        /// 当窗体为修改窗体的时候的传值，当前选中的料品信息
-        /// </summary>
-        //public ItemInfoLists iil
-        //{
-        //    get;
-        //    set;
-        //}
 
         /// <summary>
         /// 当窗体为修改窗体的时候的传值,当前窗体为新增窗体的时候new
@@ -56,6 +63,10 @@ namespace BarCodeSystem
             set;
         }
 
+        /// <summary>
+        /// 选中的修改的工艺路线版本
+        /// </summary>
+        public TechVersion techversion { get; set; }
         /// <summary>
         /// 加载事件
         /// </summary>
@@ -78,35 +89,6 @@ namespace BarCodeSystem
             InitShow();
         }
 
-
-        /// <summary>
-        /// 设置绑定
-        /// </summary>
-        private void SetBinding()
-        {
-            //trl = (TechRouteLists)listview1.SelectedItem ?? new TechRouteLists();
-            //trl.TR_ProcessSequence;
-            //Binding txtb_ItemCode_BD = new Binding("TR_ItemCode") { Source = trl, UpdateSourceTrigger = UpdateSourceTrigger.Default };
-            //this.txtb_ItemCode.SetBinding(TextBox.TextProperty, txtb_ItemCode_BD);
-
-            //Binding txtb_ItemName_BD = new Binding("II_Name") { Source = trl, UpdateSourceTrigger = UpdateSourceTrigger.Default };
-            //this.txtb_ItemName.SetBinding(TextBox.TextProperty, txtb_ItemName_BD);
-
-            //Binding txtb_TechSequence_BD = new Binding("TR_ProcessSequence") { Source = trl, UpdateSourceTrigger = UpdateSourceTrigger.Default };
-            //Binding txtb_TechSequence_BD = new Binding() { Mode=BindingMode.OneWay};
-            //txtb_TechSequence_BD.Source = trl;
-            //txtb_TechSequence_BD.Converter = new TechRoute_ProcessSequenceConverter();
-            //this.txtb_TechSequence.SetBinding(TextBox.TextProperty, txtb_TechSequence_BD);
-            //txtb_ProcessName. = trl;
-
-            //Binding txtb_ProcessName_BD = new Binding("SelectedIndex") { Source = listview1, UpdateSourceTrigger = UpdateSourceTrigger.Default };
-            //this.txtb_ProcessName.SetBinding(TextBox.TextProperty, txtb_ProcessName_BD);
-
-            //Binding txtb_TechVersion_BD = new Binding("SelectedItem.ToString()") { Source = trl, UpdateSourceTrigger = UpdateSourceTrigger.Default };
-            //this.txtb_TechVersion.SetBinding(TextBox.TextProperty, txtb_TechVersion_BD);
-
-        }
-
         //去除关闭按钮
         //1.Window 类中申明
         private const int GWL_STYLE = -16;
@@ -122,19 +104,7 @@ namespace BarCodeSystem
         /// </summary>
         private void InitShow()
         {
-            ObservableCollection<TechRouteLists> OCtrl =
-                new ObservableCollection<TechRouteLists>() 
-                {
-                    //new TechRouteLists{ TR_WageAllotScheme=0,TR_WageAllotScheme_Show="独立分配"},
-                    new TechRouteLists{ TR_WageAllotScheme=1,TR_WageAllotScheme_Show="平均分配"},
-                    //new TechRouteLists{ TR_WageAllotScheme=2,TR_WageAllotScheme_Show="按合作人数分配配额公式计算"}
-                };
-
-            cb_WageAllotScheme.ItemsSource = OCtrl;
-
             #region 条码系统暂定全部平均分配
-            //cb_WageAllotScheme.IsReadOnly = true;
-            cb_WageAllotScheme.SelectedIndex = 0;
             #endregion
 
             if (this.Title == "工艺路线修改窗口")
@@ -148,6 +118,9 @@ namespace BarCodeSystem
                 choosedItemID = selectedItem.ID;
                 trv_versionID = trls[0].TR_VersionID;
                 cb_IsDefaultVersion.IsChecked = trls[0].TR_IsDefaultVer;
+                cb_IsSpecialVersion_False.IsChecked = !techversion.TRV_IsSpecialVersion;
+                radio_IsBackVersion_False.IsChecked = !techversion.TRV_IsBackVersion;
+                radio_ReportWay_Flow.IsChecked = techversion.TRV_ReportWay == 0 ? true : false;
             }
             else
             {
@@ -239,15 +212,17 @@ namespace BarCodeSystem
                 item.TR_IsLastProcess = true;
 
                 Int64 trv_itemID = item.TR_ItemID;
-                string trv_version = item.TRV_Version;
+                string trv_versionCode = item.TRV_VersionCode, trv_versionName = item.TRV_VersionName;
 
-                //当前版本是否为默认版本，当前版本是否启用
-                bool isdefaultver = (bool)cb_IsDefaultVersion.IsChecked, isvalidate = true;
+                //当前版本是否为默认版本，当前版本是否启用,是否返工版本
+                bool isdefaultver = (bool)cb_IsDefaultVersion.IsChecked, isvalidate = true, isBackVersion = !(bool)radio_IsTestProcess_False.IsChecked, isSpecialVersion = !(bool)cb_IsSpecialVersion_False.IsChecked;
+                //报工方式
+                int reportWay = (bool)radio_ReportWay_Scatter.IsChecked ? 1 : 0;//0:流水线报工，1：离散报工
 
                 //获取系统中是否有当前料品+工艺路线版本的信息
                 MyDBController.GetConnection();
-                string SQl = string.Format(@"SELECT [ID] FROM [TechRouteVersion] WHERE [TRV_ItemID]={0} AND [TRV_Version]='{1}'",
-                                    trv_itemID, trv_version);
+                string SQl = string.Format(@"SELECT [ID] FROM [TechRouteVersion] WHERE [TRV_ItemID]={0} AND [TRV_VersionCode]='{1}'",
+                                    trv_itemID, trv_versionCode);
                 dt.Clear();
                 dt = MyDBController.GetDataSet(SQl, ds).Tables[0];
                 int x = dt.Rows.Count;
@@ -264,7 +239,7 @@ namespace BarCodeSystem
                 else
                 {
                     //在工艺路线版本表中添加新版本
-                    string SQl1 = string.Format(@"INSERT INTO [TechRouteVersion]([TRV_ItemID],[TRV_Version],[TRV_IsDefaultVer],[TRV_IsValidated]) VALUES({0},'{1}','{2}','{3}')", trv_itemID, trv_version, isdefaultver, isvalidate);
+                    string SQl1 = string.Format(@"INSERT INTO [TechRouteVersion]([TRV_ItemID],[TRV_VersionCode],[TRV_VersionName],[TRV_IsDefaultVer],[TRV_IsValidated],[TRV_IsBackVersion],[TRV_ReportWay],[TRV_IsSpecialVersion]) VALUES({0},'{1}','{2}','{3}','{4}','{5}',{6},'{7}')", trv_itemID, trv_versionCode, trv_versionName, isdefaultver, isvalidate, isBackVersion, reportWay, isSpecialVersion);
                     MyDBController.ExecuteNonQuery(SQl1);
                     SqlDataReader reader = MyDBController.GetDataReader(SQl);
                     while (reader.Read())
@@ -293,26 +268,17 @@ namespace BarCodeSystem
                 {
                     foreach (TechRouteLists trl in trls)
                     {
-                        SQl = string.Format(@"INSERT INTO [TechRoute]([TR_ItemID],[TR_ItemCode],[TR_VersionID],[TR_ProcessSequence],
-                                        [TR_ProcessName],[TR_ProcessCode],[TR_ProcessID],[TR_IsReportPoint],[TR_IsExProcess],
-                                        [TR_WorkCenterID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_WagePerPiece],[TR_WorkHour],
-                                        [TR_WageAllotScheme],[TR_AllotFormulaID],[TR_IsReportDevice],[TR_IsDeviceCharging],[TR_IsTestProcess],[TR_IsBackProcess]) 
-                                        VALUES( {0},'{1}',{2},{3},'{4}','{5}',{6},'{7}','{8}',{9},'{10}','{11}',{12},
-                                        {13},'{14}','{15}','{16}','{17}','{18}','{19}')",
-                                            trl.TR_ItemID, trl.TR_ItemCode, trv_versionID, trl.TR_ProcessSequence, trl.TR_ProcessName,
-                                            trl.TR_ProcessCode, trl.TR_ProcessID, trl.TR_IsReportPoint, trl.TR_IsExProcess, trl.TR_WorkCenterID,
-                                            trl.TR_IsFirstProcess, trl.TR_IsLastProcess, trl.TR_WagePerPiece, trl.TR_WorkHour,
-                                            trl.TR_WageAllotScheme, (Int64)trl.TR_WageAllotScheme, trl.TR_IsReportDevice, trl.TR_IsDeviceCharging,trl.TR_IsTestProcess,trl.TR_IsBackProcess);
+                        SQl = string.Format(@"INSERT INTO [TechRoute]([TR_ItemID],[TR_ItemCode],[TR_VersionID],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_ProcessID],[TR_WorkHour],[TR_IsReportPoint],[TR_IsExProcess],[TR_WorkCenterID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_DefaultCheckPersonName],[TR_BindingProcess],[TR_IsReportDevice],[TR_IsDeviceCharging]) VALUES( {0},'{1}',{2},{3},'{4}','{5}',{6},{7},'{8}','{9}',{10},'{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')", trl.TR_ItemID, trl.TR_ItemCode, trv_versionID, trl.TR_ProcessSequence, trl.TR_ProcessName, trl.TR_ProcessCode, trl.TR_ProcessID, trl.TR_WorkHour, trl.TR_IsReportPoint, trl.TR_IsExProcess, trl.TR_WorkCenterID, trl.TR_IsFirstProcess, trl.TR_IsLastProcess, trl.TR_IsTestProcess, trl.TR_IsBackProcess, trl.TR_DefaultCheckPersonName, trl.TR_BindingProcess, trl.TR_IsReportDevice, trl.TR_IsDeviceCharging);
                         MyDBController.ExecuteNonQuery(SQl);
                     }
                     //将本来的默认工艺路线改为不是默认工艺路线
-                    if ( !trls[0].TR_IsDefaultVer.Equals(isdefaultver) && !isdefaultver)
+                    if (!trls[0].TR_IsDefaultVer.Equals(isdefaultver) && !isdefaultver)
                     {
                         SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=0 where [TRV_ItemID]={0} and [ID] !={1}", trls[0].TR_ItemID, trv_versionID);
                         MyDBController.ExecuteNonQuery(SQl);
                     }
                     //将本来不是默认工艺路线的改为默认工艺路线
-                    else if ( !trls[0].TR_IsDefaultVer.Equals(isdefaultver) && isdefaultver)
+                    else if (!trls[0].TR_IsDefaultVer.Equals(isdefaultver) && isdefaultver)
                     {
                         SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=1 where [TRV_ItemID]={0} and [ID] ={1}", trls[0].TR_ItemID, trv_versionID);
                         MyDBController.ExecuteNonQuery(SQl);
@@ -351,18 +317,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_SaveProcess_Click(object sender, RoutedEventArgs e)
         {
-            if (txtb_ItemCode.Text.Length == 0 || txtb_ItemName.Text.Length == 0 ||
-                txtb_ProcessName.Text.Length == 0 || txtb_TechSequence.Text.Length == 0 ||
-                txtb_TechVersion.Text.Length == 0 || txtb_WorkCenterName.Text.Length == 0 ||
-                txtb_WagePerPiece.Text.Length == 0 || cb_WageAllotScheme.SelectedValue == null)
+            if (txtb_ItemCode.Text.Length == 0 || txtb_ItemName.Text.Length == 0 || txtb_ProcessName.Text.Length == 0 || txtb_TechSequence.Text.Length == 0 || txtb_TechVersion.Text.Length == 0 || txtb_WorkCenterName.Text.Length == 0 || txtb_TechVersionName.Text.Length == 0 || txtb_TR_DefaultCheckPersonName.Text.Length == 0)
             {
                 MessageBox.Show("任何信息不能为空", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
 
-                if (Regex.IsMatch(txtb_TechSequence.Text.Trim(), User_Info.pattern[0]) &&
-                    Regex.IsMatch(txtb_WagePerPiece.Text.Trim(), User_Info.pattern[1]))
+                if (Regex.IsMatch(txtb_TechSequence.Text.Trim(), User_Info.pattern[0]))
                 {
                     bool IsRightVersion = true;
                     bool NewOrNot = true;
@@ -370,7 +332,7 @@ namespace BarCodeSystem
                     {
                         foreach (TechRouteLists item in listview1.Items)
                         {
-                            if (item.TRV_Version != txtb_TechVersion.Text.Trim())
+                            if (item.TRV_VersionCode != txtb_TechVersion.Text.Trim() || item.TRV_VersionName != txtb_TechVersionName.Text.Trim())
                             {
                                 MessageBox.Show("工序版本不一致！ \n请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                                 IsRightVersion = false;
@@ -406,7 +368,6 @@ namespace BarCodeSystem
                         {
                             if (!NewOrNot)//不是新工序
                             {
-                                TechRouteLists sel = cb_WageAllotScheme.SelectedItem as TechRouteLists;
                                 int index = listview1.SelectedIndex;
                                 trl = trls[index];
                                 trl.TR_ProcessName = txtb_ProcessName.Text;
@@ -415,17 +376,15 @@ namespace BarCodeSystem
                                 trl.TR_WorkCenterID = choosedWorkCenterID == 0 ? trl.TR_WorkCenterID : choosedWorkCenterID;
                                 trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
                                 trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
-                                trl.TR_WagePerPiece = Convert.ToDecimal(txtb_WagePerPiece.Text.Trim());
-                                trl.TR_WorkHour = 0;/*----------------------这段是预留的，工时根据单件工资计算---------------- */
-                                trl.TRV_Version = txtb_TechVersion.Text.Trim();
-                                trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
-                                trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                                trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
+                                trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
+                                trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
+                                trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
                                 trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
                                 trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                             }
                             else//新工序
                             {
-                                TechRouteLists sel = cb_WageAllotScheme.SelectedItem as TechRouteLists;
                                 trl = new TechRouteLists();
                                 trl.TR_ItemID = choosedItemID;
                                 trl.TR_ItemCode = txtb_ItemCode.Text;
@@ -436,11 +395,10 @@ namespace BarCodeSystem
                                 trl.TR_WorkCenterID = trls[0].TR_WorkCenterID;
                                 trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
                                 trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
-                                trl.TR_WagePerPiece = Convert.ToDecimal(txtb_WagePerPiece.Text.Trim());
-                                trl.TR_WorkHour = 0;/*----------------------这段是预留的，工时根据单件工资计算---------------- */
-                                trl.TRV_Version = txtb_TechVersion.Text.Trim();
-                                trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
-                                trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                                trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
+                                trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
+                                trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
+                                trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
                                 trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
                                 trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                                 trls.Add(trl);
@@ -454,7 +412,6 @@ namespace BarCodeSystem
                         }
                         else
                         {
-                            TechRouteLists sel = cb_WageAllotScheme.SelectedItem as TechRouteLists;
                             trl = new TechRouteLists();
                             trl.TR_ItemID = choosedItemID;
                             trl.TR_ItemCode = txtb_ItemCode.Text;
@@ -465,11 +422,10 @@ namespace BarCodeSystem
                             trl.TR_ProcessID = choosedProcessID;
                             trl.TR_WorkCenterID = choosedWorkCenterID;
                             trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
-                            trl.TR_WagePerPiece = Convert.ToDecimal(txtb_WagePerPiece.Text.Trim());
-                            trl.TR_WorkHour = 0;/*----------------------这段是预留的，工时根据单件工资计算---------------- */
-                            trl.TRV_Version = txtb_TechVersion.Text.Trim();
-                            trl.TR_WageAllotScheme = (int)cb_WageAllotScheme.SelectedValue;
-                            trl.TR_WageAllotScheme_Show = sel.TR_WageAllotScheme_Show;
+                            trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
+                            trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
+                            trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
+                            trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
                             trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
                             trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
                             trls.Add(trl);
@@ -501,8 +457,7 @@ namespace BarCodeSystem
             {
                 txtb_ItemCode.Text = txtb_ItemName.Text = txtb_ProcessName.Text =
                     txtb_TechSequence.Text = txtb_TechVersion.Text = txtb_WorkCenterName.Text =
-                    txtb_WagePerPiece.Text = "";
-                cb_WageAllotScheme.SelectedItem = null;
+                    txtb_WorkHour.Text = "";
             }
 
         }
@@ -531,10 +486,13 @@ namespace BarCodeSystem
                         txtb_ItemName.Text = trl.II_Name;
                         txtb_ProcessName.Text = trl.TR_ProcessName;
                         txtb_TechSequence.Text = trl.TR_ProcessSequence.ToString();
-                        txtb_TechVersion.Text = trl.TRV_Version;
+                        txtb_TechVersion.Text = trl.TRV_VersionCode;
+                        txtb_TechVersionName.Text = trl.TRV_VersionName;
                         txtb_WorkCenterName.Text = trl.WC_Department_Name;
-                        txtb_WagePerPiece.Text = trl.TR_WagePerPiece.ToString();
-                        cb_WageAllotScheme.SelectedValue = trl.TR_WageAllotScheme;
+                        txtb_WorkHour.Text = trl.TR_WorkHour.ToString();
+                        txtb_TR_DefaultCheckPersonName.Text = trl.TR_DefaultCheckPersonName;
+                        //txtb_WagePerPiece.Text = trl.TR_WagePerPiece.ToString();
+                        //cb_WageAllotScheme.SelectedValue = trl.TR_WageAllotScheme;
                     }
                 }
             }
@@ -572,13 +530,28 @@ namespace BarCodeSystem
             this.Title = "工艺路线新增窗口";
             txtb_ItemName.IsReadOnly = txtb_ItemCode.IsReadOnly = true;
             txtb_ProcessName.Text = txtb_TechSequence.Text = txtb_WorkCenterName.Text
-                = txtb_WagePerPiece.Text = txtb_TechVersion.Text = "";
-            cb_WageAllotScheme.SelectedIndex = -1;
+                = txtb_WorkHour.Text = txtb_TechVersion.Text = "";
+            //cb_WageAllotScheme.SelectedIndex = -1;
         }
 
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            btn_Save_Click1(sender,e);
+            btn_Save_Click1(sender, e);
+        }
+
+        /// <summary>
+        /// 选择检验员
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textb_ChooseCheckPerson_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TechRouteCheckPerson_Window tcp = new TechRouteCheckPerson_Window();
+            tcp.ShowDialog();
+            if ((bool)tcp.DialogResult)
+            {
+                txtb_TR_DefaultCheckPersonName.Text = tcp.checkPersonName;
+            }
         }
     }
 }

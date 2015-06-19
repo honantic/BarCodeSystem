@@ -12,11 +12,11 @@ namespace BarCodeSystem
         {
             ID = 0;
             TR_ItemID = 0;
-            TRV_Version = "";
+            TRV_VersionCode = "";
             II_Name = "";
             TR_ProcessSequence = 0;
             TR_ProcessName = "";
-            TR_WagePerPiece = 0;
+            //TR_WagePerPiece = 0;
             TR_WorkHour = 0;
             TR_WorkCenterID = 0;
         }
@@ -67,9 +67,18 @@ namespace BarCodeSystem
         }
 
         /// <summary>
-        /// 工艺路线版本
+        /// 工艺路线版本编码
         /// </summary>
-        public string TRV_Version
+        public string TRV_VersionCode
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 工艺路线版本名称
+        /// </summary>
+        public string TRV_VersionName
         {
             get;
             set;
@@ -111,23 +120,23 @@ namespace BarCodeSystem
             set;
         }
 
-        /// <summary>
-        /// 计件工资分配方式， 0:独立、1、平分、2、按合作人数分配配额公式计算
-        /// </summary>
-        public int TR_WageAllotScheme
-        {
-            get;
-            set;
-        }
+        ///// <summary>
+        ///// 计件工资分配方式， 0:独立、1、平分、2、按合作人数分配配额公式计算
+        ///// </summary>
+        //public int TR_WageAllotScheme
+        //{
+        //    get;
+        //    set;
+        //}
 
-        /// <summary>
-        /// 计件工资分配方式  中文展示
-        /// </summary>
-        public string TR_WageAllotScheme_Show
-        {
-            get;
-            set;
-        }
+        ///// <summary>
+        ///// 计件工资分配方式  中文展示
+        ///// </summary>
+        //public string TR_WageAllotScheme_Show
+        //{
+        //    get;
+        //    set;
+        //}
 
         /// <summary>
         /// 工作中心ID
@@ -167,7 +176,7 @@ namespace BarCodeSystem
         }
 
 
-        public bool tr_IsExProcess = false;
+        bool tr_IsExProcess = false;
         /// <summary>
         /// 是否委外工序
         /// </summary>
@@ -177,7 +186,7 @@ namespace BarCodeSystem
             set { tr_IsExProcess = value; }
         }
 
-        public bool tr_IsFirstProcess = false;
+        bool tr_IsFirstProcess = false;
         /// <summary>
         /// 是否首道工序
         /// </summary>
@@ -187,7 +196,7 @@ namespace BarCodeSystem
             set { tr_IsFirstProcess = value; }
         }
 
-        public bool tr_IsLastProcess = false;
+        bool tr_IsLastProcess = false;
         /// <summary>
         /// 是否末道工序
         /// </summary>
@@ -197,7 +206,7 @@ namespace BarCodeSystem
             set { tr_IsLastProcess = value; }
         }
 
-        public bool tr_IsReportDevice = false;
+        bool tr_IsReportDevice = false;
         /// <summary>
         /// 是否报工设备
         /// </summary>
@@ -207,7 +216,7 @@ namespace BarCodeSystem
             set { tr_IsReportDevice = value; }
         }
 
-        public bool tr_IsDeviceCharging = false;
+        bool tr_IsDeviceCharging = false;
         /// <summary>
         /// 是否设备计费
         /// </summary>
@@ -217,14 +226,14 @@ namespace BarCodeSystem
             set { tr_IsDeviceCharging = value; }
         }
 
-        /// <summary>
-        /// 标准单件工资
-        /// </summary>
-        public decimal TR_WagePerPiece
-        {
-            get;
-            set;
-        }
+        ///// <summary>
+        ///// 标准单件工资
+        ///// </summary>
+        //public decimal TR_WagePerPiece
+        //{
+        //    get;
+        //    set;
+        //}
 
         /// <summary>
         /// 是否默认工艺路线版本
@@ -235,20 +244,43 @@ namespace BarCodeSystem
             set;
         }
 
+        /// <summary>
+        /// 是否返工工序
+        /// </summary>
         public bool TR_IsBackProcess
         { get; set; }
 
+        /// <summary>
+        /// 是否测试工序
+        /// </summary>
         public bool TR_IsTestProcess
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// 默认检验员名字
+        /// </summary>
+        public string TR_DefaultCheckPersonName { get; set; }
+
+        /// <summary>
+        /// 绑定工序
+        /// </summary>
+        public int TR_BindingProcess { get; set; }
+        /// <summary>
+        /// 人员编码
+        /// </summary>
         public string personCode
         { get; set; }
 
         public string personName
         { get; set; }
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //public bool TRV_IsSpecialVersion { get; set; }
 
         ///// <summary>
         ///// 工艺路线派工的时候，改道工序的操作人员列表

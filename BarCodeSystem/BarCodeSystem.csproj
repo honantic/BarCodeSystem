@@ -31,8 +31,8 @@
     <PublisherName>FreeStyle</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.6.12.0</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.6.17.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -112,6 +112,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BasicFile\ItemInfo\ItemInfoModify_Window.xaml.cs">
+      <DependentUpon>ItemInfoModify_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFile\ItemInfo\ItemInfoQualitySort_Window.xaml.cs">
+      <DependentUpon>ItemInfoQualitySort_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BasicFile\Organization\OrgInfoImport_Window.xaml.cs">
       <DependentUpon>OrgInfoImport_Window.xaml</DependentUpon>
     </Compile>
@@ -126,6 +132,15 @@
     </Compile>
     <Compile Include="BasicFile\QualitySort\QualitySort_Window.xaml.cs">
       <DependentUpon>QualitySort_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.xaml.cs">
+      <DependentUpon>FlowCardQualityIssues_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCardReport\FlowCardReport_Page.xaml.cs">
+      <DependentUpon>FlowCardReport_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDispatch\FlowCardReport\FlowCardSearch_Page.xaml.cs">
+      <DependentUpon>FlowCardSearch_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProductDispatch\FlowCard\DisPlanConfirm_Page1.xaml.cs">
       <DependentUpon>DisPlanConfirm_Page1.xaml</DependentUpon>
@@ -165,6 +180,7 @@
     <Compile Include="PublicClass\DatabaseEntity\DisPlanLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\DisPlanVersionLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\FlowCardLists.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\FlowCardQualityLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\FlowCardSubLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\OrgInfoList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\QualitySortList.cs" />
@@ -184,6 +200,11 @@
     <Compile Include="PublicClass\DatabaseEntity\QualityIssuesLists.cs" />
     <Compile Include="PublicClass\HelperClass\RememberedUser.cs" />
     <Compile Include="PublicClass\DatabaseEntity\TechRouteLists.cs" />
+    <Compile Include="PublicClass\ValidationRules\QualifiedAmountRule.cs" />
+    <Compile Include="PublicClass\ValueConverters\FlowCardStateConverter.cs" />
+    <Compile Include="PublicClass\ValueConverters\FlowCardTypeConverter.cs" />
+    <Compile Include="PublicClass\ValueConverters\QualifiedAmountConverter.cs" />
+    <Compile Include="PublicClass\ValueConverters\ReportWayConverter.cs" />
     <Compile Include="PublicClass\ValueConverters\TechRoute_ProcessSequenceConverter.cs" />
     <Compile Include="PublicClass\DatabaseEntity\TechVersion.cs" />
     <Compile Include="PublicClass\DatabaseEntity\UserAccountLists.cs" />
@@ -205,6 +226,9 @@
     <Compile Include="SystemManage\U9User_Window.xaml.cs">
       <DependentUpon>U9User_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TechRoute\TechRoute\TechRouteCheckPerson_Window.xaml.cs">
+      <DependentUpon>TechRouteCheckPerson_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TechRoute\TechRoute\TechRouteItemList_Window.xaml.cs">
       <DependentUpon>TechRouteItemList_Window.xaml</DependentUpon>
     </Compile>
@@ -223,6 +247,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="BasicFile\ItemInfo\ItemInfoImport_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\ItemInfo\ItemInfoModify_Window.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BasicFile\ItemInfo\ItemInfoQualitySort_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -421,6 +453,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCardReport\FlowCardReport_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCardReport\FlowCardSearch_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProductDispatch\FlowCard\DisPlanConfirm_Page1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -484,6 +528,10 @@
     <Page Include="SystemResource\SimpleStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TechRoute\TechRoute\TechRouteCheckPerson_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TechRoute\TechRoute\TechRouteItemList_Window.xaml">
       <Generator>MSBuild:Compile</Generator>

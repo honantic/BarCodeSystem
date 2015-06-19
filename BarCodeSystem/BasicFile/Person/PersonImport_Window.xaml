@@ -26,8 +26,9 @@
                 <GridView >
                     <GridViewColumn Header="员工编号" DisplayMemberBinding="{Binding Path=code}" Width="100"></GridViewColumn>
                     <GridViewColumn Header="员工姓名" DisplayMemberBinding="{Binding Path=name}" Width="100"></GridViewColumn>
-                    <GridViewColumn Header="工作中心编号" DisplayMemberBinding="{Binding Path=departCode}" Width="200"></GridViewColumn>
-                    <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=departName}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="岗位" DisplayMemberBinding="{Binding Path=position}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="工作中心编号" DisplayMemberBinding="{Binding Path=departCode}" Width="150"></GridViewColumn>
+                    <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=departName}" Width="150"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

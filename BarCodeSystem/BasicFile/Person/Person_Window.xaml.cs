@@ -50,6 +50,7 @@ namespace BarCodeSystem
             //这段SQl用来展示数据
             string SQl = string.Format(@"select B.[P_Code]
 		                        ,B.[P_Name]
+                                ,B.[P_Position]
 		                        ,A.[WC_Department_Code]
 		                        ,A.[WC_Department_Name]
                                 ,A.[WC_Department_ID]
@@ -75,6 +76,9 @@ namespace BarCodeSystem
                     PersonLists pl = new PersonLists();
                     pl.code = dt.Rows[i]["P_Code"].ToString();
                     pl.name = dt.Rows[i]["P_Name"].ToString();
+
+                    pl.position = dt.Rows[i]["P_Position"].ToString();
+
                     pl.departName = dt.Rows[i]["WC_Department_Name"].ToString();
                     pl.departCode = dt.Rows[i]["WC_Department_Code"].ToString();
                     pl.departid = (Int64)dt.Rows[i]["WC_Department_ID"];
@@ -255,6 +259,27 @@ namespace BarCodeSystem
             {
                 GetBCSPersonList();
             }
+        }
+
+        /// <summary>
+        /// 导出Excel模板
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Export_Click(object sender, RoutedEventArgs e)
+        {
+            DataTable templet = new DataTable();
+            templet.TableName = "templet";
+
+            templet.Columns.Add("员工编号",typeof(string));
+            templet.Columns.Add("员工姓名",typeof(string));
+            templet.Columns.Add("岗位",typeof(string));
+            templet.Columns.Add("工作中心编号",typeof(string));
+            templet.Columns.Add("工作中心名称",typeof(string));
+
+            QkRowChangeToColClass.CreateExcelFileForDataTable(templet);
+
+            MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

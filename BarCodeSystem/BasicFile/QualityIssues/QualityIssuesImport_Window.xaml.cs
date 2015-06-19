@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Data;
@@ -35,10 +28,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             //去除关闭按钮
             //2.在装载事件中加入
@@ -73,7 +66,8 @@ namespace BarCodeSystem
         /// </summary>
         private DataTable GetCopyTable()
         {
-            string columlist = "QI_Code,QI_Name,QI_BarCode,QI_IsItemIssue_Show,QI_IsProduceIssue_Show,QI_IsPreviousIssue_Show";
+            //string columlist = "QI_Code,QI_Name,QI_BarCode,QI_IsItemIssue_Show,QI_IsProduceIssue_Show,QI_IsPreviousIssue_Show";
+            string columlist = "QI_Code,QI_Name,QI_BarCode";
             copiedData = new DataTable("QualityIssue");//用来显示的
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
 
@@ -81,9 +75,9 @@ namespace BarCodeSystem
             copiedData.Columns.Add("QI_Code", typeof(string));
             copiedData.Columns.Add("QI_Name", typeof(string));
             copiedData.Columns.Add("QI_BarCode", typeof(string));
-            copiedData.Columns.Add("QI_IsItemIssue_Show", typeof(string));
-            copiedData.Columns.Add("QI_IsProduceIssue_Show", typeof(string));
-            copiedData.Columns.Add("QI_IsPreviousIssue_Show", typeof(string));
+            //copiedData.Columns.Add("QI_IsItemIssue_Show", typeof(string));
+            //copiedData.Columns.Add("QI_IsProduceIssue_Show", typeof(string));
+            //copiedData.Columns.Add("QI_IsPreviousIssue_Show", typeof(string));
             qk.write_excel_date_to_temp_table(copiedData, columlist);
             return copiedData;
         }
@@ -98,25 +92,25 @@ namespace BarCodeSystem
         {
             List<QualityIssuesLists> qils = new List<QualityIssuesLists> { };
             int x = dt.Rows.Count;
-            dt.Columns.Add("QI_IsItemIssue", typeof(bool));
-            dt.Columns.Add("QI_IsProduceIssue", typeof(bool));
-            dt.Columns.Add("QI_IsPreviousIssue", typeof(bool));
+            //dt.Columns.Add("QI_IsItemIssue", typeof(bool));
+            //dt.Columns.Add("QI_IsProduceIssue", typeof(bool));
+            //dt.Columns.Add("QI_IsPreviousIssue", typeof(bool));
             for (int i = 0; i < x; i++)
             {
                 QualityIssuesLists qil = new QualityIssuesLists();
                 qil.QI_Code = dt.Rows[i]["QI_Code"].ToString();
                 qil.QI_Name = dt.Rows[i]["QI_Name"].ToString();
                 qil.QI_BarCode = dt.Rows[i]["QI_BarCode"].ToString();
-                qil.QI_IsItemIssue = false;
-                qil.QI_IsItemIssue_Show = "否";
-                qil.QI_IsProduceIssue = true;
-                qil.QI_IsProduceIssue_Show = "是";
-                qil.QI_IsPreviousIssue = false;
-                qil.QI_IsPreviousIssue_Show = "否";
+                //qil.QI_IsItemIssue = false;
+                //qil.QI_IsItemIssue_Show = "否";
+                //qil.QI_IsProduceIssue = true;
+                //qil.QI_IsProduceIssue_Show = "是";
+                //qil.QI_IsPreviousIssue = false;
+                //qil.QI_IsPreviousIssue_Show = "否";
                 qils.Add(qil);
-                dt.Rows[i]["QI_IsItemIssue"] = false;
-                dt.Rows[i]["QI_IsProduceIssue"] = true;
-                dt.Rows[i]["QI_IsPreviousIssue"] = false;
+                //dt.Rows[i]["QI_IsItemIssue"] = false;
+                //dt.Rows[i]["QI_IsProduceIssue"] = true;
+                //dt.Rows[i]["QI_IsPreviousIssue"] = false;
             }
             listview1.ItemsSource = qils;
         }
@@ -165,16 +159,18 @@ namespace BarCodeSystem
              * 2.datatable的tablename必须和数据库中目标表的表名一样，如果目标表中有主键，则需要在本datatable中
              *     新建一列和主键对应的影射列，列名为"主键名"+"New"，影射列数据和主键数据一样，但是没有主键约束*/
             this.Cursor = Cursors.Wait;
-            List<string> colList = new List<string> { "ID", "QI_Code", "QI_Name", "QI_BarCode", "QI_IsItemIssue", 
-                "QI_IsProduceIssue", "QI_IsPreviousIssue" };
+            //List<string> colList = new List<string> { "ID", "QI_Code", "QI_Name", "QI_BarCode", "QI_IsItemIssue", 
+            //    "QI_IsProduceIssue", "QI_IsPreviousIssue" };
+
+            List<string> colList = new List<string> { "ID", "QI_Code", "QI_Name", "QI_BarCode" };
             
             copiedData.Columns.Add("ID", typeof(Int64));//数据表主键，复制过来的表里面没有，需要加上一列
             copiedData.Columns["ID"].SetOrdinal(0);//ID为第一列
             copiedData.Columns.Add("IDNew",typeof(Int64));//主键影射列
 
-            copiedData.Columns.Remove("QI_IsItemIssue_Show");//去除数据表中的展示列
-            copiedData.Columns.Remove("QI_IsProduceIssue_Show");
-            copiedData.Columns.Remove("QI_IsPreviousIssue_Show");
+            //copiedData.Columns.Remove("QI_IsItemIssue_Show");//去除数据表中的展示列
+            //copiedData.Columns.Remove("QI_IsProduceIssue_Show");
+            //copiedData.Columns.Remove("QI_IsPreviousIssue_Show");
 
             int x = copiedData.Rows.Count;
             int y = existedQualityIssues.Rows.Count;

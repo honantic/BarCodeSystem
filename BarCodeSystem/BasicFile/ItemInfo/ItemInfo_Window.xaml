@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
 
         <ListView Name="listview1" Grid.Row="1" Margin="5" 
-                  ItemContainerStyleSelector="{DynamicResource mySelector}">
+                  ItemContainerStyleSelector="{DynamicResource mySelector}" PreviewMouseDoubleClick="listview1_PreviewMouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="料品编码" Width="80" DisplayMemberBinding="{Binding Path=II_Code}"></GridViewColumn>
@@ -32,14 +32,16 @@
                     <GridViewColumn Header="计量单位ID" Width="80" DisplayMemberBinding="{Binding Path=II_UnitID}"></GridViewColumn>
                     <GridViewColumn Header="计量单位编码" Width="80" DisplayMemberBinding="{Binding Path=II_UnitCode}"></GridViewColumn>
                     <GridViewColumn Header="计量单位名称" Width="80" DisplayMemberBinding="{Binding Path=II_UnitName}"></GridViewColumn>
+                    <GridViewColumn Header="质检分类" Width="80" DisplayMemberBinding="{Binding Path=II_QualitySortName}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <Button Name="btn_Import" Click="btn_Import_Click" Content="导入U9料品" Height="30" Width="80" Margin="5" ></Button>
-            <TextBox Name="txtb_SearchKey" TextChanged="txtb_SearchKey_TextChanged" Width="80" Margin="140,15,5,15" FontSize="14"/>
+            <Button Name="btn_Import" Click="btn_Import_Click" Content="导入U9料品" Height="30" Width="80" Margin="3" ></Button>
+            <Button Name="btn_Modify" Click="btn_Modify_Click" Content="修改信息" Height="30" Width="80" Margin="3"></Button>
+            <TextBox Name="txtb_SearchKey" TextChanged="txtb_SearchKey_TextChanged" Width="80" Margin="100,15,5,15" FontSize="14"/>
             <Button Name="btn_Search" Click="btn_Search_Click" Content="搜索" Height="30" Width="40" Margin="5"></Button>
-            <Button Name="btn_Close" Click="btn_Close_Click" Content="关闭" Height="30" Width="80" Margin="140 5 5 5" ></Button>
+            <Button Name="btn_Close" Click="btn_Close_Click" Content="关闭" Height="30" Width="80" Margin="80 5 5 5" ></Button>
         </StackPanel>
     </Grid>
 </Window>

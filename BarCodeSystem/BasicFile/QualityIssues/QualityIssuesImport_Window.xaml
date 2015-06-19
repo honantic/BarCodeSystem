@@ -4,7 +4,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
         ResizeMode="NoResize"
-        Title="质量档案Excel导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
+        Title="质量问题Excel导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
 
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
@@ -25,12 +25,12 @@
                   ItemContainerStyleSelector="{DynamicResource mySelector}" >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="质量档案编码" DisplayMemberBinding="{Binding Path=QI_Code}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="质量档案名称" DisplayMemberBinding="{Binding Path=QI_Name}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="质量档案条码" DisplayMemberBinding="{Binding Path=QI_BarCode}" Width="80"></GridViewColumn>
-                    <GridViewColumn Header="是否材料问题" DisplayMemberBinding="{Binding Path=QI_IsItemIssue_Show}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="质量问题编码" DisplayMemberBinding="{Binding Path=QI_Code}" Width="160"></GridViewColumn>
+                    <GridViewColumn Header="质量问题原因" DisplayMemberBinding="{Binding Path=QI_Name}" Width="160"></GridViewColumn>
+                    <GridViewColumn Header="质量问题条码" DisplayMemberBinding="{Binding Path=QI_BarCode}" Width="160"></GridViewColumn>
+                    <!--<GridViewColumn Header="是否材料问题" DisplayMemberBinding="{Binding Path=QI_IsItemIssue_Show}" Width="100"></GridViewColumn>
                     <GridViewColumn Header="是否加工问题" DisplayMemberBinding="{Binding Path=QI_IsProduceIssue_Show}" Width="100"></GridViewColumn>
-                    <GridViewColumn Header="是否上道工序问题" DisplayMemberBinding="{Binding Path=QI_IsPreviousIssue_Show}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="是否上道工序问题" DisplayMemberBinding="{Binding Path=QI_IsPreviousIssue_Show}" Width="100"></GridViewColumn>-->
                 </GridView>
             </ListView.View>
         </ListView>

@@ -112,13 +112,14 @@ namespace BarCodeSystem
         /// </summary>
         private void GetCopyTable()
         {
-            string columlist = "P_Code,P_Name,WC_Department_Code,WC_Department_Name";
+            string columlist = "P_Code,P_Name,P_Position,WC_Department_Code,WC_Department_Name";
             copiedData  =new DataTable("Person");//用来显示的
             fixedData = new DataTable("Person");
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
 
             copiedData.Columns.Add("P_Code", typeof(string));
             copiedData.Columns.Add("P_Name", typeof(string));
+            copiedData.Columns.Add("P_Position",typeof(string));
             copiedData.Columns.Add("WC_Department_Code", typeof(string));
             copiedData.Columns.Add("WC_Department_Name", typeof(string));
             qk.write_excel_date_to_temp_table(copiedData, columlist);
@@ -173,6 +174,9 @@ namespace BarCodeSystem
             colList.Add("ID");
             colList.Add("P_Code");
             colList.Add("P_Name");
+
+            colList.Add("P_Position");
+
             colList.Add("P_WorkCenterID");
             MyDBController.GetConnection();
             int updateNum = 0, insertNum = 0;
@@ -205,6 +209,7 @@ namespace BarCodeSystem
             canImport = true;
             string error1 = "部门编码/人员姓名/人员编码 任意一列不能为空";
             string error2 = "部门编码有误";
+            string error3 = "岗位信息有误";
             /*为复制进来的数据添加一列标识列
              *当导入数据存在错误的时候，导出错误数据到Excel
              *该标识列可以为操作人员提供参考*/
@@ -227,17 +232,30 @@ namespace BarCodeSystem
                         if (copied.Rows[i]["WC_Department_Code"].ToString() ==
                         SYSDepartCode.Rows[j]["WC_Department_Code"].ToString())
                         {
-                            PersonLists pl = new PersonLists();
-                            pl.isRightDepart = true;
-                            pl.name = copied.Rows[i]["P_Name"].ToString();
-                            pl.code = copied.Rows[i]["P_Code"].ToString();
-                            pl.departCode = copied.Rows[i]["WC_Department_Code"].ToString();
-                            pl.departName = copied.Rows[i]["WC_Department_Name"].ToString();
-                            pl.departid = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
-                            copiedData.Rows[i]["P_WorkCenterID"] = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
-                            pls.Add(pl);
-                            IfRight = true;
-                            break;
+
+                            if (copied.Rows[i]["P_Position"].ToString().Equals("操作工") || copied.Rows[i]["P_Position"].ToString().Equals("检验员") || string.IsNullOrEmpty(copied.Rows[i]["P_Position"].ToString()))
+                            {
+                                PersonLists pl = new PersonLists();
+                                pl.isRightDepart = true;
+                                pl.name = copied.Rows[i]["P_Name"].ToString();
+                                pl.code = copied.Rows[i]["P_Code"].ToString();
+
+                                pl.position = copied.Rows[i]["P_Position"].ToString();
+
+                                pl.departCode = copied.Rows[i]["WC_Department_Code"].ToString();
+                                pl.departName = copied.Rows[i]["WC_Department_Name"].ToString();
+                                pl.departid = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
+                                copiedData.Rows[i]["P_WorkCenterID"] = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
+                                pls.Add(pl);
+                                IfRight = true;
+                                break;
+                            }
+                            else
+                            {
+                                copied.Rows[i]["IfRight"] = error3;
+                                IfRight = false;
+                            }
+
                         }
                     }
                     
@@ -249,9 +267,14 @@ namespace BarCodeSystem
                         pl.isRightDepart = false;
                         pl.name = copied.Rows[i]["P_Name"].ToString();
                         pl.code = copied.Rows[i]["P_Code"].ToString();
+
+                        pl.position = copied.Rows[i]["P_Position"].ToString();
+
                         pl.departCode = copied.Rows[i]["WC_Department_Code"].ToString();
                         pl.departName = copied.Rows[i]["WC_Department_Name"].ToString();
                         pls.Add(pl);
+
+                        if (!copied.Rows[i]["IfRight"].ToString().Equals(error3))
                         copied.Rows[i]["IfRight"] = error2;
                         canImport = false;
                 }

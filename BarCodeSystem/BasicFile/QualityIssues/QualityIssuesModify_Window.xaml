@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="质量档案修改窗口" Height="400" Width="600" Loaded="Window_Loaded">
+        Title="质量问题修改窗口" Height="400" Width="600" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"></RowDefinition>
@@ -24,14 +24,14 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <TextBlock Text="质量档案编码:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="质量问题编码:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             <TextBox Name="txtb_Code" MouseDoubleClick="txtb_Code_MouseDoubleClick" GotFocus="txtb_Code_GotFocus" LostFocus="txtb_Code_LostFocus" Grid.Column="1" Margin="5" Width="80" TextWrapping="Wrap" MinLines="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
-            <TextBlock Text="质量档案名称:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2"></TextBlock>
+            <TextBlock Text="质量问题原因:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2"></TextBlock>
             <TextBox Name="txtb_Name" Width="80" Margin="5" FontSize="14" MinLines="1"  HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Grid.Column="3" MouseDoubleClick="txtb_Code_MouseDoubleClick"></TextBox>
-            <TextBlock Text="质量档案条码:" FontSize="14" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4"></TextBlock>
+            <TextBlock Text="质量问题条码:" FontSize="14" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4"></TextBlock>
             <TextBox Name="txtb_BarCode" Width="80" Margin="5" FontSize="14" MinLines="1"  HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Grid.Column="5" MouseDoubleClick="txtb_Code_MouseDoubleClick"></TextBox>
 
-            <TextBlock Text="是否材料问题:" Grid.Row="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <!--<TextBlock Text="是否材料问题:" Grid.Row="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5">
                 <RadioButton Name="rbtn_IsItemIssueYes" Content="是"></RadioButton>
                 <RadioButton Name="rbtn_IsItemIssueNo" Content="否"></RadioButton>
@@ -45,7 +45,7 @@
             <StackPanel Grid.Column="5" Grid.Row="1" VerticalAlignment="Center" Margin="5">
                 <RadioButton Name="rbtn_IsPreviousIssueYes" Content="是"></RadioButton>
                 <RadioButton Name="rbtn_IsPreviousIssueNo" Content="否"></RadioButton>
-            </StackPanel>
+            </StackPanel>-->
 
         </Grid>
         

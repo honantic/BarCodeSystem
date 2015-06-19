@@ -58,7 +58,7 @@ namespace BarCodeSystem
         private void GetBCSWorkCenterInfo()
         {
             txtb_code.Text = dept_info.department_code;
-            txtb_name.Text = dept_info.department_name;
+            //txtb_name.Text = dept_info.department_name;
             txtb_modifyby.Text = dept_info.lastoperateby;
             txtb_modifytime.Text = dept_info.lastoperatetime;
             rbtn_isvalidated.IsChecked = dept_info.isvalidated_DB;
@@ -67,6 +67,9 @@ namespace BarCodeSystem
             rbtn_notordercontrol.IsChecked = !dept_info.isordercontroled_DB;
             rbtn_isworkcenter.IsChecked = dept_info.isworkcenter_DB;
             rbtn_notworkcenter.IsChecked = !dept_info.isworkcenter_DB;
+
+            txt_name.Text = dept_info.department_name;
+            txt_department_shortname.Text = dept_info.department_shortname;
         }
 
         /// <summary>
@@ -81,35 +84,50 @@ namespace BarCodeSystem
 
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            MyDBController.GetConnection();
-            this.Cursor = Cursors.Wait;
-            dept_info.isvalidated_DB = (bool)rbtn_isvalidated.IsChecked ? true : false;
-            dept_info.isordercontroled_DB = (bool)rbtn_isordercontrol.IsChecked ? true : false;
-            dept_info.isworkcenter_DB = (bool)rbtn_isworkcenter.IsChecked ? true : false;
+            //MyDBController.GetConnection();
+            //this.Cursor = Cursors.Wait;
 
-            string SQl = string.Format(@"UPDATE [WorkCenter]  SET [WC_IsValidated]='{0}',
-                                [WC_IsOrderControled]='{1}',[WC_IsWorkCenter]='{2}',[WC_LastOperateTime]='{3}',
-                                [WC_LastOprateBy]='{4}' WHERE [WC_Department_ID]={5}", dept_info.isvalidated_DB,
-                                dept_info.isordercontroled_DB, dept_info.isworkcenter_DB,
-                                DateTime.Now, User_Info.User_Name, dept_info.department_id);
-            try
+
+
+            if (string.IsNullOrEmpty(txt_department_shortname.Text) || string.IsNullOrEmpty(txt_name.Text))
             {
-                MyDBController.ExecuteNonQuery(SQl);
-                MessageBoxResult result= MessageBox.Show("保存成功","提示",MessageBoxButton.OKCancel,MessageBoxImage.Information);
-                if (result==MessageBoxResult.OK)
+                MessageBox.Show("保存信息不能为空!", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            }
+            else
+            {
+                dept_info.isvalidated_DB = (bool)rbtn_isvalidated.IsChecked ? true : false;
+                dept_info.isordercontroled_DB = (bool)rbtn_isordercontrol.IsChecked ? true : false;
+                dept_info.isworkcenter_DB = (bool)rbtn_isworkcenter.IsChecked ? true : false;
+
+                dept_info.department_shortname = txt_department_shortname.Text.Trim();
+                dept_info.department_name = txt_name.Text.Trim();
+                MyDBController.GetConnection();
+                this.Cursor = Cursors.Wait;
+
+                string SQl = string.Format(@"UPDATE [WorkCenter]  SET [WC_IsValidated]='{0}',
+                                [WC_IsOrderControled]='{1}',[WC_IsWorkCenter]='{2}',[WC_LastOperateTime]='{3}',
+                                [WC_LastOprateBy]='{4}',[WC_Department_ShortName] = '{5}',[WC_Department_Name] = '{6}' WHERE [WC_Department_ID]={7}", dept_info.isvalidated_DB,
+                    dept_info.isordercontroled_DB, dept_info.isworkcenter_DB,
+                    DateTime.Now, User_Info.User_Name, dept_info.department_shortname, dept_info.department_name, dept_info.department_id);
+                try
                 {
-                    this.DialogResult = true;
+                    MyDBController.ExecuteNonQuery(SQl);
+                    MessageBoxResult result = MessageBox.Show("保存成功", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        this.DialogResult = true;
+                    }
+
+
                 }
-              
-                
+                catch (Exception ee)
+                {
+                    MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                MyDBController.CloseConnection();
+                this.Cursor = Cursors.Arrow;
             }
-            catch (Exception ee)
-            {    
-                MessageBox.Show(ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
-            }
-            MyDBController.CloseConnection();
-            this.Cursor = Cursors.Arrow;
-            
+
         }
 
 

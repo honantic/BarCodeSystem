@@ -86,7 +86,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             if (datagrid_RouteVersion.ItemsSource != null && datagrid_RouteProcess.ItemsSource != null)
             {
-                string version = ((TechVersion)datagrid_RouteVersion.SelectedItem).TRV_Version;
+                string version = ((TechVersion)datagrid_RouteVersion.SelectedItem).TRV_VersionCode;
                 stri.Invoke(version, processGridSource);
             }
         }
@@ -100,7 +100,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private List<TechVersion> FetchTechRouteInfo(string str)
         {
             //工艺路线版本datagrid数据源
-            string SQl = string.Format(@"Select A.[ID],A.[TRV_Version],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
+            string SQl = string.Format(@"Select A.[ID],A.[TRV_VersionCode],A.[TRV_VersionName],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRouteVersion");
 
@@ -108,14 +108,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 tvl.Add(new TechVersion()
                 {
-                    TR_VersionID = Convert.ToInt64(row["ID"]),
-                    TRV_Version = row["TRV_Version"].ToString(),
+                    ID = Convert.ToInt64(row["ID"]),
+                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
+                    TRV_VersionName = row["TRV_VersionName"].ToString(),
                     TRV_IsDefaultVer = (bool)row["TRV_IsDefaultVer"]
                 });
             }
 
             //工艺路线的工序信息
-            SQl = string.Format(@"Select A.[ID],A.[TR_ItemID],A.[TR_ItemCode],A.[TR_VersionID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsReportPoint],A.[TR_IsExProcess],A.[TR_WorkCenterID],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_WagePerPiece],A.[TR_WorkHour],A.[TR_WageAllotScheme],A.[TR_AllotFormulaID],A.[TR_IsReportDevice],A.[TR_IsDeviceCharging],B.[WC_Department_Name],C.[II_Name],D.[TRV_Version] from [TechRoute] A left join [WorkCenter] B on A.[TR_WorkCenterID]=B.[WC_Department_ID] left join [ItemInfo] C on A.[TR_ItemID]=C.[ID] left join [TechRouteVersion] D on A.[TR_VersionID]=D.[ID] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
+            SQl = string.Format(@"Select A.[ID],A.[TR_ItemID],A.[TR_ItemCode],A.[TR_VersionID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_WorkHour],A.[TR_IsReportPoint],A.[TR_IsExProcess],A.[TR_WorkCenterID],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsTestProcess],A.[TR_IsBackProcess],A.[TR_DefaultCheckPersonName],A.[TR_BindingProcess],A.[TR_IsReportDevice],A.[TR_IsDeviceCharging],B.[WC_Department_Name],C.[II_Name],D.[TRV_VersionCode],D.[TRV_VersionName] from [TechRoute] A left join [WorkCenter] B on A.[TR_WorkCenterID]=B.[WC_Department_ID] left join [ItemInfo] C on A.[TR_ItemID]=C.[ID] left join [TechRouteVersion] D on A.[TR_VersionID]=D.[ID] where [TR_ItemCode]='{0}' order by  [TR_VersionID] ,[TR_ProcessSequence]", itemCode);
             MyDBController.GetDataSet(SQl, ds, "TechRouteInfo");
             MyDBController.CloseConnection();
 
@@ -128,15 +129,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     TR_VersionID = Convert.ToInt64(row["TR_VersionID"]),
                     TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]),
                     TR_ProcessName = row["TR_ProcessName"].ToString(),
-                    TR_WagePerPiece = Convert.ToDecimal(row["TR_WagePerPiece"]),
                     TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]),
                     TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]),
                     TR_WorkCenterID = Convert.ToInt64(row["TR_WorkCenterID"]),
                     WC_Department_Name = row["WC_Department_Name"].ToString(),
+                    TR_WorkHour = Convert.ToDecimal(row["TR_WorkHour"]),
                     TR_ItemID = Convert.ToInt64(row["TR_ItemID"]),
                     TR_ItemCode = row["TR_ItemCode"].ToString(),
                     II_Name = row["II_Name"].ToString(),
-                    TRV_Version = row["TRV_Version"].ToString()
+                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
+                    TRV_VersionName = row["TRV_VersionName"].ToString(),
+                    TR_IsTestProcess = Convert.ToBoolean(row["TR_IsTestProcess"]),
+                    TR_IsBackProcess = Convert.ToBoolean(row["TR_IsBackProcess"])
                 });
             }
             return tvl;
@@ -151,7 +155,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             try
             {
-                long versionID = ((TechVersion)datagrid_RouteVersion.SelectedItem).TR_VersionID;
+                long versionID = ((TechVersion)datagrid_RouteVersion.SelectedItem).ID;
                 processGridSource = trls.FindAll(p => p.TR_VersionID == versionID);
                 datagrid_RouteProcess.ItemsSource = processGridSource;
             }

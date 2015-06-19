@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Data;
+using BarCodeSystem.BasicFile.ItemInfo;
 
 namespace BarCodeSystem
 {
@@ -50,10 +51,19 @@ namespace BarCodeSystem
         /// </summary>
         private void GetBCSItemInfoList()
         {
+
+            ds.Clear();
+            dt.Clear();
+            listBeforeSearch.Clear();
+
             MyDBController.GetConnection();
 
-            string SQl = @"SELECT [ID],[II_Code],[II_Spec],[II_Version],[II_Name],[II_UnitID],[II_UnitCode],[II_UnitName]
-                            FROM [ItemInfo]";
+//            string SQl = @"SELECT [ID],[II_Code],[II_Spec],[II_Version],[II_Name],[II_UnitID],[II_UnitCode],[II_UnitName],[II_QualitySortID] 
+//                            FROM [ItemInfo] left join [QualitySort] on ItemInfo.II_Quality";
+
+            string SQl = @"SELECT A.[ID],A.[II_Code],A.[II_Spec],A.[II_Version],A.[II_Name],A.[II_UnitID],A.[II_UnitCode],A.[II_UnitName], A.[II_QualitySortID], A1.QS_Name " +
+                " FROM [ItemInfo] as A " +
+                " left join [QualitySort] as A1 on (A.II_QualitySortID = A1.ID) ";
             dt = MyDBController.GetDataSet(SQl, ds, "ItemInfo").Tables["ItemInfo"];
             MyDBController.CloseConnection();
             listBeforeSearch.Clear();
@@ -68,6 +78,25 @@ namespace BarCodeSystem
                 iil.II_UnitID = (Int64)dt.Rows[i]["II_UnitID"];
                 iil.II_UnitCode = dt.Rows[i]["II_UnitCode"].ToString();
                 iil.II_UnitName = dt.Rows[i]["II_UnitName"].ToString();
+                if (string.IsNullOrEmpty(dt.Rows[i]["II_QualitySortID"].ToString()))
+                {
+                    
+                }
+                else
+                {
+                    iil.II_QualitySortID = (Int64)dt.Rows[i]["II_QualitySortID"];
+                }
+
+                if (string.IsNullOrEmpty(dt.Rows[i]["QS_Name"].ToString()))
+                {
+                    
+                }
+                else
+                {
+                    iil.II_QualitySortName = dt.Rows[i]["QS_Name"].ToString();
+                }
+                
+               
                 listBeforeSearch.Add(iil);
             }
             listview1.ItemsSource = listBeforeSearch;
@@ -138,6 +167,43 @@ namespace BarCodeSystem
         private void txtb_SearchKey_TextChanged(object sender, TextChangedEventArgs e)
         {
             btn_Search_Click(sender,e);
+        }
+
+        /// <summary>
+        /// 修改质检分类按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Modify_Click(object sender, RoutedEventArgs e)
+        {
+            int x = listview1.SelectedIndex;
+
+            if (x > -1)
+            {
+                ItemInfoModify_Window iim = new ItemInfoModify_Window() { iil = (ItemInfoLists)listview1.SelectedItem};
+                iim.ShowDialog();
+
+                if ((bool)iim.DialogResult)
+                {
+                    GetBCSItemInfoList();
+                    listview1.Items.Refresh();
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择信息", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        /// <summary>
+        /// listview鼠标双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listview1_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_Modify_Click(sender, e);
         }
     }
 }
