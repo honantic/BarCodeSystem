@@ -4,6 +4,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BarCodeSystem.TechRoute.TechRoute
 {
@@ -15,10 +16,22 @@ namespace BarCodeSystem.TechRoute.TechRoute
         public TechRouteCheckPerson_Window()
         {
             InitializeComponent();
+            key = "检验员";
+            Title = "人员选择窗口";
+
         }
 
+        public TechRouteCheckPerson_Window(string _key)
+        {
+            InitializeComponent();
+            key = _key;
+        }
+
+        #region 变量
         public string checkPersonName;
         public PersonLists checkPerson;
+        string key = "";
+        #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -33,7 +46,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
         {
             List<PersonLists> pls = new List<PersonLists>();
             DataSet ds = new DataSet();
-            string SQl = "Select [ID],[P_Name],[P_Code] from [Person] where [P_Position]='检验员'";
+            string SQl = string.Format("Select [ID],[P_Name],[P_Code] from [Person] where [P_Position]='{0}'", key);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "Person");
             MyDBController.CloseConnection();
@@ -90,6 +103,16 @@ namespace BarCodeSystem.TechRoute.TechRoute
             else
             {
                 btn_Select_Click(sender, e);
+            }
+        }
+
+
+
+        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
             }
         }
     }

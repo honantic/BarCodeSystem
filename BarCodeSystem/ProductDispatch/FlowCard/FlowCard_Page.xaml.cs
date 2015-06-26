@@ -1,4 +1,5 @@
-﻿using BarCodeSystem.PublicClass;
+﻿using BarCodeSystem.ProductDispatch.FlowCardReport;
+using BarCodeSystem.PublicClass;
 using BarCodeSystem.PublicClass.DatabaseEntity;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace BarCodeSystem.ProductDispatch.FlowCard
 {
@@ -305,6 +307,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 UpdateSourceOrderInfo(Convert.ToInt32(textb_Amount.Text));
                 FlowCardSubIntoDatabase(flowCode);
                 SwitchReadOnlyPro();
+                RemoveFCReportFrame();
             }
             else
             {
@@ -312,6 +315,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
 
+        private void RemoveFCReportFrame()
+        {
+            foreach (LayoutAnchorable item in (MyDBController.FindVisualParent<Main_Window>(this)[0]).ldp.Children)
+            {
+                if (item.Title == "流转卡报工")
+                {
+                    ((FlowCardReport_Page)((Frame)item.Content).Content).searchFrame.Content = null;
+                    ((FlowCardReport_Page)((Frame)item.Content).Content).textb_SearchInfo.Text = "";
+                }
+            }
+
+        }
         /// <summary>
         /// 检查当前流转卡信息是否满足派工条件，满足返回true否则返回false
         /// </summary>
@@ -531,6 +546,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
+            MyDBController.CloseConnection();
         }
         /// <summary>
         /// 派工结束之后返填生产订单信息，更新派工数量

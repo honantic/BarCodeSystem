@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardReport
 {
@@ -37,7 +40,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-           FetchFlowCardInfo();
+            FetchFlowCardInfo();
         }
 
         /// <summary>
@@ -118,10 +121,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void btn_Select_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (datagrid_FlowCard.SelectedIndex != -1)
             {
                 if (datagrid_FlowCard.SelectedIndex != lastindex)
                 {
+                    (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = true;
                     lastindex = datagrid_FlowCard.SelectedIndex;
                     FlowCardLists fc = (FlowCardLists)datagrid_FlowCard.SelectedItem;
                     Int64 flowCardID = fc.ID;
@@ -129,10 +134,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     TechVersion techVersion = FetchTechVersion();
                     if (techVersion != null)
                     {
+                        //sfc(fc, fcsls, techVersion);
                         sfc.Invoke(fc, fcsls, techVersion);
+                        //sfc.BeginInvoke(fc, fcsls, techVersion, null, null);
+                        (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = false;
                     }
                 }
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -145,7 +154,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             string SQl = string.Format(@"Select A.[ID],A.[FCS_FlowCradID],A.[FCS_ItemId],A.[FCS_TechRouteID],A.[FCS_ProcessID],A.[FCS_ProcessName],A.[FCS_PersonCode],A.[FCS_PersonName],A.[FCS_BeginAmount],A.[FCS_QulifiedAmount],A.[FCS_ScrappedAmount],A.[FCS_UnprocessedAm],A.[FCS_CheckByID],A.[FCS_CheckByName],A.[FCS_PieceAmount],A.[FCS_PieceDivNum],A.[FCS_IsFirstProcess],A.[FCS_IsLastProcess],A.[FCS_IsReported],B.[TR_ProcessSequence] from [FlowCardSub] A left join [TechRoute] B on A.[FCS_TechRouteID]=B.[ID] where [FCS_FlowCradID]={0}", flowCardID);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
-
+            MyDBController.CloseConnection();
             fcsls.Clear();
             foreach (DataRow row in ds.Tables["FlowCardSub"].Rows)
             {

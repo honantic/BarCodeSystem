@@ -3,9 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="检验员选择窗体" Height="600" Width="400"
         Loaded="Window_Loaded"
-        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen" WindowStyle="None"
         >
-    <Grid>
+
+    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+        <Grid.Background>
+            <SolidColorBrush Color="Black" Opacity="0.3">
+            </SolidColorBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -15,15 +22,19 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Name="listview1" MouseDoubleClick="listview1_MouseDoubleClick">
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="10 5" Name="listview1" MouseDoubleClick="listview1_MouseDoubleClick">
+            <ListView.Background>
+                <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
+            </ListView.Background>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="检验员名称" Width="180" DisplayMemberBinding="{Binding Path=name}"></GridViewColumn>
-                    <GridViewColumn Header="检验员编号" Width="180" DisplayMemberBinding="{Binding Path=code}"></GridViewColumn>
+                    <GridViewColumn Header="员工名称" Width="180"  DisplayMemberBinding="{Binding Path=name}">
+                    </GridViewColumn>
+                    <GridViewColumn Header="员工编号" Width="180" DisplayMemberBinding="{Binding Path=code}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="2" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
-        <Button Grid.Row="2" Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+        <Button Grid.Row="2" Padding="20 0" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
+        <Button Grid.Row="2" Padding="20 0" Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
     </Grid>
 </Window>

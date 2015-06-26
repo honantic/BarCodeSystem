@@ -55,7 +55,7 @@
                 <!--<TextBox Name="txtb_TechSequence"  MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" 
                          Grid.Column="5" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
                          MinWidth="80" TextWrapping="Wrap"></TextBox>-->
-                <extool:IntegerUpDown Name="txtb_TechSequence"  
+                <extool:IntegerUpDown Name="txtb_TechSequence"   Minimum="0"
                          Grid.Column="5" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
                          MinWidth="80" Increment="10" DefaultValue="10" Text="{Binding Path=DefaultValue,ElementName=txtb_TechSequence}"></extool:IntegerUpDown>
                 <TextBlock Text="工序名称:" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="6" TextWrapping="Wrap" ></TextBlock>
@@ -74,7 +74,7 @@
                 </StackPanel>
 
                 <TextBlock Text="工时:" TextWrapping="Wrap" Grid.Column="2" Grid.Row="1" Margin="5" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Center"></TextBlock>
-                <extool:DecimalUpDown DefaultValue="0.0" IsReadOnly="True" Grid.Column="3" Name="txtb_WorkHour" Grid.Row="1" MinWidth="80" Margin="5" FontSize="14" 
+                <extool:DecimalUpDown Minimum="0.0" DefaultValue="0.0" IsReadOnly="True" Grid.Column="3" Name="txtb_WorkHour" Grid.Row="1" MinWidth="80" Margin="5" FontSize="14" 
                          VerticalAlignment="Center" HorizontalAlignment="Center"  ></extool:DecimalUpDown>
 
                 <TextBlock Text="版本编码:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="4" Grid.Row="1"></TextBlock>

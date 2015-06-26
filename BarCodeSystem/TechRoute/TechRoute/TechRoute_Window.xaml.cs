@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace BarCodeSystem
 {
@@ -67,7 +62,7 @@ namespace BarCodeSystem
             itemList.Clear();
             techList.Clear();
             MyDBController.GetConnection();
-            string SQl = @" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc";
+            string SQl = @" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_ProcessSequence]";
             itemTech = MyDBController.GetDataSet(SQl, ds, "itemTech").Tables["itemTech"];
 
             SQl = @" SELECT [PN_Code],[PN_Name] FROM [ProcessName]";
@@ -187,7 +182,8 @@ namespace BarCodeSystem
                                 //增加料品的工艺版本信息
                                 TechVersion tv = new TechVersion();
                                 tv.ID = (Int64)dt.Rows[i]["TR_VersionID"];
-                                tv.TRV_VersionCode = dt.Rows[i]["TRV_Version"].ToString();
+                                tv.TRV_VersionCode = dt.Rows[i]["TRV_VersionCode"].ToString();
+                                tv.TRV_VersionName = dt.Rows[i]["TRV_VersionName"].ToString();
                                 tv.TRV_IsDefaultVer = (bool)dt.Rows[i]["TRV_IsDefaultVer"];
                                 tv.TRV_IsSpecialVersion = (bool)dt.Rows[i]["TRV_IsSpecialVersion"];
                                 tv.TRV_ReportWay = Convert.ToInt32(dt.Rows[i]["TRV_ReportWay"]);
@@ -593,7 +589,7 @@ namespace BarCodeSystem
                 ItemInfoLists item = listview1.Items[i] as ItemInfoLists;
                 cbl[i].ItemsSource = item.TechVersionList;
                 cbl[i].DisplayMemberPath = "TRV_VersionName";
-                cbl[i].SelectedValuePath = "TR_VersionID";
+                cbl[i].SelectedValuePath = "ID";
                 cbl[i].SelectedIndex = 0;
             }
         }
@@ -661,7 +657,5 @@ namespace BarCodeSystem
                 formClickCount++;
             }
         }
-
-
     }
 }

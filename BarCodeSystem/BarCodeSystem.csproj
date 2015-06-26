@@ -201,6 +201,7 @@
     <Compile Include="PublicClass\HelperClass\RememberedUser.cs" />
     <Compile Include="PublicClass\DatabaseEntity\TechRouteLists.cs" />
     <Compile Include="PublicClass\ValidationRules\QualifiedAmountRule.cs" />
+    <Compile Include="PublicClass\ValueConverters\FlowCardHasItemsConverter.cs" />
     <Compile Include="PublicClass\ValueConverters\FlowCardStateConverter.cs" />
     <Compile Include="PublicClass\ValueConverters\FlowCardTypeConverter.cs" />
     <Compile Include="PublicClass\ValueConverters\QualifiedAmountConverter.cs" />
@@ -645,6 +646,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\yes.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\no.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\submit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\forward.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\save.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

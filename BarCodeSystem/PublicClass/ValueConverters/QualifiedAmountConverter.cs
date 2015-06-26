@@ -23,7 +23,7 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                 amount = para.ElementAt(0) - para.ElementAt(1) - para.ElementAt(2);
                 if (amount < 0)
                 {
-                    MessageBox.Show("合格数量不能小于0！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Xceed.Wpf.Toolkit.MessageBox.Show("合格数量不能小于0！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return "0";
                 }
                 else
@@ -40,7 +40,7 @@ namespace BarCodeSystem.PublicClass.ValueConverters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

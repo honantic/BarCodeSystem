@@ -8,6 +8,11 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
 {
     public class FlowCardQualityLists : INotifyPropertyChanged
     {
+        public FlowCardQualityLists()
+        {
+            FCQ_FlowCardSubID = -1;
+            FCQ_ScrapAmount = 0;
+        }
         /// <summary>
         /// ID
         /// </summary>

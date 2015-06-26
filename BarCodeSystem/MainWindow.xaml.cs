@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows.Media;
 using BarCodeSystem.ProductDispatch.FlowCard;
 using BarCodeSystem.ProductDispatch.FlowCardReport;
+using System.Windows.Input;
 
 namespace BarCodeSystem
 {
@@ -70,9 +71,17 @@ namespace BarCodeSystem
             MyDBController.GetDataSet(SQl, ds, "OrgInfo");
             MyDBController.CloseConnection();
 
-            User_Info.Org_Inof = ds.Tables["OrgInfo"].Rows[0]["OI_Name"].ToString();
+            if (ds.Tables["OrgInfo"].Rows.Count == 0)
+            {
+                this.Title = "生产条码系统";
+            }
+            else
+            {
+                User_Info.Org_Inof = ds.Tables["OrgInfo"].Rows[0]["OI_Name"].ToString();
+                this.Title = User_Info.Org_Inof + "生产条码系统";
+            }
 
-            this.Title = User_Info.Org_Inof + "生产条码系统";
+
         }
         #endregion
 
@@ -441,23 +450,34 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WorkCardReport_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             #region 将各个page加载进工作区域
-            if (MyDBController.FindVisualChild<FlowCardReport_Page>(dockingManager).Count == 0)
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "流转卡报工")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
             {
                 Frame topFrame = new Frame();
                 topFrame.Content = new FlowCardReport_Page() { ShowsNavigationUI = true };
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "流转卡报工";
                 la.Content = topFrame;
-                la.Closing += la_Closing;
+                //la.Closing += la_Closing;
 
                 ldp.Children.Add(la);
                 la.IsSelected = true;
             }
             else
             {
-                ((FlowCardReport_Page)MyDBController.FindVisualChild<FlowCardReport_Page>(dockingManager)[0]).Focus();
             }
+            this.Cursor = Cursors.Arrow;
             #endregion
         }
 
@@ -469,22 +489,40 @@ namespace BarCodeSystem
         private void item_WorkCardCompose_Click(object sender, RoutedEventArgs e)
         {
             #region 将各个page加载进工作区域
-            if (MyDBController.FindVisualChild<FlowCard_Page>(dockingManager).Count == 0)
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                switch (item.Title)
+                {
+                    case "流转卡编制":
+                        flag = true;
+                        item.IsSelected = true;
+                        break;
+                    case "流转卡报工":
+                        ((FlowCardReport_Page)((Frame)item.Content).Content).searchFrame.Content = null;
+                        ((FlowCardReport_Page)((Frame)item.Content).Content).textb_SearchInfo.Text = "";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCard_Page>(this).Count == 0
             {
                 Frame topFrame = new Frame();
                 topFrame.Content = new FlowCard_Page() { ShowsNavigationUI = true };
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "流转卡编制";
                 la.Content = topFrame;
-                la.Closing += la_Closing;
+                //la.Closing += la_Closing;
 
                 ldp.Children.Add(la);
                 la.IsSelected = true;
             }
             else
             {
-                ((FlowCard_Page)MyDBController.FindVisualChild<FlowCard_Page>(dockingManager)[0]).Focus();
             }
+            this.Cursor = Cursors.Arrow;
             #endregion
         }
         /// <summary>
@@ -494,15 +532,21 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void la_Closing(object sender, CancelEventArgs e)
         {
-            object cm = dockingManager.DataContext;
-            if (MessageBox.Show("关我干啥呢？", "提示", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            try
             {
+                if (MessageBox.Show("关我干啥呢？", "提示", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
 
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
-            else
+            catch (Exception)
             {
-                e.Cancel = true;
             }
+
         }
 
         ///// <summary>

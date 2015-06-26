@@ -67,7 +67,7 @@
                     <DatePicker Grid.Column="1" Grid.Row="1" Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Today}" VerticalAlignment="Center" ></DatePicker>
 
                     <TextBlock Text="工序序号：" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <ComboBox Name="cb_ProcessSequence" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
+                    <ComboBox Name="cb_ProcessSequence" SelectedIndex="0" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
 
                     <TextBlock Text="派工数量：" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                     <TextBox Name="txtb_Amount" Grid.Column="3" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
@@ -101,12 +101,25 @@
                     <GroupBox.Header>
                         <TextBlock  Style="{StaticResource textb_NormalStyle}">工序操作人员信息</TextBlock>
                     </GroupBox.Header>
-                    <DataGrid Name="datagrid_PersonInfo" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="员工编号" Binding="{Binding Path=FCS_PersonCode}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="员工名称" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid Grid.ColumnSpan="2" Name="datagrid_PersonInfo" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="员工编号" Binding="{Binding Path=FCS_PersonCode}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="员工名称" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Content="添加人员" Name="btn_AddPerson" Click="btn_AddPerson_Click" Margin="5" Grid.Row="1" VerticalAlignment="Center"></Button>
+                        <Button Content="移除人员" Name="btn_RemovePerson" Click="btn_DeleteScrapInfo_Click"  Margin="5" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"></Button>
+                    </Grid>
+
                 </GroupBox>
                 <GroupBox Grid.Column="1" Margin="5" Name="gb_ScrapInfo">
                     <GroupBox.Header>
@@ -173,13 +186,13 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
-                                            <extool:IntegerUpDown Name="integer_Amount" Minimum="0" DefaultValue="0" ValueChanged="integer_Amount_ValueChanged"  Value="{Binding Path=FCQ_ScrapAmount,Mode=TwoWay}" ></extool:IntegerUpDown>
+                                            <extool:IntegerUpDown Name="integer_Amount"  Minimum="0" DefaultValue="0" ValueChanged="integer_Amount_ValueChanged"  Value="{Binding Path=FCQ_ScrapAmount,Mode=TwoWay}" ></extool:IntegerUpDown>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        
+
                         <Button Content="添加行" Grid.Row="1" VerticalAlignment="Center" Name="btn_AddScrapInfo" Click="btn_AddScrapInfo_Click" Margin="5"></Button>
                         <Button Grid.Column="1" Grid.Row="1" Content="删除行" VerticalAlignment="Center" Name="btn_DeleteScrapInfo" Click="btn_DeleteScrapInfo_Click"  Margin="5"></Button>
                     </Grid>
@@ -194,22 +207,36 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition Width="3*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="投入数:" VerticalAlignment="Center"  HorizontalAlignment="Right"></TextBlock>
-                        <TextBox  Grid.Column="1" Name="txtb_BeginAmount" TextAlignment="Left"  IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+                        <extool:IntegerUpDown DefaultValue="0" ValueChanged="txtb_BeginAmount_ValueChanged" Increment="10"   Grid.Column="1" Name="txtb_BeginAmount" TextAlignment="Left"  IsReadOnly="True" VerticalAlignment="Center"></extool:IntegerUpDown>
 
                         <TextBlock Text="报废数:" Grid.Row="1"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <TextBox  Grid.Column="1" Grid.Row="1" Text="0" TextAlignment="Left"  Name="txtb_ScrappedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
 
                         <TextBlock Text="待处理数:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <extool:IntegerUpDown DefaultValue="0"  Minimum="0" TextAlignment="Left" Text="{Binding Path=DefaultValue,ElementName=txtb_UnprocessedAm}" Grid.Column="1" Grid.Row="2" Name="txtb_UnprocessedAm" VerticalAlignment="Center"></extool:IntegerUpDown>
+                        <extool:IntegerUpDown LostFocus="txtb_UnprocessedAm_LostFocus"  ValueChanged="txtb_UnprocessedAm_ValueChanged" DefaultValue="0"  Minimum="0" TextAlignment="Left" Text="{Binding Path=DefaultValue,ElementName=txtb_UnprocessedAm}" Grid.Column="1" Grid.Row="2" Name="txtb_UnprocessedAm" VerticalAlignment="Center"></extool:IntegerUpDown>
 
                         <TextBlock Text="合格数:" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox  Grid.Column="1" Grid.Row="3" TextAlignment="Left"  Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+                        <TextBox  Grid.Column="1" Grid.Row="3" TextAlignment="Left"    Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+
+                        <Button Name="btn_SaveAmount"  Click="btn_SaveAmount_Click" Grid.Row="4" VerticalAlignment="Center" Grid.ColumnSpan="2" Padding="15 0" HorizontalAlignment="Center">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="../../Images/save.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="保存数量" TextAlignment="Right"></TextBlock>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Column="3" Name="gb_CheckInfo" Margin="5">
@@ -254,14 +281,42 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btn_Report" Click="btn_Report_Click" Grid.Column="3" Content="报工" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="40 5"></Button>
+                    <TextBlock Grid.Column="1" Text="该工序是否已经报工：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                    <Image Grid.Column="2" Name="image_No"  ToolTip="未报工" Margin="10 0" Source="../../Images/no.ico" VerticalAlignment="Center"  Height="15" HorizontalAlignment="Left"></Image>
+                    <Image Grid.Column="2" Name="image_Yes" Visibility="Hidden" ToolTip="已报工" Margin="10 0" Source="../../Images/yes.ico" Height="15" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
+                    <Button Name="btn_Report" Click="btn_Report_Click" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0">
+                        <Button.Content>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Images/forward.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="工序报工" TextAlignment="Right"></TextBlock>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="btn_TotalReport"  IsEnabled="False" Click="btn_Report_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0" >
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Images/submit.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="结束报工" TextAlignment="Right"></TextBlock>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Row="3" Name="gb_SearchInfo">
                 <GroupBox.Header>
                     <TextBlock Name="textb_SearchInfo" Style="{StaticResource textb_NormalStyle}"></TextBlock>
                 </GroupBox.Header>
+                <Frame Name="searchFrame" NavigationUIVisibility="Hidden" JournalOwnership="OwnsJournal"></Frame>
             </GroupBox>
         </Grid>
     </Grid>

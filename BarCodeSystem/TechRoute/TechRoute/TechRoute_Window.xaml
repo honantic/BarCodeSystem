@@ -10,7 +10,7 @@
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >
-            <ComboBox Name="combobox"  Width="80"  />
+            <ComboBox Name="combobox"  Width="100"  />
         </DataTemplate>
         <converter:TrueOrFalseConverter x:Key="boolConvert"></converter:TrueOrFalseConverter>
     </Window.Resources>

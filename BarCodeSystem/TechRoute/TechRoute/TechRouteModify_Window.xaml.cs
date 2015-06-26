@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
-using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
@@ -257,24 +256,51 @@ namespace BarCodeSystem
                 #endregion
 
                 #region 对数据库进行操作
+                SQl = string.Format(@"Select top 0 * from [TechRoute]");
+                MyDBController.GetDataSet(SQl, ds, "TechRoute");
+                List<string> colList = new List<string>();
 
-                SQl = string.Format(@"DELETE FROM [TechRoute] WHERE [TR_ItemID]={0} AND [TR_VersionID]={1}",
-                             trv_itemID, trv_versionID);
-                MyDBController.ExecuteNonQuery(SQl);
-
+                foreach (DataColumn col in ds.Tables["TechROute"].Columns)
+                {
+                    colList.Add(col.ColumnName);
+                }
+                ds.Tables["TechROute"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
                 //工序列表的长度，trls为listview1的itemssource
                 x = trls.Count;
                 try
                 {
                     foreach (TechRouteLists trl in trls)
                     {
-                        SQl = string.Format(@"INSERT INTO [TechRoute]([TR_ItemID],[TR_ItemCode],[TR_VersionID],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_ProcessID],[TR_WorkHour],[TR_IsReportPoint],[TR_IsExProcess],[TR_WorkCenterID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_DefaultCheckPersonName],[TR_BindingProcess],[TR_IsReportDevice],[TR_IsDeviceCharging]) VALUES( {0},'{1}',{2},{3},'{4}','{5}',{6},{7},'{8}','{9}',{10},'{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')", trl.TR_ItemID, trl.TR_ItemCode, trv_versionID, trl.TR_ProcessSequence, trl.TR_ProcessName, trl.TR_ProcessCode, trl.TR_ProcessID, trl.TR_WorkHour, trl.TR_IsReportPoint, trl.TR_IsExProcess, trl.TR_WorkCenterID, trl.TR_IsFirstProcess, trl.TR_IsLastProcess, trl.TR_IsTestProcess, trl.TR_IsBackProcess, trl.TR_DefaultCheckPersonName, trl.TR_BindingProcess, trl.TR_IsReportDevice, trl.TR_IsDeviceCharging);
-                        MyDBController.ExecuteNonQuery(SQl);
+                        DataRow row = ds.Tables["TechRoute"].NewRow();
+                        row["ID"] = row["IDNew"] = trl.ID;
+                        row["TR_ItemID"] = trl.TR_ItemID;
+                        row["TR_ItemCode"] = trl.TR_ItemCode;
+                        row["TR_VersionID"] = trv_versionID;
+                        row["TR_ProcessSequence"] = trl.TR_ProcessSequence;
+                        row["TR_ProcessName"] = trl.TR_ProcessName;
+                        row["TR_ProcessCode"] = trl.TR_ProcessCode;
+                        row["TR_ProcessID"] = trl.TR_ProcessID;
+                        row["TR_WorkHour"] = trl.TR_WorkHour;
+                        row["TR_IsReportPoint"] = trl.TR_IsReportPoint;
+                        row["TR_IsExProcess"] = trl.TR_IsExProcess;
+                        row["TR_WorkCenterID"] = trl.TR_WorkCenterID;
+                        row["TR_IsFirstProcess"] = trl.TR_IsFirstProcess;
+                        row["TR_IsLastProcess"] = trl.TR_IsLastProcess;
+                        row["TR_IsTestProcess"] = trl.TR_IsTestProcess;
+                        row["TR_IsBackProcess"] = trl.TR_IsBackProcess;
+                        row["TR_DefaultCheckPersonName"] = trl.TR_DefaultCheckPersonName;
+                        row["TR_BindingProcess"] = trl.TR_BindingProcess;
+                        row["TR_IsReportDevice"] = trl.TR_IsReportDevice;
+                        row["TR_IsDeviceCharging"] = trl.TR_IsDeviceCharging;
+                        ds.Tables["TechRoute"].Rows.Add(row);
                     }
+                    int updateNum, insertNum;
+                    MyDBController.InsertSqlBulk(ds.Tables["TechRoute"], colList, out updateNum, out insertNum);
+                    MyDBController.GetConnection();
                     //将本来的默认工艺路线改为不是默认工艺路线
                     if (!trls[0].TR_IsDefaultVer.Equals(isdefaultver) && !isdefaultver)
                     {
-                        SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=0 where [TRV_ItemID]={0} and [ID] !={1}", trls[0].TR_ItemID, trv_versionID);
+                        SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=0 where [TRV_ItemID]={0} and [ID] ={1}", trls[0].TR_ItemID, trv_versionID);
                         MyDBController.ExecuteNonQuery(SQl);
                     }
                     //将本来不是默认工艺路线的改为默认工艺路线
@@ -282,7 +308,11 @@ namespace BarCodeSystem
                     {
                         SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=1 where [TRV_ItemID]={0} and [ID] ={1}", trls[0].TR_ItemID, trv_versionID);
                         MyDBController.ExecuteNonQuery(SQl);
+                        SQl = string.Format("Update [TechRouteVersion] set [TRV_IsDefaultVer]=0 where [TRV_ItemID]={0} and [ID] !={1}", trls[0].TR_ItemID, trv_versionID);
+                        MyDBController.ExecuteNonQuery(SQl);
                     }
+                    SQl = string.Format("Update [TechRouteVersion] set [TRV_ReportWay]={0} where [TRV_ItemID]={1} and [ID] ={2}", reportWay, trls[0].TR_ItemID, trv_versionID);
+                    MyDBController.ExecuteNonQuery(SQl);
                     return MessageBox.Show("工艺路线信息保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ee)
@@ -387,6 +417,7 @@ namespace BarCodeSystem
                             {
                                 trl = new TechRouteLists();
                                 trl.TR_ItemID = choosedItemID;
+                                trl.TR_VersionID = trv_versionID;
                                 trl.TR_ItemCode = txtb_ItemCode.Text;
                                 trl.II_Name = txtb_ItemName.Text.Trim();
                                 trl.TR_ProcessName = txtb_ProcessName.Text;
@@ -412,23 +443,44 @@ namespace BarCodeSystem
                         }
                         else
                         {
-                            trl = new TechRouteLists();
-                            trl.TR_ItemID = choosedItemID;
-                            trl.TR_ItemCode = txtb_ItemCode.Text;
-                            trl.II_Name = txtb_ItemName.Text.Trim();
-                            trl.TR_ProcessName = txtb_ProcessName.Text;
-                            trl.TR_ProcessCode = choosedProcessCode;
-                            trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
-                            trl.TR_ProcessID = choosedProcessID;
-                            trl.TR_WorkCenterID = choosedWorkCenterID;
-                            trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
-                            trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
-                            trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
-                            trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
-                            trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
-                            trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
-                            trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
-                            trls.Add(trl);
+                            if (!NewOrNot)
+                            {
+                                trl = trls.Find(p => p.TR_ProcessSequence.Equals(Convert.ToInt32(txtb_TechSequence.Text)));
+                                trl.TR_ProcessName = txtb_ProcessName.Text;
+                                trl.TR_ProcessCode = choosedProcessCode == null ? trl.TR_ProcessCode : choosedProcessCode;
+                                trl.TR_ProcessID = choosedProcessID == 0 ? trl.TR_ProcessID : choosedProcessID;
+                                trl.TR_WorkCenterID = choosedWorkCenterID == 0 ? trl.TR_WorkCenterID : choosedWorkCenterID;
+                                trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
+                                trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
+                                trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
+                                trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
+                                trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
+                                trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
+                                trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
+                                trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
+
+                            }
+                            else
+                            {
+                                trl = new TechRouteLists();
+                                trl.TR_ItemID = choosedItemID;
+                                trl.TR_ItemCode = txtb_ItemCode.Text;
+                                trl.II_Name = txtb_ItemName.Text.Trim();
+                                trl.TR_ProcessName = txtb_ProcessName.Text;
+                                trl.TR_ProcessCode = choosedProcessCode;
+                                trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
+                                trl.TR_ProcessID = choosedProcessID;
+                                trl.TR_WorkCenterID = choosedWorkCenterID;
+                                trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
+                                //trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
+                                trl.TR_VersionID = trv_versionID;
+                                trl.TRV_VersionCode = txtb_TechVersion.Text.Trim();
+                                trl.TRV_VersionName = txtb_TechVersionName.Text.Trim();
+                                trl.TR_DefaultCheckPersonName = txtb_TR_DefaultCheckPersonName.Text;
+                                trl.TR_IsBackProcess = !(bool)radio_IsBackProcess_False.IsChecked;
+                                trl.TR_IsTestProcess = !(bool)radio_IsTestProcess_False.IsChecked;
+                                trls.Add(trl);
+                            }
                             trls.Sort(delegate(TechRouteLists x, TechRouteLists y)
                             {
                                 return x.TR_ProcessSequence.CompareTo(y.TR_ProcessSequence);

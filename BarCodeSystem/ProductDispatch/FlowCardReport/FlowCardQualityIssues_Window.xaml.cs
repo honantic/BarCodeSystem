@@ -5,6 +5,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Xceed.Wpf.Toolkit;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardReport
 {
@@ -87,8 +88,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             if (listview1.SelectedIndex != -1)
             {
-                sqi.Invoke((QualityIssuesLists)listview1.SelectedItem);
-                this.DialogResult = true;
+                if (Xceed.Wpf.Toolkit.MessageBox.Show("该操作将会对流转卡质量信息做出修改，且不可逆，请确定是否要继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    sqi.Invoke((QualityIssuesLists)listview1.SelectedItem);
+                    this.DialogResult = true;
+                }
             }
         }
 
@@ -101,7 +105,5 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             this.DialogResult = false;
         }
-
-
     }
 }
