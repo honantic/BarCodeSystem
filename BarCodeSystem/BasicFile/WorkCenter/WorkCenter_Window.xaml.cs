@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Data;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace BarCodeSystem
 {
@@ -26,7 +27,7 @@ namespace BarCodeSystem
             //MyDBController.Pwd = User_Info.pwd[1];
 
 
-            listView1.ItemsSource=GetWorkCenterList() ;
+            listView1.ItemsSource = GetWorkCenterList();
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace BarCodeSystem
                                [WC_IsWorkCenter] as [WC_IsWorkCenter_DB],
                                [WC_Department_Code]
                           FROM [WorkCenter]";
-            ds = MyDBController.GetDataSet(SQLCom, ds,"WorkCenter");
+            ds = MyDBController.GetDataSet(SQLCom, ds, "WorkCenter");
             MyDBController.CloseConnection();
             dt = ds.Tables[0];
             #endregion
@@ -86,12 +87,14 @@ namespace BarCodeSystem
                 wcl1.isworkcenter = dt.Rows[i]["WC_IsWorkCenter"].ToString();
                 wcl1.isvalidated = dt.Rows[i]["WC_IsValidated"].ToString();
                 wcl1.lastoperateby = dt.Rows[i]["WC_LastOprateBy"].ToString();
-                wcl1.lastoperatetime = dt.Rows[i]["WC_LastOperateTime"].ToString() ;
+                wcl1.lastoperatetime = dt.Rows[i]["WC_LastOperateTime"].ToString();
                 wcl1.isordercontroled_DB = (bool)dt.Rows[i]["WC_IsOrderControled_DB"];
                 wcl1.isvalidated_DB = (bool)dt.Rows[i]["WC_IsValidated_DB"];
                 wcl1.isworkcenter_DB = (bool)dt.Rows[i]["WC_IsWorkCenter_DB"];
                 wcl.Add(wcl1);
             }
+            //wcl.OrderByDescending(p => p.department_code);
+            wcl = wcl.OrderBy(p => p.department_code).ToList();
             return wcl;
         }
 
@@ -106,10 +109,10 @@ namespace BarCodeSystem
             WorkCenterImport_Window wci = new WorkCenterImport_Window();
             wci.Height = Math.Min(User_Info.ScreenHeight * 3 / 5, 600);
             wci.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
-            bool? result=wci.ShowDialog();
-            if (result==true)
+            bool? result = wci.ShowDialog();
+            if (result == true)
             {
-                Window_Loaded(sender,e);
+                Window_Loaded(sender, e);
             }
         }
 
@@ -120,12 +123,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Modify_Click(object sender, RoutedEventArgs e)
         {
-            WorkCenterLists item =listView1.SelectedItem as WorkCenterLists;
+            WorkCenterLists item = listView1.SelectedItem as WorkCenterLists;
             if (item != null)
             {
                 WorkCenterModify_Window wcm = new WorkCenterModify_Window();
-                wcm.Height =Math.Min( User_Info.ScreenHeight * 2 / 5,400);
-                wcm.Width = Math.Min( User_Info.ScreenWidth * 3 / 5,600);
+                wcm.Height = Math.Min(User_Info.ScreenHeight * 2 / 5, 400);
+                wcm.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
                 wcm.dept_info = item;
                 wcm.ShowDialog();
 
@@ -135,9 +138,9 @@ namespace BarCodeSystem
                     listView1.ItemsSource = GetWorkCenterList();
                 }
             }
-            else 
+            else
             {
-                System.Windows.MessageBox.Show("请选择一个工作中心！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("请选择一个工作中心！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -150,14 +153,14 @@ namespace BarCodeSystem
         private void listView1_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Point formPoint = e.GetPosition(this);
-            if (formPoint.Y>60 &&formPoint.Y<90)//表头部分不做双击响应
-            {                
+            if (formPoint.Y > 60 && formPoint.Y < 90)//表头部分不做双击响应
+            {
             }
             else
             {
                 btn_Modify_Click(sender, e);
             }
-            
+
         }
 
 
@@ -168,7 +171,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void listView1_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            
+
         }
 
         private void btn_Close_Click(object sender, RoutedEventArgs e)

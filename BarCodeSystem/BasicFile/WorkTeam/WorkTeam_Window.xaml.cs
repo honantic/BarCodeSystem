@@ -32,13 +32,13 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            //这段代码在正式程序中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Uid = User_Info.uid[1];
-            MyDBController.Pwd = User_Info.pwd[1];
+            ////这段代码在正式程序中将被注释掉，测试用
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
 
-      
+
             GetworkTeamList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
@@ -72,8 +72,8 @@ namespace BarCodeSystem
                     wt.WT_Code = dt.Rows[i]["WT_Code"].ToString();
                     listBeforeSearch.Add(wt);
                 }
-
             }
+            listBeforeSearch.OrderBy(p => p.WT_Code);
         }
 
         /// <summary>
@@ -88,12 +88,12 @@ namespace BarCodeSystem
             {
                 MessageBox.Show("你没有选择任何班组！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else 
+            else
             {
                 WorkTeamModify_Window wtm = new WorkTeamModify_Window();
                 wtm.Title = "班组信息修改窗口";
-                wtm.Height = Math.Min(User_Info.ScreenHeight,400);
-                wtm.Width = Math.Min(User_Info.ScreenWidth,600);
+                wtm.Height = Math.Min(User_Info.ScreenHeight, 400);
+                wtm.Width = Math.Min(User_Info.ScreenWidth, 600);
                 wtm.wt = item;
                 wtm.workteam = dt;
                 wtm.ShowDialog();
@@ -150,7 +150,7 @@ namespace BarCodeSystem
         {
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
-            if (txtb_Search.Text !="")
+            if (txtb_Search.Text != "")
             {
                 string text = txtb_Search.Text;
                 List<WorkTeamLists> wtl = new List<WorkTeamLists> { };
@@ -166,7 +166,7 @@ namespace BarCodeSystem
                 listview1.ItemsSource = null;
                 listview1.ItemsSource = wtl;
             }
-            else 
+            else
             {
 
             }
@@ -180,9 +180,9 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_Search_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key==System.Windows.Input.Key.Enter)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
-                btn_Search_Click(sender,e);
+                btn_Search_Click(sender, e);
             }
         }
 

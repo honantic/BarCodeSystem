@@ -74,25 +74,35 @@ namespace BarCodeSystem
         /// </summary>
         private void GetCopyTable()
         {
-            string columlist = "DD_Code,DD_Name,DD_Amount,DD_BarCode,DD_WorkCenterCode";
+            string columlist = "DD_Code,DD_Name,DD_Amount,DD_BarCode,DD_Version,DD_WorkCenterCode";
             copiedData = new DataTable();
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
 
             copiedData.Columns.Add("DD_Code", typeof(string));
             copiedData.Columns.Add("DD_Name", typeof(string));
-            copiedData.Columns.Add("DD_Amount",typeof(int));
+            copiedData.Columns.Add("DD_Amount", typeof(int));
             copiedData.Columns.Add("DD_BarCode", typeof(string));
+            copiedData.Columns.Add("DD_Version", typeof(string));
             copiedData.Columns.Add("DD_WorkCenterCode", typeof(string));
 
-            qk.write_excel_date_to_temp_table(copiedData, columlist);
+            try
+            {
+                qk.write_excel_date_to_temp_table(copiedData, columlist);
+            }
+            catch (Exception ee)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            copiedData.Columns.Add("DD_WorkCenterID",typeof(Int64));
-            copiedData.Columns.Add("DD_SourceType",typeof(int));
+
+            copiedData.Columns.Add("DD_WorkCenterID", typeof(Int64));
+            copiedData.Columns.Add("DD_SourceType", typeof(int));
             copiedData.Columns.Add("DD_IsValidated", typeof(bool));
             for (int i = 0; i < copiedData.Rows.Count; i++)
             {
                 copiedData.Rows[i]["DD_SourceType"] = 1;
                 copiedData.Rows[i]["DD_IsValidated"] = false;
+                copiedData.Rows[i]["DD_BarCode"] = copiedData.Rows[i]["DD_Code"];
             }
 
 
@@ -141,6 +151,7 @@ namespace BarCodeSystem
                         dl.D_Code = copied.Rows[i]["DD_Code"].ToString();
                         dl.D_Amount = Convert.ToInt32(copied.Rows[i]["DD_Amount"]);
                         dl.D_BarCode = copied.Rows[i]["DD_BarCode"].ToString();
+                        dl.D_Version = copied.Rows[i]["DD_Version"].ToString();
                         dl.D_Department_Code = copied.Rows[i]["DD_WorkCenterCode"].ToString();
                         dl.D_Department_Name = SYSDepartCode.Rows[j]["WC_Department_Name"].ToString();
                         dl.D_Department_ID = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
@@ -160,6 +171,7 @@ namespace BarCodeSystem
                             dl.D_Code = copied.Rows[i]["DD_Code"].ToString();
                             dl.D_Amount = Convert.ToInt32(copied.Rows[i]["DD_Amount"]);
                             dl.D_BarCode = copied.Rows[i]["DD_BarCode"].ToString();
+                            dl.D_Version = copied.Rows[i]["DD_Version"].ToString();
                             dl.D_Department_Code = copied.Rows[i]["DD_WorkCenterCode"].ToString();
                             dl.D_Department_Name = SYSDepartCode.Rows[j]["WC_Department_Name"].ToString();
                             dl.D_Department_ID = (Int64)SYSDepartCode.Rows[j]["WC_Department_ID"];
@@ -183,6 +195,7 @@ namespace BarCodeSystem
                     dl.D_Code = copied.Rows[i]["DD_Code"].ToString();
                     dl.D_Amount = Convert.ToInt32(copied.Rows[i]["DD_Amount"]);
                     dl.D_BarCode = copied.Rows[i]["DD_BarCode"].ToString();
+                    dl.D_Version = copied.Rows[i]["DD_Version"].ToString();
                     dl.D_Department_Code = copied.Rows[i]["DD_WorkCenterCode"].ToString();
                     dl.D_IsValidated_Show = copied.Rows[i]["DD_IsValidated"].ToString();
                     dl.D_SourceType_Show = copied.Rows[i]["DD_SourceType"].ToString();
@@ -224,10 +237,10 @@ namespace BarCodeSystem
         /// </summary>
         /// <param name="dt1"></param>
         /// <param name="dt2"></param>
-        private void CheckIfDeviceExisit(DataTable copiedtable,DataTable existtable)
+        private void CheckIfDeviceExisit(DataTable copiedtable, DataTable existtable)
         {
             this.Cursor = Cursors.Wait;
-            List<string> cloList = new List<string> {  "ID","DD_Code", "DD_Name","DD_Amount" ,"DD_BarCode", "DD_WorkCenterID","DD_SourceType" ,"DD_IsValidated"};
+            List<string> cloList = new List<string> { "ID", "DD_Code", "DD_Name", "DD_Amount", "DD_BarCode","DD_Version", "DD_WorkCenterID", "DD_SourceType", "DD_IsValidated" };
 
             int x = copiedtable.Rows.Count;
             int y = existtable.Rows.Count;
@@ -236,7 +249,7 @@ namespace BarCodeSystem
             {
                 for (int j = 0; j < y; j++)
                 {
-                    if (copiedtable.Rows[i]["DD_Code"].ToString()==
+                    if (copiedtable.Rows[i]["DD_Code"].ToString() ==
                         existtable.Rows[j]["DD_Code"].ToString())
                     {
                         copiedtable.Rows[i]["IDNew"] = existtable.Rows[j]["ID"];
@@ -247,7 +260,7 @@ namespace BarCodeSystem
 
             MyDBController.GetConnection();
             int updateNum, insertNum;
-            MyDBController.InsertSqlBulk(copiedtable, cloList,out updateNum, out insertNum);
+            MyDBController.InsertSqlBulk(copiedtable, cloList, out updateNum, out insertNum);
             MessageBox.Show("\n 共新增:" + insertNum + "条记录,更新:" + updateNum + "条记录！");
             MyDBController.CloseConnection();
 
@@ -263,8 +276,11 @@ namespace BarCodeSystem
         {
             if (copiedData.Rows.Count > 0)
             {
-                QkRowChangeToColClass.CreateExcelFileForDataTable(copiedData);
-                MessageBox.Show("共导出" + copiedData.Rows.Count + "条数据到Excel", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                bool flag = QkRowChangeToColClass.CreateExcelFileForDataTable(copiedData);
+                if (flag)
+                {
+                    MessageBox.Show("共导出" + copiedData.Rows.Count + "条数据到Excel", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {

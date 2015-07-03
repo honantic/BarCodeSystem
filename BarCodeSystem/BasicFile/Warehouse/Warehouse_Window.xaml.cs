@@ -29,10 +29,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
 
 
@@ -79,6 +79,8 @@ namespace BarCodeSystem
                 whls.Add(whl);
                 listBeforeSearch.Add(whl);
             }
+            listBeforeSearch = listBeforeSearch.OrderBy(p => p.W_Code).ToList();
+            whls = whls.OrderBy(p => p.W_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = whls;
         }
@@ -91,8 +93,8 @@ namespace BarCodeSystem
         private void btn_Modify_Click(object sender, RoutedEventArgs e)
         {
             WarehouseModify_Window whm = new WarehouseModify_Window();
-            whm.Height = Math.Min(User_Info.ScreenHeight,400);
-            whm.Width = Math.Min(User_Info.ScreenWidth,600);
+            whm.Height = Math.Min(User_Info.ScreenHeight, 400);
+            whm.Width = Math.Min(User_Info.ScreenWidth, 600);
             foreach (WarehouseLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -143,23 +145,23 @@ namespace BarCodeSystem
                 {
                     item.W_IsValidated = true;
                     SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsValidated]='{1}'
-                                    WHERE [W_ID]={1}", item.W_IsValidated,item.W_ID);
+                                    WHERE [W_ID]={1}", item.W_IsValidated, item.W_ID);
 
                     try
                     {
-                       count += MyDBController.ExecuteNonQuery(SQl);
+                        count += MyDBController.ExecuteNonQuery(SQl);
                     }
                     catch (Exception ee)
                     {
-                        
-                        MessageBox.Show( ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
+
+                        MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
 
-            if (count>0)
+            if (count > 0)
             {
-                MessageBox.Show("成功启用"+count+"个仓库！","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("成功启用" + count + "个仓库！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             MyDBController.CloseConnection();
             this.Cursor = Cursors.Arrow;
@@ -223,7 +225,7 @@ namespace BarCodeSystem
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
             List<WarehouseLists> whls = new List<WarehouseLists> { };
-            if (txtb_SearchKey.Text.Length>0)
+            if (txtb_SearchKey.Text.Length > 0)
             {
                 string key = txtb_SearchKey.Text;
                 IEnumerable<WarehouseLists> IEwhls =
@@ -233,10 +235,10 @@ namespace BarCodeSystem
                     select item;
                 foreach (WarehouseLists item in IEwhls)
                 {
-                        whls.Add(item);
+                    whls.Add(item);
                 }
             }
-            
+
             listview1.ItemsSource = null;
             listview1.ItemsSource = whls;
         }
@@ -249,7 +251,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_SearchKey_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            btn_Search_Click(sender,e);
+            btn_Search_Click(sender, e);
         }
 
         /// <summary>

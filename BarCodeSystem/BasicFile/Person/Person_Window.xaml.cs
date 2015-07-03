@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 using System.Collections.ObjectModel;
 
@@ -31,10 +25,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
 
             GetBCSPersonList();
@@ -43,7 +37,7 @@ namespace BarCodeSystem
         private void GetBCSPersonList()
         {
             MyDBController.GetConnection();
-            ObservableCollection<PersonLists> pls = new ObservableCollection<PersonLists> { };
+            List<PersonLists> pls = new List<PersonLists> { };
             ds = new DataSet();
 
             listBeforeSearch.Clear();
@@ -57,7 +51,7 @@ namespace BarCodeSystem
 	                        from [WorkCenter] A
 	                        left join [Person] B
 	                            on B.[P_WorkCenterID]=A.[WC_Department_ID]");
-            MyDBController.GetDataSet(SQl,ds,"PersonInfo");
+            MyDBController.GetDataSet(SQl, ds, "PersonInfo");
 
             //这段SQl用来获取导入窗口需要用到的指定结构的表
             SQl = string.Format(@"select B.[ID]
@@ -67,11 +61,11 @@ namespace BarCodeSystem
 	                        from [Person] B");
             MyDBController.GetDataSet(SQl, ds, "Person");
             MyDBController.CloseConnection();
-            dt=ds.Tables["PersonInfo"];
+            dt = ds.Tables["PersonInfo"];
             int x = dt.Rows.Count;
             for (int i = 0; i < x; i++)
             {
-                if (dt.Rows[i]["P_Code"].ToString() != "" && dt.Rows[i]["P_Name"].ToString() != "" )
+                if (dt.Rows[i]["P_Code"].ToString() != "" && dt.Rows[i]["P_Name"].ToString() != "")
                 {
                     PersonLists pl = new PersonLists();
                     pl.code = dt.Rows[i]["P_Code"].ToString();
@@ -86,6 +80,7 @@ namespace BarCodeSystem
                     pls.Add(pl);
                 }
             }
+            pls = pls.OrderBy(p => p.code).ToList();
             listview1.DataContext = pls;
         }
 
@@ -99,8 +94,8 @@ namespace BarCodeSystem
         private void btn_Import_Click(object sender, RoutedEventArgs e)
         {
             PersonImport_Window pi = new PersonImport_Window();
-            pi.Height = Math.Min( User_Info.ScreenHeight * 3 / 5,600);
-            pi.Width = Math.Min( User_Info.ScreenWidth * 3 / 5,600);
+            pi.Height = Math.Min(User_Info.ScreenHeight * 3 / 5, 600);
+            pi.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             pi.exisitPerson = ds.Tables["Person"];
             pi.ShowDialog();
             if ((bool)pi.DialogResult)
@@ -116,10 +111,10 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_SelectAll_Click(object sender, RoutedEventArgs e)
         {
-           
+
             foreach (PersonLists item in listview1.Items)
             {
-                item.IsSelected = true;        
+                item.IsSelected = true;
             }
             listview1.Items.Refresh();
         }
@@ -157,7 +152,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Search_Click(object sender, RoutedEventArgs e)
         {
-            ObservableCollection<PersonLists> pls =new ObservableCollection<PersonLists>{};
+            ObservableCollection<PersonLists> pls = new ObservableCollection<PersonLists> { };
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
             if (txtb_SearchKey.Text != "")
@@ -186,8 +181,8 @@ namespace BarCodeSystem
         private void btn_Modify_Click(object sender, RoutedEventArgs e)
         {
             PersonModify_Window pm = new PersonModify_Window();
-            pm.Height = Math.Min( User_Info.ScreenHeight * 2 / 5,400);
-            pm.Width = Math.Min( User_Info.ScreenWidth * 3 / 5,600);
+            pm.Height = Math.Min(User_Info.ScreenHeight * 2 / 5, 400);
+            pm.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             PersonLists pl = null;
 
             foreach (PersonLists item in listview1.Items)
@@ -212,7 +207,7 @@ namespace BarCodeSystem
             else
             {
                 pl = listview1.SelectedItem as PersonLists;
-                if (pl !=null)
+                if (pl != null)
                 {
                     pm.pl = pl;
                     pm.pls = listBeforeSearch;
@@ -221,7 +216,7 @@ namespace BarCodeSystem
                     {
                         GetBCSPersonList();
                     }
-               }
+                }
             }
         }
 
@@ -250,8 +245,8 @@ namespace BarCodeSystem
         private void btn_Add_Click(object sender, RoutedEventArgs e)
         {
             PersonModify_Window pm = new PersonModify_Window();
-            pm.Height = Math.Min( User_Info.ScreenHeight * 2 / 5,400);
-            pm.Width = Math.Min( User_Info.ScreenWidth * 3 / 5,600);
+            pm.Height = Math.Min(User_Info.ScreenHeight * 2 / 5, 400);
+            pm.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             pm.pls = listBeforeSearch;
             pm.Title = "人员新增窗口";
             pm.ShowDialog();
@@ -271,11 +266,11 @@ namespace BarCodeSystem
             DataTable templet = new DataTable();
             templet.TableName = "templet";
 
-            templet.Columns.Add("员工编号",typeof(string));
-            templet.Columns.Add("员工姓名",typeof(string));
-            templet.Columns.Add("岗位",typeof(string));
-            templet.Columns.Add("工作中心编号",typeof(string));
-            templet.Columns.Add("工作中心名称",typeof(string));
+            templet.Columns.Add("员工编号", typeof(string));
+            templet.Columns.Add("员工姓名", typeof(string));
+            templet.Columns.Add("岗位", typeof(string));
+            templet.Columns.Add("工作中心编号", typeof(string));
+            templet.Columns.Add("工作中心名称", typeof(string));
 
             QkRowChangeToColClass.CreateExcelFileForDataTable(templet);
 

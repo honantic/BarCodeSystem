@@ -29,11 +29,11 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Border BorderBrush="LightGray" BorderThickness="0 1 0 0" Grid.Row="0" Grid.ColumnSpan="5"></Border>
+                <!--<Border BorderBrush="LightGray" BorderThickness="0 1 0 0" Grid.Row="0" Grid.ColumnSpan="5"></Border>
                 <Border BorderBrush="LightGray" BorderThickness="0 1 0 1" Grid.Row="1" Grid.ColumnSpan="5"></Border>
                 <Border BorderBrush="LightGray" BorderThickness="0 1 0 1" Grid.Row="3" Grid.ColumnSpan="5"></Border>
                 <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="1" Grid.RowSpan="4" ></Border>
-                <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="4" Grid.RowSpan="4"></Border>
+                <Border BorderBrush="LightGray" BorderThickness="1 0 1 0" Grid.Column="4" Grid.RowSpan="4"></Border>-->
 
                 <TextBlock TextWrapping="Wrap" Text="工作中心名称："  VerticalAlignment="Center"  Grid.Column="2" HorizontalAlignment="Center"></TextBlock>
                 <!--<TextBlock Name="txtb_name" TextWrapping="Wrap"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" ></TextBlock>-->

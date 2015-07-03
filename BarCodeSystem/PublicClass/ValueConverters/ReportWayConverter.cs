@@ -32,5 +32,17 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                     return 1;
             }
         }
+
+        public object ConvertStringBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value.ToString())
+            {
+                case "是":
+                    return 1;
+                case "否":
+                default:
+                    return 0;
+            }
+        }
     }
 }

@@ -29,10 +29,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，此处供测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
 
             //去除关闭按钮
@@ -87,9 +87,7 @@ namespace BarCodeSystem
             //MyDBController.GetConnection();
             //this.Cursor = Cursors.Wait;
 
-
-
-            if (string.IsNullOrEmpty(txt_department_shortname.Text) || string.IsNullOrEmpty(txt_name.Text))
+            if ( string.IsNullOrEmpty(txt_name.Text))
             {
                 MessageBox.Show("保存信息不能为空!", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
             }

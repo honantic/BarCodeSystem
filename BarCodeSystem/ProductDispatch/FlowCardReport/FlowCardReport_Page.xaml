@@ -116,8 +116,30 @@
                                 <DataGridTextColumn Header="员工名称" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Button Content="添加人员" Name="btn_AddPerson" Click="btn_AddPerson_Click" Margin="5" Grid.Row="1" VerticalAlignment="Center"></Button>
-                        <Button Content="移除人员" Name="btn_RemovePerson" Click="btn_DeleteScrapInfo_Click"  Margin="5" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"></Button>
+                        <Button Name="btn_AddPerson" Click="btn_AddPerson_Click" Margin="5" Grid.Row="1" VerticalAlignment="Center">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="../../Images/person_add.ico" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="15"></Image>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="添加人员" TextAlignment="Right"></TextBlock>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <Button  Name="btn_RemovePerson" Click="btn_DeleteScrapInfo_Click"  Margin="5" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="../../Images/person_remove.ico" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="15"></Image>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="移除人员" TextAlignment="Right"></TextBlock>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
                     </Grid>
 
                 </GroupBox>
@@ -225,18 +247,39 @@
                         <TextBlock Text="合格数:" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <TextBox  Grid.Column="1" Grid.Row="3" TextAlignment="Left"    Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
 
-                        <Button Name="btn_SaveAmount"  Click="btn_SaveAmount_Click" Grid.Row="4" VerticalAlignment="Center" Grid.ColumnSpan="2" Padding="15 0" HorizontalAlignment="Center">
-                            <Button.Content>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="20"></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <Image Source="../../Images/save.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="保存数量" TextAlignment="Right"></TextBlock>
-                                </Grid>
-                            </Button.Content>
-                        </Button>
+                        <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Name="btn_CancelAmount"  Click="btn_CancelAmount_Click"  VerticalAlignment="Center"  Padding="15 0" HorizontalAlignment="Center">
+                                <Button.Content>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="../../Images/cancel.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
+                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="重置数量" TextAlignment="Right"></TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+
+                            <Button Name="btn_SaveAmount"  Click="btn_SaveAmount_Click"  VerticalAlignment="Center" Grid.Column="1" Padding="15 0" HorizontalAlignment="Center">
+                                <Button.Content>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="../../Images/save.ico" VerticalAlignment="Center" HorizontalAlignment="Left" Height="15"></Image>
+                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="保存数量" TextAlignment="Right"></TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                        
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Column="3" Name="gb_CheckInfo" Margin="5">
@@ -298,7 +341,7 @@
                             </Grid>
                         </Button.Content>
                     </Button>
-                    <Button Name="btn_TotalReport"  IsEnabled="False" Click="btn_Report_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0" >
+                    <Button Name="btn_TotalReport"  IsEnabled="False" Click="btn_TotalReport_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0" >
                         <Button.Content>
                             <Grid>
                                 <Grid.ColumnDefinitions>

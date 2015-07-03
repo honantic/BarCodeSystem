@@ -83,6 +83,15 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 设备型号
+        /// </summary>
+        public string D_Version
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// 设备所属工作中心ID
         /// </summary>
         public Int64 D_Department_ID
@@ -133,7 +142,7 @@ namespace BarCodeSystem
         }
 
         /// <summary>
-        /// 设备条码号
+        /// 设备条码号，暂定和设备编号一致
         /// </summary>
         public string D_BarCode
         {

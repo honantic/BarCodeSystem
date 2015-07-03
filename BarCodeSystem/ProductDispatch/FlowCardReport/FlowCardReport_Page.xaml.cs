@@ -5,13 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows;
-//using System.Windows.Controls;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Threading;
 using System.Windows.Controls;
 using Xceed.Wpf.Toolkit;
+using System.ComponentModel;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardReport
 {
@@ -70,6 +69,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// 用来判断是否对数据库做出了改变
         /// </summary>
         public bool isChanged = false;
+
+        /// <summary>
+        /// 是否所有工序都报工完毕
+        /// </summary>
+        public bool isFinished = false;
+
+        /// <summary>
+        /// 所有工序报工完毕之后是否进行入库操作
+        /// </summary>
+        public bool isAfterHandled = false;
 
         /// <summary>
         /// 数据源处理次数，每报工一次，该次数加1，离散报工的时候每报工一次，工序下拉框数据源都会改变，而流水线报工不需要更改。这个用来做判断
@@ -296,8 +305,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             }
             cb_ProcessSequence.DisplayMemberPath = "TR_ProcessSequence";
             cb_ProcessSequence.SelectedValuePath = "ID";
+            if (datagrid_PersonInfo.HasItems)
+            {
+                image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
+                image_Yes.Visibility = (!personDataSource[0].FCS_IsReported) ? Visibility.Hidden : Visibility.Visible;
+            }
         }
-
 
         /// <summary>
         /// 工序下拉框选择改变事件
@@ -309,46 +322,34 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             this.Cursor = Cursors.Wait;
             if (!isNewFlowCard)
             {
+
+                #region 操作
                 if (isAmountSaved)
                 {
-                    List<Int64> _fcsID = new List<long>();
-                    foreach (FlowCardSubLists item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
+                    if (!isChanged)
                     {
-                        _fcsID.Add(item.ID);
+                        SelectionChangedEvent();
                     }
-                    if (_fcsID.Count > 0)
+                    else
                     {
-                        lastindex = cb_ProcessSequence.SelectedIndex;
-                        list = GetQualityInfo(_fcsID);
-                        datagrid_AmountInfo.ItemsSource = list;
-                        datagrid_AmountInfo.Items.Refresh();
-                        int scrapamount = 0, beginamount = 0;
-                        foreach (FlowCardQualityLists item in list)
+                        if (selectErrorCount == 0)
                         {
-                            scrapamount += item.FCQ_ScrapAmount;
+                            if (Xceed.Wpf.Toolkit.MessageBox.Show("该工序数量更改后并未报工,是否先报工再继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                            {
+                                selectErrorCount++;
+                                cb_ProcessSequence.SelectedIndex = lastindex;
+                            }
+                            else
+                            {
+                                isChanged = false;
+                                SelectionChangedEvent();
+                            }
                         }
-
-                        txtb_CheckPerson.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_DefaultCheckPersonName;
-                        txtb_ProcessName.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessName;
-
-
-                        personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
-                        datagrid_PersonInfo.ItemsSource = personDataSource;
-
-                        beginamount = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_BeginAmount;
-                        txtb_BeginAmount.Minimum = beginamount;
-                        txtb_BeginAmount.Text = beginamount.ToString();
-
-                        txtb_ScrappedAmount.Text = scrapamount.ToString();
-                        txtb_BeginAmount.IsReadOnly = !((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_IsFirstProcess;
-                        txtb_UnprocessedAm.Text = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_UnprocessedAm.ToString();
-
-
-
-                        txtb_QulifiedAmount.Text = (beginamount - scrapamount - Convert.ToInt32(txtb_UnprocessedAm.Text)).ToString();
+                        else
+                        {
+                            selectErrorCount = 0;
+                        }
                     }
-                    image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
-                    image_Yes.Visibility = (!personDataSource[0].FCS_IsReported) ? Visibility.Hidden : Visibility.Visible;
                 }
                 else
                 {
@@ -363,8 +364,53 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         selectErrorCount = 0;
                     }
                 }
+                #endregion
+
             }
             this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 下拉框选中项改变执行的语句
+        /// </summary>
+        private void SelectionChangedEvent()
+        {
+            List<Int64> _fcsID = new List<long>();
+            foreach (FlowCardSubLists item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
+            {
+                _fcsID.Add(item.ID);
+            }
+            if (_fcsID.Count > 0)
+            {
+                lastindex = cb_ProcessSequence.SelectedIndex;
+                list = GetQualityInfo(_fcsID);
+                datagrid_AmountInfo.ItemsSource = list;
+                datagrid_AmountInfo.Items.Refresh();
+                int scrapamount = 0, beginamount = 0;
+                foreach (FlowCardQualityLists item in list)
+                {
+                    scrapamount += item.FCQ_ScrapAmount;
+                }
+
+                txtb_CheckPerson.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_DefaultCheckPersonName;
+                txtb_ProcessName.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessName;
+
+
+                personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
+                datagrid_PersonInfo.ItemsSource = personDataSource;
+
+                beginamount = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_BeginAmount;
+                txtb_BeginAmount.Minimum = beginamount;
+                txtb_BeginAmount.Text = beginamount.ToString();
+
+                txtb_ScrappedAmount.Text = scrapamount.ToString();
+                txtb_BeginAmount.IsReadOnly = !((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_IsFirstProcess;
+                txtb_UnprocessedAm.Text = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_UnprocessedAm.ToString();
+
+                txtb_QulifiedAmount.Text = (beginamount - scrapamount - Convert.ToInt32(txtb_UnprocessedAm.Text)).ToString();
+            }
+            image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
+            image_Yes.Visibility = (!personDataSource[0].FCS_IsReported) ? Visibility.Hidden : Visibility.Visible;
         }
 
         /// <summary>
@@ -515,7 +561,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 case "btn_DeleteScrapInfo":
                     if (datagrid_AmountInfo.HasItems && datagrid_AmountInfo.SelectedIndex != -1)
                     {
-                        if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除该报废数量信息吗？该操作不可逆！", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                        if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除该报废数量信息吗？" + "\r\n" + "该操作不可逆！", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                         {
                             isChanged = true;
                             FlowCardQualityLists item = (FlowCardQualityLists)datagrid_AmountInfo.SelectedItem;
@@ -746,6 +792,56 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             this.Cursor = Cursors.Arrow;
         }
 
+
+        /// <summary>
+        /// 取消数量更改，重置为原始值
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_CancelAmount_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                #region 重置报废信息
+                if (datagrid_AmountInfo.HasItems)
+                {
+                    List<Int64> _fcsID = new List<long>();
+                    foreach (FlowCardSubLists item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
+                    {
+                        _fcsID.Add(item.ID);
+                    }
+                    list = GetQualityInfo(_fcsID);
+                    datagrid_AmountInfo.ItemsSource = list;
+                    datagrid_AmountInfo.Items.Refresh();
+                }
+                else
+                {
+
+                }
+                #endregion
+
+                #region 重置未处理信息、重置投入数
+                if (datagrid_PersonInfo.HasItems)
+                {
+                    txtb_UnprocessedAm.Value = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_UnprocessedAm;//未处理信息
+                    txtb_BeginAmount.Value = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_BeginAmount;//投入数
+                }
+                isAmountSaved = true;
+                #endregion
+            }
+            catch (Exception)
+            {
+                isAmountSaved = false;
+            }
+            finally
+            {
+                string message = isAmountSaved ? "重置成功！" : "重置失败，请重试！";
+                Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, isAmountSaved ? MessageBoxImage.Information : MessageBoxImage.Error);
+            }
+
+        }
+
+
         #endregion
 
         #region 报工处理
@@ -757,22 +853,113 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_Report_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            if (isAmountSaved)
+            bool? flag = CheckIsFinishingReport();
+            isFinished = (bool)flag;
+            if (flag != null)
             {
-                UpdateProcess();
-                UpdateQuality();
-                UpdateFlowCard();
+                if (isAmountSaved)
+                {
+                    UpdateProcess();
+                    UpdateQuality();
+                    UpdateFlowCard(flag);
 
+                    handledcount++;
+                    HandleData(tvFlowCard, fcsls);
+                    isChanged = false;
+                    if ((bool)flag)
+                    {
+                        AfterReportSetting();
+                    }
+                }
+                else
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("您还有数量信息没有保存，请先保存数量！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
 
-                handledcount++;
-                HandleData(tvFlowCard, fcsls);
-                isChanged = false;
-            }
-            else
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show("您还有数量信息没有保存，请先保存数量！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
             this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 报工完成之后，改变操作选项
+        /// </summary>
+        private void AfterReportSetting()
+        {
+            cb_ProcessSequence.IsReadOnly = true;
+            txtb_UnprocessedAm.IsReadOnly = true;
+            datagrid_AmountInfo.IsReadOnly = datagrid_PersonInfo.IsReadOnly = true;
+            btn_CheckPersonSearch.IsEnabled = btn_DeleteScrapInfo.IsEnabled = btn_CancelAmount.IsEnabled = btn_AddScrapInfo.IsEnabled = btn_AddPerson.IsEnabled = btn_DeleteScrapInfo.IsEnabled = btn_RemovePerson.IsEnabled = btn_SaveAmount.IsEnabled = btn_Report.IsEnabled = false;
+            btn_TotalReport.IsEnabled = true;
+        }
+        /// <summary>
+        /// 检查是否最后一道报工的工序，最后一道工序的话，报工后，整张流转卡的状态变成完工状态。报工信息不再修改！
+        /// 是最后一道并且继续，返回true，是最后一道，不继续，返回null，不是最后一道，返回false
+        /// </summary>
+        private bool? CheckIsFinishingReport()
+        {
+            switch (tvFlowCard.TRV_ReportWay)
+            {
+                case 0:
+                    if (datagrid_PersonInfo.HasItems)
+                    {
+                        bool flag = true;
+                        var isreported = fcsls.Where(p => !p.FCS_ProcessSequanece.Equals(((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_ProcessSequanece)).Select(p => p.FCS_IsReported).Distinct();
+                        foreach (bool item in isreported)
+                        {
+                            if (item)
+                            {
+                            }
+                            else
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag)
+                        {
+                            if (Xceed.Wpf.Toolkit.MessageBox.Show("工艺路线中其他工序都已报工，该工序报工后" + "\r\n" + "将会结束报工，是否继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                case 1:
+                default:
+                    if (datagrid_PersonInfo.HasItems)
+                    {
+                        if (((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_IsLastProcess)
+                        {
+                            if (Xceed.Wpf.Toolkit.MessageBox.Show("这是末道工序，该工序报工后" + "\r\n" + "将会结束报工，是否继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+            }
         }
 
         /// <summary>
@@ -857,14 +1044,24 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <summary>
         /// 更新流转卡状态，改为报工
         /// </summary>
-        private void UpdateFlowCard()
+        private void UpdateFlowCard(bool? _flag)
         {
-            fcl.FC_CardState = 1;
+            fcl.FC_CardState = (bool)_flag ? 2 : 1;
             string SQl = string.Format(@"Update [FlowCard] set [FC_CardState]={0} where [ID]={1}", fcl.FC_CardState, fcl.ID);
             MyDBController.GetConnection();
             MyDBController.ExecuteNonQuery(SQl);
             MyDBController.CloseConnection();
             txtb_CardState.Text = (new FlowCardStateConverter()).Convert(fcl.FC_CardState, typeof(string), null, new System.Globalization.CultureInfo("")).ToString();
+        }
+
+        /// <summary>
+        /// 结束报工事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_TotalReport_Click(object sender, RoutedEventArgs e)
+        {
+            isAfterHandled = true;
         }
 
         /// <summary>
@@ -874,8 +1071,49 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
 
         }
-        #endregion
 
+        /// <summary>
+        /// 关闭事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Closing(object sender, CancelEventArgs e)
+        {
+            if (!isAmountSaved)
+            {
+                if (Xceed.Wpf.Toolkit.MessageBox.Show("还有数量信息没有保存，是否要退出？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            else if (isChanged)
+            {
+                if (Xceed.Wpf.Toolkit.MessageBox.Show("数量保存后并没有对工序进行报工，" + "\r\n" + "是否要退出？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            else if (isFinished && !isAfterHandled)
+            {
+                if (Xceed.Wpf.Toolkit.MessageBox.Show("流转卡所有工序都已报工，但是并没有进行完工操作，" + "\r\n" + "是否要退出？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+        #endregion
 
     }
 }

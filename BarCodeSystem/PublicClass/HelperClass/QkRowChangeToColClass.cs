@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Data;
 using System.IO;
-using Excel = Microsoft.Office.Interop.Excel; 
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BarCodeSystem
 {
@@ -36,27 +36,27 @@ namespace BarCodeSystem
         // 输出目标表，列名
 
         #region Excel剪切板数据导入到临时表格中
-        public void write_excel_date_to_temp_table(DataTable TempTable,string ColNameList)
+        public void write_excel_date_to_temp_table(DataTable TempTable, string ColNameList)
         {
-            
-            string []ColNameString = ColNameList.Split(',');
+
+            string[] ColNameString = ColNameList.Split(',');
             int ColCount = ColNameString.Length;
 
             string data_string = System.Windows.Forms.Clipboard.GetText();  //得到剪切板数据
-            data_string=data_string.Replace("\r\n", "\r");
+            data_string = data_string.Replace("\r\n", "\r");
             data_string = data_string.Replace("\n", "");
-            string []string_list=data_string.Split('\r');
-            string []ColNameStringList=ColNameList.Split(',');  //得到列集合
+            string[] string_list = data_string.Split('\r');
+            string[] ColNameStringList = ColNameList.Split(',');  //得到列集合
             string str;
             string[] str1;
-            int i,j;
+            int i, j;
             string DataType;
             DataColumn dc;
             DataRow r1;
-            for (i = 0; i<string_list.Length; i++) 
+            for (i = 0; i < string_list.Length; i++)
             {
                 str = string_list[i];
-                str1=str.Split('\t');
+                str1 = str.Split('\t');
                 if (str1.Length >= ColCount)
                 {
                     r1 = TempTable.NewRow();
@@ -64,7 +64,7 @@ namespace BarCodeSystem
                     {
                         if (ColNameStringList[j] != "")
                         {
-                            dc = TempTable.Columns[ColNameStringList[j].Trim()] ;
+                            dc = TempTable.Columns[ColNameStringList[j].Trim()];
                             DataType = dc.DataType.ToString().Trim();
                             switch (DataType)
                             {
@@ -72,7 +72,7 @@ namespace BarCodeSystem
                                     r1[ColNameStringList[j].Trim()] = DateTime.Parse(str1[j]);
                                     break;
                                 case "System.Int16":
-                                    if (str1[j].Length==0)
+                                    if (str1[j].Length == 0)
                                     {
                                         r1[ColNameStringList[j].Trim()] = 0;
                                     }
@@ -82,7 +82,7 @@ namespace BarCodeSystem
                                     }
                                     break;
                                 case "System.Int32":
-                                    if (str1[j].Length==0)
+                                    if (str1[j].Length == 0)
                                     {
                                         r1[ColNameStringList[j].Trim()] = 0;
                                     }
@@ -249,6 +249,7 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static bool CreateExcelFileForDataTable(System.Data.DataTable dt)
         {
+            bool flag = false;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Excel文件名称 (*.xls)|*.xls|Excel文件名称 (*.xlsx)|*.xlsx";
             saveFileDialog1.RestoreDirectory = true;
@@ -292,11 +293,11 @@ namespace BarCodeSystem
                     }
                     //保存工作已写入数据的工作表，加亮处为解决整个问题的关键
                     mBook.SaveAs(saveFileDialog1.FileName, Excel.XlFileFormat.xlExcel7, miss, miss, miss, miss, Excel.XlSaveAsAccessMode.xlNoChange, miss, miss, miss, miss, miss);
-                    return true;
+                    flag = true;
                 }
                 catch (Exception ee)
                 {
-                    throw new Exception(ee.Message);
+                    flag = false;
                 }
                finally //finally中的代码主要用来释放内存和中止进程()
                 {
@@ -310,11 +311,12 @@ namespace BarCodeSystem
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(mExcel);
                     GC.Collect();
                 }
+                return flag;
             }
             else
             {
                 return false;
             }
-        } 
+        }
     }
 }

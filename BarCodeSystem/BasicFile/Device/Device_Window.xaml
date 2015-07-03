@@ -27,6 +27,7 @@
                     <GridViewColumn Header="设备编码"     DisplayMemberBinding="{Binding Path=D_Code}" Width="80"></GridViewColumn>
                     <GridViewColumn Header="设备名称"     DisplayMemberBinding="{Binding Path=D_Name}" Width="80"></GridViewColumn>
                     <GridViewColumn Header="设备数量"     DisplayMemberBinding="{Binding Path=D_Amount}" Width="80"></GridViewColumn>
+                    <GridViewColumn Header="设备型号"     DisplayMemberBinding="{Binding Path=D_Version}" Width="80"></GridViewColumn>
                     <GridViewColumn Header="设备条码"     DisplayMemberBinding="{Binding Path=D_BarCode}" Width="80"></GridViewColumn>
                     <GridViewColumn Header="工作中心编码" DisplayMemberBinding="{Binding Path=D_Department_Code}" Width="100"></GridViewColumn>
                     <GridViewColumn Header="工作中心名称" DisplayMemberBinding="{Binding Path=D_Department_Name}" Width="100"></GridViewColumn>

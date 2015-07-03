@@ -4,12 +4,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Data;
 using Xceed.Wpf.AvalonDock.Layout;
-using Xceed.Wpf.AvalonDock;
 using System.ComponentModel;
-using System.Windows.Media;
 using BarCodeSystem.ProductDispatch.FlowCard;
 using BarCodeSystem.ProductDispatch.FlowCardReport;
 using System.Windows.Input;
+using BarCodeSystem.TechRoute.TechRoute;
+using BarCodeSystem.ProductDispatch.FlowCardDistribute;
+using BarCodeSystem.ProductDispatch.FlowCardClean;
 
 namespace BarCodeSystem
 {
@@ -326,10 +327,28 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_TechRouteManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             TechRoute_Window tr = new TechRoute_Window();
             tr.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             tr.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             tr.ShowDialog();
+            this.Cursor = Cursors.Arrow;
+        }
+
+
+        /// <summary>
+        /// 工艺路线导入
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_TechRouteImport_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            TechRouteImport_Window tri = new TechRouteImport_Window();
+            tri.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            tri.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            tri.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -465,11 +484,12 @@ namespace BarCodeSystem
             if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
             {
                 Frame topFrame = new Frame();
-                topFrame.Content = new FlowCardReport_Page() { ShowsNavigationUI = true };
+                FlowCardReport_Page fcr = new FlowCardReport_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcr;
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "流转卡报工";
                 la.Content = topFrame;
-                //la.Closing += la_Closing;
+                la.Closing += fcr.Closing;
 
                 ldp.Children.Add(la);
                 la.IsSelected = true;
@@ -503,6 +523,10 @@ namespace BarCodeSystem
                         ((FlowCardReport_Page)((Frame)item.Content).Content).searchFrame.Content = null;
                         ((FlowCardReport_Page)((Frame)item.Content).Content).textb_SearchInfo.Text = "";
                         break;
+                    case "流转卡分批":
+                        ((FlowCardDistribute_Page)((Frame)item.Content).Content).frame_FlowCardSearch.Content = null;
+                        ((FlowCardDistribute_Page)((Frame)item.Content).Content).textb_SearcInfo.Visibility = Visibility.Collapsed;
+                        break;
                     default:
                         break;
                 }
@@ -514,7 +538,6 @@ namespace BarCodeSystem
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "流转卡编制";
                 la.Content = topFrame;
-                //la.Closing += la_Closing;
 
                 ldp.Children.Add(la);
                 la.IsSelected = true;
@@ -525,43 +548,85 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Arrow;
             #endregion
         }
+
         /// <summary>
-        /// 标签页关闭事件
+        /// 流转卡分批
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void la_Closing(object sender, CancelEventArgs e)
+        private void item_WorkCardDis_Click(object sender, RoutedEventArgs e)
         {
-            try
+            #region 将各个page加载进工作区域
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
             {
-                if (MessageBox.Show("关我干啥呢？", "提示", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                if (item.Title == "流转卡分批")
                 {
-
-                }
-                else
-                {
-                    e.Cancel = true;
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
                 }
             }
-            catch (Exception)
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                FlowCardDistribute_Page fcd = new FlowCardDistribute_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcd;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡分批";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
             {
             }
-
+            this.Cursor = Cursors.Arrow;
+            #endregion
         }
 
-        ///// <summary>
-        ///// 对MainWindow的AvalonDock进行设置
-        ///// </summary>
-        //private void AvalonSetting()
-        //{
-        //    lp.Children.Add(ldp);
-        //    lr.RootPanel = lp;
-        //    //lr.RootPanel.Children.Add(lp);//不能用这个方法，用这个方法，AvalonDock会自动为lr添加一个GridSpliter，会把lr分成左右两部分。很恶心。
-        //    dockingManager.Layout = lr;
-        //}
 
+        /// <summary>
+        /// 流转卡清卡
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkCardClean_Click(object sender, RoutedEventArgs e)
+        {
+            #region 将各个page加载进工作区域
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "流转卡清卡")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                FlowCardClean_Page fcc = new FlowCardClean_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcc;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡清卡";
+                la.Content = topFrame;
 
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+            #endregion
+        }
         #endregion
+
 
 
     }

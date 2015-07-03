@@ -19,6 +19,8 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                     return "报工";
                 case 2:
                     return "完工";
+                case 3:
+                    return "被分批";
                 default :
                     return "开立";
             }
@@ -34,6 +36,8 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                     return 1;
                 case "完工":
                     return 2;
+                case "被分批":
+                    return 3;
                 default:
                     return 0;
             }

@@ -5,11 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardReport
 {
@@ -29,6 +27,49 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             sfc = _sfc;
         }
 
+        /// <summary>
+        /// 流转卡分批，流转卡清卡，搜索指定流转卡编号的构造函数
+        /// </summary>
+        /// <param name="_sfc"></param>
+        /// <param name="_key"></param>
+        public FlowCardSearch_Page(SubmitFlowCard _sfc, int _state, string _key,bool _autoStart)
+        {
+            InitializeComponent();
+            sfc = _sfc;
+            key = _key;
+            state = _state;
+            if (_autoStart)
+            {
+                object _sender = new object();
+                RoutedEventArgs _e = new RoutedEventArgs();
+                Page_Loaded(_sender, _e);
+                if (datagrid_FlowCard.HasItems)
+                {
+                    datagrid_FlowCard.SelectedIndex = 0;
+                    btn_Select_Click(_sender, _e);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 流转卡分批，流转卡清卡，搜索所有流转卡构造函数
+        /// </summary>
+        /// <param name="_sfc"></param>
+        /// <param name="nomeaning"></param>
+        /// <param name="_key"></param>
+        public FlowCardSearch_Page(SubmitFlowCard _sfc, int _state, string _key)
+        {
+            InitializeComponent();
+            sfc = _sfc;
+            key = _key;
+            state = _state;
+        }
+
+        string key = "";
+        /// <summary>
+        /// 要搜索的流转卡状态
+        /// </summary>
+        int state = 0;
         SubmitFlowCard sfc;
         List<FlowCardLists> fcls = new List<FlowCardLists>();
         List<FlowCardSubLists> fcsls = new List<FlowCardSubLists>();
@@ -50,8 +91,21 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             try
             {
+                string SQl = "";
                 DataSet ds = new DataSet();
-                string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],A.[FC_Code],A.[FC_Amount],A.[FC_CardState],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState] != 2");
+                if (string.IsNullOrEmpty(key))//取出开立或者报工状态的流转卡，报工界面用
+                {
+                    SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState] != 2 and A.[FC_CardState] != 3");
+                }
+                else if (key.Equals("All"))//取出所有指定状态下的所有流转卡，清卡界面、分批界面使用
+                {
+                    SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState] ={0}", state);
+                }
+                else//取出所有指定状态下的指定编号流转卡，清卡界面、分批界面使用
+                {
+                    SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState]={0} and A.[FC_Code] ='{1}'", state, key);
+                }
+
                 MyDBController.GetConnection();
                 MyDBController.GetDataSet(SQl, ds, "FlowCard");
                 MyDBController.CloseConnection();
@@ -62,6 +116,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FC_Amount = Convert.ToInt32(row["FC_Amount"]),
                         FC_CardState = Convert.ToInt32(row["FC_CardState"]),
                         FC_CardType = Convert.ToInt32(row["FC_CardType"]),
+                        FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
+                        FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
+                        FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
+                        FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
+                        FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
+                        FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
                         FC_CheckBy = row["FC_CheckBy"].ToString(),
                         FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
                         FC_Code = row["FC_Code"].ToString(),
@@ -126,7 +186,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             {
                 if (datagrid_FlowCard.SelectedIndex != lastindex)
                 {
-                    (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = true;
+                    int count = MyDBController.FindVisualParent<FlowCardReport_Page>(this).Count;
+                    if (count > 0)
+                    {
+                        (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = true;
+                    }
                     lastindex = datagrid_FlowCard.SelectedIndex;
                     FlowCardLists fc = (FlowCardLists)datagrid_FlowCard.SelectedItem;
                     Int64 flowCardID = fc.ID;
@@ -134,10 +198,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     TechVersion techVersion = FetchTechVersion();
                     if (techVersion != null)
                     {
-                        //sfc(fc, fcsls, techVersion);
                         sfc.Invoke(fc, fcsls, techVersion);
-                        //sfc.BeginInvoke(fc, fcsls, techVersion, null, null);
-                        (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = false;
+                        if (count > 0)
+                        {
+                            (MyDBController.FindVisualParent<FlowCardReport_Page>(this)[0]).isNewFlowCard = false;
+                        }
                     }
                 }
             }

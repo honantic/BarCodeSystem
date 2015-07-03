@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 
 namespace BarCodeSystem
@@ -36,10 +31,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             GetBCSProcessLists();
         }
@@ -65,6 +60,7 @@ namespace BarCodeSystem
                 pnl.PN_Code = dt.Rows[i]["PN_Code"].ToString();
                 listBeforeSearch.Add(pnl);
             }
+            listBeforeSearch = listBeforeSearch.OrderBy(p => p.PN_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
         }
@@ -117,7 +113,7 @@ namespace BarCodeSystem
             else
             {
                 pnl = listview1.SelectedItem as ProcessNameLists;
-                if (pnl !=null)
+                if (pnl != null)
                 {
                     pnm.pnl = pnl;
                     pnm.existProcess = dt;
@@ -182,7 +178,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_SearchKey_TextChanged(object sender, TextChangedEventArgs e)
         {
-            btn_Search_Click(sender,e);
+            btn_Search_Click(sender, e);
         }
 
         /// <summary>
@@ -195,7 +191,7 @@ namespace BarCodeSystem
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
 
-            if (txtb_SearchKey.Text.Length >0)
+            if (txtb_SearchKey.Text.Length > 0)
             {
                 string key = txtb_SearchKey.Text;
                 List<ProcessNameLists> pnls = new List<ProcessNameLists> { };
@@ -205,7 +201,7 @@ namespace BarCodeSystem
                     select item;
                 foreach (ProcessNameLists item in IEpnls)
                 {
-                        pnls.Add(item);
+                    pnls.Add(item);
                 }
                 listview1.ItemsSource = null;
                 listview1.ItemsSource = pnls;
@@ -237,7 +233,7 @@ namespace BarCodeSystem
             }
             else
             {
-                btn_Modify_Click(sender,e);
+                btn_Modify_Click(sender, e);
             }
         }
 

@@ -3,15 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace BarCodeSystem
 {
@@ -39,10 +33,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             GetBCSQualitySortLists();
         }
@@ -64,6 +58,7 @@ namespace BarCodeSystem
                 qsl.QS_Code = dt.Rows[i]["QS_Code"].ToString();
                 listBeforeSearch.Add(qsl);
             }
+            listBeforeSearch = listBeforeSearch.OrderBy(p => p.QS_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
         }

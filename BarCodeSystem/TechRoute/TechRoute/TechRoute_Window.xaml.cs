@@ -81,7 +81,7 @@ namespace BarCodeSystem
             {
                 return x.ID.CompareTo(y.ID);
             });
-
+            itemList = itemList.OrderBy(p => p.II_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = itemList;
         }

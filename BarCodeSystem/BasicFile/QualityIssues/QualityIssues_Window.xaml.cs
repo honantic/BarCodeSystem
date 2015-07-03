@@ -31,10 +31,10 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
             GetBCSQualityList();
 
         }
@@ -47,11 +47,11 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             listBeforeSearch.Clear();
             ds.Clear();
-//            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue],
-//                            CASE [QI_IsItemIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsItemIssue_Show],
-//                            CASE [QI_IsProduceIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsProduceIssue_Show],
-//                            CASE [QI_IsPreviousIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS[QI_IsPreviousIssue_Show]
-//                            FROM [QualityIssue]";
+            //            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue],
+            //                            CASE [QI_IsItemIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsItemIssue_Show],
+            //                            CASE [QI_IsProduceIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsProduceIssue_Show],
+            //                            CASE [QI_IsPreviousIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS[QI_IsPreviousIssue_Show]
+            //                            FROM [QualityIssue]";
 
             string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode] FROM [QualityIssue]";
             MyDBController.GetDataSet(SQl, ds, "QualityIssue");
@@ -70,9 +70,9 @@ namespace BarCodeSystem
                 //qil.QI_IsItemIssue_Show = dt.Rows[i]["QI_IsItemIssue_Show"].ToString();
                 //qil.QI_IsPreviousIssue_Show = dt.Rows[i]["QI_IsPreviousIssue_Show"].ToString();
                 //qil.QI_IsProduceIssue_Show = dt.Rows[i]["QI_IsProduceIssue_Show"].ToString();
-                listBeforeSearch.Add(qil);     
+                listBeforeSearch.Add(qil);
             }
-
+            listBeforeSearch = listBeforeSearch.OrderBy(p => p.QI_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
         }
@@ -102,7 +102,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Modify_Click(object sender, RoutedEventArgs e)
         {
-            QualityIssuesLists qil =null;
+            QualityIssuesLists qil = null;
             foreach (QualityIssuesLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -112,7 +112,7 @@ namespace BarCodeSystem
                 }
             }
 
-            if (qil !=null)
+            if (qil != null)
             {
                 QualityIssuesModify_Window qim = new QualityIssuesModify_Window();
                 qim.Height = Math.Min(User_Info.ScreenHeight, 400);
@@ -128,7 +128,7 @@ namespace BarCodeSystem
             else
             {
                 qil = listview1.SelectedItem as QualityIssuesLists;
-                if (qil !=null)
+                if (qil != null)
                 {
                     QualityIssuesModify_Window qim = new QualityIssuesModify_Window();
                     qim.Height = Math.Min(User_Info.ScreenHeight, 400);
@@ -194,20 +194,20 @@ namespace BarCodeSystem
             listview1.ItemsSource = listBeforeSearch;
 
             List<QualityIssuesLists> qils = new List<QualityIssuesLists> { };
-            if (txtb_SearchKey.Text.Length>0)
-	        {
+            if (txtb_SearchKey.Text.Length > 0)
+            {
                 string key = txtb_SearchKey.Text;
                 IEnumerable<QualityIssuesLists> IEqils =
                     from item in listBeforeSearch
-                    where (item.QI_Name.IndexOf(key) != -1 || item.QI_Code.IndexOf(key) != -1 )
+                    where (item.QI_Name.IndexOf(key) != -1 || item.QI_Code.IndexOf(key) != -1)
                     select item;
                 foreach (QualityIssuesLists item in IEqils)
                 {
-                        qils.Add(item);  
+                    qils.Add(item);
                 }
                 listview1.ItemsSource = null;
                 listview1.ItemsSource = qils;
-	        }
+            }
         }
 
 

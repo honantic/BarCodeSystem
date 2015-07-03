@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 
 namespace BarCodeSystem
@@ -55,7 +50,7 @@ namespace BarCodeSystem
         private void GetDeviceList()
         {
             MyDBController.GetConnection();
-            string SQl = @"SELECT A.[ID],A.[DD_Code],A.[DD_Name],A.[DD_Amount],A.[DD_BarCode],A.[DD_WorkCenterID],
+            string SQl = @"SELECT A.[ID],A.[DD_Code],A.[DD_Name],A.[DD_Amount],A.[DD_BarCode],A.[DD_Version],A.[DD_WorkCenterID],
                         A.[DD_SourceType] ,A.[DD_IsValidated] ,
                         CASE A.[DD_SourceType] WHEN 0 THEN 'U9录入' WHEN 1 THEN '手工录入'  END AS [DD_SourceType_Show],
                         CASE A.[DD_IsValidated] WHEN 0 THEN '否' WHEN 1 THEN '是'  END AS [DD_IsValidated_Show],
@@ -79,6 +74,7 @@ namespace BarCodeSystem
                 dl.D_Code = dt.Rows[i]["DD_Code"].ToString();
                 dl.D_Name = dt.Rows[i]["DD_Name"].ToString();
                 dl.D_Amount = Convert.ToInt32(dt.Rows[i]["DD_Amount"]);
+                dl.D_Version = dt.Rows[i]["DD_Version"].ToString();
                 dl.D_BarCode = dt.Rows[i]["DD_BarCode"].ToString();
                 dl.D_Department_ID = (Int64)dt.Rows[i]["DD_WorkCenterID"];
                 dl.D_Department_Code = dt.Rows[i]["WC_Department_Code"].ToString();
@@ -91,6 +87,7 @@ namespace BarCodeSystem
                 dls.Add(dl);
                 listBeforeSearch.Add(dl);
             }
+            dls = dls.OrderBy(p => p.D_Code).ToList();
             listview1.ItemsSource = null;
             listview1.ItemsSource = dls;
         }
@@ -121,7 +118,7 @@ namespace BarCodeSystem
         private void btn_Validate_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            List<string> colList = new List<string> { "ID", "DD_Code", "DD_Name","DD_Amount", "DD_BarCode", "DD_WorkCenterID", "DD_SourceType", "DD_IsValidated" };
+            List<string> colList = new List<string> { "ID", "DD_Code", "DD_Name", "DD_Amount", "DD_BarCode", "DD_Version", "DD_WorkCenterID", "DD_SourceType", "DD_IsValidated" };
             List<DeviceLists> dls = new List<DeviceLists> { };
 
             DataTable temp = dt.Clone();
@@ -130,7 +127,7 @@ namespace BarCodeSystem
             temp.Columns.Remove("DD_IsValidated_Show");
             temp.Columns.Remove("WC_Department_Name");
             temp.Columns.Remove("WC_Department_Code");
-            temp.Columns.Add("IDNew",typeof(Int64));
+            temp.Columns.Add("IDNew", typeof(Int64));
             foreach (DeviceLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -142,6 +139,7 @@ namespace BarCodeSystem
                     temprow["DD_Code"] = item.D_Code;
                     temprow["DD_Name"] = item.D_Name;
                     temprow["DD_Amount"] = item.D_Amount;
+                    temprow["DD_Version"] = item.D_Version;
                     temprow["DD_BarCode"] = item.D_BarCode;
                     temprow["DD_WorkCenterID"] = item.D_Department_ID;
                     temprow["DD_SourceType"] = item.D_SourceType;
@@ -151,23 +149,30 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    
+
                 }
             }
 
-            if (temp.Rows.Count> 0)
+            if (temp.Rows.Count > 0)
             {
                 MyDBController.GetConnection();
-                int updateNum=0, insertNum=0;
-                MyDBController.InsertSqlBulk(temp,colList,out updateNum,out insertNum);
+                int updateNum = 0, insertNum = 0;
+                try
+                {
+                    MyDBController.InsertSqlBulk(temp, colList, out updateNum, out insertNum);
+                }
+                catch (Exception ee)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 MyDBController.CloseConnection();
-                string message = string.Format(@"共成功启用"+updateNum+"个设备！");
+                string message = string.Format(@"共成功启用" + updateNum + "个设备！");
                 MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-    
+
             }
             else
             {
-                MessageBox.Show("请选中至少一条设备信息！","提示",MessageBoxButton.OK,MessageBoxImage.Warning);
+                MessageBox.Show("请选中至少一条设备信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             this.Cursor = Cursors.Arrow;
             GetDeviceList();
@@ -187,11 +192,11 @@ namespace BarCodeSystem
             List<DeviceLists> dls = new List<DeviceLists> { };
             IEnumerable<DeviceLists> IEdls = new List<DeviceLists> { };
 
-            if (txtb_SearchKey.Text!="")
+            if (txtb_SearchKey.Text != "")
             {
                 string key = txtb_SearchKey.Text;
                 IEdls =
-                from  item in listBeforeSearch
+                from item in listBeforeSearch
                 where (item.D_Department_Code.IndexOf(key) != -1 || item.D_Department_Name.IndexOf(key) != -1 ||
                         item.D_Code.IndexOf(key) != -1 || item.D_Name.IndexOf(key) != -1 ||
                         item.D_IsValidated_Show.IndexOf(key) != -1 || item.D_SourceType_Show.IndexOf(key) != -1)
@@ -218,7 +223,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_SearchKey_TextChanged(object sender, TextChangedEventArgs e)
         {
-            btn_Search_Click(sender,e);
+            btn_Search_Click(sender, e);
         }
 
 
