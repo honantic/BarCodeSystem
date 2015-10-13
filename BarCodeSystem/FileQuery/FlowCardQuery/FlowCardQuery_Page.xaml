@@ -1,0 +1,210 @@
+﻿<Page x:Class="BarCodeSystem.FileQuery.FlowCardQuery.FlowCardQuery_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
+      mc:Ignorable="d" 
+      Loaded="Page_Loaded"
+      d:DesignHeight="1024" d:DesignWidth="1280"
+	Title="FlowCardQuery_Page">
+
+    <Page.Resources>
+        <local:TrueOrFalseConverter x:Key="boolConverter"></local:TrueOrFalseConverter>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="3">
+            <TextBlock FontSize="15" Foreground="White">流转卡查询页面</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop  Offset="1" Color="LightGreen"></GradientStop>
+                        <GradientStop Color="Green"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Grid Grid.Row="1" Name="grid_WaySelect" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0 10" Width="5">
+                <GridSplitter.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="LightBlue" Offset="0.8"></GradientStop>
+                        <GradientStop Color="Salmon" Offset="0.4"></GradientStop>
+                        <GradientStop Color="LightGreen"></GradientStop>
+                    </LinearGradientBrush>
+                </GridSplitter.Background>
+            </GridSplitter>
+            <GroupBox Margin="5" Name="gb_WaySelect">
+                <GroupBox.Header >
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}">查询方式选择</TextBlock>
+                </GroupBox.Header>
+                <Frame Name="frame_SelectWay"   NavigationUIVisibility="Hidden">
+                </Frame>
+            </GroupBox>
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Margin="5" Name="gb_FCInfo">
+                    <GroupBox.Header >
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡表头信息</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="流转卡类型：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_FlowCardType" Grid.Column="1" TextWrapping="Wrap"  VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Right" Text="生产订单编号：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_SourceOrderCode" Grid.Row="1" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="2" HorizontalAlignment="Right" Text="流转卡编号：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_FlowCardCode" Grid.Row="2" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="3" HorizontalAlignment="Right" Text="料品信息：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_ItemInfo" Grid.Row="3" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="4" HorizontalAlignment="Right" Text="工艺版本：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_VersionCode" Grid.Row="4" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="5" HorizontalAlignment="Right" Text="派工数量：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_Amount" Grid.Row="5" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="6" HorizontalAlignment="Right" Text="生产车间：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_WorkCenter" Grid.Row="6" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="7" HorizontalAlignment="Right" Text="单据状态：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CardState" Grid.Row="7" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="8" HorizontalAlignment="Right" Text="制单人：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CreateBy" Grid.Row="8"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                        <TextBlock VerticalAlignment="Center" Grid.Row="9" HorizontalAlignment="Right" Text="制单日期：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CreateOn" Grid.Row="9"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Margin="5" Grid.Column="1">
+                    <GroupBox.Header >
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡行表信息</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"></RowDefinition>
+                            <RowDefinition Height="20"></RowDefinition>
+                            <RowDefinition Name="rd_QualityInfo"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <DataGrid Name="datagrid_FlowCardSub" IsReadOnly="True" RowHeaderWidth="30" CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="行号" Binding="{Binding Path=FCS_ProcessSequanece}"></DataGridTextColumn>
+                                <DataGridTemplateColumn Header="工序名称"  Width="100" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=FCS_ProcessName}" TextWrapping="Wrap"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="操作工" Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=FCS_PersonName}" TextWrapping="Wrap"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="投入数" Binding="{Binding Path=FCS_BeginAmount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="转序新增数" Binding="{Binding Path=FCS_AddAmount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="报废数" Binding="{Binding Path=FCS_ScrappedAmount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="待处理数" Binding="{Binding Path=FCS_UnprocessedAm}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="合格数" Binding="{Binding Path=FCS_QulifiedAmount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="是否报工" Binding="{Binding Path=FCS_IsReported,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10 0" Height="5">
+                            <GridSplitter.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="LightBlue" Offset="0.8"></GradientStop>
+                                    <GradientStop Color="Salmon" Offset="0.4"></GradientStop>
+                                    <GradientStop Color="LightGreen"></GradientStop>
+                                </LinearGradientBrush>
+                            </GridSplitter.Background>
+                        </GridSplitter>
+                        <DataGrid Name="datagrid_QualityInfo" Grid.Row="2" AutoGenerateColumns="False" ColumnWidth="Auto" RowHeaderWidth="30" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="工序行号" Binding="{Binding Path=TR_ProcessSequence}" ></DataGridTextColumn>
+                                <DataGridTextColumn Header="编号" Binding="{Binding Path=QI_Code,Mode=TwoWay}">
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="质量问题原因名称" Binding="{Binding Path=QI_Name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="数量" Binding="{Binding Path=FCQ_ScrapAmount}">
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Margin="5" Grid.Column="2">
+                    <GroupBox.Header >
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">工艺路线信息</TextBlock>
+                    </GroupBox.Header>
+                    <DataGrid Name="datagrid_TechRoute" AutoGenerateColumns="False" RowHeaderWidth="30" CanUserAddRows="False" IsReadOnly="True" CanUserDeleteRows="False" CanUserSortColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="行号" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
+                            <DataGridTemplateColumn Header="工序名称" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=TR_ProcessName}" TextWrapping="Wrap"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="首道工序" Binding="{Binding Path=TR_IsFirstProcess,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="末道工序" Binding="{Binding Path=TR_IsLastProcess,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Margin="0,5,0,-5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Content="审核" Name="btn_Check" Click="btn_Check_Click" ClickMode="Release" Grid.Column="1"  MaxWidth="120" Height="25"  ></Button>
+            <Button Grid.Column="3"  Content="打印" Name="btn_Print" Click="btn_Print_Click" MaxWidth="120" Height="25"></Button>
+            <Button Grid.Column="2" Content="修改数据" Name="btn_ModifyData" Click="btn_ModifyData_Click" MaxWidth="120" Height="25"></Button>
+        </Grid>
+    </Grid>
+</Page>

@@ -24,12 +24,14 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="工序编号:" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Text="工序编码:" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             <TextBox Name="txtb_Code" Height="30" Margin="5" FontSize="14" LostFocus="txtb_Code_LostFocus" MouseDoubleClick="txtb_Name_MouseDoubleClick" Grid.Column="1" GotFocus="txtb_Code_GotFocus"></TextBox>
 
             <TextBlock Text="工序名称:" Grid.Column="2" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             <TextBox Name="txtb_Name" Height="30"  FontSize="14" Margin="5" Grid.Column="3" MouseDoubleClick="txtb_Name_MouseDoubleClick"></TextBox>
 
+            <TextBlock Text="工序号:" Grid.Row="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBox Name="txtb_CodeInWorkCenter" Grid.Row="1" Grid.Column="1" Height="30"  FontSize="14" Margin="5" MouseDoubleClick="txtb_Name_MouseDoubleClick"></TextBox>
         </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button Height="30" Name="btn_Save" Width="80" Margin="10 5 5 5"  Click="btn_Save_Click"  Content="保存"></Button>

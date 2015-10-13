@@ -1,0 +1,173 @@
+﻿<Window x:Class="BarCodeSystem.ProductDispatch.FlowCardPrint.CustomedFlowCard_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        KeyDown="Window_KeyDown"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Title="CustomedFlowCard_Window" Height="480" Width="640">
+    <Grid Name="grid_FatherGrid" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="125"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Name="grid_TopGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4.5*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="0.7*"></ColumnDefinition>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="0.7*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="0.7*"></ColumnDefinition>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="0.9*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="20"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock  Grid.Column="1"  VerticalAlignment="Bottom" FontSize="11" Text="JL/04-04/05" Margin="0 5"></TextBlock>
+            <Image Name="image_Logo" Grid.Column="3" Source="../../Images/sanhua.png" VerticalAlignment="Center" Margin="5"></Image>
+            <TextBlock Grid.Column="1"  Margin="5 0" Grid.Row="1" VerticalAlignment="Center" Text="客户:"></TextBlock>
+            <TextBlock Grid.Row="2" Margin="5 0" Grid.Column="1" VerticalAlignment="Center"  Text="产品名称:"></TextBlock>
+            <TextBlock Grid.Row="1" Margin="5 0" Grid.Column="3" VerticalAlignment="Center" Text="客户型号:"></TextBlock>
+            <TextBlock Grid.Row="2" Margin="5 0" Grid.Column="3" VerticalAlignment="Center" Text="产品规格:"></TextBlock>
+            <TextBlock Grid.Row="2" Margin="5 0" Grid.Column="5" VerticalAlignment="Center" Text="标识卡号:"></TextBlock>
+            <TextBlock Grid.Row="2" Margin="5 0" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Right"  Text="进货检验单号:"></TextBlock>
+            <TextBlock Grid.Row="1" Margin="5 0" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Right" Text="流转卡号:"></TextBlock>
+            <TextBlock Grid.Row="0" Margin="5 0" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Right"  Text="流转卡一维码:"></TextBlock>
+
+            <TextBlock Grid.Column="2" Grid.Row="3" Text="封头" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="3" Text="SHF-G04-050001" VerticalAlignment="Center"></TextBlock>
+            
+            <TextBlock Grid.Row="2" Grid.Column="4" Name="txtb_ItemSpec" VerticalAlignment="Center" Text=""></TextBlock>
+            <TextBlock Grid.Row="2" Margin="5" Name="txtb_ItemName" Grid.Column="2" VerticalAlignment="Center" Text=""></TextBlock>
+
+            <StackPanel Grid.Column="4" Grid.ColumnSpan="3" VerticalAlignment="Center">
+                <TextBlock Text="浙江三花制冷集团有限公司" Margin="0 10" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="工  序   流   转   卡   (L型)" Name="textb_Titile" FontSize="18" HorizontalAlignment="Center"></TextBlock>
+            </StackPanel>
+
+            <Image Grid.Column="8"   VerticalAlignment="Stretch" HorizontalAlignment="Center" Name="image_BarCode"></Image>
+            <TextBlock Grid.Column="8" Grid.Row="1" VerticalAlignment="Center" Name="txtb_FlowCode" Text=""></TextBlock>
+        </Grid>
+
+        <Grid Grid.Row="1" Name="grid_CenterGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition  Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition  Width="0.9*"></ColumnDefinition>
+                <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition Width="1.6*"></ColumnDefinition>
+                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition Width="20"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.8*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="1" Text="日 期" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Text="职工号" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Text="操作者" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="4" Text="工序号" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="5" Text="工序名称" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="6" Text="投入数" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="7" Text="合格数" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="8" Text="不合格内容" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="9" Text="检验员确认" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="10" Text="备     注" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+
+
+            <TextBlock Grid.Column="2" Grid.Row="1" Name="txtb_PersonName_01" Text="汪梦秋" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="2" Name="txtb_PersonName_02" Text="汪梦秋" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="4" Name="txtb_PersonName_03" Text="汪梦秋" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="5" Name="txtb_PersonName_04" Text="汪梦秋" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="6" Name="txtb_PersonName_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="7" Name="txtb_PersonName_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+
+            <TextBlock Grid.Column="3" Grid.Row="1" Name="txtb_PersonCode_01" Text="11402607" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Grid.Row="2" Name="txtb_PersonCode_02" Text="11402607" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Grid.Row="4" Name="txtb_PersonCode_03" Text="11402607" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Grid.Row="5" Name="txtb_PersonCode_04" Text="11402607" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Grid.Row="6" Name="txtb_PersonCode_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="3" Grid.Row="7" Name="txtb_PersonCode_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+
+            <TextBlock Grid.Column="4" Grid.Row="1"  Text="50"   VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="2"  Text="300"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="4"  Text="10"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="5"  Text="20"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="6"  Text="45"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="7"  Text="300"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+
+            <TextBlock Grid.Column="5" Grid.Row="1"  Text="攻丝"   VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="2"  Text="超声波清洗"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="4"  Text="压分磁环/标识"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="5"  Text="筛选"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="6"  Text="车平面"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="7"  Text="超声波清洗"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="12"></TextBlock>
+
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3" Text="产品名称:"></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="3" Text="封头部件"></TextBlock>
+            
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="3" Text="产品型号:"></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" Text="SHF-000-049001"></TextBlock>
+
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="3" Text="标识卡号:"></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="3" Text=""></TextBlock>
+
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="8" Grid.Row="3" Text="进货检验单号:"></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="3" Text=""></TextBlock>
+
+
+
+            <Border Grid.Column="1" Name="border_01" BorderThickness="0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
+            <Border Grid.Column="1" Name="border_02"  Grid.Row="2" BorderThickness="0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
+            <Border Grid.Column="1" Name="border_03"  Grid.Row="4" BorderThickness="0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
+            <Border Grid.Column="1" Name="border_04"   Grid.Row="5"  BorderThickness="0 0 0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
+            <Border Grid.Column="1" Name="border_05"   Grid.Row="7"  BorderThickness="0 1 0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
+
+            <Border Grid.Column="1" Name="border_06"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="3" Name="border_07"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="5" Name="border_08"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="7" Name="border_09"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="9" Name="border_10"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="10" Name="border_11"  Grid.RowSpan="3" BorderBrush="Black" BorderThickness="0 0 1 0"></Border>
+
+            <Border Grid.Column="1" Name="border_12"  Grid.Row="4" Grid.RowSpan="4" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="3" Name="border_13"  Grid.Row="4"  Grid.RowSpan="4" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="5" Name="border_14"  Grid.Row="4"  Grid.RowSpan="4" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="7" Name="border_15"  Grid.Row="4"  Grid.RowSpan="4" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="9" Name="border_16"  Grid.Row="4"  Grid.RowSpan="4" BorderBrush="Black" BorderThickness="1 0"></Border>
+            <Border Grid.Column="10" Name="border_17"  Grid.Row="4"  Grid.RowSpan="4" BorderBrush="Black" BorderThickness="0 0 1 0"></Border>
+        </Grid>
+
+        <Grid Name="grid_BottomGrid" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1">注：本单随产品流转，作为质量考核的跟踪的依据。</TextBlock>
+            <Button Grid.Column="1" Grid.Row="1" Content="  打       印   " VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Print" Click="btn_Print_Click" ClickMode="Release"></Button>
+        </Grid>
+    </Grid>
+</Window>

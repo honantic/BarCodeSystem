@@ -1,0 +1,49 @@
+﻿<Window x:Class="BarCodeSystem.ProductDispatch.FlowCardDistribute.FlowCardAmountSet_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Loaded="Window_Loaded"
+        Title="流转卡派工数量设置窗口" Height="300" Width="300">
+    <Grid>
+        <Border Grid.RowSpan="3" Grid.ColumnSpan="5" BorderBrush="LightBlue" BorderThickness="10"></Border>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock  HorizontalAlignment="Center" Text="前" VerticalAlignment="Center"></TextBlock>
+            <extool:IntegerUpDown ValueChanged="int_UD_FirstSetCount_ValueChanged" Value="1" Minimum="1" Grid.Column="1" VerticalAlignment="Center" Name="int_UD_FirstSetCount"></extool:IntegerUpDown>
+            <extool:IntegerUpDown ValueChanged="int_UD_FirstSetAmount_ValueChanged" Value="0" Increment="50" Minimum="0" Grid.Column="3" VerticalAlignment="Center" Name="int_UD_FirstSetAmount"></extool:IntegerUpDown>
+            <TextBlock Text="条流转卡选择派工数量:" TextWrapping="Wrap" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            
+            
+            <TextBlock Grid.Row="1" Text="后" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <extool:IntegerUpDown  Value="0" Minimum="0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="int_UD_SecSetCount" IsReadOnly="True"></extool:IntegerUpDown>
+            <extool:IntegerUpDown  Value="0"  Increment="50"  Minimum="0" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Name="int_UD_SecSetAmount"></extool:IntegerUpDown>
+            <TextBlock Grid.Row="1" Text="条流转卡选择派工数量:" TextWrapping="Wrap" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <Grid  Grid.Row="2" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Content="取消" Name="btn_Cancel" Click="btn_Cancel_Click" ClickMode="Release"></Button>
+                <Button Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Content="确定" Name="btn_Save" Click="btn_Save_Click" ClickMode="Release"></Button>
+            </Grid>
+            
+        </Grid>
+    </Grid>
+</Window>

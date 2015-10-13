@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -240,22 +241,38 @@ namespace BarCodeSystem
         private void CheckIfDeviceExisit(DataTable copiedtable, DataTable existtable)
         {
             this.Cursor = Cursors.Wait;
-            List<string> cloList = new List<string> { "ID", "DD_Code", "DD_Name", "DD_Amount", "DD_BarCode","DD_Version", "DD_WorkCenterID", "DD_SourceType", "DD_IsValidated" };
+            List<string> cloList = new List<string> { "ID", "DD_Code", "DD_Name", "DD_Amount", "DD_BarCode", "DD_Version", "DD_WorkCenterID", "DD_SourceType", "DD_IsValidated" };
 
             int x = copiedtable.Rows.Count;
             int y = existtable.Rows.Count;
 
+            List<DBLog> _dbLogList = new List<DBLog>();
             for (int i = 0; i < x; i++)
             {
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                _dbLog.DBL_OperateTable = "DeviceDetail";
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
                 for (int j = 0; j < y; j++)
                 {
                     if (copiedtable.Rows[i]["DD_Code"].ToString() ==
                         existtable.Rows[j]["DD_Code"].ToString())
                     {
                         copiedtable.Rows[i]["IDNew"] = existtable.Rows[j]["ID"];
+                        _dbLog.DBL_OperateType = OperateType.Update;
+                        _dbLog.DBL_AssociateID = existtable.Rows[j]["ID"].ToString();
+                        _dbLog.DBL_AssociateCode = existtable.Rows[j]["DD_Code"].ToString();
+                        _dbLog.DBL_Content = "更新设备信息，设备编码为：" + existtable.Rows[j]["DD_Code"].ToString();
                         break;
                     }
                 }
+                if (string.IsNullOrEmpty(_dbLog.DBL_Content))
+                {
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    _dbLog.DBL_AssociateCode = copiedtable.Rows[i]["DD_Code"].ToString();
+                    _dbLog.DBL_Content = "新增设备信息，设备编码为：" + copiedtable.Rows[i]["DD_Code"].ToString().ToString();
+                }
+                _dbLogList.Add(_dbLog);
             }
 
             MyDBController.GetConnection();
@@ -263,6 +280,8 @@ namespace BarCodeSystem
             MyDBController.InsertSqlBulk(copiedtable, cloList, out updateNum, out insertNum);
             MessageBox.Show("\n 共新增:" + insertNum + "条记录,更新:" + updateNum + "条记录！");
             MyDBController.CloseConnection();
+
+            DBLog.WriteDBLog(_dbLogList);
 
             this.Cursor = Cursors.Arrow;
         }

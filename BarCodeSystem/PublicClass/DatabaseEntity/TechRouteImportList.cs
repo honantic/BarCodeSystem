@@ -173,5 +173,15 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             get;
             set;
         }
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public string WH_StartDate { get; set; }
+
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public string WH_EndDate { get; set; }
     }
 }

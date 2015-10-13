@@ -1,16 +1,30 @@
-﻿using System;
+﻿using BarCodeSystem.FileQuery.FlowCardQuery;
+using BarCodeSystem.ProductDispatch.FlowCard;
+using BarCodeSystem.ProductDispatch.FlowCardClean;
+using BarCodeSystem.ProductDispatch.FlowCardDistribute;
+using BarCodeSystem.ProductDispatch.FlowCardPrint;
+using BarCodeSystem.ProductDispatch.FlowCardReport;
+using BarCodeSystem.ProductDispatch.FlowCardTransfer;
+using BarCodeSystem.SalaryManage.QualityMonthlySalary;
+using BarCodeSystem.StorageManage.FinishReport;
+using BarCodeSystem.StorageManage.ScrapReport;
+using BarCodeSystem.SystemManage;
+using BarCodeSystem.TechRoute.TechRoute;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Data;
-using Xceed.Wpf.AvalonDock.Layout;
-using System.ComponentModel;
-using BarCodeSystem.ProductDispatch.FlowCard;
-using BarCodeSystem.ProductDispatch.FlowCardReport;
 using System.Windows.Input;
-using BarCodeSystem.TechRoute.TechRoute;
-using BarCodeSystem.ProductDispatch.FlowCardDistribute;
-using BarCodeSystem.ProductDispatch.FlowCardClean;
+using Xceed.Wpf.AvalonDock;
+using Xceed.Wpf.AvalonDock.Layout;
+using System.Linq;
+using BarCodeSystem.BasicFile.QualityIssues;
+using System.Data.SqlClient;
+using BarCodeSystem.TechRoute.TechRouteWorkHourManually;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -28,37 +42,69 @@ namespace BarCodeSystem
 
 
         private List<MenuItem> MainMenuItemList = new List<MenuItem> { };
-        List<string> AuthorityList = new List<string> { };
+        List<UserAuthorityLists> AuthorityList = new List<UserAuthorityLists> { };
         DataSet ds = new DataSet();
+        System.Windows.Forms.NotifyIcon notifyIcon;
         #endregion
 
         #region 初始化
         /// <summary>
-        /// 
+        /// 加载事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //this.Title = User_Info.User_ID;
+            SetBasicInfo();
+            SetUser_Authority();
+            GetOrgInfo();
+            DBLog.WriteLoginRecord();
+        }
+
+        /// <summary>
+        /// 基本系统参数设置
+        /// </summary>
+        private void SetBasicInfo()
+        {
             MyDBController.Server = User_Info.server[1];
             MyDBController.Database = User_Info.database[1];
             MyDBController.Pwd = User_Info.pwd[1];
             MyDBController.Uid = User_Info.uid[1];
-
             System.Drawing.Rectangle rect =
                 System.Windows.Forms.Screen.PrimaryScreen.Bounds;
 
             //获取当前工作区域的分辨率，用来动态设置系统中其他窗体的大小
             User_Info.ScreenHeight = rect.Height; //高（像素）
             User_Info.ScreenWidth = rect.Width;
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                string SQl = string.Format(@"select A.[ID],A.[P_Code],A.[P_Name],A.[P_Position],B.[WC_Department_ID] ,B.[WC_Department_Code],B.[WC_Department_Name],B.[WC_Department_ShortName],C.[ID] as [Account_ID] from [Person] as A left join [WorkCenter] as B on A.[P_WorkCenterID]=B.[WC_Department_ID] left join [UserAccount] C on A.[P_Code]=C.[UA_LoginAccount] where [P_Code]='{0}'", User_Info.User_Code);
+                DataSet ds = new DataSet();
+                MyDBController.GetConnection();
+                MyDBController.GetDataSet(SQl, ds, "Person");
+                MyDBController.CloseConnection();
 
-            User_Info.User_ID = 1;
-            User_Info.User_Name = "钱康";
-
-            SetUser_Authority();
-
-            GetOrgInfo();
+                try
+                {
+                    SQl = string.Format(@"select [id] from [Base_User] where [code]='{0}'", User_Info.User_Code);
+                    SqlConnection sqlconn = new SqlConnection();
+                    sqlconn.ConnectionString = string.Format(@"server={0};database={1};uid={2};pwd={3}", User_Info.server[0], User_Info.database[0], User_Info.uid[0], User_Info.pwd[0]);
+                    User_Info.Account_ID = Convert.ToInt64(ds.Tables["Person"].Rows[0]["Account_ID"]);
+                    User_Info.U9User_ID = Convert.ToInt64(MyDBController.ExecuteScalar(sqlconn, SQl));
+                    User_Info.User_Name = ds.Tables["Person"].Rows[0]["P_Name"].ToString();
+                    User_Info.User_Workcenter_Code = ds.Tables["Person"].Rows[0]["WC_Department_Code"].ToString();
+                    User_Info.User_Workcenter_ShortName = ds.Tables["Person"].Rows[0]["WC_Department_ShortName"].ToString();
+                    User_Info.User_WorkcenterName = ds.Tables["Person"].Rows[0]["WC_Department_Name"].ToString();
+                    User_Info.P_Position = ds.Tables["Person"].Rows[0]["P_Position"].ToString();
+                    User_Info.User_Workcenter_ID = Convert.ToInt64(ds.Tables["Person"].Rows[0]["WC_Department_ID"]);
+                    User_Info.POType = "WG20101";
+                    //User_Info.EnterpriseCode = "200";
+                }
+                catch (Exception)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("该账号信息不全！请检查。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         /// <summary>
@@ -78,8 +124,9 @@ namespace BarCodeSystem
             }
             else
             {
-                User_Info.Org_Inof = ds.Tables["OrgInfo"].Rows[0]["OI_Name"].ToString();
-                this.Title = User_Info.Org_Inof + "生产条码系统";
+                User_Info.Org_Id = Convert.ToInt64(ds.Tables["OrgInfo"].Rows[0]["OI_ID"]);
+                User_Info.Org_Info = ds.Tables["OrgInfo"].Rows[0]["OI_Name"].ToString();
+                this.Title = User_Info.Org_Info + "生产条码系统";
             }
 
 
@@ -99,6 +146,7 @@ namespace BarCodeSystem
             }
             return MainMenuItemList;
         }
+
 
         /// <summary>
         /// 递归获得所有菜单项
@@ -127,12 +175,16 @@ namespace BarCodeSystem
         /// </summary>
         private void SetUser_Authority()
         {
-            //1.第一步，获得系统中菜单列表
-            GetMainMenuItemList();
-            //2.第二步，获得登陆账号菜单权限列表
-            GetUserAuthority();
-            //3.对菜单进行权限管控
-            EnableMenuItem(AuthorityList, MainMenuItemList);
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                //1.第一步，获得系统中菜单列表
+                GetMainMenuItemList();
+                //2.第二步，获得登陆账号菜单权限列表
+                List<string> strList = GetUserAuthority();
+                //3.对菜单进行权限管控
+                EnableMenuItem(strList, MainMenuItemList);
+            }
+
         }
 
         /// <summary>
@@ -141,19 +193,9 @@ namespace BarCodeSystem
         /// <returns></returns>
         private List<string> GetUserAuthority()
         {
-            string SQl = string.Format(@"select A.[SA_AuthorityName] from [SystemAuthority] A
-                                left join [UserAuthority] B on A.[ID]=B.[UA_SysAuthorityID]
-                                where B.[UA_UserAccountID] = {0}", User_Info.User_ID);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "UA_AuthorityName");
-            MyDBController.CloseConnection();
-
-            int x = ds.Tables["UA_AuthorityName"].Rows.Count;
-            for (int i = 0; i < x; i++)
-            {
-                AuthorityList.Add(ds.Tables["UA_AuthorityName"].Rows[i][0].ToString().Trim());
-            }
-            return AuthorityList;
+            List<string> strList = new List<string>();
+            UserAuthorityLists.FetchUAListByUserID(User_Info.Account_ID).ForEach(p => strList.Add(p.SA_AuthorityName));
+            return strList;
         }
 
         /// <summary>
@@ -165,17 +207,14 @@ namespace BarCodeSystem
         {
             int x = strlist.Count;
             int y = milist.Count;
-            for (int i = 0; i < x; i++)
+            //List<string> miNameList = milist.Select(p => p.Name).ToList();
+            milist.ForEach(p =>
             {
-                for (int j = 0; j < y; j++)
+                if (!strlist.Contains(p.Name) && !p.HasItems && !p.Name.Equals("item_Close") && !p.Name.Equals("item_SwitchAccount"))
                 {
-                    if (string.Equals(strlist[i], milist[j].Name))
-                    {
-                        milist[j].IsEnabled = true;
-                    }
+                    p.IsEnabled = false;
                 }
-
-            }
+            });
         }
         #endregion
 
@@ -337,6 +376,43 @@ namespace BarCodeSystem
 
 
         /// <summary>
+        /// 工艺路线工时管理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkHourManage_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "工时管理页面")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                WorkHour_Page wh = new WorkHour_Page() { ShowsNavigationUI = true };
+                topFrame.Content = wh;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "工时管理页面";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
         /// 工艺路线导入
         /// </summary>
         /// <param name="sender"></param>
@@ -348,6 +424,21 @@ namespace BarCodeSystem
             tri.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             tri.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             tri.ShowDialog();
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 工艺路线导出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_TechRouteExport_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            TechRouteExport tre = new TechRouteExport();
+            tre.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            tre.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            tre.ShowDialog();
             this.Cursor = Cursors.Arrow;
         }
 
@@ -376,7 +467,92 @@ namespace BarCodeSystem
             qs.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             qs.ShowDialog();
         }
+        #endregion
 
+        #region 系统托盘操作等
+
+        /// <summary>
+        /// 初始化系统托盘
+        /// </summary>
+        private void SetNotifyIcon()
+        {
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
+            this.notifyIcon.BalloonTipText = "系统监控中... ...";
+            this.notifyIcon.ShowBalloonTip(2000);
+            this.notifyIcon.Text = "系统监控中... ...";
+            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
+            this.notifyIcon.Visible = true;
+            //打开菜单项
+            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem("显示");
+            open.Click += new EventHandler(Show);
+            //退出菜单项
+            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem("退出");
+            exit.Click += new EventHandler(Close);
+            //关联托盘控件
+            System.Windows.Forms.MenuItem[] childen = new System.Windows.Forms.MenuItem[] { open, exit };
+            notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu(childen);
+
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler((o, e) =>
+            {
+                if (e.Button == System.Windows.Forms.MouseButtons.Left) this.Show(o, e);
+            });
+        }
+
+        /// <summary>
+        /// 显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Show(object sender, EventArgs e)
+        {
+            this.Visibility = System.Windows.Visibility.Visible;
+            this.ShowInTaskbar = true;
+            this.Activate();
+        }
+
+        /// <summary>
+        /// 隐藏
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Hide(object sender, EventArgs e)
+        {
+            this.ShowInTaskbar = false;
+            this.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        /// <summary>
+        /// 退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Close(object sender, EventArgs e)
+        {
+            DBLog.WriteLogoutRecord();
+            MyDBController.CloseConnection();
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        /// <summary>
+        /// 切换账号
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_SwitchAccount_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            DBLog.WriteLogoutRecord();
+            MyDBController.CloseConnection();
+            //foreach (LayoutAnchorable item in ldp.Children)
+            //{
+            //    item.Close();
+            //}
+            this.Closing -= Window_Closing;
+            this.Close();
+            Login_Window lw = new Login_Window();
+            lw.Show();
+            this.Cursor = Cursors.Arrow;
+        }
 
         /// <summary>
         /// 关闭事件
@@ -387,7 +563,8 @@ namespace BarCodeSystem
         {
             e.Cancel = true;
             this.WindowState = WindowState.Minimized;
-            this.ShowInTaskbar = false;
+            App.Current.MainWindow = this;
+
         }
 
         /// <summary>
@@ -397,6 +574,8 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_Close_Click(object sender, RoutedEventArgs e)
         {
+            DBLog.WriteLogoutRecord();
+            MyDBController.CloseConnection();
             notification.IsEnabled = false;
             App.Current.Shutdown();
         }
@@ -419,8 +598,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void OnNotificationAreaIconDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (this.Visibility == Visibility.Hidden)
+            {
+                this.Visibility = Visibility.Visible;
+            }
             this.ShowInTaskbar = true;
+            this.Topmost = true;
             this.WindowState = WindowState.Maximized;
+            this.Topmost = false;
         }
 
         /// <summary>
@@ -430,6 +615,8 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_Quit_Click(object sender, EventArgs e)
         {
+            DBLog.WriteLogoutRecord();
+            MyDBController.CloseConnection();
             notification.IsEnabled = false;
             App.Current.Shutdown();
         }
@@ -441,7 +628,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_Show_Click(object sender, EventArgs e)
         {
-            Show();
+            if (this.Visibility == Visibility.Hidden)
+            {
+                this.Visibility = Visibility.Visible;
+            }
+            this.ShowInTaskbar = true;
+            this.Topmost = true;
+            this.WindowState = WindowState.Maximized;
+            this.Topmost = false;
         }
 
         /// <summary>
@@ -453,14 +647,12 @@ namespace BarCodeSystem
         {
 
         }
+
+
+
         #endregion
 
-        #region 利用AvalonDocking对工作区域进行管理
-        private void item_FileQuery1_Click(object sender, RoutedEventArgs e)
-        {
-
-
-        }
+        #region 流转卡派工管理
 
         /// <summary>
         /// 流转卡报工
@@ -469,8 +661,9 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WorkCardReport_Click(object sender, RoutedEventArgs e)
         {
-            this.Cursor = Cursors.Wait;
+
             #region 将各个page加载进工作区域
+            this.Cursor = Cursors.Wait;
             bool flag = false;
             foreach (LayoutAnchorable item in ldp.Children)
             {
@@ -625,7 +818,446 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Arrow;
             #endregion
         }
+
+
+        /// <summary>
+        /// 流转卡转序
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkCardTransfer_Click(object sender, RoutedEventArgs e)
+        {
+            #region 将各个page加载进工作区域
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+
+            #region  AvalonDock排他性尝试
+            foreach (var item in dockingManager.Layout.RootPanel.Children)
+            {
+                if (item is LayoutAnchorablePane)
+                {
+                    var _item = (LayoutAnchorablePane)item;
+                    foreach (var child in _item.Children)
+                    {
+                        if (child is LayoutAnchorable)
+                        {
+                            var x = (LayoutAnchorable)child;
+                            if ((x).Title == "流转卡转序")
+                            {
+                                flag = true;
+                                x.IsSelected = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (item is LayoutDocumentPaneGroup)
+                {
+                    var _item = (LayoutDocumentPaneGroup)item;
+                    foreach (var child in _item.Children)
+                    {
+                        foreach (var _child in child.Children)
+                        {
+                            if (_child is LayoutAnchorable)
+                            {
+                                var x = (LayoutAnchorable)_child;
+                                if (x.Title == "流转卡转序")
+                                {
+                                    flag = true;
+                                    x.IsSelected = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "流转卡转序")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                FlowCardTransfer_Page fct = new FlowCardTransfer_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fct;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡转序";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+            #endregion
+        }
         #endregion
+
+        #region 库存管理
+        /// <summary>
+        /// 完工报告
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_FinishReport_Click(object sender, RoutedEventArgs e)
+        {
+            #region 将各个page加载进工作区域
+            this.Cursor = Cursors.Wait;
+
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "完工报告审核")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                FinishReport_Page fcr = new FinishReport_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcr;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "完工报告审核";
+                la.Content = topFrame;
+                //la.Closing += fcr.Closing;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+            #endregion
+        }
+        /// <summary>
+        /// 缴废单审核
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_ScrapReport_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            #region 将各个page加载进工作区域
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "缴废单审核")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                ScrapReport_Page fcr = new ScrapReport_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcr;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "缴废单审核";
+                la.Content = topFrame;
+                //la.Closing += fcr.Closing;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+            #endregion
+        }
+        #endregion
+
+        #region 档案查询
+        private void item_FlowCardQuery_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "流转卡查询")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                FlowCardQuery_Page fcq = new FlowCardQuery_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcq;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡查询";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 不良品明细
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_BadProductDetail_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "不良品明细报表")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                BadProductList_Page bpl = new BadProductList_Page() { ShowsNavigationUI = true };
+                topFrame.Content = bpl;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "不良品明细报表";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+
+
+        /// <summary>
+        /// 不良品汇总
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_BadProductTotal_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "不良品汇总报表")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                BadProductSummary_Page bps = new BadProductSummary_Page() { ShowsNavigationUI = true };
+                topFrame.Content = bps;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "不良品汇总报表";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        #endregion
+
+        #region 工资管理
+
+        /// <summary>
+        /// 月度质量奖赔信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_QualityMonthlySalary_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "质量奖赔管理")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                QualityMonthlySalary_Page fcq = new QualityMonthlySalary_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcq;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "质量奖赔管理";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+
+        /// <summary>
+        /// 员工工资查询
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_StaffSalaries_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "员工工资查询")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                StaffSalaries_Page ss = new StaffSalaries_Page() { ShowsNavigationUI = true };
+                topFrame.Content = ss;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "员工工资查询";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            //PrintTemplateSelect_Window pts = new PrintTemplateSelect_Window();
+            //pts.ShowDialog();
+
+            //EmptyFlowCard_Window efc = new EmptyFlowCard_Window("PT-20150914-0003");
+            //efc.ShowDialog();
+
+            //_10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window("PT-20150919-0014");
+            //_10lfc.ShowDialog();
+
+            //MessageBox.Show(DateTime.Now.AddHours(-2).ToString() + "\r\n" + MyDBController.HandleTimeInfo(DateTime.Now.AddHours(-1).ToString()));
+            //MessageBox.Show(DateTime.Now.ToString() + "\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            //DataTable dt = new DataTable();
+            //dt.Columns.Add(new DataColumn("time", typeof(DateTime)));
+            //DataRow row = dt.NewRow();
+            //row["time"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            //dt.Rows.Add(row);
+            //MessageBox.Show(dt.Rows[0]["time"].ToString());
+
+
+            //PersonLists p = new PersonLists() { code = "11402607", name = "汪梦秋" };
+            //PropertyInfo[] props = p.GetType().GetProperties();
+            //PersonLists item = new PersonLists();
+            //props.ToList().ForEach(
+            //    pi =>
+            //    {
+            //        if (!pi.PropertyType.IsGenericType)
+            //        {
+            //            if (pi.GetValue(p) != null)
+            //            {
+            //                pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), pi.PropertyType));
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
+            //            if (genericTypeDefinition == typeof(Nullable<>))
+            //            {
+            //                if (pi.GetValue(p) != null)
+            //                {
+            //                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), Nullable.GetUnderlyingType(pi.PropertyType)));
+            //                }
+            //            }
+            //        }
+            //    });
+
+            //MessageBox.Show(item.name + "|" + item.code);
+
+
+            //TechRoute_Window trw = new TechRoute_Window(true);
+            //trw.ShowDialog();
+
+
+            //QualityIssuesPrint_Window qip = new QualityIssuesPrint_Window();
+            //qip.ShowDialog();
+
+            //List<PersonLists> plList = new List<PersonLists>() { new PersonLists() { name = "汪梦秋", code = "11402607" }, new PersonLists() { name = "汪梦秋", code = "11402608" }, new PersonLists() { name = "汪梦秋", code = "11402609" } };
+
+            //List<PersonLists> newList =
+            //MyDBController.ListCopy(plList);
+            //newList.ForEach(p => { MessageBox.Show(p.code + p.name); });
+
+            //List<PersonLists> secList = new List<PersonLists>();
+            //MyDBController.ListCopyAsync(plList, secList);
+            //secList.ForEach(p => { MessageBox.Show(p.code + p.name); });
+            //List<MenuItem> itemList =
+            //GetMainMenuItemList();
+            //string NameList = "";
+            //MyDBController.GetConnection();
+            //itemList.ForEach(p =>
+            //{
+            //    string SQl = string.Format("insert into [SystemAuthority]([SA_AuthorityName]) values('{0}')", p.Name);
+            //    MyDBController.ExecuteNonQuery(SQl);
+            //});
+            //MyDBController.CloseConnection();
+            //MessageBox.Show("OK");
+
+
+            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46");
+        }
 
 
 

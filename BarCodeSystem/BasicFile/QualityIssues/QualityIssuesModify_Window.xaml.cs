@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -50,16 +51,9 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //这段代码在正式环境中将被注释掉，此处供测试用
-            //MyDBController.Server = User_Info.server[1];
-            //MyDBController.Database = User_Info.database[1];
-            //MyDBController.Pwd = User_Info.pwd[1];
-            //MyDBController.Uid = User_Info.uid[1];
 
             t1.Interval = 100;
             t1.Tick += new EventHandler(t1_Tick);
-            //去除关闭按钮
-            //2.在装载事件中加入
             var hwnd = new WindowInteropHelper(this).Handle;
             SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
             InitShow();
@@ -119,19 +113,22 @@ namespace BarCodeSystem
             {
                 if (!IsExist)
                 {
-                    //                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue])
-                    //                                VALUES('{0}','{1}','{2}','{3}','{4}','{5}')"
-                    //                                , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, rbtn_IsItemIssueYes.IsChecked, rbtn_IsProduceIssueYes.IsChecked, rbtn_IsPreviousIssueYes.IsChecked);
-
-                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode])
-                                VALUES('{0}','{1}','{2}')"
-                                  , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text);
+                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_WorkCenterID])
+                                VALUES('{0}','{1}','{2}',{3})"
+                                  , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, User_Info.User_Workcenter_ID);
+                    DBLog _dbLog = new DBLog();
+                    _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                    _dbLog.DBL_OperateTable = "QualityIssue";
+                    _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    _dbLog.DBL_Content = "新增质量问题原因:" + txtb_Code.Text;
                     int x = MyDBController.ExecuteNonQuery(SQl);
                     if (x > 0)
                     {
                         if (MessageBox.Show("信息新增成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                             MessageBoxResult.OK)
                         {
+                            DBLog.WriteDBLog(_dbLog);
                             this.DialogResult = true;
                         }
                     }
@@ -143,17 +140,7 @@ namespace BarCodeSystem
             }
             else//不存在修改的情况 只有新增和删除
             {
-//                SQl = string.Format(@"UPDATE [QualityIssue] SET [QI_IsItemIssue]='{0}',[QI_IsProduceIssue]='{1}',[QI_IsPreviousIssue]='{2}'
-//                            WHERE [ID]={3}", "", "", "", qil.ID);
-//                int x = MyDBController.ExecuteNonQuery(SQl);
-//                if (x > 0)
-//                {
-//                    if (MessageBox.Show("信息修改成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
-//                        MessageBoxResult.OK)
-//                    {
-//                        this.DialogResult = true;
-//                    }
-//                }
+
             }
             MyDBController.CloseConnection();
         }
@@ -179,15 +166,11 @@ namespace BarCodeSystem
             {
                 txtb_BarCode.Text = txtb_Code.Text
                     = txtb_Name.Text = "";
-                //rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
-                //    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
-                //    = false;
+
             }
             else//修改的时候，编码、名称、条码文本框不可编辑
             {
-                //rbtn_IsItemIssueNo.IsChecked = rbtn_IsItemIssueYes.IsChecked = rbtn_IsPreviousIssueNo.IsChecked =
-                //    rbtn_IsPreviousIssueYes.IsChecked = rbtn_IsProduceIssueNo.IsChecked = rbtn_IsProduceIssueYes.IsChecked
-                //    = false;
+
             }
         }
 

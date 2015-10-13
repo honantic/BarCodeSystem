@@ -20,10 +20,10 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                 {
                     para.Add(System.Convert.ToInt32(item.ToString()));
                 }
-                amount = para.ElementAt(0) - para.ElementAt(1) - para.ElementAt(2);
+                amount = para.ElementAt(0) + para.ElementAt(3) - para.ElementAt(1) - para.ElementAt(2);
                 if (amount < 0)
                 {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("合格数量不能小于0！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //Xceed.Wpf.Toolkit.MessageBox.Show("合格数量不能小于0！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return "0";
                 }
                 else

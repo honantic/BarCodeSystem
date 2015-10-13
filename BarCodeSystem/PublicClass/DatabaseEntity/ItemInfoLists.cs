@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows;
+using System.Data;
 
 namespace BarCodeSystem
 {
-    public class ItemInfoLists 
+    public class ItemInfoLists
     {
         /// <summary>
         /// 料品Id
@@ -120,5 +122,75 @@ namespace BarCodeSystem
         public List<TechVersion> TechVersionList = new List<TechVersion> { };
 
         public ComboBox CB_TechVersion = new ComboBox();
+
+        /// <summary>
+        /// 检查该料品编号是否存在
+        /// </summary>
+        /// <param name="_itemCode"></param>
+        /// <returns></returns>
+        public static bool CheckForCode(string _itemCode)
+        {
+            bool flag = false;
+            int count;
+            string SQl = string.Format(@"select count(*) from [ItemInfo] where [II_Code]='{0}'", _itemCode);
+            MyDBController.GetConnection();
+            try
+            {
+                count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                if (count > 0)
+                {
+                    flag = true;
+                }
+            }
+            catch (Exception)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("该料号不存在！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            MyDBController.CloseConnection();
+
+            return flag;
+        }
+
+        /// <summary>
+        /// 根据指定车间，返回拥有工艺路线的料品信息列表
+        /// </summary>
+        /// <param name="_wcID"></param>
+        /// <returns></returns>
+        public static List<ItemInfoLists> FetchItemInfoByTechAndWC(params Int64[] _wcID)
+        {
+            List<ItemInfoLists> iilList = new List<ItemInfoLists>();
+            DataSet ds = new DataSet();
+            string SQl = "";
+            if (_wcID.Length == 0)
+            {
+                SQl = string.Format(@"select * from ItemInfo  where [ID] in (select distinct [TR_ItemID] from [TechRoute] )");
+            }
+            else
+            {
+                string idList = "";
+                foreach (Int64 item in _wcID)
+                {
+                    idList += idList.Length == 0 ? item.ToString() : "," + item.ToString();
+                }
+                SQl = string.Format(@"select * from ItemInfo  where [ID] in (select distinct [TR_ItemID] from [TechRoute] where [TR_WorkCenterID] in ({0}))", idList);
+            }
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "ItemInfo");
+            MyDBController.CloseConnection();
+
+            foreach (DataRow row in ds.Tables["ItemInfo"].Rows)
+            {
+                ItemInfoLists iil = new ItemInfoLists();
+                iil.ID = Convert.ToInt64(row["ID"]);
+                iil.II_Code = row["II_Code"].ToString();
+                iil.II_Name = row["II_Name"].ToString();
+                iil.II_Spec = row["II_Spec"].ToString();
+                iil.II_UnitName = row["II_UnitName"].ToString();
+                iil.II_UnitCode = row["II_UnitCode"].ToString();
+                iil.II_UnitID = Convert.ToInt64(row["II_UnitID"]);
+                iilList.Add(iil);
+            }
+            return iilList;
+        }
     }
 }

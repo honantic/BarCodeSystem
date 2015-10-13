@@ -47,6 +47,15 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 选中的工序的号
+        /// </summary>
+        public string PN_CodeInWorkCenter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// 选中的工序ID
         /// </summary>
         public Int64 PN_ID
@@ -77,7 +86,7 @@ namespace BarCodeSystem
         private void GetBCSProcessNameList()
         {
             MyDBController.GetConnection();
-            string SQl = @"SELECT [ID],[PN_Code],[PN_Name] FROM [ProcessName]";
+            string SQl = string.Format(@"SELECT [ID],[PN_Code],[PN_Name],[PN_CodeInWorkCenter],[PN_WorkCenterID] FROM [ProcessName] where [PN_WorkCenterID]={0}", User_Info.User_Workcenter_ID);
             dt = MyDBController.GetDataSet(SQl, ds, "ProcessName").Tables["ProcessName"];
             MyDBController.CloseConnection();
 
@@ -87,8 +96,13 @@ namespace BarCodeSystem
             {
                 ProcessNameLists pnl = new ProcessNameLists();
                 pnl.ID = (Int64)dt.Rows[i]["ID"];
-                pnl.PN_Code = dt.Rows[i]["PN_Code"].ToString();
                 pnl.PN_Name = dt.Rows[i]["PN_Name"].ToString();
+                pnl.PN_Code = dt.Rows[i]["PN_Code"].ToString();
+                pnl.PN_CodeInWorkCenter = dt.Rows[i]["PN_CodeInWorkCenter"].ToString();
+                if (!(dt.Rows[i]["PN_WorkCenterID"] is DBNull))
+                {
+                    pnl.PN_WorkCenterID = Convert.ToInt64(dt.Rows[i]["PN_WorkCenterID"]);
+                }
                 pnls.Add(pnl);
             }
 
@@ -109,6 +123,7 @@ namespace BarCodeSystem
                 PN_Name = pnl.PN_Name;
                 PN_Code = pnl.PN_Code;
                 PN_ID = pnl.ID;
+                PN_CodeInWorkCenter = pnl.PN_CodeInWorkCenter;
                 this.DialogResult = true;
             }
         }

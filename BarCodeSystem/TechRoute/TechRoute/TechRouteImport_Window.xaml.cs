@@ -1,4 +1,5 @@
 ﻿using BarCodeSystem.PublicClass.DatabaseEntity;
+using BarCodeSystem.PublicClass.HelperClass;
 using BarCodeSystem.PublicClass.ValueConverters;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,9 @@ namespace BarCodeSystem.TechRoute.TechRoute
                              "绑定工序在条码系统中不存在",              //7
                              "数据不存在或没有通过检测",               //8
                              "请先复制数据!",                        //9
-                             "绑定工序号不能为0或空"                  //10
+                             "绑定工序号不能为0或空",                  //10
+                             "料品只有一个默认工艺路线版本",         //11
+                             "一个工艺路线版本中不能出现重复的工序号"  //12
                          };                        
 
 
@@ -117,7 +120,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
         /// </summary>
         private void GetU9_ItemInfo()
         {
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            WebService.Service ws = new WebService.Service();
             ds = ws.GetItemmasterModifiedOnlist_ForMES(User_Info.User_Org_Code[0], "");
             U9ItemmasterModifiedOnTable = ds.Tables["U9ItemmasterModifiedOnTable"];
 
@@ -127,7 +130,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
 
         private void GetU9_Department()
         {
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            WebService.Service ws = new WebService.Service();
             //由于调用webservice接口返回的是一个ds,故需要新建ds
             ds1 = ws.GetDepartmentlist_ForMES(User_Info.User_Org_Code[0], "", "");
             U9DepartmentTable = ds1.Tables["U9DepartmentTable"];
@@ -327,6 +330,33 @@ namespace BarCodeSystem.TechRoute.TechRoute
 
                 foreach (TechRouteImportList item in trils)
                 {
+                    List<TechRouteImportList> test = new List<TechRouteImportList> { };
+                    //判断料品的只有一个默认工艺路线版本
+
+                    if (item.TRV_IsDefaultVer.Equals("是"))
+                    {
+                        test = trils.FindAll(P => P.II_Code == item.II_Code && P.TRV_VersionCode != item.TRV_VersionCode && P.TRV_IsDefaultVer.Equals("是"));
+
+                        if (test.Count > 0)
+                        {
+                            item.Error_Remarks = error[11];
+                            IsRigth = false;
+                        }
+                    }
+
+                    //判断同一个工艺路线中是否出现相同的版本号
+                    test.Clear();
+
+                    test = trils.FindAll(P => P.II_Code ==item.II_Code &&  P.TRV_VersionCode == item.TRV_VersionCode && P.TR_ProcessSequence == item.TR_ProcessSequence );
+
+                    if (test.Count > 1)
+                    {
+                        item.Error_Remarks = error[12];
+                        IsRigth = false;
+                    }
+
+
+
                     //检测条码系统中是否存在此料号
                     if (bar_iteminfo.Select("II_Code = '" + item.II_Code + "'").Length == 0)
                     {
@@ -341,7 +371,14 @@ namespace BarCodeSystem.TechRoute.TechRoute
 
                             MyDBController.ExecuteNonQuery(SQl);
                             MyDBController.CloseConnection();
-
+                            DBLog _dbLog = new DBLog();
+                            _dbLog.DBL_OperateBy = User_Info.User_Code;
+                            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                            _dbLog.DBL_OperateType = OperateType.Insert;
+                            _dbLog.DBL_Content = User_Info.User_Name + "|新增料品信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的料品编号记录在DBL_AssociateCode";
+                            _dbLog.DBL_AssociateCode = r1["itemmaster_code"].ToString();
+                            _dbLog.DBL_OperateTime = "ItemInfo";
+                            DBLog.WriteDBLog(_dbLog);
 
                             //每次新料品插入后更新
                             MyDBController.GetConnection();
@@ -375,7 +412,14 @@ namespace BarCodeSystem.TechRoute.TechRoute
                             MyDBController.ExecuteNonQuery(SQl);
                             MyDBController.CloseConnection();
 
-
+                            DBLog _dbLog = new DBLog();
+                            _dbLog.DBL_OperateBy = User_Info.User_Code;
+                            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                            _dbLog.DBL_OperateType = OperateType.Insert;
+                            _dbLog.DBL_Content = User_Info.User_Name + "|新增工作中心信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工作中心编号记录在DBL_AssociateCode";
+                            _dbLog.DBL_AssociateCode = r1["department_code"].ToString();
+                            _dbLog.DBL_OperateTime = "WorkCenter";
+                            DBLog.WriteDBLog(_dbLog);
                             //每次插入工作部门后更新
 
                             MyDBController.GetConnection();
@@ -418,6 +462,14 @@ namespace BarCodeSystem.TechRoute.TechRoute
                         GetBar_ProcessName();
 
                         MyDBController.CloseConnection();
+                        DBLog _dbLog = new DBLog();
+                        _dbLog.DBL_OperateBy = User_Info.User_Code;
+                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                        _dbLog.DBL_OperateType = OperateType.Insert;
+                        _dbLog.DBL_Content = User_Info.User_Name + "|新增工序信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工序信息记录在DBL_AssociateCode";
+                        _dbLog.DBL_AssociateCode = item.TR_ProcessCode + "|" + item.TR_ProcessName;
+                        _dbLog.DBL_OperateTime = "WorkCenter";
+                        DBLog.WriteDBLog(_dbLog);
                     }
 
 
@@ -643,7 +695,8 @@ namespace BarCodeSystem.TechRoute.TechRoute
                     TechRoute.AcceptChanges();
 
                     r3 = WorkHour.NewRow();
-                    r3["WH_StartDate"] = DateTime.Now;
+                    //r3["WH_StartDate"] = DateTime.Now;
+                    r3["WH_StartDate"] = DateTime.Now.ToString("yyyy-MM-dd");
                     r3["WH_EndDate"] = DateTime.Parse("9999-01-01");
                     r3["WH_WorkHour"] = item.WH_WorkHour;
                     WorkHour.Rows.Add(r3);

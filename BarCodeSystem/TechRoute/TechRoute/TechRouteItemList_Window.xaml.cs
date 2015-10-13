@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 
 namespace BarCodeSystem
@@ -26,7 +19,7 @@ namespace BarCodeSystem
 
         DataTable dt = new DataTable();
         DataSet ds = new DataSet();
-
+        List<ItemInfoLists> iils = new List<ItemInfoLists> { };
 
         /// <summary>
         /// 选中的料品名称
@@ -86,7 +79,7 @@ namespace BarCodeSystem
             dt = MyDBController.GetDataSet(SQl, ds, "item").Tables["item"];
             MyDBController.CloseConnection();
 
-            List<ItemInfoLists> iils = new List<ItemInfoLists> { };
+            iils = new List<ItemInfoLists> { };
             int x = dt.Rows.Count;
             for (int i = 0; i < x; i++)
             {
@@ -98,7 +91,7 @@ namespace BarCodeSystem
             }
 
             listview1.ItemsSource = null;
-            listview1.ItemsSource = iils;
+            listview1.ItemsSource = iils.OrderBy(p => p.II_Code);
         }
 
 
@@ -115,7 +108,7 @@ namespace BarCodeSystem
                 II_Name = iil.II_Name;
                 II_Code = iil.II_Code;
                 II_ID = iil.ID;
-                this.DialogResult = true;          
+                this.DialogResult = true;
             }
         }
 
@@ -127,13 +120,13 @@ namespace BarCodeSystem
         private void listview1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Point formPoint = e.GetPosition(this);
-            if (formPoint.Y >60 && formPoint.Y <90)//表头部分不做响应
+            if (formPoint.Y > 60 && formPoint.Y < 90)//表头部分不做响应
             {
-                
+
             }
             else
             {
-                btn_Chose_Click(sender,e);
+                btn_Chose_Click(sender, e);
             }
         }
 
@@ -145,6 +138,24 @@ namespace BarCodeSystem
         private void btn_Close_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        /// <summary>
+        /// 搜索料号
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WatermarkTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string key = txtb_SearchKey.Text;
+                listview1.ItemsSource = iils.Where(p => p.II_Code.Contains(key) || p.II_Name.Contains(key));
+            }
+            else
+            {
+
+            }
         }
 
 

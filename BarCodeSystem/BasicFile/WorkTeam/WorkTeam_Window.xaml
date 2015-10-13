@@ -26,7 +26,7 @@
         </ListView>
         <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="2" >
             <Button Content="修改班组信息" Name="btn_Modify" Click="btn_Modify_Click" Height="30" Width="80"   Margin="5" ></Button>
-            <Button Content="新增班组信息" Name="btn_Add" Click="btn_Add_Click" Height="30" Width="80"   Margin="80 5 5 5"></Button>
+            <Button Content="新增班组信息" IsEnabled="False" Name="btn_Add" Click="btn_Add_Click" Height="30" Width="80"   Margin="80 5 5 5"></Button>
             <TextBox Name="txtb_Search" Height="30" Width="80" Margin="50 5 5 5" FontSize="14" KeyDown="txtb_Search_KeyDown" TextChanged="txtb_Search_TextChanged"></TextBox>
             <Button Name="btn_Search" Click="btn_Search_Click" Height="30" Width="40" Content="搜索" Margin="0 5 5 5"></Button>
             <Button Content="关闭" Name="btn_Close" Click="btn_Close_Click" Height="30" Width="80"  Margin="70 5 5 5" ></Button>

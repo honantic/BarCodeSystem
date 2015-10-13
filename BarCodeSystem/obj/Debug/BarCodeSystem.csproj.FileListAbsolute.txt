@@ -1,210 +1,43 @@
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.config
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\ListView.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\My_Dictionary.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\SimpleStyles.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameList_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessName_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\Warehouse_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterImport_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenter_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamDepartList_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\App.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\GeneratedInternalTypeHelper.g.cs
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.cache
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.lref
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.pdb
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameList_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessName_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\Warehouse_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterImport_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenter_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamDepartList_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.baml
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.g.resources
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.Properties.Resources.resources
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csproj.GenerateResource.Cache
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.pdb
-E:\visual studio 2013\BarCodeSystem\BarCodeSystem\obj\Debug\App.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.config
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.pdb
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\ListView.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\My_Dictionary.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\SimpleStyles.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\App.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameList_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessName_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\Warehouse_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterImport_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenter_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamDepartList_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\App.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.cache
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.lref
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.pdb
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameList_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessName_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\Warehouse_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterImport_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenter_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamDepartList_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.g.resources
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.Properties.Resources.resources
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csproj.GenerateResource.Cache
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_Window.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_Window.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_page.baml
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\Test\Test_page.g.cs
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.manifest
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.application
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe.manifest
-C:\Users\Administrator\Desktop\条码执行程序\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.application
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.config
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.manifest
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.application
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.pdb
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.Toolkit.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.xml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardDistribute_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardReport_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardTransfer\FlowCardTransfer_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page1.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page2.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page3.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\PersonSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveDisPlan_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveWorkTeam_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\FinishReport\FinishReportSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\FinishReport\FinishReport_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\ScrapReport\ScrapReportSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\ScrapReport\ScrapReport_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\ListView.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\My_Dictionary.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemResource\SimpleStyles.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteCheckPerson_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\App.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoQualitySort_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonModify_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.g.cs
@@ -215,6 +48,8 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bas
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesModify_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WageAllot\WageAllotFormulaList_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseModify_Window.g.cs
@@ -227,14 +62,32 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bas
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Login_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardClean\FlowCardClean_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardDistribute_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardReport_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardTransfer\FlowCardTransfer_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page1.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page2.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page3.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\FlowCard_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ItemSearch_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\PersonSearch_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\ProduceOrderSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveDisPlan_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveWorkTeam_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\FinishReport\FinishReportSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\FinishReport\FinishReport_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\ScrapReport\ScrapReportSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\StorageManage\ScrapReport\ScrapReport_Page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteCheckPerson_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImportError_Windows.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImport_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.g.cs
@@ -242,10 +95,31 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\App
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.cache
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem_MarkupCompile.lref
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.config
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe.manifest
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.application
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.exe
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\BarCodeSystem.pdb
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\DeviceExcelImport_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Device\Device_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoImport_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoQualitySort_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfo_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\PersonImport_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Person\Person_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessNameImport_Window.baml
@@ -253,6 +127,7 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bas
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ProcessName\ProcessName_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesImport_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssues_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\WarehouseImport_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Warehouse\Warehouse_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkCenter\WorkCenterImport_Window.baml
@@ -260,58 +135,96 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Bas
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeamDepartList_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\WorkTeam\WorkTeam_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\MainWindow.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardClean\FlowCardClean_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\FlowCard_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\TechRouteSearch_Page.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Authority_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\U9User_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImportError_Windows.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImport_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteItemList_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRoute_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.g.resources
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.Properties.Resources.resources
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.TrustInfo.xml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe.manifest
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.application
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.exe
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.pdb
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoImport_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoList_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\Organization\OrgInfoModify_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySortModify_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualitySort\QualitySort_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveDisPlan_Page.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\SaveDisPlan_Page.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page1.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page2.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page3.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page1.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page2.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCard\DisPlanConfirm_Page3.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoModify_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoModify_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoQualitySort_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\ItemInfo\ItemInfoQualitySort_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteCheckPerson_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteCheckPerson_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardReport_Page.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardReport_Page.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardSearch_Page.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardSearch_Page.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardReport\FlowCardQualityIssues_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImportError_Windows.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImport_Window.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImportError_Windows.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteImport_Window.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardDistribute_Page.baml
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardDistribute_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardQuery_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryWaySelect_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardQuery_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryWaySelect_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByFlowCardCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByFlowCardCode_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByItemCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByItemCode_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByOrderCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByOrderCode_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\QualityMonthlySalary\QualityMonthlySalarySearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\QualityMonthlySalary\QualityMonthlySalary_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\QualityMonthlySalary\QualityMonthlySalarySearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\QualityMonthlySalary\QualityMonthlySalary_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\SysSettings_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\SysSettings_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\bin\Debug\GifImageLib.dll
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Loading_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemManage\Loading_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\EmptyFlowCard_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\EmptyFlowCard_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\CustomedFlowCard_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\CustomedFlowCard_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\PrintTemplateSelect_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\DeptSearch_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\StaffSalariesDetail_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\StaffSalaries_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\PrintTemplateSelect_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\DeptSearch_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\StaffSalariesDetail_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SalaryManage\StaffSalaries\StaffSalaries_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteExport_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRoute\TechRouteExport_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductListDetail_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductList_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemBak\SystemBak_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductListDetail_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductList_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\SystemBak\SystemBak_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\10LinesFlowCard_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardPrint\10LinesFlowCard_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImportError_window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImportItem_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImport_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImportError_window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImportItem_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImport_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesPrint_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BasicFile\QualityIssues\QualityIssuesPrint_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByDate_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\QueryByDate_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardAmountSet_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardDistribute\FlowCardAmountSet_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourManually\WorkHour_page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourManually\WorkHour_page.g.cs
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\BarCodeSystem.csprojResolveAssemblyReference.cache
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardClean\FlowCardClean_Page.g.cs
-C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\ProductDispatch\FlowCardClean\FlowCardClean_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourManually\WorkHourHistory_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\TechRoute\TechRouteWorkHourManually\WorkHourHistory_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductSummaryDetail_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductSummary_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductSummaryDetail_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\BadProduct\BadProductSummary_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardCheck\FLowCardCheck_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FlowCardModify_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\ModifyContentSelect_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\ModifyWaySelect_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardCheck\FLowCardCheck_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FlowCardModify_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FlowCardModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\ModifyContentSelect_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\ModifyWaySelect_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FlowCardModify_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FCPersonModify_Window.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FCPersonModify_Window.g.cs

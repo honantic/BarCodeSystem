@@ -51,7 +51,7 @@
                 <TextBlock Text="料品名称:" Margin="5" TextWrapping="Wrap" Grid.Column="2" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
                 <TextBox Name="txtb_ItemName" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" Margin="5" MinWidth="80" FontSize="14" Grid.Column="3" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
 
-                <TextBlock Text="工序序号:" TextWrapping="Wrap" Margin="5" FontSize="14" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="行号:" TextWrapping="Wrap" Margin="5" FontSize="14" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                 <!--<TextBox Name="txtb_TechSequence"  MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" 
                          Grid.Column="5" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
                          MinWidth="80" TextWrapping="Wrap"></TextBox>-->
@@ -75,7 +75,7 @@
 
                 <TextBlock Text="工时:" TextWrapping="Wrap" Grid.Column="2" Grid.Row="1" Margin="5" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Center"></TextBlock>
                 <extool:DecimalUpDown Minimum="0.0" DefaultValue="0.0" IsReadOnly="True" Grid.Column="3" Name="txtb_WorkHour" Grid.Row="1" MinWidth="80" Margin="5" FontSize="14" 
-                         VerticalAlignment="Center" HorizontalAlignment="Center"  ></extool:DecimalUpDown>
+                         VerticalAlignment="Center" HorizontalAlignment="Center" Increment="0.1" ></extool:DecimalUpDown>
 
                 <TextBlock Text="版本编码:" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="4" Grid.Row="1"></TextBlock>
                 <TextBox Name="txtb_TechVersion" MouseDoubleClick="txtb_ItemCode_MouseDoubleClick" TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="80" Grid.Column="5" Grid.Row="1"></TextBox>
@@ -164,8 +164,9 @@
                   PreviewMouseLeftButtonDown="listview1_PreviewMouseLeftButtonDown">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="工序序号" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
+                        <GridViewColumn Header="行号" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
                         <GridViewColumn Header="工序名称" Width="Auto" DisplayMemberBinding="{Binding Path=TR_ProcessName}"></GridViewColumn>
+                        <GridViewColumn Header="工时" DisplayMemberBinding="{Binding Path=TR_WorkHour}"></GridViewColumn>
                         <GridViewColumn Header="工作中心" Width="Auto" DisplayMemberBinding="{Binding Path=WC_Department_Name}"></GridViewColumn>
                         <GridViewColumn Header="版本编码" Width="Auto" DisplayMemberBinding="{Binding Path=TRV_VersionCode}"></GridViewColumn>
                         <GridViewColumn Header="版本名称" Width="Auto" DisplayMemberBinding="{Binding Path=TRV_VersionName}"></GridViewColumn>

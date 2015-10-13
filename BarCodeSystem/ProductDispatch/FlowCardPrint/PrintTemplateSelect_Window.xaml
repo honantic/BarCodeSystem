@@ -1,0 +1,58 @@
+﻿<Window x:Class="BarCodeSystem.ProductDispatch.FlowCardPrint.PrintTemplateSelect_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Title="打印模板选择窗口" Height="600" Width="800">
+
+    <Grid Name="grid_FatherGrid" MouseLeftButtonDown="grid_FatherGrid_MouseLeftButtonDown">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="3" >
+            <TextBlock FontSize="15" Name="textb_Header" Foreground="White">打印模板选择</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop  Offset="1" Color="LightGreen"></GradientStop>
+                        <GradientStop Color="Green"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+
+        <ListBox Grid.Row="1" Name="listb_PrintTemplate" Margin="5">
+            <ListBox.Background>
+                <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
+            </ListBox.Background>
+            <ListBox.Template>
+                <ControlTemplate>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <WrapPanel Orientation="Horizontal" IsItemsHost="True" ScrollViewer.CanContentScroll="True"/>
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            <ListBoxItem Height="100" Width="100" >
+                <ListBoxItem.Content>
+                    <StackPanel>
+                        <TextBlock>sssssss</TextBlock>
+                        <TextBlock>tttttt</TextBlock>
+                    </StackPanel>
+                </ListBoxItem.Content>
+            </ListBoxItem>
+        </ListBox>
+
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Content="   选定打印模板  " Name="btn_SelectTemplate"  VerticalAlignment="Center" HorizontalAlignment="Center" ClickMode="Release" Click="btn_SelectTemplate_Click"></Button>
+            <Button Content="   关       闭  " VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" ClickMode="Release"  Click="btn_Close_Click" Grid.Column="1" ></Button>
+        </Grid>
+    </Grid>
+
+</Window>

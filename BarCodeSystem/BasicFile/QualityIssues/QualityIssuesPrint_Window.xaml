@@ -1,0 +1,57 @@
+﻿<Window x:Class="BarCodeSystem.BasicFile.QualityIssues.QualityIssuesPrint_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Loaded="Window_Loaded"
+        Title="QualityIssuesPrint_Window" Height="750" Width="1050">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.RowSpan="3" Grid.Row="0"></Border>
+
+
+        <Label Grid.ColumnSpan="3" >
+            <TextBlock FontSize="15" Name="textb_Header" Foreground="White">打印内容预览</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop  Offset="1" Color="LightGreen"></GradientStop>
+                        <GradientStop Color="Green"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        
+        <Grid Grid.Row="1" Name="grid_CenterGrid">
+            <ListBox Grid.Row="1" Name="listb_PrintTemplate" Margin="5">
+                <ListBox.Background>
+                    <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
+                </ListBox.Background>
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <WrapPanel Orientation="Horizontal" IsItemsHost="True" ScrollViewer.CanContentScroll="True"/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+            </ListBox>
+        </Grid>
+        
+        
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Name="btn_Print" Content="      打   印      " Click="btn_Print_Click" VerticalAlignment="Center" HorizontalAlignment="Center"></Button>
+            <Button Name="btn_Close" Content="      关   闭      " Click="btn_Close_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"></Button>
+
+        </Grid>
+    </Grid>
+</Window>

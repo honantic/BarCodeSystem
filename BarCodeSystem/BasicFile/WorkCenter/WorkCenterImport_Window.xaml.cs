@@ -14,6 +14,7 @@ using System.Data;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -95,8 +96,8 @@ namespace BarCodeSystem
                     item.department_id = (Int64)U9dt.Rows[i]["department_id"];
                     wcl.Add(item);
                     listbeforesearch.Add(item);
-                }   
-                
+                }
+
             }
             listview1.ItemsSource = null;
             listview1.ItemsSource = wcl;
@@ -108,7 +109,7 @@ namespace BarCodeSystem
         /// <returns></returns>
         private DataTable GetU9DepartmentList()
         {
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            WebService.Service ws = new WebService.Service();
             ds = ws.GetDepartmentlist_ForMES(User_Info.User_Org_Code[0], "", "");
             return ds.Tables[0];
         }
@@ -213,12 +214,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Imprt_Click(object sender, RoutedEventArgs e)
         {
-            this.Cursor = Cursors.Wait; 
+            this.Cursor = Cursors.Wait;
             string SQl = "";
             int count = 0;
             MyDBController.GetConnection();
+            DBLog _dbLog = new DBLog();
+
             foreach (WorkCenterLists item in listview1.Items)
-            {       
+            {
                 if (item.IsSelected)
                 {
                     item.isvalidated = item.isworkcenter = item.isordercontroled = "false";
@@ -228,11 +231,12 @@ namespace BarCodeSystem
                                     WC_Department_ID,WC_IsValidated,WC_IsOrderControled,
                                     WC_IsWorkCenter,WC_LastOperateTime,WC_LastOprateBy)
                                     values('{0}','{1}',{2},'{3}','{4}','{5}','{6}','{7}','{8}')", item.department_code,
-                    item.department_name, "''",item.department_id, item.isvalidated,
-                    item.isordercontroled, item.isworkcenter, item.lastoperatetime_DB, item.lastoperateby);
+                    item.department_name, "''", item.department_id, item.isvalidated,
+                    item.isordercontroled, item.isworkcenter, item.lastoperatetime_DB.ToString("yyyy/MM/dd HH:MM:ss"), item.lastoperateby);
                     try
                     {
                         MyDBController.ExecuteNonQuery(SQl);
+                        _dbLog.DBL_Content += string.IsNullOrEmpty(_dbLog.DBL_Content) ? User_Info.User_Name + "|工作中心导入界面，往表[WorkCenter]中导入工作中心信息 :[WC_Department_Code]为" + item.department_code + "[WC_Department_Name]为" + item.department_name : "|[WC_Department_Code]为" + item.department_code + "[WC_Department_Name]为" + item.department_name;
                         listbeforesearch.Remove(item);
                         count++;
                     }
@@ -246,9 +250,14 @@ namespace BarCodeSystem
                 }
 
             }
-            if (count>0)
+            _dbLog.DBL_OperateBy = User_Info.User_Code;
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Insert;
+            _dbLog.DBL_OperateTable = "WorkCenter";
+            DBLog.WriteDBLog(_dbLog);
+            if (count > 0)
             {
-                MessageBox.Show("共导入"+count+"个工作中心！","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("共导入" + count + "个工作中心！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
@@ -271,9 +280,9 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Wait;
             //progressbar1.Visibility = Visibility.Visible;
             BindingItemSource();
-            if (listview1.Items.Count==0)
+            if (listview1.Items.Count == 0)
             {
-                MessageBox.Show("U9中所有相关部门已经在\n\n条码系统工作中心列表中！","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("U9中所有相关部门已经在\n\n条码系统工作中心列表中！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             this.Cursor = Cursors.Arrow;
         }
@@ -287,26 +296,26 @@ namespace BarCodeSystem
         {
             listview1.ItemsSource = null;
             listview1.ItemsSource = listbeforesearch;
-            if (txtb_Search.Text.Length >0)
-	        {
+            if (txtb_Search.Text.Length > 0)
+            {
                 string key = txtb_Search.Text;
-		        List<WorkCenterLists> wcl = new List<WorkCenterLists> { };
+                List<WorkCenterLists> wcl = new List<WorkCenterLists> { };
                 IEnumerable<WorkCenterLists> IEwcl =
                     from item in listbeforesearch
                     where item.department_name.IndexOf(txtb_Search.Text) != -1
                     select item;
 
                 foreach (WorkCenterLists item in IEwcl)
-	            {                   
-		            wcl.Add(item);       
-	            }
-                listview1.ItemsSource=null;
-                listview1.ItemsSource=wcl;
-	        }
+                {
+                    wcl.Add(item);
+                }
+                listview1.ItemsSource = null;
+                listview1.ItemsSource = wcl;
+            }
             else
-	        {
+            {
 
-	        }
+            }
         }
 
 

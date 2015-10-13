@@ -4,7 +4,6 @@
     <!--Menu控件模板-->
     <ControlTemplate x:Key="mycontroltemplate" TargetType="{x:Type Menu}">
         <Border Margin="2"
-                Background="Chocolate"
                 CornerRadius="3"
                 SnapsToDevicePixels="True">
             <ItemsPresenter/>
@@ -37,7 +36,7 @@
                         <Border.Background>
                             <DrawingBrush>
                                 <DrawingBrush.Drawing>
-                                    <GeometryDrawing Brush="YellowGreen">
+                                    <GeometryDrawing Brush="Silver">
                                         <GeometryDrawing.Geometry>
                                             <CombinedGeometry GeometryCombineMode="Exclude">
                                                 <CombinedGeometry.Geometry1>

@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -45,10 +39,10 @@ namespace BarCodeSystem
         {
 
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             //去除关闭按钮
             //2.在装载事件中加入
@@ -83,16 +77,19 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Import_Click(object sender, RoutedEventArgs e)
         {
-            if (canImport && copiedData.Rows.Count>0)
+            if (copiedData != null)
             {
-                this.Cursor = System.Windows.Input.Cursors.Wait;
-                CheckIfPersonExisit(pls,exisitPerson);
-                this.Cursor = System.Windows.Input.Cursors.Arrow;
-            }
+                if (canImport && copiedData.Rows.Count > 0)
+                {
+                    this.Cursor = System.Windows.Input.Cursors.Wait;
+                    CheckIfPersonExisit(pls, exisitPerson);
+                    this.Cursor = System.Windows.Input.Cursors.Arrow;
+                }
 
-            else
-            {
-                System.Windows.MessageBox.Show("数据存在错误，或者没有导入数据！\n请检查！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                else
+                {
+                    System.Windows.MessageBox.Show("数据存在错误，或者没有导入数据！\n请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -104,7 +101,7 @@ namespace BarCodeSystem
         private void btn_Copy_Click(object sender, RoutedEventArgs e)
         {
             GetCopyTable();
-            listview1.ItemsSource= CheckIfRightDepart(copiedData);
+            listview1.ItemsSource = CheckIfRightDepart(copiedData);
         }
 
         /// <summary>
@@ -113,13 +110,13 @@ namespace BarCodeSystem
         private void GetCopyTable()
         {
             string columlist = "P_Code,P_Name,P_Position,WC_Department_Code,WC_Department_Name";
-            copiedData  =new DataTable("Person");//用来显示的
+            copiedData = new DataTable("Person");//用来显示的
             fixedData = new DataTable("Person");
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
 
             copiedData.Columns.Add("P_Code", typeof(string));
             copiedData.Columns.Add("P_Name", typeof(string));
-            copiedData.Columns.Add("P_Position",typeof(string));
+            copiedData.Columns.Add("P_Position", typeof(string));
             copiedData.Columns.Add("WC_Department_Code", typeof(string));
             copiedData.Columns.Add("WC_Department_Name", typeof(string));
             qk.write_excel_date_to_temp_table(copiedData, columlist);
@@ -131,7 +128,7 @@ namespace BarCodeSystem
         /// </summary>
         /// <param name="dt1"></param>
         /// <param name="dt2"></param>
-        private void CheckIfPersonExisit( List<PersonLists> copied,DataTable exsistperson)
+        private void CheckIfPersonExisit(List<PersonLists> copied, DataTable exsistperson)
         {
             fixedData = copiedData.Clone();
 
@@ -151,12 +148,18 @@ namespace BarCodeSystem
             fixedData.Columns.Add("ID", typeof(Int64));//人员表主键，MyDBController.InsertSqlBulk方法需要
             fixedData.Columns["ID"].SetOrdinal(0);//设置列顺序
             fixedData.Columns.Add("IDNew", typeof(Int64));//人员表主键影射列，MyDBController.InsertSqlBulk方法需要
+
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_OperateBy = User_Info.User_Code;
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+            _dbLog.DBL_OperateType = OperateType.Import;
+            _dbLog.DBL_Content = User_Info.User_Name + "|Excel导入人员信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position;
             for (int i = 0; i < y; i++)
             {
                 bool IsExist = false;
                 for (int j = 0; j < x; j++)
                 {
-                    if (exisitPerson.Rows[j]["P_Code"].ToString()==
+                    if (exisitPerson.Rows[j]["P_Code"].ToString() ==
                         fixedData.Rows[i]["P_Code"].ToString())
                     {
                         fixedData.Rows[i]["ID"] = exisitPerson.Rows[j]["ID"];
@@ -165,6 +168,7 @@ namespace BarCodeSystem
                         break;
                     }
                 }
+                _dbLog.DBL_AssociateCode += fixedData.Rows[i]["P_Code"].ToString() + fixedData.Rows[i]["P_Name"].ToString() + "|";
                 if (!IsExist)
                 {
                     fixedData.Rows[i]["IDNew"] = -1;
@@ -180,14 +184,17 @@ namespace BarCodeSystem
             colList.Add("P_WorkCenterID");
             MyDBController.GetConnection();
             int updateNum = 0, insertNum = 0;
-            MyDBController.InsertSqlBulk(fixedData,colList,out updateNum,out insertNum);
+            MyDBController.InsertSqlBulk(fixedData, colList, out updateNum, out insertNum);
             MyDBController.CloseConnection();
-            string message = string.Format(@"共更新 {0} 个人员信息！\n 新增 {1} 个人员信息！",updateNum,insertNum);
-            if (MessageBox.Show(message,"提示",MessageBoxButton.OK,MessageBoxImage.Information)==
+
+            DBLog.WriteDBLog(_dbLog);
+
+            string message = string.Format(@"共更新 {0} 个人员信息！\n 新增 {1} 个人员信息！", updateNum, insertNum);
+            if (MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                 MessageBoxResult.OK)
             {
-                this.DialogResult = true;  
-            }                 
+                this.DialogResult = true;
+            }
         }
 
 
@@ -213,16 +220,16 @@ namespace BarCodeSystem
             /*为复制进来的数据添加一列标识列
              *当导入数据存在错误的时候，导出错误数据到Excel
              *该标识列可以为操作人员提供参考*/
-            copied.Columns.Add("IfRight",typeof(string));
+            copied.Columns.Add("IfRight", typeof(string));
             copied.Columns.Add("P_WorkCenterID", typeof(Int64));
             for (int i = 0; i < copied.Rows.Count; i++)
             {
                 IfRight = false;
                 for (int j = 0; j < SYSDepartCode.Rows.Count; j++)
                 {
-                    if (copied.Rows[i]["WC_Department_Code"]==null &&copied.Rows[i]["WC_Department_Code"].ToString()==""&& 
-                        copied.Rows[i]["P_Name"].ToString()==""&&copied.Rows[i]["P_Name"]==null&&
-                        copied.Rows[i]["P_Code"].ToString()==""&&copied.Rows[i]["P_Code"]==null)
+                    if (copied.Rows[i]["WC_Department_Code"] == null && copied.Rows[i]["WC_Department_Code"].ToString() == "" &&
+                        copied.Rows[i]["P_Name"].ToString() == "" && copied.Rows[i]["P_Name"] == null &&
+                        copied.Rows[i]["P_Code"].ToString() == "" && copied.Rows[i]["P_Code"] == null)
                     {
                         copied.Rows[i]["IfRight"] = error1;
                         break;
@@ -258,25 +265,25 @@ namespace BarCodeSystem
 
                         }
                     }
-                    
+
                 }
 
                 if (!IfRight)
                 {
-                        PersonLists pl = new PersonLists();
-                        pl.isRightDepart = false;
-                        pl.name = copied.Rows[i]["P_Name"].ToString();
-                        pl.code = copied.Rows[i]["P_Code"].ToString();
+                    PersonLists pl = new PersonLists();
+                    pl.isRightDepart = false;
+                    pl.name = copied.Rows[i]["P_Name"].ToString();
+                    pl.code = copied.Rows[i]["P_Code"].ToString();
 
-                        pl.position = copied.Rows[i]["P_Position"].ToString();
+                    pl.position = copied.Rows[i]["P_Position"].ToString();
 
-                        pl.departCode = copied.Rows[i]["WC_Department_Code"].ToString();
-                        pl.departName = copied.Rows[i]["WC_Department_Name"].ToString();
-                        pls.Add(pl);
+                    pl.departCode = copied.Rows[i]["WC_Department_Code"].ToString();
+                    pl.departName = copied.Rows[i]["WC_Department_Name"].ToString();
+                    pls.Add(pl);
 
-                        if (!copied.Rows[i]["IfRight"].ToString().Equals(error3))
+                    if (!copied.Rows[i]["IfRight"].ToString().Equals(error3))
                         copied.Rows[i]["IfRight"] = error2;
-                        canImport = false;
+                    canImport = false;
                 }
             }
             return pls;
@@ -289,14 +296,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_OutPrint_Click(object sender, RoutedEventArgs e)
         {
-            if (copiedData.Rows.Count>0)
+            if (copiedData.Rows.Count > 0)
             {
                 QkRowChangeToColClass.CreateExcelFileForDataTable(copiedData);
-                System.Windows.MessageBox.Show("共导出"+copiedData.Rows.Count+"条数据到Excel","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                System.Windows.MessageBox.Show("共导出" + copiedData.Rows.Count + "条数据到Excel", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                System.Windows.MessageBox.Show("没有数据！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("没有数据！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -307,10 +314,10 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void HandlekeyDownEvent(object sender, KeyEventArgs e)
         {
-            if (e.Key==Key.V&&(Keyboard.Modifiers&(ModifierKeys.Control))==(ModifierKeys.Control))
+            if (e.Key == Key.V && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
             {
                 RoutedEventArgs ee = new RoutedEventArgs();
-                btn_Copy_Click(sender,ee);
+                btn_Copy_Click(sender, ee);
             }
         }
 

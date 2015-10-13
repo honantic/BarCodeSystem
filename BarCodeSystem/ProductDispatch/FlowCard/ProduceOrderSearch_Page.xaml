@@ -29,7 +29,7 @@
                 </Label.Background>
             </Label>
 
-            <DataGrid ClipboardCopyMode="None" Name="datagrid_ProduceOrderInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+            <DataGrid ClipboardCopyMode="None" MouseDoubleClick="datagrid_ProduceOrderInfo_MouseDoubleClick" Name="datagrid_ProduceOrderInfo" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="订单编号" Binding="{Binding Path=PO_Code}"></DataGridTextColumn>
                     <DataGridTextColumn Header="料品编号" Binding="{Binding Path=PO_ItemCode}"></DataGridTextColumn>

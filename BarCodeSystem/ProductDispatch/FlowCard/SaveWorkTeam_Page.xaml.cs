@@ -29,7 +29,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         string departName = "";
         List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
         DataSet ds = new DataSet();
-        SubmitPersonInfo spi;
+        SubmitWorkTeamInfo swti;
+        int loadCount = 0;
         #endregion
 
         #region 构造函数
@@ -42,7 +43,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// 筛选班组的构造函数
         /// </summary>
         /// <param name="_departID"></param>
-        public SaveWorkTeam_Page(Int64 _departID, SubmitPersonInfo _spi)
+        public SaveWorkTeam_Page(Int64 _departID, SubmitWorkTeamInfo _swti)
         {
             InitializeComponent();
             departID = _departID;
@@ -51,7 +52,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             Panel.SetZIndex(btn_Refresh, 1);
             panel_AddTeamName.Visibility = Visibility.Hidden;
             datagrid_WorkTeamInfo.Columns[1].DisplayIndex = 0;
-            spi = _spi;
+            swti = _swti;
 
         }
 
@@ -80,9 +81,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            datagrid_WorkTeamInfo.ItemsSource = string.IsNullOrEmpty(departName) ? FetchWorkTeamInfo() : SaveWorkTeamInit();
-            ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
-            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
+            if (loadCount == 0)
+            {
+                datagrid_WorkTeamInfo.ItemsSource = string.IsNullOrEmpty(departName) ? teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID) : teamMemberList = SaveWorkTeamInit();
+                ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
+                view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
+                loadCount++;
+            }
         }
 
         /// <summary>
@@ -104,34 +109,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             return teamMemberList;
         }
 
-        /// <summary>
-        /// 选取班组的初始化事件
-        /// </summary>
-        /// <returns></returns>
-        private List<WorkTeamMemberLists> FetchWorkTeamInfo()
-        {
-            ds = new DataSet();
-            teamMemberList.Clear();
-            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", departID);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
-            MyDBController.CloseConnection();
-            foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
-            {
-                teamMemberList.Add(new WorkTeamMemberLists()
-                {
-                    WTM_WorkTeamID = Convert.ToInt64(row["ID"]),
-                    WTM_WorkTeamCode = row["WT_Code"].ToString(),
-                    WTM_WorkTeamName = row["WT_Name"].ToString(),
-                    WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
-                    WTM_MemberPersonName = row["P_Name"].ToString(),
-                    WTM_MemberPersonCode = row["P_Code"].ToString(),
-                    WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
-                    WTM_WorkCenterName = row["WC_Department_Name"].ToString()
-                });
-            }
-            return teamMemberList;
-        }
+
         #endregion
 
         #region 保存班组信息
@@ -354,6 +332,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             else
             {
                 datagrid_WorkTeamInfo.ItemsSource = teamMemberList;
+                datagrid_WorkTeamInfo.Items.Refresh();
             }
         }
         /// <summary>
@@ -376,7 +355,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            FetchWorkTeamInfo();
+            teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID);
+            datagrid_WorkTeamInfo.ItemsSource = teamMemberList;
+            datagrid_WorkTeamInfo.Items.Refresh();
         }
 
         /// <summary>
@@ -389,20 +370,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             if (datagrid_WorkTeamInfo.SelectedIndex != -1)
             {
                 string code = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamCode;
-                int count = teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)).Count;
-                //if (MessageBox.Show(string.Format(@"选取的班组为{0}，共有{1}人。 确定选取吗？", code, count), "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
-                //{
-                List<PersonLists> personList = new List<PersonLists>();
-                foreach (WorkTeamMemberLists item in teamMemberList.FindAll(p => p.WTM_WorkTeamCode.Equals(code)))
-                {
-                    personList.Add(new PersonLists()
-                    {
-                        name = item.WTM_MemberPersonName,
-                        code = item.WTM_MemberPersonCode,
-                        ID = item.WTM_MemberPersonID
-                    });
-                }
-                spi.Invoke(personList);
+                string name = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamName;
+                Int64 id = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamID;
+                WorkTeamLists wtl = new WorkTeamLists() { WT_Code = code, WT_Name = name, ID = id };
+                List<WorkTeamMemberLists> wtmList = WorkTeamMemberLists.FetchWorkTeamInfo(wtl.ID, true);
+                swti.Invoke(wtl, wtmList);
                 //}
             }
             else
@@ -410,7 +382,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 MessageBox.Show("请选择一个班组！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        #endregion
 
+        /// <summary>
+        /// 双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_WorkTeamInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_Submit_Click(null, null);
+        }
+        #endregion
     }
 }

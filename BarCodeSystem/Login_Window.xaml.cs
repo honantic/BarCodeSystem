@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass.HelperClass;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -31,6 +32,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Login_Window_Loaded(object sender, RoutedEventArgs e)
         {
+            InitImageFolder();
             SetAnimation();
             GetRememberedUser();
             NeedAutoLoginOrNot();
@@ -44,20 +46,26 @@ namespace BarCodeSystem
         private void btn_Login_Click(object sender, RoutedEventArgs e)
         {
             bool CheckResult = false;
-            CheckResult = Login_Check.IsValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
-
+            if (txtBox_Uid.Text.Equals("admin"))
+            {
+                CheckResult = Login_Check.AdminValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+            }
+            else
+            {
+                CheckResult = Login_Check.IsValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+               
+            }
             if (!CheckResult)
             {
                 MessageBox.Show("用户名或账号错误", "登陆失败", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             }
-
             else
             {
-                User_Info.User_Name = this.txtBox_Uid.Text.ToString().Trim();
+                User_Info.User_Code = this.txtBox_Uid.Text.ToString().Trim();
                 storyboard.Begin();
+                
             }
         }
-
 
         /// <summary>
         /// 拖动效果
@@ -77,7 +85,6 @@ namespace BarCodeSystem
             }
         }
 
-
         /// <summary>
         /// 关闭按钮事件
         /// </summary>
@@ -88,7 +95,6 @@ namespace BarCodeSystem
             this.Close();
         }
 
-
         /// <summary>
         /// 关闭登录窗体，开启主窗体
         /// </summary>
@@ -98,10 +104,25 @@ namespace BarCodeSystem
         {
             this.Hide();
             Main_Window main = new Main_Window();
+            App.Current.MainWindow = main;
             main.Show();
             this.Close();
         }
 
+        /// <summary>
+        /// 条码的图案储存文件夹
+        /// </summary>
+        private void InitImageFolder()
+        {
+            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "/image_barcode"))
+            {
+
+            }
+            else
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/image_barcode");
+            }
+        }
 
         /// <summary>
         /// 设置窗体关闭动画
@@ -177,6 +198,7 @@ namespace BarCodeSystem
                         IsAutoLogin = Convert.ToBoolean(item.Attributes[isAutoLogin].InnerText)
                     });
                 }
+                userList.Sort((p1, p2) => string.Compare(p2.IsLastAccount.ToString(), p1.IsLastAccount.ToString()));
                 txtBox_Uid.ItemsSource = null;
                 txtBox_Uid.ItemsSource = userList;
                 txtBox_Uid.DisplayMemberPath = "UserName";
@@ -231,8 +253,6 @@ namespace BarCodeSystem
             }
         }
 
-
-
         /// <summary>
         /// 检查是否需要自动登录
         /// </summary>
@@ -275,7 +295,7 @@ namespace BarCodeSystem
                         item.Attributes["IsAutoLogin"].InnerText = IsAutoLogin.ToString();
                         item.Attributes["IsLastAccount"].InnerText = "true";
                     }
-                    else if (!item.Attributes["IsAutoLogin"].InnerText.ToLower().Equals(IsAutoLogin.ToString().ToLower()))//没有更改密码，但是更改了自动登录选项
+                    else
                     {
                         item.Attributes["IsAutoLogin"].InnerText = IsAutoLogin.ToString();
                         item.Attributes["IsLastAccount"].InnerText = "true";
@@ -283,7 +303,7 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    item.Attributes["IsLastAccount"].InnerText = "False";
+                    item.Attributes["IsLastAccount"].InnerText = "false";
                 }
             }
 
@@ -329,6 +349,33 @@ namespace BarCodeSystem
             {
                 RoutedEventArgs newE = new RoutedEventArgs();
                 btn_Login_Click(sender, newE);
+            }
+        }
+
+        /// <summary>
+        /// 拖动按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FatherGrid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
+
+        /// <summary>
+        /// 自动登录勾选/去勾选事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cBox_AutoLogin_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)cBox_AutoLogin.IsChecked)
+            {
+                cBox_KeepPassWord.IsChecked = true;
             }
         }
     }

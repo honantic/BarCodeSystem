@@ -42,8 +42,8 @@
             <TextBox Name="txtb_WorkCenterName" Height="30" Margin="5" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" MouseDoubleClick="txtb_WorkCenterName_MouseDoubleClick"></TextBox>
             <TextBlock Text="工作中心编号:" Grid.Row="1" Grid.Column="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             <TextBlock Text="岗位:" Grid.Row="2" Grid.Column="0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-            <TextBlock Text="注:岗位栏只能输入'操作工'或'检验员'或者为空" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2"></TextBlock>
-            <TextBox Name="txtb_Position" Grid.Row="2" Grid.Column="1" Height="30" Margin="5"></TextBox>
+            <TextBlock Text="注:岗位栏请慎重选择" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2"></TextBlock>
+            <ComboBox Name="txtb_Position" FontSize="14" Grid.Row="2" Grid.Column="1" Height="30" Margin="5"></ComboBox>
             <StackPanel Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" >
                 <TextBox Name="txtb_WorkCenterCode"  MouseDoubleClick="txtb_WorkCenterName_MouseDoubleClick"
                          Height="30" Margin="5" FontSize="14" VerticalAlignment="Center" 

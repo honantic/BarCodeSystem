@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -128,6 +129,14 @@ namespace BarCodeSystem
             temp.Columns.Remove("WC_Department_Name");
             temp.Columns.Remove("WC_Department_Code");
             temp.Columns.Add("IDNew", typeof(Int64));
+
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+            _dbLog.DBL_OperateTable = "DeviceDetail";
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Update;
+            _dbLog.DBL_Content = "启用设备的编号：";
+
             foreach (DeviceLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -146,6 +155,8 @@ namespace BarCodeSystem
                     temprow["DD_IsValidated"] = item.D_IsValidated;
                     temprow["IDNew"] = item.D_ID;
                     temp.Rows.Add(temprow);
+                    _dbLog.DBL_Content += item.D_Code + ",";
+                    _dbLog.DBL_AssociateCode += item.D_Code + ",";
                 }
                 else
                 {
@@ -167,6 +178,7 @@ namespace BarCodeSystem
                 }
                 MyDBController.CloseConnection();
                 string message = string.Format(@"共成功启用" + updateNum + "个设备！");
+                DBLog.WriteDBLog(_dbLog);
                 MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
 
             }

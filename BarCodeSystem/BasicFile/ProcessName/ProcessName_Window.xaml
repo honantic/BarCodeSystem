@@ -23,16 +23,18 @@
         <ListView Grid.Row="1" Margin="5" Name="listview1"
                   ItemContainerStyleSelector="{DynamicResource mySelector}" MouseDoubleClick="listview1_MouseDoubleClick">
             <ListView.View>
-                <GridView>
+                <GridView >
                     <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}" Width="30"></GridViewColumn>
-                    <GridViewColumn Header="工序编号" DisplayMemberBinding="{Binding Path=PN_Code}" Width="200"></GridViewColumn>
-                    <GridViewColumn Header="工序名称" DisplayMemberBinding="{Binding Path=PN_Name}" Width="200"></GridViewColumn>       
+                    <GridViewColumn Header="工序编码" DisplayMemberBinding="{Binding Path=PN_Code}" Width="Auto"></GridViewColumn>
+                    <GridViewColumn Header="工序名称" DisplayMemberBinding="{Binding Path=PN_Name}" Width="Auto"></GridViewColumn>
+                    <GridViewColumn Header="工序号" DisplayMemberBinding="{Binding Path=PN_CodeInWorkCenter}" Width="Auto" ></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button Name="btn_Add" Click="btn_Add_Click" Height="30" Width="80" Margin="5" Content="新增工序信息"></Button>
-            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30" Margin="5" Content="修改选中信息"></Button>
+            <Button Name="btn_Add" Click="btn_Add_Click" Height="30"  Margin="5" Content="  新增  "></Button>
+            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30" Margin="5" Content=" 修改  "></Button>
+            <Button Name="btn_Delete" Click="btn_Delete_Click" Height="30" Margin="5" Content=" 删除  "></Button>
             <Button Name="btn_Import" Click="btn_Import_Click" Height="30" Margin="5" Content="Excel导入信息" ></Button>
             <Button Name="btn_SelectAll" Click="btn_SelectAll_Click" Height="30" Margin="5" Width="40" Content="全选"></Button>
             <Button Name="btn_ReSelect" Click="btn_ReSelect_Click" Height="30" Margin="5" Width="40" Content="重选"></Button>

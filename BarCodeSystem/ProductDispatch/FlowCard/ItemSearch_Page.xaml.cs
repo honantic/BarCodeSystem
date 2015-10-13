@@ -20,8 +20,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     /// ItemSearch_Page.xaml 的交互逻辑
     /// </summary>
     /// 
-
-
     public partial class ItemSearch_Page : Page
     {
         /// <summary>
@@ -121,9 +119,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
             else
             {
-                string key =txtb_ItemInfo.Text.Trim();
-                iils = listBeforeSearch.FindAll( x=> x.II_Code.IndexOf(key)!= -1||x.II_Name.IndexOf(key) != -1
-                            ||x.II_Spec.IndexOf(key) != -1
+                string key = txtb_ItemInfo.Text.Trim();
+                iils = listBeforeSearch.FindAll(x => x.II_Code.IndexOf(key) != -1 || x.II_Name.IndexOf(key) != -1
+                            || x.II_Spec.IndexOf(key) != -1
                     );
                 datagrid_ItemInfo.ItemsSource = iils;
             }
@@ -136,9 +134,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void txtb_ItemInfo_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key==Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                btn_ItemSearch_Click(sender,e);
+                btn_ItemSearch_Click(sender, e);
             }
         }
 
@@ -153,6 +151,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             datagrid_ItemInfo.Items.Refresh();
         }
 
-
+        /// <summary>
+        /// 快捷选择
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_ItemInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_Submit_Click(null, null);
+        }
     }
 }

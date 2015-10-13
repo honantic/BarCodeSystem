@@ -17,10 +17,14 @@ namespace BarCodeSystem
     /// </summary>
     public partial class TechRouteModify_Window : Window
     {
+        /// <summary>
+        /// 默认构造函数
+        /// </summary>
         public TechRouteModify_Window()
         {
             InitializeComponent();
         }
+
 
         /// <summary>
         /// 维护工时的构造函数
@@ -29,12 +33,14 @@ namespace BarCodeSystem
         public TechRouteModify_Window(string str)
         {
             InitializeComponent();
-            this.Title = "工艺路线修改窗口";
+            this.Title = "工时维护窗口";
             btn_AddVersion.IsEnabled = btn_ClearInfo.IsEnabled = btn_DeleteProcess.IsEnabled = false;
             radio_IsBackProcess_False.IsEnabled = radio_IsBackProcess_True.IsEnabled = radio_IsBackVersion_False.IsEnabled = radio_IsBackVersion_True.IsEnabled = radio_IsTestProcess_False.IsEnabled = radio_IsTestProcess_True.IsEnabled = radio_ReportWay_Flow.IsEnabled = radio_ReportWay_Scatter.IsEnabled = false;
-            textb_ChooseItem.IsEnabled = textb_GetProcess.IsEnabled = textb_GetWorkCenter.IsEnabled = false;
+            textb_ChooseItem.IsEnabled = textb_GetProcess.IsEnabled = textb_GetWorkCenter.IsEnabled = textb_ChooseCheckPerson.IsEnabled = false;
             txtb_ProcessName.IsReadOnly = txtb_ItemCode.IsReadOnly = txtb_ItemName.IsReadOnly = txtb_TechSequence.IsReadOnly = txtb_TechVersion.IsReadOnly = txtb_TechVersionName.IsReadOnly = txtb_WorkCenterName.IsReadOnly = true;
             cb_IsDefaultVersion.IsEnabled = false;
+            cb_IsSpecialVersion_False.IsEnabled = cb_IsSpecialVersion_True.IsEnabled = false;
+            txtb_WorkHour.IsReadOnly = false;
         }
 
         //选择的工序ID、工作中心ID
@@ -42,6 +48,7 @@ namespace BarCodeSystem
         string choosedProcessCode;
         DataTable dt = new DataTable();
         DataSet ds = new DataSet();
+        List<TechRouteLists> RemovedList = new List<TechRouteLists>();
 
         /// <summary>
         /// 当窗体为修改窗体的时候的传值,当前窗体为新增窗体的时候new
@@ -106,7 +113,15 @@ namespace BarCodeSystem
             #region 条码系统暂定全部平均分配
             #endregion
 
-            if (this.Title == "工艺路线修改窗口")
+            if (this.Title == "工艺路线新增窗口")
+            {
+                trls = new List<TechRouteLists> { };
+                listview1.ItemsSource = trls;
+                txtb_ItemCode.IsReadOnly = txtb_ItemName.IsReadOnly =
+                    txtb_ProcessName.IsReadOnly = txtb_WorkCenterName.IsReadOnly = true;
+                btn_AddVersion.IsEnabled = false;
+            }
+            else
             {
                 listview1.ItemsSource = trls;
                 txtb_ItemCode.IsReadOnly = txtb_ItemName.IsReadOnly =
@@ -120,14 +135,6 @@ namespace BarCodeSystem
                 cb_IsSpecialVersion_False.IsChecked = !techversion.TRV_IsSpecialVersion;
                 radio_IsBackVersion_False.IsChecked = !techversion.TRV_IsBackVersion;
                 radio_ReportWay_Flow.IsChecked = techversion.TRV_ReportWay == 0 ? true : false;
-            }
-            else
-            {
-                trls = new List<TechRouteLists> { };
-                listview1.ItemsSource = trls;
-                txtb_ItemCode.IsReadOnly = txtb_ItemName.IsReadOnly =
-                    txtb_ProcessName.IsReadOnly = txtb_WorkCenterName.IsReadOnly = true;
-                btn_AddVersion.IsEnabled = false;
             }
 
         }
@@ -182,8 +189,6 @@ namespace BarCodeSystem
             }
         }
 
-
-
         /// <summary>
         /// 关闭
         /// </summary>
@@ -194,24 +199,51 @@ namespace BarCodeSystem
             this.DialogResult = true;
         }
 
+
+        /// <summary>
+        /// 保存工艺路线
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            btn_Save_Click1(sender, e);
+        }
+
         /// <summary>
         /// 保存当前工艺路线
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private MessageBoxResult btn_Save_Click1(object sender, RoutedEventArgs e)
+        private void btn_Save_Click1(object sender, RoutedEventArgs e)
         {
             if (listview1.Items.Count > 0)
             {
                 #region 对当前工艺路线进行处理，对数据操作前的准备
+                ds = new DataSet();
                 //排在第一的工序设置为首道工序，最后的设置为末道工序
-                TechRouteLists item = listview1.Items[0] as TechRouteLists;
-                item.TR_IsFirstProcess = true;
-                item = listview1.Items[listview1.Items.Count - 1] as TechRouteLists;
-                item.TR_IsLastProcess = true;
-
-                Int64 trv_itemID = item.TR_ItemID;
-                string trv_versionCode = item.TRV_VersionCode, trv_versionName = item.TRV_VersionName;
+                trls.ForEach(
+                    p =>
+                    {
+                        if (trls.IndexOf(p) == 0)
+                        {
+                            p.TR_IsFirstProcess = true;
+                        }
+                        else
+                        {
+                            p.TR_IsFirstProcess = false;
+                        }
+                        if (trls.IndexOf(p) == trls.Count - 1)
+                        {
+                            p.TR_IsLastProcess = true;
+                        }
+                        else
+                        {
+                            p.TR_IsLastProcess = false;
+                        }
+                    });
+                Int64 trv_itemID = trls[0].TR_ItemID;
+                string trv_versionCode = trls[0].TRV_VersionCode, trv_versionName = trls[0].TRV_VersionName;
 
                 //当前版本是否为默认版本，当前版本是否启用,是否返工版本
                 bool isdefaultver = (bool)cb_IsDefaultVersion.IsChecked, isvalidate = true, isBackVersion = !(bool)radio_IsTestProcess_False.IsChecked, isSpecialVersion = !(bool)cb_IsSpecialVersion_False.IsChecked;
@@ -220,8 +252,7 @@ namespace BarCodeSystem
 
                 //获取系统中是否有当前料品+工艺路线版本的信息
                 MyDBController.GetConnection();
-                string SQl = string.Format(@"SELECT [ID] FROM [TechRouteVersion] WHERE [TRV_ItemID]={0} AND [TRV_VersionCode]='{1}'",
-                                    trv_itemID, trv_versionCode);
+                string SQl = string.Format(@"SELECT [ID] FROM [TechRouteVersion] WHERE [TRV_ItemID]={0} AND [TRV_VersionCode]='{1}'", trv_itemID, trv_versionCode);
                 dt.Clear();
                 dt = MyDBController.GetDataSet(SQl, ds).Tables[0];
                 int x = dt.Rows.Count;
@@ -231,7 +262,7 @@ namespace BarCodeSystem
                 {
                     if (this.Title.Equals("工艺路线新增窗口"))
                     {
-                        return MessageBox.Show("该工艺路线版本已经存在！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("该工艺路线版本已经存在！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     trv_versionID = (Int64)dt.Rows[0]["ID"];
                 }
@@ -313,18 +344,32 @@ namespace BarCodeSystem
                     }
                     SQl = string.Format("Update [TechRouteVersion] set [TRV_ReportWay]={0} where [TRV_ItemID]={1} and [ID] ={2}", reportWay, trls[0].TR_ItemID, trv_versionID);
                     MyDBController.ExecuteNonQuery(SQl);
-                    return MessageBox.Show("工艺路线信息保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    //将删除的工序从工艺路线表中删除
+                    if (RemovedList.Count > 0)
+                    {
+                        string idList = "";
+                        RemovedList.ForEach(p => { idList += idList.Length == 0 ? p.ID.ToString() : "," + p.ID.ToString(); });
+                        idList = "(" + idList + ")";
+                        SQl = string.Format("delete from [TechRoute] where [ID] in {0}", idList);
+                        MyDBController.ExecuteNonQuery(SQl);
+                    }
+
+                    if (MessageBox.Show("工艺路线信息保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) == MessageBoxResult.OK)
+                    {
+                        this.DialogResult = true;
+                    }
                 }
                 catch (Exception ee)
                 {
 
-                    return MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 #endregion
             }
             else
             {
-                return MessageBox.Show("工艺路线为空！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("工艺路线为空！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -421,9 +466,9 @@ namespace BarCodeSystem
                                 trl.TR_ItemCode = txtb_ItemCode.Text;
                                 trl.II_Name = txtb_ItemName.Text.Trim();
                                 trl.TR_ProcessName = txtb_ProcessName.Text;
-                                trl.TR_ProcessCode = trls[0].TR_ProcessCode;
-                                trl.TR_ProcessID = trls[0].TR_ProcessID;
-                                trl.TR_WorkCenterID = trls[0].TR_WorkCenterID;
+                                trl.TR_ProcessCode = choosedProcessCode;
+                                trl.TR_ProcessID = choosedProcessID;
+                                trl.TR_WorkCenterID = choosedWorkCenterID == 0 ? trls[0].TR_WorkCenterID : choosedWorkCenterID;
                                 trl.TR_ProcessSequence = Convert.ToInt32(txtb_TechSequence.Text.Trim());
                                 trl.WC_Department_Name = txtb_WorkCenterName.Text.Trim();
                                 trl.TR_WorkHour = Convert.ToDecimal(txtb_WorkHour.Text);/*----------------------这段是预留的，工时根据单件工资计算---------------- */
@@ -565,7 +610,12 @@ namespace BarCodeSystem
             {
                 TechRouteLists trl = listview1.SelectedItem as TechRouteLists;
                 trls.Remove(trl);
+                RemovedList.Add(trl);
                 listview1.Items.Refresh();
+                if (trls.Count == 0)
+                {
+                    txtb_ProcessName.Text = txtb_WorkCenterName.Text = "";
+                }
             }
         }
 
@@ -578,7 +628,7 @@ namespace BarCodeSystem
         {
             trls.Clear();
             listview1.Items.Refresh();
-
+            RemovedList.Clear();
             this.Title = "工艺路线新增窗口";
             txtb_ItemName.IsReadOnly = txtb_ItemCode.IsReadOnly = true;
             txtb_ProcessName.Text = txtb_TechSequence.Text = txtb_WorkCenterName.Text
@@ -586,10 +636,7 @@ namespace BarCodeSystem
             //cb_WageAllotScheme.SelectedIndex = -1;
         }
 
-        private void btn_Save_Click(object sender, RoutedEventArgs e)
-        {
-            btn_Save_Click1(sender, e);
-        }
+
 
         /// <summary>
         /// 选择检验员

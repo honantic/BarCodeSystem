@@ -1,0 +1,76 @@
+﻿<Page x:Class="BarCodeSystem.SalaryManage.QualityMonthlySalary.QualityMonthlySalarySearch_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="1024"
+      Loaded="Page_Loaded"
+	Title="QualityMonthlySalarySearch_Page">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="3">
+            <TextBlock Name="textb_Header" FontSize="15" Foreground="White">奖赔单筛选页面</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="1" Color="Chocolate"></GradientStop>
+                        <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
+                        <GradientStop Color="Crimson"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GroupBox Name="gb_QMSCode" Margin="5">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}" >奖赔单编号信息</TextBlock>
+                </GroupBox.Header>
+                <DataGrid MouseDoubleClick="datagrid_QMSCode_MouseDoubleClick" Name="datagrid_QMSCode" SelectionChanged="datagrid_QMSCode_SelectionChanged" DataContext="{Binding}" AutoGenerateColumns="False" ColumnWidth="Auto" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="奖赔单编号" Binding="{Binding Path=QMS_Code}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+            <GroupBox Grid.Column="1" Margin="5">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}" >奖赔单详细信息</TextBlock>
+                </GroupBox.Header>
+                <DataGrid Name="datagrid_QMSInfo" AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="Auto" RowHeaderWidth="30">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="编号" Binding="{Binding Path=QMS_Code}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="生效年月" Binding="{Binding Path=QMS_EffectiveTime}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="车间编号" Binding="{Binding Path=QMS_WorkerCenterCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="车间名称" Binding="{Binding Path=QMS_WorkerCenterName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="员工编号" Binding="{Binding Path=QMS_PersonCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="员工姓名" Binding="{Binding Path=QMS_PersonName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="质量奖赔" Binding="{Binding Path=QMS_QualityMoney}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="杂工工资" Binding="{Binding Path=QMS_SundryMoney}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="创建人" Binding="{Binding Path=QMS_CreateBy}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="创建日期" Binding="{Binding Path=QMS_CreateOn}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+               
+            </GroupBox>
+            <GroupBox Grid.Column="2" Margin="5">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}" >选择操作</TextBlock>
+                </GroupBox.Header>
+                <Grid>
+                    <TextBlock Text="点击下面的按钮来选定奖赔单！" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <Button DockPanel.Dock="Bottom" Name="btn_Select" Click="btn_Select_Click" Content="选定" VerticalAlignment="Bottom" Margin="5 18"></Button>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Page>

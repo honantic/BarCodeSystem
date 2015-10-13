@@ -1,4 +1,5 @@
-﻿using BarCodeSystem.ProductDispatch.FlowCardReport;
+﻿using BarCodeSystem.ProductDispatch.FlowCardPrint;
+using BarCodeSystem.ProductDispatch.FlowCardReport;
 using BarCodeSystem.PublicClass;
 using BarCodeSystem.PublicClass.DatabaseEntity;
 using System;
@@ -9,8 +10,14 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Xceed.Wpf.AvalonDock.Layout;
+using System.Linq;
+using BarCodeSystem.PublicClass.HelperClass;
+using System.Threading.Tasks;
+using System.Threading;
+using BarCodeSystem.SystemManage;
 
 namespace BarCodeSystem.ProductDispatch.FlowCard
 {
@@ -29,8 +36,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         ProduceOrderLists selectedOrder = new ProduceOrderLists();
         List<TechRouteLists> selectedTechRoute = new List<TechRouteLists>();
         List<List<PersonLists>> techRoutePerson = new List<List<PersonLists>>();
+        //List<List<WorkTeamLists>> techRouteWT = new List<List<WorkTeamLists>>();
+        //List<List<WorkTeamMemberLists>> sysWorkTeamInfo = new List<List<WorkTeamMemberLists>>();
         DispatcherTimer timer1 = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
         DataSet ds = new DataSet();
+        int loadCount = 0;
         #endregion
 
         #region 初始化设置
@@ -41,8 +51,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            InitFlowCardHeader();
-            timer1.Tick += timer1_Tick;
+            if (loadCount == 0)
+            {
+                InitFlowCardHeader();
+                timer1.Tick += timer1_Tick;
+                loadCount++;
+                //t1 = new Task(FetchBCWokrTeamInfo);
+                //t1.Start();
+            }
         }
 
         /// <summary>
@@ -66,12 +82,21 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         private void InitFlowCardHeader()
         {
-            List<string> typeList = new List<string>() { "普通流转卡", "无来源流转卡" };
+            List<string> typeList = new List<string>() { "普通流转卡", "返工流转卡", "无来源流转卡" };
             cb_FlowCardType.ItemsSource = typeList;
             textb_CreatedBy.Text = "  " + User_Info.User_Name;
             datepicker_CreateDate.SelectedDate = DateTime.Now;
         }
 
+
+        ///// <summary>
+        ///// 获取条码系统已经存在的班组人员信息，按照班组编号分组列表的列表
+        ///// </summary>
+        //private void FetchBCWokrTeamInfo()
+        //{
+        //    sysWorkTeamInfo = WorkTeamMemberLists.FetchWorkTeamMemberInfo(User_Info.User_Workcenter_ID);
+
+        //}
 
         /// <summary>
         /// 页面大小改变事件
@@ -166,6 +191,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             for (int i = 0; i < trls.Count; i++)
             {
                 techRoutePerson.Add(new List<PersonLists>());
+                //techRouteWT.Add(new List<WorkTeamLists>());
             }
             #endregion
         }
@@ -177,15 +203,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_SourceOrderSearch_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (!textb_SearchInfo.Text.Equals("生产订单筛选"))
             {
+                ProduceOrderSearch_Page posp = new ProduceOrderSearch_Page(FecthProduceOrderInfo);
                 Frame frame_SearchInfo = new Frame();
                 gb_SearchInfo.Content = frame_SearchInfo;
                 textb_SearchInfo.Text = "生产订单筛选";
-                ProduceOrderSearch_Page posp = new ProduceOrderSearch_Page(FecthProduceOrderInfo);
                 frame_SearchInfo.Navigate(posp);
             }
+            this.Cursor = Cursors.Arrow;
         }
+
 
         /// <summary>
         /// 生产订单查询委托函数实例
@@ -274,16 +303,23 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             if (datagrid_TechRouteInfo.SelectedIndex != -1)
             {
-                foreach (PersonLists person in personList)
+                try
                 {
-                    if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
+                    foreach (PersonLists person in personList)
                     {
-                        int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
-                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
-                        techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                        if (!techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Exists(p => p.code.Equals(person.code)))
+                        {
+                            int count = techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Count;
+                            ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? person.name : "、" + person.name;
+                            techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Add(person);
+                        }
+                        datagrid_TechRouteInfo.Items.Refresh();
                     }
                 }
-                datagrid_TechRouteInfo.Items.Refresh();
+                catch (Exception ee)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
         #endregion
@@ -297,6 +333,23 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private void btn_DisFlowCard_Click(object sender, RoutedEventArgs e)
         {
             string message = "";
+
+            List<string> WT_NameList = new List<string>();
+            foreach (var item in techRoutePerson)
+            {
+                string WT_Name = WorkTeamLists.CheckIfMultiPersonMatchWT(item);
+                if (string.IsNullOrEmpty(WT_Name))
+                {
+
+                }
+                else
+                    WT_NameList.Add(WT_Name);
+            }
+            //if (WT_NameList.Count > 0)
+            //{
+            //    Xceed.Wpf.Toolkit.MessageBox.Show("系统检测到有班组信息与派工信息相吻合，自动替换！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
+
             if (CheckIfCanLegal(out message))
             {
                 int flowNum = GetCurrentFlowNum();
@@ -311,10 +364,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
             else
             {
-                MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// 移除内容
+        /// </summary>
         private void RemoveFCReportFrame()
         {
             foreach (LayoutAnchorable item in (MyDBController.FindVisualParent<Main_Window>(this)[0]).ldp.Children)
@@ -351,20 +407,20 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 message = "缺少生产订单或者工艺路线信息,请检查！";
                 flag = false;
             }
-
-            if (flag)
-            {
-                foreach (TechRouteLists item in selectedTechRoute)
-                {
-                    if (string.IsNullOrEmpty(item.personName))
-                    {
-                        flag = false;
-                        message = "请为每道工序选择操作人员！";
-                        break;
-                    }
-                }
-            }
-
+            #region 派工的时候人员检验机制，需要保证每道工序都有人员，现在被拿掉。
+            //if (flag)
+            //{
+            //    foreach (TechRouteLists item in selectedTechRoute)
+            //    {
+            //        if (string.IsNullOrEmpty(item.personName))
+            //        {
+            //            flag = false;
+            //            message = "请为每道工序选择操作人员！";
+            //            break;
+            //        }
+            //    }
+            //}
+            #endregion
             return flag;
         }
 
@@ -375,12 +431,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private int GetCurrentFlowNum()
         {
             int currentFlowNum = 0;
-            string SQl = string.Format(@"select max(FC_FlowNum) FC_FlowNum from FlowCard where convert(date,FC_Createtime,102)=Convert(date,getDate(),102) group by Fc_Createtime");
+            string SQl = string.Format(@"select max(FC_FlowNum) FC_FlowNum from FlowCard where convert(date,FC_Createtime,102)=Convert(date,getDate(),102) ");
             MyDBController.GetConnection();
             SqlDataReader sqlReader = MyDBController.GetDataReader(SQl);
             while (sqlReader.Read())
             {
-                currentFlowNum = (int)sqlReader["FC_FlowNum"] + 1;
+                if (sqlReader["FC_FlowNum"].GetType() != typeof(DBNull))
+                {
+                    currentFlowNum = Convert.ToInt32(sqlReader["FC_FlowNum"]) + 1;
+                }
             }
             sqlReader.Close();
             MyDBController.CloseConnection();
@@ -433,7 +492,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 FC_FlowNum = maxNum,
                 FC_CreateBy = User_Info.User_Name,
                 FC_CreateTime = DateTime.Now,
-                FC_Code = flowCode
+                FC_Code = flowCode,
+                FC_BCSOrderID = selectedOrder.ID,
+                FC_FirstProcessNum = selectedTechRoute.FirstOrDefault().TR_ProcessSequence
             });
             return flowCardList;
         }
@@ -474,6 +535,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     row["FC_CreateBy"] = item.FC_CreateBy;
                     row["FC_CheckTime"] = row["FC_CreateTime"] = item.FC_CreateTime;
                     row["FC_CheckBy"] = item.FC_CheckBy;
+                    row["FC_BCSOrderID"] = item.FC_BCSOrderID;
+                    row["FC_FirstProcessNum"] = item.FC_FirstProcessNum;
                     ds.Tables["FlowCard"].Rows.Add(row);
                 }
 
@@ -482,11 +545,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 MyDBController.CloseConnection();
 
                 string message = string.Format(@"共更新{0}条记录，新增{1}条记录", updateNum, insertNum);
-                MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                //Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -505,7 +568,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 flowCardID = Convert.ToInt64(reader[0]);
             }
             reader.Close();
-            SQl = string.Format(@"Select top 0 [ID],[FCS_FlowCradID],[FCS_ItemId],[FCS_TechRouteID],[FCS_ProcessID],[FCS_ProcessName],[FCS_PersonCode],[FCS_PersonName],[FCS_BeginAmount],[FCS_QulifiedAmount],[FCS_ScrappedAmount],[FCS_UnprocessedAm],[FCS_CheckByID],[FCS_CheckByName],[FCS_PieceAmount],[FCS_PieceDivNum],[FCS_IsFirstProcess],[FCS_IsLastProcess],[FCS_IsReported] from [FlowCardSub]");
+            SQl = string.Format(@"select top 0 * from [FlowCardSub]");
+            //SQl = string.Format(@"Select top 0 [ID],[FCS_FlowCradID],[FCS_ItemId],[FCS_TechRouteID],[FCS_ProcessID],[FCS_ProcessName],[FCS_PersonCode],[FCS_PersonName],[FCS_BeginAmount],[FCS_QulifiedAmount],[FCS_ScrappedAmount],[FCS_AddAmount],[FCS_UnprocessedAm],[FCS_CheckByID],[FCS_CheckByName],[FCS_PieceAmount],[FCS_PieceDivNum],[FCS_IsFirstProcess],[FCS_IsLastProcess],[FCS_IsReported],[FCS_IsWorkTeam],[FCS_WorkTeamID] from [FlowCardSub]");
 
             MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
 
@@ -516,8 +580,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
 
             ds.Tables["FlowCardSub"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+
+            //生成流转卡子表的信息，识别是否按照班组派工
             for (int i = 0; i < selectedTechRoute.Count; i++)
             {
+                #region 如果不是以班组为单位派工
+
                 for (int j = 0; j < techRoutePerson[i].Count; j++)
                 {
                     DataRow row = ds.Tables["FlowCardSub"].NewRow();
@@ -537,16 +605,53 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     row["FCS_CheckByName"] = 0;
                     row["FCS_PieceAmount"] = 0;
                     row["FCS_PieceDivNum"] = 0;
+                    row["FCS_AddAmount"] = 0;
                     #endregion
                     row["FCS_IsFirstProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsFirstProcess);
                     row["FCS_IsLastProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsLastProcess);
                     row["FCS_IsReported"] = false;
+                    //row["FCS_IsWorkTeam"] = false;
+                    //row["FCS_WorkTeamID"] = -1;
                     ds.Tables["FlowCardSub"].Rows.Add(row);
                 }
+                #endregion
+
+                #region 当是以班组为单位派工时
+                //else if (techRouteWT[i].Count > 0)
+                //{
+                //    DataRow row = ds.Tables["FlowCardSub"].NewRow();
+                //    row["FCS_FlowCradID"] = flowCardID;
+                //    row["FCS_ItemId"] = selectedTechRoute[i].TR_ItemID;
+                //    row["FCS_TechRouteID"] = selectedTechRoute[i].ID;
+                //    row["FCS_ProcessID"] = selectedTechRoute[i].TR_ProcessID;
+                //    row["FCS_ProcessName"] = selectedTechRoute[i].TR_ProcessName;
+                //    row["FCS_PersonCode"] = "";
+                //    row["FCS_PersonName"] = "";
+                //    #region 这段代码为初始化代码，这些数据在派工的时候为空置的
+                //    row["FCS_QulifiedAmount"] = 0;
+                //    row["FCS_ScrappedAmount"] = 0;
+                //    row["FCS_UnprocessedAm"] = 0;
+                //    row["FCS_CheckByID"] = 0;
+                //    row["FCS_BeginAmount"] = 0;
+                //    row["FCS_CheckByName"] = 0;
+                //    row["FCS_PieceAmount"] = 0;
+                //    row["FCS_PieceDivNum"] = 0;
+                //    row["FCS_AddAmount"] = 0;
+                //    #endregion
+                //    row["FCS_IsFirstProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsFirstProcess);
+                //    row["FCS_IsLastProcess"] = Convert.ToBoolean(selectedTechRoute[i].TR_IsLastProcess);
+                //    row["FCS_IsReported"] = false;
+                //    row["FCS_IsWorkTeam"] = true;
+                //    row["FCS_WorkTeamID"] = Convert.ToInt64(techRouteWT[i][0].ID);
+                //    ds.Tables["FlowCardSub"].Rows.Add(row);
+                //}
+                #endregion
+
             }
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
             MyDBController.CloseConnection();
+            Xceed.Wpf.Toolkit.MessageBox.Show("派工完成！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         /// <summary>
         /// 派工结束之后返填生产订单信息，更新派工数量
@@ -554,7 +659,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="para"></param>
         private void UpdateSourceOrderInfo(int para)
         {
-            string SQl = string.Format(@"update [ProduceOrder] set [PO_StartAmount]=[PO_StartAmount]+{0} where [PO_ID]={1}", para, selectedOrder.PO_ID);
+            string SQl = string.Format(@"update [ProduceOrder] set [PO_StartAmount]=[PO_StartAmount]+{0} where [ID]={1}", para, selectedOrder.ID);
             MyDBController.GetConnection();
             MyDBController.ExecuteNonQuery(SQl);
             MyDBController.CloseConnection();
@@ -570,8 +675,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
 
             foreach (Button item in MyDBController.FindVisualChild<Button>(fatherGrid))
             {
-                item.IsEnabled = false;
+                if (item.Name.Equals("btn_Refresh"))
+                {
+                }
+                else if (item.Name.Equals("btn_Print"))
+                {
+                }
+                else
+                    item.IsEnabled = false;
             }
+            btn_Print.Visibility = Visibility.Visible;
             gb_SearchInfo.Content = null;
             cb_FlowCardType.IsEnabled = false;
         }
@@ -623,7 +736,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
 
-
         /// <summary>
         /// 选取班组按钮
         /// </summary>
@@ -652,26 +764,37 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <summary>
         /// 接收筛选班组的人员信息的函数
         /// </summary>
-        /// <param name="personList"></param>
-        private void FectchTeamPerson(List<PersonLists> personList)
+        /// <param name="wtl"></param>
+        private void FectchTeamPerson(WorkTeamLists wtl, List<WorkTeamMemberLists> wtmList)
         {
             if (datagrid_TechRouteInfo.SelectedIndex != -1)
             {
                 int x = datagrid_TechRouteInfo.SelectedIndex;
-                foreach (PersonLists item in personList)
+
+                if (techRoutePerson[x].Count > 0)
                 {
-                    if (techRoutePerson[x].Contains(item))
+                    if (Xceed.Wpf.Toolkit.MessageBox.Show("该工序已经安排人员了，是否覆盖？\r\n点击yes选择覆盖，点击no选择放弃。", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        //什么都不做
-                    }
-                    else
-                    {
-                        int count = techRoutePerson[x].Count;
-                        techRoutePerson[x].Add(item);
-                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName += count == 0 ? item.name : "、" + item.name;
+                        techRoutePerson[x].Clear();
+                        foreach (var item in wtmList)
+                        {
+                            techRoutePerson[x].Add(new PersonLists() { code = item.WTM_MemberPersonCode, name = item.WTM_MemberPersonName, ID = item.WTM_MemberPersonID });
+                        }
+                        ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName = wtl.WT_Name;
+                        datagrid_TechRouteInfo.Items.Refresh();
                     }
                 }
-                datagrid_TechRouteInfo.Items.Refresh();
+                else
+                {
+                    foreach (var item in wtmList)
+                    {
+                        techRoutePerson[x].Add(new PersonLists() { code = item.WTM_MemberPersonCode, name = item.WTM_MemberPersonName, ID = item.WTM_MemberPersonID });
+                    }
+                    ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName = wtl.WT_Name;
+                    datagrid_TechRouteInfo.Items.Refresh();
+
+                    datagrid_TechRouteInfo.Items.Refresh();
+                }
             }
         }
         #endregion
@@ -753,18 +876,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 foreach (TechRouteLists trl in selectedTechRoute)
                 {
                     int index = selectedTechRoute.FindIndex(p => p.Equals(trl));
-                    foreach (PersonLists person in techRoutePerson[index])
+                    if (techRoutePerson[index].Count > 0)
                     {
-                        disPlanList.Add(new DisPlanLists()
+                        foreach (PersonLists person in techRoutePerson[index])
                         {
-                            DP_ProcessSequence = trl.TR_ProcessSequence,
-                            DP_ProcessName = trl.TR_ProcessName,
-                            DP_PersonID = person.ID,
-                            DP_PersonCode = person.code,
-                            DP_PersonName = person.name,
-                            DP_TechRouteID = trl.ID,
-                        });
+                            disPlanList.Add(new DisPlanLists()
+                            {
+                                DP_ProcessSequence = trl.TR_ProcessSequence,
+                                DP_ProcessName = trl.TR_ProcessName,
+                                DP_PersonID = person.ID,
+                                DP_PersonCode = person.code,
+                                DP_PersonName = person.name,
+                                DP_TechRouteID = trl.ID,
+                            });
+                        }
                     }
+
                 }
             }
             catch (Exception)
@@ -809,7 +936,97 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             if (datagrid_TechRouteInfo.SelectedIndex != -1)
             {
-                datagrid_TechRouteInfo.ItemsSource = selectedTechRoute.FindAll(p => !p.TR_ProcessSequence.Equals(((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).TR_ProcessSequence));
+                if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除该行吗？", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                {
+                    int index = datagrid_TechRouteInfo.SelectedIndex;
+                    datagrid_TechRouteInfo.ItemsSource = ((List<TechRouteLists>)datagrid_TechRouteInfo.ItemsSource).FindAll(p => !p.TR_ProcessSequence.Equals(((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).TR_ProcessSequence));
+                    techRoutePerson.RemoveAt(index);
+                    selectedTechRoute.RemoveAt(index);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 打印
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Print_Click(object sender, RoutedEventArgs e)
+        {
+            //EmptyFlowCard_Window efc = new EmptyFlowCard_Window(txtb_FlowCode.Text);
+            //efc.ShowDialog();
+
+            _10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window(txtb_FlowCode.Text);
+            _10lfc.ShowDialog();
+        }
+
+        /// <summary>
+        /// 右键重置行人员
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_ResetRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要重置吗？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                techRoutePerson[datagrid_TechRouteInfo.SelectedIndex].Clear();
+                ((TechRouteLists)datagrid_TechRouteInfo.SelectedItem).personName = "";
+                datagrid_TechRouteInfo.Items.Refresh();
+            }
+        }
+
+
+        /// <summary>
+        /// 右键重置全部行人员
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_ResetAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要重置吗？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                techRoutePerson.ForEach(t => t.Clear());
+                foreach (TechRouteLists item in datagrid_TechRouteInfo.ItemsSource)
+                {
+                    item.personName = "";
+                }
+                datagrid_TechRouteInfo.Items.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// 刷新界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            amount = "";
+            selectedOrder = new ProduceOrderLists();
+            selectedTechRoute = new List<TechRouteLists>();
+            techRoutePerson = new List<List<PersonLists>>();
+            ds = new DataSet();
+            gb_SearchInfo.Content = null;
+            datagrid_TechRouteInfo.IsEnabled = true;
+            datagrid_TechRouteInfo.ItemsSource = null;
+            txtb_ProduceOrderInfo.Text = txtb_TechRouteVersion.Text = "点击放大镜选择";
+            txtb_ItemInfo.Text = "来自生产订单";
+            txtb_Department.Text = "系统自动生成";
+            textb_Amount.Text = textb_SearchInfo.Text = "";
+            Panel.SetZIndex(img_Watermark, 0);
+            cb_FlowCardType.IsEnabled = true;
+            txtb_FlowCode.Text = "系统自动生成";
+            btn_Print.Visibility = Visibility.Hidden;
+            foreach (Button item in MyDBController.FindVisualChild<Button>(fatherGrid))
+            {
+                if (item.Name.Equals("btn_Refresh"))
+                {
+                }
+                else if (item.Name.Equals("btn_Print"))
+                {
+                }
+                else
+                    item.IsEnabled = true;
             }
         }
 

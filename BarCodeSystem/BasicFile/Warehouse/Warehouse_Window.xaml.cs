@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Data;
 using System.Linq;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -139,6 +140,7 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             string SQl = "";
             int count = 0;
+            List<DBLog> _dbLogList = new List<DBLog>();
             foreach (WarehouseLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -146,7 +148,14 @@ namespace BarCodeSystem
                     item.W_IsValidated = true;
                     SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsValidated]='{1}'
                                     WHERE [W_ID]={1}", item.W_IsValidated, item.W_ID);
-
+                    DBLog _dbLog = new DBLog();
+                    _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                    _dbLog.DBL_OperateTable = "Warehouse";
+                    _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                    _dbLog.DBL_OperateType = OperateType.Update;
+                    _dbLog.DBL_AssociateID = item.W_ID.ToString();
+                    _dbLog.DBL_Content = "启用仓库：" + item.W_Code;
+                    _dbLogList.Add(_dbLog);
                     try
                     {
                         count += MyDBController.ExecuteNonQuery(SQl);
@@ -162,6 +171,7 @@ namespace BarCodeSystem
             if (count > 0)
             {
                 MessageBox.Show("成功启用" + count + "个仓库！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                DBLog.WriteDBLog(_dbLogList);
             }
             MyDBController.CloseConnection();
             this.Cursor = Cursors.Arrow;

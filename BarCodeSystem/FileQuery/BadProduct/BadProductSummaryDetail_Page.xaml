@@ -1,0 +1,50 @@
+﻿<Page x:Class="BarCodeSystem.BadProductSummaryDetail_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+	Title="不良品汇总页面" Loaded="Page_Loaded">
+
+    <Grid>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label >
+                <TextBlock Foreground="White">不良品汇总信息</TextBlock>
+                <Label.Background>
+                    <LinearGradientBrush>
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="1" Color="Chocolate"></GradientStop>
+                            <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
+                            <GradientStop Color="Crimson"></GradientStop>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+
+            <DataGrid ClipboardCopyMode="None"  Name="datagrid_BadProductListDetail" IsReadOnly="True" AutoGenerateColumns="True" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+                <DataGrid.Columns>
+                    <!--<DataGridTextColumn Header="日期"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料号"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料名"></DataGridTextColumn>
+                    <DataGridTextColumn Header="型号"></DataGridTextColumn>
+                    <DataGridTextColumn Header="工序名称"></DataGridTextColumn>
+                    <DataGridTextColumn Header="投入数"></DataGridTextColumn>
+                    <DataGridTextColumn Header="合格数"></DataGridTextColumn>-->
+
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button Content="导出" MaxWidth="120" MinWidth="80"  Name="export_btn" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Grid.Row="2" Click="export_btn_Click"></Button>
+        </Grid>
+        
+    </Grid>
+</Page>

@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -23,7 +17,7 @@ namespace BarCodeSystem
     public partial class ProcessNameModify_Window : Window
     {
 
-        
+
         /// <summary>
         /// 来自父窗体传值，修改工序信息的时候使用
         /// </summary>
@@ -67,10 +61,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
             //去除关闭按钮
             //2.在装载事件中加入
@@ -132,38 +126,49 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (canImport&&txtb_Name.Text.Length>0)
+            if (canImport && txtb_Name.Text.Length > 0)
             {
                 string SQl = "";
                 string mess = "";
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                _dbLog.DBL_OperateTable = "ProcessName";
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                _dbLog.DBL_AssociateCode = txtb_Code.Text;
                 if (this.Title == "工序信息修改窗口")
                 {
-                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Code]='{0}',[PN_Name]='{1}' WHERE 
-                                 [PN_Code]='{0}'",txtb_Code.Text,txtb_Name.Text);
+                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Name]='{0}',[PN_CodeInWorkCenter]='{1}' WHERE 
+                                 [PN_Code]='{2}'", txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), txtb_Code.Text);
                     mess = "成功修改工序信息!";
+                    _dbLog.DBL_OperateType = OperateType.Update;
+                    _dbLog.DBL_Content = "更新工序信息:" + txtb_Code.Text;
+
                 }
                 else
                 {
-                    SQl =string.Format( "INSERT INTO [ProcessName]([PN_Code],[PN_NAME]) VALUES('{0}','{1}')"
-                                ,txtb_Code.Text,txtb_Name.Text);
+                    SQl = string.Format("INSERT INTO [ProcessName]([PN_Code],[PN_NAME],[PN_CodeInWorkCenter],[PN_WorkCenterID]) VALUES('{0}','{1}','{2}',{3})"
+                                , txtb_Code.Text, txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), User_Info.User_Workcenter_ID);
                     mess = "成功新增工序信息！";
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    _dbLog.DBL_Content = "新增工序信息:" + txtb_Code.Text;
                 }
 
                 MyDBController.GetConnection();
                 try
-                { 
+                {
                     MyDBController.ExecuteNonQuery(SQl);
-                    if (MessageBox.Show(mess, "提示", MessageBoxButton.OK, MessageBoxImage.Information)==
+                    DBLog.WriteDBLog(_dbLog);
+                    if (MessageBox.Show(mess, "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                         MessageBoxResult.OK)
                     {
                         this.DialogResult = true;
-                    } 
+                    }
                 }
-                catch(Exception ee)
+                catch (Exception ee)
                 {
                     MessageBox.Show(ee.Message);
                 }
-                
+
                 MyDBController.CloseConnection();
             }
         }

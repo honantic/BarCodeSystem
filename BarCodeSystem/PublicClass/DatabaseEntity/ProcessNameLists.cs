@@ -43,5 +43,23 @@ namespace BarCodeSystem
             get;
             set;
         }
+
+        /// <summary>
+        /// 序在车间里面的代码，用来打印流转卡的
+        /// </summary>
+        public string PN_CodeInWorkCenter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 工序所属工作中心id
+        /// </summary>
+        public Int64 PN_WorkCenterID
+        {
+            get;
+            set;
+        }
     }
 }

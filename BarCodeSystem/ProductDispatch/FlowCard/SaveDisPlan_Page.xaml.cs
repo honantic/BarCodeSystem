@@ -292,5 +292,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             }
         }
         #endregion
+
+        /// <summary>
+        /// 获取派工方案的时候，双击快捷获取
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_DisPlanVer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (textb_Header.Text == "筛选派工方案信息")
+            {
+                btn_SelectDisPlan_Click(null, null);
+            }
+        }
     }
 }

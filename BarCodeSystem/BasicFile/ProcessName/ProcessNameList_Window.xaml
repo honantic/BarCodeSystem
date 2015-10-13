@@ -22,8 +22,9 @@
                   ItemContainerStyleSelector="{DynamicResource mySelector}" MouseDoubleClick="listview1_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="工序编码" Width="180" DisplayMemberBinding="{Binding Path=PN_Code}"></GridViewColumn>
-                    <GridViewColumn Header="工序名称" Width="180" DisplayMemberBinding="{Binding Path=PN_Name}"></GridViewColumn>
+                    <GridViewColumn Header="工序号"  Width="Auto" DisplayMemberBinding="{Binding Path=PN_CodeInWorkCenter}"></GridViewColumn>
+                    <GridViewColumn Header="工序名称" Width="Auto" DisplayMemberBinding="{Binding Path=PN_Name}"></GridViewColumn>
+                    <GridViewColumn Header="工序编码" Width="Auto" DisplayMemberBinding="{Binding Path=PN_Code}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

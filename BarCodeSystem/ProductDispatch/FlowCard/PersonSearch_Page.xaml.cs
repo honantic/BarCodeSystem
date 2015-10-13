@@ -114,5 +114,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             datagrid_PersonInfo.ItemsSource = FetchPersonInfo();
             datagrid_PersonInfo.Items.Refresh();
         }
+
+        /// <summary>
+        /// 快捷选择
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_PersonInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_Submit_Click(null, null);
+        }
     }
 }

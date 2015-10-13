@@ -79,7 +79,7 @@
                 </StackPanel>
             </Label>
             
-            <ScrollViewer Grid.Row="2" Margin="5" >
+            <ScrollViewer Grid.Row="2" Margin="5" Name="sv_Authority" >
                 <StackPanel Orientation="Vertical" Margin="5 0 5 5">
                     <Expander Name="Exp_SysManage" Grid.Row="1" Header="系统管理模块" Style="{StaticResource Exp_NormalStyle}">
                         <Grid>
@@ -96,12 +96,14 @@
 
                             <CheckBox Name="CB_U9Account" Style="{StaticResource CB_NormalStyle}">U9账号导入</CheckBox>
                             <CheckBox Name="CB_AccountAuthority" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">系统授权</CheckBox>
+                            <CheckBox Name="CB_Settings" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">设置</CheckBox>
                         </Grid>
                     </Expander>
 
                     <Expander Grid.Row="1" Header="系统参数管理模块" Style="{StaticResource Exp_NormalStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Name="CB_SysParaManage" Style="{StaticResource CB_NormalStyle}">系统参数管理</CheckBox>
+                            <CheckBox Name="CB_SysParaManage" Style="{StaticResource CB_NormalStyle}">组织信息</CheckBox>
+                            <CheckBox Name="CB_TechRouteImport" Style="{StaticResource CB_NormalStyle}">工艺路线批量维护</CheckBox>
                         </StackPanel>
                     </Expander>
 
@@ -120,13 +122,14 @@
                             <CheckBox Name="CB_WorkCenter"  Style="{StaticResource CB_NormalStyle}">工作中心</CheckBox>
                             <CheckBox Name="CB_StaffInfoManage" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">员工信息管理</CheckBox>
                             <CheckBox Name="CB_WorkTeamManage" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">车间班组管理</CheckBox>
-                            <CheckBox Name="CB_BeltlineManage" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">生产线管理</CheckBox>
+                            <CheckBox Visibility="Collapsed" Name="CB_BeltlineManage" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">生产线管理</CheckBox>
                             <CheckBox Name="CB_WorkEquipManage" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">报工设备管理</CheckBox>
                             <CheckBox Name="CB_StockLocManage" Grid.Row="1" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">仓库管理</CheckBox>
-                            <CheckBox Name="CB_QualityFileManage" Grid.Row="1" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">质量档案管理</CheckBox>
+                            <CheckBox Name="CB_QualityFileManage" Grid.Row="1" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">质量问题原因</CheckBox>
+                            <CheckBox Name="CB_QualitySort" Grid.Row="1" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">质检分类</CheckBox>
                         </Grid>
                     </Expander>
-                    <Expander Grid.Row="1" Header="物料和工艺路线模块" Style="{StaticResource Exp_NormalStyle}">
+                    <Expander Grid.Row="1" Header="料品和工艺路线模块" Style="{StaticResource Exp_NormalStyle}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -141,14 +144,12 @@
 
                             <CheckBox Name="CB_MaterialManage"  Style="{StaticResource CB_NormalStyle}">料品档案</CheckBox>
                             <CheckBox Name="CB_ProcedureManage" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">工序管理</CheckBox>
-                            <CheckBox Name="CB_TechRouteVersion" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">工艺路线版本</CheckBox>
-                            <CheckBox Name="CB_TechRouteManage" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">工艺路线管理</CheckBox>
-                            <CheckBox Name="CB_DistFormula" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">配额计算公式</CheckBox>
+                            <CheckBox Name="CB_TechRouteManage" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">工艺路线管理</CheckBox>
+                            <CheckBox Name="CB_TechRouteExport" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">工艺路线导出</CheckBox>
                             <CheckBox Name="CB_WorkHourManage" Grid.Row="1" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">工时管理</CheckBox>
                         </Grid>
                     </Expander>
-
-                    <Expander Grid.Row="1" Header="档案查询模块" Style="{StaticResource Exp_NormalStyle}">
+                    <Expander  Header="流转卡管理" Style="{StaticResource Exp_NormalStyle}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -161,7 +162,62 @@
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <CheckBox Name="CB_FileQuery1"  Style="{StaticResource CB_NormalStyle}">档案查询1</CheckBox>
+                            <CheckBox Name="CB_WorkCardCompose"  Style="{StaticResource CB_NormalStyle}">流转卡编制</CheckBox>
+                            <CheckBox Name="CB_WorkCardReport" Grid.Column="1"  Style="{StaticResource CB_NormalStyle}">流转卡报工</CheckBox>
+                            <CheckBox Name="CB_WorkCardDis"  Grid.Column="2" Style="{StaticResource CB_NormalStyle}">流转卡分批</CheckBox>
+                            <CheckBox Name="CB_WorkCardClean"  Grid.Column="3" Style="{StaticResource CB_NormalStyle}">流传卡清卡</CheckBox>
+                            <CheckBox Name="CB_WorkCardTransfer" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">流转卡转序</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Header="库存管理" Style="{StaticResource Exp_NormalStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="CB_FinishReport"  Style="{StaticResource CB_NormalStyle}">完工报告审核</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Header="工资管理" Style="{StaticResource Exp_NormalStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="CB_QualityMonthlySalary"  Style="{StaticResource CB_NormalStyle}">月度质量奖赔信息管理</CheckBox>
+                            <CheckBox Name="CB_StaffSalaries" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">员工工资查询</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Grid.Row="1" Header="档案查询" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_FlowCardQuery"  Style="{StaticResource CB_NormalStyle}">流转卡查询</CheckBox>
+                            <CheckBox Name="CB_BadProductDetail" Grid.Column="1"  Style="{StaticResource CB_NormalStyle}">不良品明细报表</CheckBox>
                         </Grid>
                     </Expander>
 
@@ -182,25 +238,6 @@
                         </Grid>
                     </Expander>
 
-                    <Expander Grid.Row="1" Header="生产订单及派工管理模块"  Style="{StaticResource Exp_NormalStyle}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Name="CB_ProdOrderImport"  Style="{StaticResource CB_NormalStyle}">生产订单导入</CheckBox>
-                            <CheckBox Name="CB_WorkCardCompose" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">流转卡编制</CheckBox>
-                            <CheckBox Name="CB_WorkCardInfo" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">流转卡信息采集</CheckBox>
-                            <CheckBox Name="CB_FinishReport" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">完工报告</CheckBox>
-                        </Grid>
-                    </Expander>
                     <Expander Grid.Row="1" Header="综合查询模块"  Style="{StaticResource Exp_NormalStyle}">
                         <Grid>
                             <Grid.RowDefinitions>

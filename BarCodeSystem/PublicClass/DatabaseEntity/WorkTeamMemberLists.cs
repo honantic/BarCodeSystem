@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass.HelperClass;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -51,5 +53,114 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 班组编号
         /// </summary>
         public string WTM_WorkTeamCode { get; set; }
+
+        /// <summary>
+        /// 根据工作中心id，获取班组成员列表的列表
+        /// </summary>
+        /// <param name="_workcenterID"></param>
+        /// <returns></returns>
+        public static List<List<WorkTeamMemberLists>> FetchWorkTeamMemberInfo(Int64 _workcenterID)
+        {
+            DataSet ds = new DataSet();
+            List<List<WorkTeamMemberLists>> teamMemberList = new List<List<WorkTeamMemberLists>>();
+            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _workcenterID);
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
+            MyDBController.CloseConnection();
+
+            List<WorkTeamMemberLists> wtmList = new List<WorkTeamMemberLists>();
+            try
+            {
+                foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
+                {
+                    wtmList.Add(new WorkTeamMemberLists()
+                    {
+                        WTM_WorkTeamID = Convert.ToInt64(row["ID"]),
+                        WTM_WorkTeamCode = row["WT_Code"].ToString(),
+                        WTM_WorkTeamName = row["WT_Name"].ToString(),
+                        WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
+                        WTM_MemberPersonName = row["P_Name"].ToString(),
+                        WTM_MemberPersonCode = row["P_Code"].ToString(),
+                        WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
+                        WTM_WorkCenterName = row["WC_Department_Name"].ToString()
+                    });
+                }
+
+                List<Int64> wtID = wtmList.Distinct(new ListComparer<WorkTeamMemberLists>((p1, p2) => { return p1.WTM_WorkTeamID.Equals(p2.WTM_WorkTeamID); })).Select(p => p.WTM_WorkTeamID).ToList();
+                wtID.ForEach((p) => { teamMemberList.Add(new List<WorkTeamMemberLists>()); });
+                wtmList.ForEach(
+                    p =>
+                    {
+                        int index = wtID.IndexOf(p.WTM_WorkTeamID);
+                        teamMemberList[index].Add(p);
+                    });
+            }
+            catch (Exception ee)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            return teamMemberList;
+        }
+
+        /// <summary>
+        /// 根据工作中心id，获取班组成员列表
+        /// </summary>
+        /// <param name="_workcenterID"></param>
+        /// <returns></returns>
+        public static List<WorkTeamMemberLists> FetchWorkTeamInfo(Int64 _workcenterID)
+        {
+            DataSet ds = new DataSet();
+            List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
+            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _workcenterID);
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
+            MyDBController.CloseConnection();
+            foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
+            {
+                teamMemberList.Add(new WorkTeamMemberLists()
+                {
+                    WTM_WorkTeamID = Convert.ToInt64(row["ID"]),
+                    WTM_WorkTeamCode = row["WT_Code"].ToString(),
+                    WTM_WorkTeamName = row["WT_Name"].ToString(),
+                    WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
+                    WTM_MemberPersonName = row["P_Name"].ToString(),
+                    WTM_MemberPersonCode = row["P_Code"].ToString(),
+                    WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
+                    WTM_WorkCenterName = row["WC_Department_Name"].ToString()
+                });
+            }
+            return teamMemberList;
+        }
+
+
+        /// <summary>
+        /// 根据班组id，获取班组成员列表
+        /// </summary>
+        /// <param name="_workcenterID"></param>
+        /// <returns></returns>
+        public static List<WorkTeamMemberLists> FetchWorkTeamInfo(Int64 _workteamid, bool _isTeam = true)
+        {
+            DataSet ds = new DataSet();
+            List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
+            string SQl = string.Format(@"Select A.[ID],A.[WT_Code],A.[WT_Name],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[ID]={0}", _workteamid);
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
+            MyDBController.CloseConnection();
+            foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
+            {
+                teamMemberList.Add(new WorkTeamMemberLists()
+                {
+                    WTM_WorkTeamID = Convert.ToInt64(row["ID"]),
+                    WTM_WorkTeamCode = row["WT_Code"].ToString(),
+                    WTM_WorkTeamName = row["WT_Name"].ToString(),
+                    WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
+                    WTM_MemberPersonName = row["P_Name"].ToString(),
+                    WTM_MemberPersonCode = row["P_Code"].ToString(),
+                    WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
+                    WTM_WorkCenterName = row["WC_Department_Name"].ToString()
+                });
+            }
+            return teamMemberList;
+        }
     }
 }

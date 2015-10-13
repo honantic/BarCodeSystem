@@ -19,7 +19,7 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.ColumnSpan="3">
-            <TextBlock FontSize="15" Foreground="White">流转卡筛选页面</TextBlock>
+            <TextBlock Name="textb_Header" FontSize="15" Foreground="White">流转卡筛选页面</TextBlock>
             <Label.Background>
                 <LinearGradientBrush>
                     <LinearGradientBrush.GradientStops>
@@ -40,7 +40,7 @@
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}" >流转卡编号信息</TextBlock>
                 </GroupBox.Header>
-                <DataGrid Name="datagrid_FlowCard" SelectionChanged="datagrid_FlowCard_SelectionChanged" DataContext="{Binding}" AutoGenerateColumns="False" ColumnWidth="Auto" IsReadOnly="True" CanUserAddRows="False">
+                <DataGrid MouseDoubleClick="datagrid_FlowCard_MouseDoubleClick" Name="datagrid_FlowCard" SelectionChanged="datagrid_FlowCard_SelectionChanged" DataContext="{Binding}" AutoGenerateColumns="False" ColumnWidth="Auto" IsReadOnly="True" CanUserAddRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="流转卡编号" Binding="{Binding Path=FC_Code}"></DataGridTextColumn>
                     </DataGrid.Columns>

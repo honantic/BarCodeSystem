@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass.HelperClass;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,12 @@ namespace BarCodeSystem.BasicFile.ItemInfo
 
             MyDBController.ExecuteNonQuery(SQl);
 
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+            _dbLog.DBL_OperateTable = "ItemInfo";
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Update;
+            _dbLog.DBL_Content = "修改料品的质检分类信息:" + txtb_II_Code.Text;
             MessageBox.Show("保存成功！");
 
             this.DialogResult = true;

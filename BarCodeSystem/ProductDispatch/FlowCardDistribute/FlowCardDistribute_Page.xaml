@@ -126,7 +126,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <!--<ColumnDefinition></ColumnDefinition>-->
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Name="btn_CancelDistribute" Click="btn_CancelDistribute_Click"  VerticalAlignment="Center" Width="{Binding Path=ActualWidth,ElementName=btn_TryDistribute}">
                 <Button.Content>
@@ -136,7 +136,8 @@
                 </Button.Content>
             </Button>
 
-            <Button Name="btn_GenerateNewFlowCard" Click="btn_GenerateNewFlowCard_Click"  Grid.Column="1" VerticalAlignment="Center" Width="{Binding Path=ActualWidth,ElementName=btn_TryDistribute}">
+            <Button Name="btn_SetAmount" Content="设置数量" Click="btn_SetAmount_Click" ClickMode="Release" VerticalAlignment="Center" Grid.Column="1" Width="{Binding Path=ActualWidth,ElementName=btn_TryDistribute}"></Button>
+            <Button Name="btn_GenerateNewFlowCard" Click="btn_GenerateNewFlowCard_Click"  Grid.Column="2" VerticalAlignment="Center" Width="{Binding Path=ActualWidth,ElementName=btn_TryDistribute}">
                 <Button.Content>
                     <Grid >
                         <TextBlock>生成新流转卡</TextBlock>

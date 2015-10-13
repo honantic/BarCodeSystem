@@ -1,0 +1,134 @@
+﻿<Page x:Class="BarCodeSystem.StaffSalaries_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      mc:Ignorable="d" 
+      d:DesignHeight="1024" d:DesignWidth="1248"
+      
+	Title="员工工资查询页面"
+
+      ShowsNavigationUI="False" Loaded="Page_Loaded"
+      >
+
+    <Grid Name="fatherGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="15"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <GroupBox Name="gb_SearchInfo" Margin="5" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="3">
+            <GroupBox.Header>
+                <TextBlock Name="textb_SearchInfo"  Style="{StaticResource textb_NormalStyle}" FontFamily="华文行楷"></TextBlock>
+            </GroupBox.Header>
+        </GroupBox>
+
+        <Label Grid.ColumnSpan="3">
+            <TextBlock FontSize="15" Foreground="White">员工工资查询页面</TextBlock>
+            <Label.Background>
+                <LinearGradientBrush>
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop  Offset="1" Color="LightGreen"></GradientStop>
+                        <GradientStop Color="Green"></GradientStop>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <GridSplitter Grid.Row="2" Height="5" Margin="5 0"  Foreground="AliceBlue" VerticalAlignment="Center" HorizontalAlignment="Stretch" ></GridSplitter>
+        <Grid Grid.Row="1"  >
+            <GroupBox Name="gb_header" Margin="5">
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}" >人员工资查询条件</TextBlock>
+                </GroupBox.Header>
+                <Grid Name="CardHeaderGrid"  >
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Margin="0 0 5 0" Text="选择年份:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1"></TextBlock>
+                    <!--<DatePicker  Margin="5 0 0 0" Name="datepicker_StartDate"  Width="{Binding Path=ActualWidth,ElementName=fourthCol}" Cursor="Hand" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>-->
+                    <!--<TextBox Name="textbox1" Grid.Column="1" Grid.Row="1" Width="150" Height="30"></TextBox>-->
+                    <ComboBox   VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" Name="comobox_year" Grid.Column="1" Grid.Row="1" Width="150" ></ComboBox>
+                    
+                    <TextBlock Margin="0 0 5 0" Text="选择月份:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="2"></TextBlock>
+                    <!--<DatePicker SelectedDate="{x:Static sys:DateTime.Now}"  Margin="5 0 0 0" Name="datepicker_EndDate"  Width="{Binding Path=ActualWidth,ElementName=fourthCol}" Cursor="Hand" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>-->
+                    <ComboBox   VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="5" Name="comobox_month" Grid.Column="1" Grid.Row="2" Width="150" >
+                        <ComboBoxItem Content="01" FontSize="14"/>
+                        <ComboBoxItem Content="02" FontSize="14"/>
+                        <ComboBoxItem Content="03" FontSize="14"/>
+                        <ComboBoxItem Content="04" FontSize="14"/>
+                        <ComboBoxItem Content="05" FontSize="14"/>
+                        <ComboBoxItem Content="06" FontSize="14"/>
+                        <ComboBoxItem Content="07" FontSize="14"/>
+                        <ComboBoxItem Content="08" FontSize="14"/>
+                        <ComboBoxItem Content="09" FontSize="14"/>
+                        <ComboBoxItem Content="10" FontSize="14"/>
+                        <ComboBoxItem Content="11" FontSize="14"/>
+                        <ComboBoxItem Content="12" FontSize="14"/>
+                    </ComboBox>
+
+                    <TextBlock Text="选择车间:" Margin="0 0 5 0" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Row="0"></TextBlock>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="5" Width="{Binding Path=ActualWidth,ElementName=comobox_year}" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
+                        <TextBox Background="LightGray" VerticalAlignment="Center" Width="120" Name="txtb_DeptInfo" IsReadOnly="True" Text="点击放大镜选择" 
+                                 BorderBrush="White"></TextBox>
+                        <Button Cursor="Hand"  Style="{StaticResource btn_SearchStyle}"  Width="30" Background="White"  Height="{Binding Path=ActualHeight,ElementName=txtb_DeptInfo}" 
+                                Name="btn_DeptSearch"  BorderBrush="White" Click="btn_DeptSearch_Click">
+                            <Image Height="15" Source="../../Images/Zoom.ico"></Image>
+                    </Button>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <Grid Grid.Row="3" >
+            <GroupBox Margin="5" >
+                <GroupBox.Header>
+                    <TextBlock  Style="{StaticResource textb_NormalStyle}" >员工工资信息</TextBlock>
+                </GroupBox.Header>
+                <Grid Name="CardDetailGrid" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Name="row_Top"></RowDefinition>
+                        <RowDefinition Height="30"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid ClipboardCopyMode="None" CanUserDeleteRows="False" MouseDoubleClick="datagrid_Salaries_MouseDoubleClick"  CanUserReorderColumns="False" CanUserSortColumns="False" 
+                              CanUserAddRows="False" AutoGenerateColumns="False" ColumnWidth="Auto" Name="datagrid_Salaries"  
+                              RowHeaderWidth="30" >
+                        <DataGrid.Columns >
+                            <DataGridTextColumn Header="人员编码" IsReadOnly="True" Binding="{Binding Path=SS_PersonCode}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="人员姓名" IsReadOnly="True" Binding="{Binding Path=SS_PersonName}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="工资" IsReadOnly="True"  Binding="{Binding Path=SS_Salary}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <toolkit:WatermarkTextBox Name="txtb_SearchKey" VerticalAlignment="Center" TextChanged="txtb_SearchKey_TextChanged" Watermark="输入筛选条件" FontSize="14" VerticalContentAlignment="Center" ></toolkit:WatermarkTextBox>
+                        <Button Content="查询" MaxWidth="120" MinWidth="80" Name="btn_Query" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Query_Click"></Button>
+                        <Button Content="查看明细" MaxWidth="120" MinWidth="80"  Name="btn_Detail" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Detail_Click"></Button>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <Frame Name="frame_Search" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden" Margin="5" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></Frame>
+    </Grid>
+</Page>

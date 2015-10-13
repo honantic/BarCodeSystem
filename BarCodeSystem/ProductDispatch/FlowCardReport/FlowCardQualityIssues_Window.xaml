@@ -4,31 +4,77 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
+        xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
+        AllowsTransparency="True"
+        WindowStyle="None"
       Width="400"
         Height="600"
         Loaded="Window_Loaded"  
         WindowStartupLocation="CenterScreen"
 	Title="质量问题筛选">
 
-    <Grid>
+    <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+        <Grid.Background>
+            <SolidColorBrush Color="Black" Opacity="0.3">
+            </SolidColorBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Name="listview1" MouseDoubleClick="listview1_MouseDoubleClick">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="质量问题编码" Width="180" DisplayMemberBinding="{Binding Path=QI_Code}"></GridViewColumn>
-                    <GridViewColumn Header="质量问题原因" Width="180" DisplayMemberBinding="{Binding Path=QI_Name}"></GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button Grid.Row="2" Padding="20 5" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
-        <Button Grid.Row="2" Padding="20 5"  Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+        <Grid Grid.Row="1" Name="grid_One" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListView  Margin="5" Name="listview1" Grid.ColumnSpan="2" MouseDoubleClick="listview1_MouseDoubleClick">
+                <ListView.Background>
+                    <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
+                </ListView.Background>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="质量问题编码" Width="180" DisplayMemberBinding="{Binding Path=QI_Code}"></GridViewColumn>
+                        <GridViewColumn Header="质量问题原因" Width="180" DisplayMemberBinding="{Binding Path=QI_Name}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Button Grid.Row="1" Padding="20 5" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
+            <Button Grid.Row="1" Padding="20 5"  Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Name="grid_Two">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <extool:WatermarkTextBox Name="txtb_QualityIssueCode" KeyUp="txtb_QualityIssueCode_KeyUp" VerticalAlignment="Center" Watermark="输入质量编码搜索" Margin="5"></extool:WatermarkTextBox>
+            <Button Content="录入" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="20 5" Name="btn_Improt" Click="btn_Improt_Click" Grid.Column="1"  ></Button>
+                <ListView  Margin="5" Grid.Row="1" Grid.ColumnSpan="2" Name="listview2" MouseDoubleClick="listview1_MouseDoubleClick">
+                <ListView.Background>
+                    <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
+                </ListView.Background>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="质量问题编码" Width="180" DisplayMemberBinding="{Binding Path=QI_Code}"></GridViewColumn>
+                        <GridViewColumn Header="质量问题原因" Width="180" DisplayMemberBinding="{Binding Path=QI_Name}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+                </ListView>
+                <Button Grid.Row="2" Padding="20 5" Content="确定" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Ensure" Click="btn_Ensure_Click"></Button>
+                <Button Grid.Row="2" Padding="20 5"  Grid.Column="1" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close1" Click="btn_Close_Click"></Button>
+        </Grid>
     </Grid>
 </Window>

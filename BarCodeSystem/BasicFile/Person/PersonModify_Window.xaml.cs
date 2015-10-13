@@ -14,6 +14,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Collections.ObjectModel;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -93,7 +94,7 @@ namespace BarCodeSystem
             t2.Interval = 100;
             t2.Tick += new EventHandler(t2_Tick);
 
-            
+
         }
 
         //去除关闭按钮
@@ -174,7 +175,7 @@ namespace BarCodeSystem
             //如果IsRightCode为false,调用部门编码文本框市区焦点事件,检查
             if (!IsRightCode || !IsRightPosition)
             {
-                txtb_WorkCenterCode_LostFocus(sender,e);
+                txtb_WorkCenterCode_LostFocus(sender, e);
             }
 
             //1.IsRightCode本身为true 2.检查过后再校验IsRightCode为true.
@@ -194,13 +195,19 @@ namespace BarCodeSystem
                 {
                     MyDBController.GetConnection();
                     SQl = string.Format(@"UPDATE [PERSON] SET [P_NAME]='{0}',[P_WorkCenterID]={1},[P_Position]='{2}' WHERE [P_Code]='{3}'"
-                                        ,txtb_PersonName.Text,pl.departid,txtb_Position.Text.Trim(),txtb_PersonCode.Text);
+                                        , txtb_PersonName.Text, pl.departid, txtb_Position.Text.Trim(), txtb_PersonCode.Text);
                     try
                     {
-                        int count= MyDBController.ExecuteNonQuery(SQl);
+                        int count = MyDBController.ExecuteNonQuery(SQl);
                         MyDBController.CloseConnection();
-                        if (MessageBox.Show("成功更新"+count+"条人员信息！","提示",MessageBoxButton.OK,MessageBoxImage.Information)
-                            ==MessageBoxResult.OK)
+                        DBLog _dbLog = new DBLog();
+                        _dbLog.DBL_OperateBy = User_Info.User_Code;
+                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                        _dbLog.DBL_OperateType = OperateType.Update;
+                        _dbLog.DBL_Content = User_Info.User_Name + "|修改人员信息" + "|人员编码由" + pl.code + "改为" + txtb_PersonCode.Text + "|工作中心为" + pl.departid + "|职位由" + pl.position + "变为" + txtb_Position.Text.Trim() + "|姓名由" + pl.name + "变为" + txtb_PersonName.Text;
+                        DBLog.WriteDBLog(_dbLog);
+                        if (MessageBox.Show("成功更新" + count + "条人员信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Information)
+                            == MessageBoxResult.OK)
                         {
                             this.DialogResult = true;
                         }
@@ -209,18 +216,25 @@ namespace BarCodeSystem
                     catch (Exception ee)
                     {
                         MyDBController.CloseConnection();
-                        MessageBox.Show(ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                        MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else
                 {
                     MyDBController.GetConnection();
                     SQl = string.Format(@"INSERT INTO [PERSON]([P_Code],[P_Name],[P_WorkCenterID],[P_Position]) 
-                                        VALUES('{0}','{1}',{2},'{3}')",txtb_PersonCode.Text,txtb_PersonName.Text,pl.departid,txtb_Position.Text.Trim());
+                                        VALUES('{0}','{1}',{2},'{3}')", txtb_PersonCode.Text, txtb_PersonName.Text, pl.departid, txtb_Position.Text.Trim());
+
                     try
                     {
-                        int count=MyDBController.ExecuteNonQuery(SQl);
+                        int count = MyDBController.ExecuteNonQuery(SQl);
                         MyDBController.CloseConnection();
+                        DBLog _dbLog = new DBLog();
+                        _dbLog.DBL_OperateBy = User_Info.User_Code;
+                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                        _dbLog.DBL_OperateType = OperateType.Insert;
+                        _dbLog.DBL_Content = User_Info.User_Name + "|新增人员信息" + "|人员编码为" + txtb_PersonCode.Text + "|工作中心为" + pl.departid + "|职位为" + txtb_Position.Text.Trim() + "|姓名为" + txtb_PersonName.Text;
+                        DBLog.WriteDBLog(_dbLog);
                         if (MessageBox.Show("成功新增" + count + "条人员信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Information)
                             == MessageBoxResult.OK)
                         {
@@ -230,7 +244,7 @@ namespace BarCodeSystem
                     catch (Exception ee)
                     {
                         MyDBController.CloseConnection();
-                        MessageBox.Show(ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);;
+                        MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error); ;
                     }
                 }
             }
@@ -305,6 +319,7 @@ namespace BarCodeSystem
                 txtb_WorkCenterName.Text = pl.departName;
                 txtb_Position.Text = pl.position;
             }
+            txtb_Position.ItemsSource = new List<string> { "操作工", "检验员", "仓管员", "工段长", "计划员", "统计员" };
         }
 
 
@@ -346,18 +361,18 @@ namespace BarCodeSystem
                 }
             }
             else
-            { 
+            {
             }
 
-            if (txtb_Position.Text.Trim().Equals("检验员") || txtb_Position.Text.Trim().Equals("操作工") || string.IsNullOrEmpty(txtb_Position.Text.Trim()))
-            {
-                IsRightPosition  = true;
-            }
-            else
-            {
-                IsRightPosition = false;
-            }
-
+            //if (txtb_Position.Text.Trim().Equals("检验员") || txtb_Position.Text.Trim().Equals("操作工") || string.IsNullOrEmpty(txtb_Position.Text.Trim()))
+            //{
+            //    IsRightPosition  = true;
+            //}
+            //else
+            //{
+            //    IsRightPosition = false;
+            //}
+            IsRightPosition = true;
             if (!IsRightCode)
             {
                 System.Windows.Controls.ToolTip tt = new System.Windows.Controls.ToolTip();

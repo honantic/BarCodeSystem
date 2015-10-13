@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Data;
+using BarCodeSystem.BasicFile.QualityIssues;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -35,47 +37,12 @@ namespace BarCodeSystem
             //MyDBController.Database = User_Info.database[1];
             //MyDBController.Pwd = User_Info.pwd[1];
             //MyDBController.Uid = User_Info.uid[1];
-            GetBCSQualityList();
-
-        }
-
-        /// <summary>
-        /// 获取条码系统质量信息清单
-        /// </summary>
-        private void GetBCSQualityList()
-        {
-            MyDBController.GetConnection();
-            listBeforeSearch.Clear();
-            ds.Clear();
-            //            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode],[QI_IsItemIssue],[QI_IsProduceIssue],[QI_IsPreviousIssue],
-            //                            CASE [QI_IsItemIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsItemIssue_Show],
-            //                            CASE [QI_IsProduceIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS [QI_IsProduceIssue_Show],
-            //                            CASE [QI_IsPreviousIssue] WHEN 0 THEN '否' WHEN 1 THEN '是' END AS[QI_IsPreviousIssue_Show]
-            //                            FROM [QualityIssue]";
-
-            string SQl = @"SELECT [ID],[QI_Code],[QI_Name],[QI_BarCode] FROM [QualityIssue]";
-            MyDBController.GetDataSet(SQl, ds, "QualityIssue");
-            dt = ds.Tables["QualityIssue"];
-            int x = dt.Rows.Count;
-            for (int i = 0; i < x; i++)
-            {
-                QualityIssuesLists qil = new QualityIssuesLists();
-                qil.ID = (Int64)dt.Rows[i]["ID"];
-                qil.QI_Code = dt.Rows[i]["QI_Code"].ToString();
-                qil.QI_Name = dt.Rows[i]["QI_Name"].ToString();
-                qil.QI_BarCode = dt.Rows[i]["QI_BarCode"].ToString();
-                //qil.QI_IsItemIssue = (bool)dt.Rows[i]["QI_IsItemIssue"];
-                //qil.QI_IsPreviousIssue = (bool)dt.Rows[i]["QI_IsPreviousIssue"];
-                //qil.QI_IsProduceIssue = (bool)dt.Rows[i]["QI_IsProduceIssue"];
-                //qil.QI_IsItemIssue_Show = dt.Rows[i]["QI_IsItemIssue_Show"].ToString();
-                //qil.QI_IsPreviousIssue_Show = dt.Rows[i]["QI_IsPreviousIssue_Show"].ToString();
-                //qil.QI_IsProduceIssue_Show = dt.Rows[i]["QI_IsProduceIssue_Show"].ToString();
-                listBeforeSearch.Add(qil);
-            }
-            listBeforeSearch = listBeforeSearch.OrderBy(p => p.QI_Code).ToList();
+            listBeforeSearch = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
         }
+
+
 
         /// <summary>
         /// 导入按钮
@@ -91,7 +58,9 @@ namespace BarCodeSystem
             qii.ShowDialog();
             if ((bool)qii.DialogResult)
             {
-                GetBCSQualityList();
+                listBeforeSearch = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+                listview1.ItemsSource = null;
+                listview1.ItemsSource = listBeforeSearch;
             }
         }
 
@@ -122,7 +91,9 @@ namespace BarCodeSystem
                 qim.ShowDialog();
                 if ((bool)qim.DialogResult)
                 {
-                    GetBCSQualityList();
+                    listBeforeSearch = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+                    listview1.ItemsSource = null;
+                    listview1.ItemsSource = listBeforeSearch;
                 }
             }
             else
@@ -138,7 +109,9 @@ namespace BarCodeSystem
                     qim.ShowDialog();
                     if ((bool)qim.DialogResult)
                     {
-                        GetBCSQualityList();
+                        listBeforeSearch = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+                        listview1.ItemsSource = null;
+                        listview1.ItemsSource = listBeforeSearch;
                     }
                 }
             }
@@ -253,7 +226,81 @@ namespace BarCodeSystem
             qim.ShowDialog();
             if ((bool)qim.DialogResult)
             {
-                GetBCSQualityList();
+                listBeforeSearch = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+                listview1.ItemsSource = null;
+                listview1.ItemsSource = listBeforeSearch;
+            }
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
+            foreach (QualityIssuesLists item in listview1.Items)
+            {
+                if (item.IsSelected)
+                {
+                    qilList.Add(item);
+                }
+            }
+            if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除这" + qilList.Count + "条记录吗？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                MyDBController.GetConnection();
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                _dbLog.DBL_OperateTable = "QualityIssue";
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                _dbLog.DBL_OperateType = OperateType.Delete;
+                _dbLog.DBL_Content = "删除质量问题原因:";
+
+                qilList.ForEach(
+                    p =>
+                    {
+                        string SQl = string.Format(@"delete from [QualityIssue] where [ID]={0}", p.ID);
+                        _dbLog.DBL_Content += p.QI_Code + p.QI_Name + "|";
+                        _dbLog.DBL_AssociateCode += p.QI_Code + "|";
+                        _dbLog.DBL_AssociateID += p.ID.ToString() + "|";
+                        try
+                        {
+                            MyDBController.ExecuteNonQuery(SQl);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    });
+                MyDBController.CloseConnection();
+                DBLog.WriteDBLog(_dbLog);
+                Xceed.Wpf.Toolkit.MessageBox.Show("删除成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
+        /// 打印
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Print_Click(object sender, RoutedEventArgs e)
+        {
+            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
+            foreach (QualityIssuesLists item in listview1.Items)
+            {
+                if (item.IsSelected)
+                {
+                    qilList.Add(item);
+                }
+            }
+            if (qilList.Count == 0)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("请选择需要打印的条目！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                QualityIssuesPrint_Window qip = new QualityIssuesPrint_Window(qilList);
+                qip.ShowDialog();
             }
         }
     }

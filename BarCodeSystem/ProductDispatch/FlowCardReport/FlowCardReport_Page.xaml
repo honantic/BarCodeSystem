@@ -56,7 +56,7 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition Width="15"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <extool:WatermarkTextBox Watermark="点击右边按钮搜索流转卡号"  Name="textb_FlowCard" VerticalAlignment="Center"></extool:WatermarkTextBox>
+                        <extool:WatermarkTextBox Watermark="点击右边按钮搜索流转卡号"  Name="textb_FlowCard" KeyDown="textb_FlowCard_KeyDown" VerticalAlignment="Center"></extool:WatermarkTextBox>
                         <Button Name="btn_FlowCardSearch" Height="{Binding Path=ActualHeight,ElementName=textb_FlowCard}" Grid.Column="1" Cursor="Hand" Click="btn_FlowCardSearch_Click" Style="{StaticResource btn_SearchStyle}"  Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
@@ -64,7 +64,7 @@
 
 
                     <TextBlock Text="日期：" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <DatePicker Grid.Column="1" Grid.Row="1" Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Today}" VerticalAlignment="Center" ></DatePicker>
+                    <DatePicker Name="date_PresentDate" Grid.Column="1" Grid.Row="1" Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Today}" VerticalAlignment="Center" ></DatePicker>
 
                     <TextBlock Text="工序序号：" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                     <ComboBox Name="cb_ProcessSequence" SelectedIndex="0" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
@@ -109,14 +109,17 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <DataGrid Grid.ColumnSpan="2" Name="datagrid_PersonInfo" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                        <DataGrid Grid.ColumnSpan="3" Name="datagrid_PersonInfo" IsReadOnly="True" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="员工编号" Binding="{Binding Path=FCS_PersonCode}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="员工名称" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Button Name="btn_AddPerson" Click="btn_AddPerson_Click" Margin="5" Grid.Row="1" VerticalAlignment="Center">
+
+                        <Button Grid.Row="1" Content="扫描添加" Margin="5" Name="btn_ScanPersonInfo" Click="btn_ScanPersonInfo_Click" VerticalAlignment="Center"></Button>
+                        <Button Name="btn_AddPerson" Click="btn_AddPerson_Click" Grid.Column="1" Margin="5" Grid.Row="1" VerticalAlignment="Center">
                             <Button.Content>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -128,7 +131,7 @@
                                 </Grid>
                             </Button.Content>
                         </Button>
-                        <Button  Name="btn_RemovePerson" Click="btn_DeleteScrapInfo_Click"  Margin="5" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+                        <Button  Name="btn_RemovePerson" Click="btn_DeleteScrapInfo_Click"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
                             <Button.Content>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -155,8 +158,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <DataGrid  CanUserAddRows="False" Grid.ColumnSpan="2" Name="datagrid_AmountInfo" ItemsSource="{Binding}" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                        <DataGrid  CanUserAddRows="False" Grid.ColumnSpan="3" Name="datagrid_AmountInfo" ItemsSource="{Binding}" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="编号">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -214,9 +218,9 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-
-                        <Button Content="添加行" Grid.Row="1" VerticalAlignment="Center" Name="btn_AddScrapInfo" Click="btn_AddScrapInfo_Click" Margin="5"></Button>
-                        <Button Grid.Column="1" Grid.Row="1" Content="删除行" VerticalAlignment="Center" Name="btn_DeleteScrapInfo" Click="btn_DeleteScrapInfo_Click"  Margin="5"></Button>
+                        <Button Grid.Row="1" Content="扫描录入" Margin="5" Name="btn_ScanScrapInfo" Click="btn_ScanScrapInfo_Click" VerticalAlignment="Center"></Button>
+                        <Button Content="添加行" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Name="btn_AddScrapInfo" Click="btn_AddScrapInfo_Click" Margin="5"></Button>
+                        <Button Grid.Column="2" Grid.Row="1" Content="删除行" VerticalAlignment="Center" Name="btn_DeleteScrapInfo" Click="btn_DeleteScrapInfo_Click"  Margin="5"></Button>
                     </Grid>
                 </GroupBox>
                 <GroupBox Margin="5" Grid.Column="2" Name="gb_AmountInfo">
@@ -225,6 +229,7 @@
                     </GroupBox.Header>
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -244,10 +249,14 @@
                         <TextBlock Text="待处理数:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <extool:IntegerUpDown LostFocus="txtb_UnprocessedAm_LostFocus"  ValueChanged="txtb_UnprocessedAm_ValueChanged" DefaultValue="0"  Minimum="0" TextAlignment="Left" Text="{Binding Path=DefaultValue,ElementName=txtb_UnprocessedAm}" Grid.Column="1" Grid.Row="2" Name="txtb_UnprocessedAm" VerticalAlignment="Center"></extool:IntegerUpDown>
 
-                        <TextBlock Text="合格数:" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox  Grid.Column="1" Grid.Row="3" TextAlignment="Left"    Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+                        <TextBlock Text="转序新增数:" TextWrapping="Wrap" TextAlignment="Center" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox   Grid.Column="1" Grid.Row="3" TextAlignment="Left"    Name="txtb_AddAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
 
-                        <Grid Grid.Row="4" Grid.ColumnSpan="2">
+
+                        <TextBlock Text="合格数:" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox   Grid.Column="1" Grid.Row="4" TextAlignment="Left"    Name="txtb_QulifiedAmount" IsReadOnly="True" VerticalAlignment="Center"></TextBox>
+
+                        <Grid Grid.Row="5" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
@@ -266,7 +275,7 @@
                                 </Button.Content>
                             </Button>
 
-                            <Button Name="btn_SaveAmount"  Click="btn_SaveAmount_Click"  VerticalAlignment="Center" Grid.Column="1" Padding="15 0" HorizontalAlignment="Center">
+                            <Button Name="btn_SaveAmount"  IsEnabled="True" Click="btn_SaveAmount_Click"  VerticalAlignment="Center" Grid.Column="1" Padding="15 0" HorizontalAlignment="Center">
                                 <Button.Content>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -279,7 +288,7 @@
                                 </Button.Content>
                             </Button>
                         </Grid>
-                        
+
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Column="3" Name="gb_CheckInfo" Margin="5">
@@ -341,7 +350,7 @@
                             </Grid>
                         </Button.Content>
                     </Button>
-                    <Button Name="btn_TotalReport"  IsEnabled="False" Click="btn_TotalReport_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0" >
+                    <Button Name="btn_TotalReport"  Visibility="Hidden"  IsEnabled="True" Click="btn_TotalReport_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0" >
                         <Button.Content>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -353,6 +362,8 @@
                             </Grid>
                         </Button.Content>
                     </Button>
+
+                    <!--<Button Grid.Column="4" Content="审核" Name="btn_Check" Click="btn_Check_Click"></Button>-->
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Row="3" Name="gb_SearchInfo">

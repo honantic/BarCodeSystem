@@ -45,17 +45,23 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         List<TechVersion> tvl = new List<TechVersion>();
         List<TechRouteLists> trls = new List<TechRouteLists>();
         List<TechRouteLists> processGridSource = new List<TechRouteLists>();
+        int loadCount = 0;
         #endregion
 
         #region 加载事件
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            datagrid_RouteVersion.ItemsSource = FetchTechRouteInfo(itemCode);
-            if (datagrid_RouteVersion.Items.Count == 0)
+            if (loadCount == 0)
             {
-                label_ErrorInfo.Visibility = Visibility.Visible;
+                datagrid_RouteVersion.ItemsSource = FetchTechRouteInfo(itemCode);
+                if (datagrid_RouteVersion.Items.Count == 0)
+                {
+                    label_ErrorInfo.Visibility = Visibility.Visible;
+                    Xceed.Wpf.Toolkit.MessageBox.Show("该料品没有工艺路线信息！请先维护！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                FecthDefaultInfo();
+                loadCount++;
             }
-            FecthDefaultInfo();
         }
         #endregion
 
@@ -180,6 +186,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 label_ErrorInfo.Visibility = Visibility.Hidden;
             }
+        }
+
+        /// <summary>
+        /// 快捷选择
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_RouteVersion_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_Submit_Click(null, null);
         }
 
     }

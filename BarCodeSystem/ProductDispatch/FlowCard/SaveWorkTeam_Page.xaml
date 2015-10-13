@@ -29,7 +29,7 @@
                 </Label.Background>
             </Label>
 
-            <DataGrid ClipboardCopyMode="None" Name="datagrid_WorkTeamInfo"  AutoGenerateColumns="False" ItemsSource="{Binding}" 
+            <DataGrid ClipboardCopyMode="None" Name="datagrid_WorkTeamInfo" IsReadOnly="True"  MouseDoubleClick="datagrid_WorkTeamInfo_MouseDoubleClick" AutoGenerateColumns="False" ItemsSource="{Binding}" 
                       CanUserAddRows="False" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
                 <DataGrid.GroupStyle>
                     <GroupStyle>

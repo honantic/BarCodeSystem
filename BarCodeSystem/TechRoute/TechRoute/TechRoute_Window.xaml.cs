@@ -15,12 +15,31 @@ namespace BarCodeSystem
     /// </summary>
     public partial class TechRoute_Window : Window
     {
-
+        /// <summary>
+        /// 默认构造函数
+        /// </summary>
         public TechRoute_Window()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 修改工时的构造函数
+        /// </summary>
+        /// <param name="_isWorkingHourModifing"></param>
+        public TechRoute_Window(bool _isWorkingHourModifing)
+        {
+            InitializeComponent();
+            btn_AddItem.IsEnabled = false;
+            IsWorkingHourModifing = true;
+            this.Title = "工艺路线工时修改窗体";
+        }
+
+        #region 变量
+        /// <summary>
+        /// 是否修改工时标记
+        /// </summary>
+        bool IsWorkingHourModifing = false;
         DataTable itemTech = new DataTable();
         DataTable process = new DataTable();
         DataSet ds = new DataSet();
@@ -35,6 +54,8 @@ namespace BarCodeSystem
         List<ComboBox> cbs = new List<ComboBox> { };
         //窗体点击数量，用来确定是否第一次点击，第一次点击用来加载所有的combobox
         int formClickCount = 0;
+
+        #endregion
         /// <summary>
         /// 加载事件
         /// </summary>
@@ -62,7 +83,16 @@ namespace BarCodeSystem
             itemList.Clear();
             techList.Clear();
             MyDBController.GetConnection();
-            string SQl = @" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_ProcessSequence]";
+            string SQl = "";
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] where A.[TR_WorkCenterID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", User_Info.User_Workcenter_ID);
+            }
+            else
+            {
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID]  ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]");
+            }
+
             itemTech = MyDBController.GetDataSet(SQl, ds, "itemTech").Tables["itemTech"];
 
             SQl = @" SELECT [PN_Code],[PN_Name] FROM [ProcessName]";
@@ -313,7 +343,7 @@ namespace BarCodeSystem
                     listview2.ItemsSource = trls;
                 }
             }
-            catch (Exception ee)
+            catch (Exception)
             {
             }
 
@@ -401,16 +431,32 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    TechRouteModify_Window trm = new TechRouteModify_Window();
-                    trm.Title = "工艺路线修改窗口";
-                    trm.trls = trls;
-                    trm.selectedItem = listview1.SelectedItem as ItemInfoLists;
-                    trm.techversion = cbl[0].SelectedItem as TechVersion;
-                    trm.ShowDialog();
-                    if ((bool)trm.DialogResult)
+                    if (IsWorkingHourModifing)
                     {
-                        Window_Loaded(sender, e);
-                        btn_GetVersion_Click(sender, e);
+                        TechRouteModify_Window trm = new TechRouteModify_Window("工时维护");
+                        trm.trls = trls;
+                        trm.selectedItem = listview1.SelectedItem as ItemInfoLists;
+                        trm.techversion = cbl[0].SelectedItem as TechVersion;
+                        trm.ShowDialog();
+                        if ((bool)trm.DialogResult)
+                        {
+                            Window_Loaded(sender, e);
+                            btn_GetVersion_Click(sender, e);
+                        }
+                    }
+                    else
+                    {
+                        TechRouteModify_Window trm = new TechRouteModify_Window();
+                        trm.Title = "工艺路线修改窗口";
+                        trm.trls = trls;
+                        trm.selectedItem = listview1.SelectedItem as ItemInfoLists;
+                        trm.techversion = cbl[0].SelectedItem as TechVersion;
+                        trm.ShowDialog();
+                        if ((bool)trm.DialogResult)
+                        {
+                            Window_Loaded(sender, e);
+                            btn_GetVersion_Click(sender, e);
+                        }
                     }
                 }
             }

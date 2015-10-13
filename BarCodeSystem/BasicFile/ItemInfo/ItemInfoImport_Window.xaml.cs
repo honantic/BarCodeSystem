@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -46,10 +42,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
         }
 
         /// <summary>
@@ -64,8 +60,8 @@ namespace BarCodeSystem
             listBefroeSearch.Clear();
 
             ds.Clear();
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
-            ds = ws.GetItemmasterModifiedOnlist_ForMES(User_Info.User_Org_Code[0],"");
+            WebService.Service ws = new WebService.Service();
+            ds = ws.GetItemmasterModifiedOnlist_ForMES(User_Info.User_Org_Code[0], "");
             dt = ds.Tables[0];
 
             int x = existItem.Rows.Count;
@@ -74,7 +70,7 @@ namespace BarCodeSystem
             {
                 for (int j = 0; j < x; j++)
                 {
-                    if (dt.Rows[i]["itemmaster_code"].ToString()==
+                    if (dt.Rows[i]["itemmaster_code"].ToString() ==
                         existItem.Rows[j]["II_Code"].ToString())
                     {
                         dt.Rows[i].Delete();
@@ -97,7 +93,7 @@ namespace BarCodeSystem
             dt.Columns.Remove("itemmaster_id");
             dt.Columns.Remove("modifiedon");
 
-            dt.Columns.Add("ID",typeof(Int64));
+            dt.Columns.Add("ID", typeof(Int64));
 
 
             dt.Columns["ID"].SetOrdinal(0);
@@ -176,7 +172,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_SearchKey_TextChanged(object sender, TextChangedEventArgs e)
         {
-                btn_Search_Click(sender,e);
+            btn_Search_Click(sender, e);
         }
 
 
@@ -192,7 +188,7 @@ namespace BarCodeSystem
             if (txtb_SearchKey.Text.Length > 0)
             {
                 string key = txtb_SearchKey.Text;
-                
+
                 List<ItemInfoLists> iils = new List<ItemInfoLists> { };
 
                 IEnumerable<ItemInfoLists> IEiils =
@@ -210,7 +206,7 @@ namespace BarCodeSystem
                 listview1.ItemsSource = iils;
             }
             else
-            {    
+            {
             }
         }
 
@@ -227,6 +223,7 @@ namespace BarCodeSystem
                 "II_UnitID","II_UnitCode", "II_UnitName"};
 
             listBeenImported.Clear();
+            List<DBLog> _dbLogList = new List<DBLog>();
             for (int i = 0; i < listview1.Items.Count; i++)
             {
                 ItemInfoLists iil = listview1.Items[i] as ItemInfoLists;
@@ -242,18 +239,27 @@ namespace BarCodeSystem
                     dr["II_UnitName"] = iil.II_UnitName;
                     temp.Rows.Add(dr);
                     listBeenImported.Add(iil);
+                    DBLog _dbLog = new DBLog();
+                    _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                    _dbLog.DBL_OperateTable = "ItemInfo";
+                    _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    _dbLog.DBL_Content = "新增料品信息:" + iil.II_Code;
+                    _dbLog.DBL_AssociateCode = iil.II_Code;
+                    _dbLogList.Add(_dbLog);
                 }
                 else
                 {
-                    
+
                 }
             }
             MyDBController.GetConnection();
             int updateNum = 0, insertNum = 0;
-            MyDBController.InsertSqlBulk(temp,colList,out updateNum,out insertNum);
+            MyDBController.InsertSqlBulk(temp, colList, out updateNum, out insertNum);
             MyDBController.CloseConnection();
-            string message = string.Format(@"共更新 {0} 个料品信息！"+"\n新增 {1} 个料品信息！",updateNum,insertNum);
-            MessageBox.Show(message,"提示",MessageBoxButton.OK,MessageBoxImage.Information);
+            string message = string.Format(@"共更新 {0} 个料品信息！" + "\n新增 {1} 个料品信息！", updateNum, insertNum);
+            MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            DBLog.WriteDBLog(_dbLogList);
             listBefroeSearch.RemoveAll(HasBeenImported);
             listview1.ItemsSource = listBefroeSearch;
         }
@@ -268,7 +274,7 @@ namespace BarCodeSystem
             bool HasBeenImported = false;
             foreach (ItemInfoLists xitem in listBeenImported)
             {
-                if (xitem.II_Code==item.II_Code)
+                if (xitem.II_Code == item.II_Code)
                 {
                     HasBeenImported = true;
                     break;

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -42,11 +43,11 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
-            MyDBController.GetConnection();
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.GetConnection();
 
 
             //去除关闭按钮
@@ -105,11 +106,18 @@ namespace BarCodeSystem
             int count = 0;
             string SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsValidated]='{0}'
                                     WHERE [W_ID]={1}", x,whl.W_ID);
-
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+            _dbLog.DBL_OperateTable = "Warehouse";
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Update;
+            _dbLog.DBL_AssociateID = whl.W_ID.ToString();
+            _dbLog.DBL_Content = "启用仓库：" + whl.W_Code;
             try
             {
                 count = MyDBController.ExecuteNonQuery(SQl);
                 MessageBox.Show("修改成功","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                DBLog.WriteDBLog(_dbLog);
                 this.DialogResult = true;
             }
             catch (Exception ee)

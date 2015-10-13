@@ -2,9 +2,9 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PublishUrlHistory>C:\Users\Administrator\Desktop\ClickOnceTest\|\\172.16.66.101\ClickOnceTest\|C:\Users\Administrator\Desktop\ClickOnceTest\Application Files\BarCodeSystem_1_5_21_1\|ftp://172.16.66.101:8080/MyWebSite/|发布\</PublishUrlHistory>
-    <InstallUrlHistory>http://172.16.66.101:8081/|\\172.16.66.101\ClickOnceTest\|http://172.16.66.101:8081/Application Files/BarCodeSystem_1_5_21_1/|http://localhost:8080/MyWebSite/Debug/|http://172.16.66.101:8080/MyWebSite/</InstallUrlHistory>
+    <InstallUrlHistory>http://172.16.100.40:8081/BarCodeSystem_64/|http://172.16.52.148:8081/|http://172.16.6.133:8081/|http://FreeStyle:8081/|http://172.16.3.133:8081/</InstallUrlHistory>
     <SupportUrlHistory />
-    <UpdateUrlHistory>http://localhost/C:/Users/Administrator/Desktop/ClickOnceTest/</UpdateUrlHistory>
+    <UpdateUrlHistory>http://172.16.100.40:8081/BarCodeSystem_64/|http://172.16.100.40:8081/|http://172.16.6.133:8081/|http://172.16.66.101:8081/|http://localhost/C:/Users/Administrator/Desktop/ClickOnceTest/</UpdateUrlHistory>
     <BootstrapperUrlHistory />
     <ErrorReportUrlHistory />
     <FallbackCulture>zh-CN</FallbackCulture>

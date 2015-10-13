@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is the remembered user name and password of BCS-->
 <Accounts>
-  <Account IsRemembered="True" IsAutoLogin="True" IsLastAccount="true">
+  <Account IsRemembered="True" IsAutoLogin="False" IsLastAccount="false">
     <UserName>钱康</UserName>
     <PassWord>NjU0MTIz</PassWord>
   </Account>

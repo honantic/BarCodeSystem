@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Data;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -80,7 +81,7 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             this.Cursor = Cursors.Wait;
             List<WarehouseLists> whls = new List<WarehouseLists> { };
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            WebService.Service ws = new WebService.Service();
             ds = ws.GetWhlist_ForMES(User_Info.User_Org_Code[0], "", "");
 
             dt = ds.Tables[0];
@@ -91,13 +92,13 @@ namespace BarCodeSystem
             for (int i = 0; i < x; i++)
             {
                 bool IsExisit = false;
-                for (int j  = 0; j < y; j++)
+                for (int j = 0; j < y; j++)
                 {
                     if (dt.Rows[i]["wh_code"].ToString() == BCSWarehouse.Rows[j]["W_Code"].ToString())
                     {
                         IsExisit = true;
                         break;
-                    }        
+                    }
                 }
                 if (!IsExisit)
                 {
@@ -190,7 +191,7 @@ namespace BarCodeSystem
                 listview1.ItemsSource = null;
                 listview1.ItemsSource = whls;
             }
-            else 
+            else
             {
                 listview1.ItemsSource = null;
                 listview1.ItemsSource = listBeforeSearch;
@@ -204,7 +205,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void txtb_Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            btn_Search_Click(sender,e);
+            btn_Search_Click(sender, e);
         }
 
 
@@ -219,6 +220,7 @@ namespace BarCodeSystem
             string SQl = "";
             int count = 0;
             MyDBController.GetConnection();
+            List<DBLog> _dbLogList = new List<DBLog>();
             foreach (WarehouseLists item in listview1.Items)
             {
                 if (item.IsSelected)
@@ -228,6 +230,13 @@ namespace BarCodeSystem
                     SQl = string.Format(@"INSERT INTO [Warehouse]([W_ID],[W_Code],[W_Name],[W_SourceType],[W_IsValidated])
                                     VALUES({0},'{1}','{2}','{3}','{4}')"
                                     , item.W_ID, item.W_Code, item.W_Name, item.W_SourceType, item.W_IsValidated);
+                    DBLog _dbLog = new DBLog();
+                    _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                    _dbLog.DBL_OperateTable = "Warehouse";
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    _dbLog.DBL_Content = "新增设备:" + item.W_Code;
+                    _dbLog.DBL_AssociateCode = item.W_Code;
+                    _dbLogList.Add(_dbLog);
                     try
                     {
                         count += MyDBController.ExecuteNonQuery(SQl);
@@ -240,13 +249,14 @@ namespace BarCodeSystem
                     }
                 }
                 else
-                { 
+                {
                 }
             }
             MyDBController.CloseConnection();
             if (count > 0)
             {
                 MessageBox.Show("共导入" + count + "个工作中心！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                DBLog.WriteDBLog(_dbLogList);
             }
             else
             {

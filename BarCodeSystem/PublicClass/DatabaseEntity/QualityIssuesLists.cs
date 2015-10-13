@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -52,64 +53,55 @@ namespace BarCodeSystem
             set;
         }
 
-        ///// <summary>
-        ///// 是否材料问题，数据库中该字段为bool型，默认值为false
-        ///// 这里为了展示方便，转换为字符型，转换关系 false:否  true:是
-        ///// </summary>
-        //public string QI_IsItemIssue_Show
-        //{
-        //    get;
-        //    set;
-        //}
+        /// <summary>
+        /// 质量问题信息所属工作中心U9id
+        /// </summary>
+        public Int64 QI_WorkCenterID
+        {
+            get;
+            set;
+        }
 
-        ///// <summary>
-        ///// 是否材料问题，数据库中该字段为bool型，默认值为false
-        ///// 该属性用来对数据库进行操作
-        ///// </summary>
-        //public bool QI_IsItemIssue
-        //{
-        //    get;
-        //    set;
-        //}
+        /// <summary>
+        /// 获取条码系统中质量问题信息清单
+        /// </summary>
+        /// <param name="_workCenterID">所属工作中心id，不填则会获取所有工作中心的质量问题信息</param>
+        /// <returns></returns>
+        public static List<QualityIssuesLists> FetchBCSQualityIssueInfo(Int64 _workCenterID = -1)
+        {
+            MyDBController.GetConnection();
+            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+            string SQl = "";
 
-        ///// <summary>
-        ///// 是否加工问题，数据库中该字段为bool型，默认值为false
-        ///// 这里为了展示方便，转换为字符型，转换关系 false:否  true:是
-        ///// </summary>
-        //public string QI_IsProduceIssue_Show
-        //{
-        //    get;
-        //    set;
-        //}
 
-        ///// <summary>
-        ///// 是否加工问题，数据库中该字段为bool型，默认值为false
-        ///// 该属性用来对数据库进行操作
-        ///// </summary>
-        //public bool QI_IsProduceIssue
-        //{
-        //    get;
-        //    set;
-        //}
+            if (_workCenterID == -1)
+            {
+                SQl = @"SELECT * FROM [QualityIssue]";
+            }
+            else
+            {
+                SQl = string.Format(@"Select * from [QualityIssue] where [QI_WorkCenterID]={0}", _workCenterID);
+            }
 
-        ///// <summary>
-        ///// 是否上道工序问题，数据库中该字段为bool型，默认值为false
-        ///// 这里为了展示方便，转换为字符型，转换关系 false:否  true:是
-        ///// </summary>
-        //public string QI_IsPreviousIssue_Show
-        //{
-        //    get;
-        //    set;
-        //}
-                
-        ///// <summary>
-        ///// 是否上道工序问题，数据库中该字段为bool型，默认值为false
-        ///// 该属性用来对数据库进行操作
-        ///// </summary>
-        //public bool QI_IsPreviousIssue
-        //{
-        //    get;
-        //    set;
-        //}
+            MyDBController.GetDataSet(SQl, ds, "QualityIssue");
+            dt = ds.Tables["QualityIssue"];
+            int x = dt.Rows.Count;
+            for (int i = 0; i < x; i++)
+            {
+                QualityIssuesLists qil = new QualityIssuesLists();
+                qil.ID = (Int64)dt.Rows[i]["ID"];
+                qil.QI_Code = dt.Rows[i]["QI_Code"].ToString();
+                qil.QI_Name = dt.Rows[i]["QI_Name"].ToString();
+                qil.QI_BarCode = dt.Rows[i]["QI_BarCode"].ToString();
+                qil.QI_WorkCenterID = Convert.ToInt64(dt.Rows[i]["QI_WorkCenterID"]);
+                qilList.Add(qil);
+            }
+            qilList = qilList.OrderBy(p => p.QI_Code).ToList();
+            MyDBController.CloseConnection();
+            return qilList;
+        }
+
     }
 }

@@ -51,7 +51,7 @@ namespace BarCodeSystem
             dt = MyDBController.GetDataSet(SQl, ds, "OrgInfo").Tables["OrgInfo"];
 
 
-            WebService.ServiceSoapClient ws = new WebService.ServiceSoapClient();
+            WebService.Service ws = new WebService.Service();
             ds = ws.GetOrglist_ForBarCode("");
 
             U9dt = ds.Tables["U9OrgInfo"];

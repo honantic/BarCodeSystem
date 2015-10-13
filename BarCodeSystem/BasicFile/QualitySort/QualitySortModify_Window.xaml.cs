@@ -1,4 +1,5 @@
 ﻿using BarCodeSystem.PublicClass;
+using BarCodeSystem.PublicClass.HelperClass;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,6 +50,10 @@ namespace BarCodeSystem
             }
             else
             {
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                _dbLog.DBL_OperateTable = "QualitySort";
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
                 if (this.Title.Equals("质检分类新增窗口"))
                 {
                     if (Check_QulitySort_Code(txtb_Code.Text.Trim()))
@@ -62,6 +67,9 @@ namespace BarCodeSystem
                         {
                             SQl = string.Format("INSERT INTO [QualitySort]([QS_Code],[QS_NAME]) VALUES('{0}','{1}')", txtb_Code.Text.Trim(), txtb_Name.Text.Trim());
                             mess = "新增信息成功!";
+                            _dbLog.DBL_OperateType = OperateType.Insert;
+                            _dbLog.DBL_Content = "新增质量问题原因:" + txtb_Code.Text + "|" + txtb_Name.Text;
+                            _dbLog.DBL_AssociateCode = txtb_Code.Text;
                         }
                     }
                     else
@@ -72,11 +80,17 @@ namespace BarCodeSystem
                 else if (this.Title.Equals("质检分类修改窗口"))
                 {
                     SQl = string.Format(@"UPDATE [QualitySort] SET [QS_Code]='{0}',[QS_Name]='{1}' WHERE [QS_Code]='{2}'", txtb_Code.Text.Trim(), txtb_Name.Text.Trim(), txtb_Code.Text.Trim());
+                    _dbLog.DBL_OperateType = OperateType.Update;
+                    _dbLog.DBL_Content = "修改质量问题原因:" + txtb_Code.Text + "|" + txtb_Name.Text;
+                    _dbLog.DBL_AssociateCode = txtb_Code.Text;
                     mess = "修改信息成功!";
                 }
                 else
                 {
                     SQl = string.Format(@"DELETE [QualitySort]  WHERE [QS_Code]='{0}'", txtb_Code.Text.Trim());
+                    _dbLog.DBL_OperateType = OperateType.Delete;
+                    _dbLog.DBL_Content = "删除质量问题原因:" + txtb_Code.Text + "|" + txtb_Name.Text;
+                    _dbLog.DBL_AssociateCode = txtb_Code.Text;
                     mess = "删除信息成功!";
                 }
 

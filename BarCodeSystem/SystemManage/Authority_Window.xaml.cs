@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -53,7 +54,11 @@ namespace BarCodeSystem
             InitializeComponent();
         }
 
-
+        /// <summary>
+        /// 加载事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SetInitShow();
@@ -84,6 +89,34 @@ namespace BarCodeSystem
             GetBCSAccount();
         }
 
+
+        /// <summary>
+        /// 根据当前账号的权限，对权限列表进行管控。即当前账号没有权限的菜单，操作者就没有相应权限的授权功能
+        /// </summary>
+        private void SetCheckBoxReadOnly()
+        {
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                List<UserAuthorityLists> ualList = UserAuthorityLists.FetchUAListByUserID(User_Info.Account_ID);
+                List<string> uaNameList = new List<string>();
+                ualList.ForEach(p => { uaNameList.Add(p.SA_AuthorityName.Split('_')[1]); });
+                List<CheckBox> cbList = MyDBController.FindVisualChild<CheckBox>(this);
+                cbList.ForEach(
+                    p =>
+                    {
+                        if (uaNameList.Contains(p.Name.Split('_')[1]) || p.Name.Equals("CB_SelectAll"))
+                        {
+
+                        }
+                        else
+                        {
+                            p.IsEnabled = false;
+                        }
+                    });
+            }
+        }
+
+
         /// <summary>
         /// 关闭按钮
         /// </summary>
@@ -108,12 +141,12 @@ namespace BarCodeSystem
         /// <summary>
         /// 监听所有单选框IsChecked状态
         /// </summary>
-        private void BindCheckBoxChange() 
+        private void BindCheckBoxChange()
         {
             cbl = MyDBController.FindVisualChild<CheckBox>(this);
             foreach (CheckBox cb in cbl)
             {
-                cb.Click+= new RoutedEventHandler(cb_Click);
+                cb.Click += new RoutedEventHandler(cb_Click);
             }
         }
 
@@ -145,20 +178,28 @@ namespace BarCodeSystem
         {
             ds.Clear();
             string SQl = string.Format(@"SELECT [ID],[UA_LoginAccount],[UA_UserName],[UA_IsValidated] FROM
-                                [UserAccount]");
+                                [UserAccount] where [UA_IsValidated]='true' and [UA_LoginAccount] !='admin'");
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds,"UserAccount");
+            MyDBController.GetDataSet(SQl, ds, "UserAccount");
             MyDBController.CloseConnection();
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                UserAccountLists ual = new UserAccountLists() {
-                    ID=(Int64)ds.Tables["UserAccount"].Rows[i]["ID"],
+                UserAccountLists ual = new UserAccountLists()
+                {
+                    ID = (Int64)ds.Tables["UserAccount"].Rows[i]["ID"],
                     UA_LoginAccount = ds.Tables["UserAccount"].Rows[i]["UA_LoginAccount"].ToString(),
                     UA_IsValidated = (bool)ds.Tables["UserAccount"].Rows[i]["UA_IsValidated"],
                     UA_UserName = ds.Tables["UserAccount"].Rows[i]["UA_UserName"].ToString()
                 };
                 uals.Add(ual);
             }
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_Content = User_Info.User_Name + "|在权限管理界面中，查询条码系统账号列表";
+            _dbLog.DBL_OperateBy = User_Info.User_Code;
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Select;
+            _dbLog.DBL_OperateTable = "UserAccount";
+            DBLog.WriteDBLog(_dbLog);
             Listview1.ItemsSource = null;
             Listview1.ItemsSource = uals;
         }
@@ -170,8 +211,9 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (count==0)
+            if (count == 0)
             {
+                SetCheckBoxReadOnly();
                 BindCheckBoxChange();
                 count++;
             }
@@ -187,7 +229,10 @@ namespace BarCodeSystem
             CheckBox cb = (CheckBox)sender;
             foreach (CheckBox item in cbl)
             {
-                item.IsChecked = cb.IsChecked;
+                if (item.IsEnabled)
+                {
+                    item.IsChecked = cb.IsChecked;
+                }
             }
         }
 
@@ -199,7 +244,7 @@ namespace BarCodeSystem
         private void Listview1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int x = Listview1.SelectedIndex;
-            if (x>-1)
+            if (x > -1)
             {
                 txtb_Account.Text = ((UserAccountLists)Listview1.Items[x]).UA_LoginAccount;
                 txtb_Name.Text = ((UserAccountLists)Listview1.Items[x]).UA_UserName;
@@ -225,15 +270,16 @@ namespace BarCodeSystem
                 //不需要再进行一次数据库的链接查询操作，减少资源消耗
                 if (!IsAccountExist(Account))
                 {
-                    GetAccountAu(Account);
+                    AuthorityList = UserAuthorityLists.FetchUAListByAccount(Account);
+                    //GetAccountAu(Account);
                 }
-                DisplayAthourity(Account);  
+                DisplayAthourity(Account);
             }
             else
             {
-                MessageBox.Show("请在左边的列表中选择一个账号！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show("请在左边的列表中选择一个账号！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
- 
+
         }
 
         /// <summary>
@@ -256,7 +302,8 @@ namespace BarCodeSystem
             int x = ds.Tables["UA_AuthorityName"].Rows.Count;
             for (int i = 0; i < x; i++)
             {
-                UserAuthorityLists ual = new UserAuthorityLists(){
+                UserAuthorityLists ual = new UserAuthorityLists()
+                {
                     SA_AuthorityName = ds.Tables["UA_AuthorityName"].Rows[i]["SA_AuthorityName"].ToString().Trim(),
                     ID = (Int64)ds.Tables["UA_AuthorityName"].Rows[i]["ID"],
                     UA_LoginAccount = ds.Tables["UA_AuthorityName"].Rows[i]["UA_LoginAccount"].ToString().Trim(),
@@ -266,6 +313,13 @@ namespace BarCodeSystem
                 AuthorityList.Add(ual);
             }
             AccountList.Add(Account);
+            DBLog _dbLog = new DBLog();
+            _dbLog.DBL_Content = User_Info.User_Name + "|在权限管理界面中，查询条码系统账号列表";
+            _dbLog.DBL_OperateBy = User_Info.User_Code;
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+            _dbLog.DBL_OperateType = OperateType.Select;
+            _dbLog.DBL_OperateTable = "UserAccount";
+            DBLog.WriteDBLog(_dbLog);
             return AuthorityList;
         }
 
@@ -278,7 +332,7 @@ namespace BarCodeSystem
             bool IsExist = false;
             foreach (string item in AccountList)
             {
-                if (string.Equals(item,Account))
+                if (string.Equals(item, Account))
                 {
                     IsExist = true;
                     break;
@@ -301,7 +355,7 @@ namespace BarCodeSystem
 
             foreach (CheckBox cb in cbl)
             {
-                    cb.IsChecked = false;   
+                cb.IsChecked = false;
             }
 
             foreach (UserAuthorityLists item in uals)
@@ -337,13 +391,13 @@ namespace BarCodeSystem
                 {
                     IEnumerable<UserAccountLists> list =
                         from item in uals
-                        where  item.UA_LoginAccount.IndexOf(key) != -1
+                        where item.UA_LoginAccount.IndexOf(key) != -1
                             || item.UA_UserName.IndexOf(key) != -1 || item.UA_IsValidated.ToString().IndexOf(key) != -1
                         select item;
                     Listview1.ItemsSource = list;
                 }
                 catch (Exception)
-                {        
+                {
                 }
             }
         }
@@ -359,10 +413,10 @@ namespace BarCodeSystem
             {
                 IEnumerable<string> AuList = GetChoosedAu();
                 DataTable dt = GetSysAu();
-                if (AuList.Count<string>() ==0)
+                if (AuList.Count<string>() == 0)
                 {
-                    if (MessageBox.Show("该账号没有任何权限\n确定要保存吗？","提示",MessageBoxButton.OKCancel,MessageBoxImage.Information)
-                        ==MessageBoxResult.OK)
+                    if (MessageBox.Show("该账号没有任何权限\n确定要保存吗？", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information)
+                        == MessageBoxResult.OK)
                     {
                         SaveAu(AuList, dt);
                     }
@@ -374,8 +428,8 @@ namespace BarCodeSystem
             }
             else
             {
-                string info=(AccountID == null)?"请先选择一个账号！":"您没有对该账号做任何权限修改！";
-                MessageBox.Show(info,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                string info = (AccountID == null) ? "请先选择一个账号！" : "您没有对该账号做任何权限修改！";
+                MessageBox.Show(info, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -409,7 +463,7 @@ namespace BarCodeSystem
         /// </summary>
         /// <param name="AuList"></param>
         /// <param name="SysAu"></param>
-        private void SaveAu(IEnumerable<string> AuList,DataTable SysAu)
+        private void SaveAu(IEnumerable<string> AuList, DataTable SysAu)
         {
             try
             {
@@ -417,18 +471,30 @@ namespace BarCodeSystem
                 MyDBController.GetConnection();
                 string SQl = string.Format(@"delete from [UserAuthority] where UA_UserAccountID={0}", AccountID);
                 MyDBController.ExecuteNonQuery(SQl);
-
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_Content = User_Info.User_Name + "|在权限管理界面中，删除表 [UserAuthority]中[UA_UserAccountID]为" + AccountID.ToString() + "的账号的权限";
+                _dbLog.DBL_OperateBy = User_Info.User_Code;
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                _dbLog.DBL_OperateType = OperateType.Delete;
+                _dbLog.DBL_OperateTable = "UserAccount";
+                DBLog.WriteDBLog(_dbLog);
                 #region
                 DataTable dt = new DataTable();
                 dt.TableName = "UserAuthority";
-                dt.Columns.Add("ID",typeof(Int64));
+                dt.Columns.Add("ID", typeof(Int64));
                 dt.Columns.Add("UA_UserAccountID", typeof(Int64));
                 dt.Columns.Add("UA_SysAuthorityID", typeof(Int64));
                 dt.Columns.Add("IDNew", typeof(Int64));
-                List<string> colList=new List<string>{"ID","UA_UserAccountID","UA_SysAuthorityID"};
+                List<string> colList = new List<string> { "ID", "UA_UserAccountID", "UA_SysAuthorityID" };
                 #endregion
 
                 #region
+                _dbLog = new DBLog();
+                _dbLog.DBL_Content = User_Info.User_Name + "|在权限管理界面中，在表 [UserAuthority]中新增[UA_UserAccountID]为" + AccountID.ToString() + "的账号的权限";
+                _dbLog.DBL_OperateBy = User_Info.User_Code;
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                _dbLog.DBL_OperateType = OperateType.Insert;
+                _dbLog.DBL_OperateTable = "UserAccount";
                 foreach (string item in AuList)
                 {
                     for (int i = 0; i < x; i++)
@@ -438,18 +504,21 @@ namespace BarCodeSystem
                             DataRow dr = dt.NewRow();
                             dr["UA_UserAccountID"] = AccountID;
                             dr["UA_SysAuthorityID"] = (Int64)SysAu.Rows[i]["ID"];
+                            _dbLog.DBL_AssociateID += string.IsNullOrEmpty(_dbLog.DBL_AssociateID) ? "权限ID为：" + dr["UA_SysAuthorityID"].ToString() + "|" : dr["UA_SysAuthorityID"] + "|";
                             dt.Rows.Add(dr);
                             break;
                         }
                     }
                 }
-                int updateNum,insertNum;
-                MyDBController.InsertSqlBulk(dt,colList, out  updateNum, out  insertNum);
+                int updateNum, insertNum;
+                MyDBController.GetConnection();
+                MyDBController.InsertSqlBulk(dt, colList, out  updateNum, out  insertNum);
+                DBLog.WriteDBLog(_dbLog);
                 #endregion
 
                 MyDBController.CloseConnection();
                 IsSaved = true;
-                if (MessageBox.Show("保存成功！","提示",MessageBoxButton.OK,MessageBoxImage.Information)==
+                if (MessageBox.Show("保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                     MessageBoxResult.OK)
                 {
                     RefreshAuList(AuList);
@@ -457,7 +526,7 @@ namespace BarCodeSystem
             }
             catch (Exception ee)
             {
-                MessageBox.Show("保存失败！"+ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show("保存失败！" + ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -474,7 +543,7 @@ namespace BarCodeSystem
             }
             foreach (string item in list)
             {
-                AuthorityList.Add(new UserAuthorityLists { UA_LoginAccount = txtb_Account.Text.Trim(), UA_UserAccountID = (Int64)AccountID, SA_AuthorityName = "item_"+item });
+                AuthorityList.Add(new UserAuthorityLists { UA_LoginAccount = txtb_Account.Text.Trim(), UA_UserAccountID = (Int64)AccountID, SA_AuthorityName = "item_" + item });
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Input;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -87,12 +88,14 @@ namespace BarCodeSystem
             //MyDBController.GetConnection();
             //this.Cursor = Cursors.Wait;
 
-            if ( string.IsNullOrEmpty(txt_name.Text))
+            if (string.IsNullOrEmpty(txt_name.Text))
             {
                 MessageBox.Show("保存信息不能为空!", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
             }
             else
             {
+                DBLog _dbLog = new DBLog();
+                _dbLog.DBL_Content = "修改车间信息，车间编WC_Department_ID为" + dept_info.department_id.ToString() + "|WC_Department_ShortName由" + dept_info.department_shortname + "变为" + txt_department_shortname.Text.Trim() + "|WC_Department_Name由" + dept_info.department_name + "变为" + txt_name.Text.Trim();
                 dept_info.isvalidated_DB = (bool)rbtn_isvalidated.IsChecked ? true : false;
                 dept_info.isordercontroled_DB = (bool)rbtn_isordercontrol.IsChecked ? true : false;
                 dept_info.isworkcenter_DB = (bool)rbtn_isworkcenter.IsChecked ? true : false;
@@ -106,7 +109,7 @@ namespace BarCodeSystem
                                 [WC_IsOrderControled]='{1}',[WC_IsWorkCenter]='{2}',[WC_LastOperateTime]='{3}',
                                 [WC_LastOprateBy]='{4}',[WC_Department_ShortName] = '{5}',[WC_Department_Name] = '{6}' WHERE [WC_Department_ID]={7}", dept_info.isvalidated_DB,
                     dept_info.isordercontroled_DB, dept_info.isworkcenter_DB,
-                    DateTime.Now, User_Info.User_Name, dept_info.department_shortname, dept_info.department_name, dept_info.department_id);
+                    DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss"), User_Info.User_Name, dept_info.department_shortname, dept_info.department_name, dept_info.department_id);
                 try
                 {
                     MyDBController.ExecuteNonQuery(SQl);
@@ -115,14 +118,17 @@ namespace BarCodeSystem
                     {
                         this.DialogResult = true;
                     }
-
-
                 }
                 catch (Exception ee)
                 {
                     MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 MyDBController.CloseConnection();
+                _dbLog.DBL_OperateBy = User_Info.User_Code;
+                _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                _dbLog.DBL_OperateType = OperateType.Update;
+                _dbLog.DBL_OperateTable = "WorkCenter";
+                DBLog.WriteDBLog(_dbLog);
                 this.Cursor = Cursors.Arrow;
             }
 

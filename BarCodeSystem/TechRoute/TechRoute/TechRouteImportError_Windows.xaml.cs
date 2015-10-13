@@ -45,6 +45,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
                 }
                 
             }
+
         }
         /// <summary>
         /// 关闭窗口

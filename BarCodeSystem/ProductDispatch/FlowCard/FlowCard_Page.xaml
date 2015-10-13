@@ -106,7 +106,8 @@
                     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                         <TextBox VerticalAlignment="Center" Name="txtb_ProduceOrderInfo" IsReadOnly="True" Text="点击放大镜选择" 
                                  Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
-                        <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Height="{Binding Path=ActualHeight,ElementName=txtb_ProduceOrderInfo}" Name="btn_SourceOrderSearch" Click="btn_SourceOrderSearch_Click" Background="White" BorderBrush="White">
+                        <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Height="{Binding Path=ActualHeight,ElementName=txtb_ProduceOrderInfo}" 
+                                Name="btn_SourceOrderSearch" Click="btn_SourceOrderSearch_Click" Background="White" BorderBrush="White">
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
                     </StackPanel>
@@ -159,6 +160,8 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Name="item_DeleteRow" Header="删除选中行" Click="item_DeleteRow_Click"></MenuItem>
+                                <MenuItem Name="item_ResetRow" Header="重置选中行人员" Click="item_ResetRow_Click"></MenuItem>
+                                <MenuItem Name="item_ResetAll" Header="重置所有行人员" Click="item_ResetAll_Click"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns >
@@ -185,10 +188,10 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellEditingTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="投入数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="合格数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="报废数"></DataGridTextColumn>
-                            <DataGridTextColumn Header="待处理数"></DataGridTextColumn>
+                            <DataGridTextColumn Header="投入数" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="合格数" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="报废数" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="待处理数" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="生产车间" Binding="{Binding Path=WC_Department_Name}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是否测试工序" Binding="{Binding Path=TR_IsTestProcess, Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="是否返工工序" Binding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
@@ -200,21 +203,25 @@
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Content="保存为派工方案" Name="btn_SaveAsDisPlan" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btn_SaveAsDisPlan_Click"></Button>
-                        <Button Content="保存为班组"  Name="btn_SaveAsTeam" Click="btn_SaveAsTeam_Click" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button Content="保存派工方案" Name="btn_SaveAsDisPlan" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btn_SaveAsDisPlan_Click"></Button>
+                        <Button Content="保存班组"  Name="btn_SaveAsTeam" Click="btn_SaveAsTeam_Click" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Button.ToolTip>
                                 <ToolTip Name="tooltip_SaveAsTeam" Visibility="Hidden" Content="请选择一行记录！"></ToolTip>
                             </Button.ToolTip>
                         </Button>
                         <Button Content="选取班组" Grid.Column="1" Name="btn_GetTeam" Click="btn_GetTeam_Click" VerticalAlignment="Center" HorizontalAlignment="Center"></Button>
                         <Button Content="选取派工方案" Name="btn_GetDisPlan" Click="btn_GetDisPlan_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3"></Button>
-                        <Button Name="btn_DisFlowCard" Click="btn_DisFlowCard_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Content="生成编号并派工" ></Button>
+                        <Button MaxWidth="120" MinWidth="60" Name="btn_DisFlowCard" Click="btn_DisFlowCard_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Content="派工" ></Button>
+                        <Button MaxWidth="120" MinWidth="60" Name="btn_Print" Content="打印" Visibility="Hidden" Click="btn_Print_Click" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center"></Button>
+                        <Button Grid.Column="6" VerticalAlignment="Center" MaxWidth="120" MinWidth="60" Content="刷新" HorizontalAlignment="Center" Name="btn_Refresh" Click="btn_Refresh_Click" ClickMode="Release"></Button>
                     </Grid>
                 </Grid>
             </GroupBox>

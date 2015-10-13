@@ -20,55 +20,72 @@
         </Grid.RowDefinitions>
         <!--<Image Source="Images\Main_Windowbg.jpg" Stretch="Fill"  Opacity="0.5"/>-->
         <DockPanel Name="TopGrid" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch" >
-            <Menu DockPanel.Dock="Top"
+            <Menu DockPanel.Dock="Top" 
                   Template="{StaticResource mycontroltemplate}" Name="System_Menu" IsEnabled="True" >
                 <MenuItem Name="item_SysManage"     Header="系统管理(_S)"  IsEnabled="True">
-                    <MenuItem Name="item_U9Account"  MenuItem.Click="item_U9Account_Click"  IsEnabled="False"     Header="U9账号导入(快捷键 Alt + S + _D)"></MenuItem>
-                    <MenuItem Name="item_AccountAuthority" IsEnabled="False" Header="系统授权(快捷键 Alt + S + _F)" MenuItem.Click="item_AccountAuthority_Click"></MenuItem>
+                    <MenuItem Name="item_U9Account"  MenuItem.Click="item_U9Account_Click"  IsEnabled="True"   ToolTip="快捷键 Alt + S + D"  Header="U9账号导入(_D)"></MenuItem>
+                    <MenuItem Name="item_AccountAuthority" IsEnabled="True" ToolTip="快捷键 Alt + S + F"  Header="系统授权(_F)" MenuItem.Click="item_AccountAuthority_Click"></MenuItem>
                     <Separator></Separator>
-                    <MenuItem Name="item_Close" Header="退出(快捷键 Alt + S + _C)" MenuItem.Click="item_Close_Click"></MenuItem>
+                    <MenuItem Header="切换账号(_W)" Name="item_SwitchAccount"  ToolTip="快捷键 Alt + S + W" Click="item_SwitchAccount_Click" ></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="设置(_S)" Name="item_Settings" Click="item_Settings_Click" ToolTip="快捷键 Alt + S + S"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="item_Close" ToolTip="快捷键 Alt + S + C" Header="退出(_C)" MenuItem.Click="item_Close_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_SysPara" Header="系统参数(_Y)">
-                    <MenuItem Name="item_SysParaManage" IsEnabled="False" Click="item_SysParaManage_Click"   Header="组织信息(快捷键 Alt + Y + _M)"></MenuItem>
-                    <MenuItem Name="item_TechRouteImport" IsEnabled="True" Click="item_TechRouteImport_Click" Header="工艺路线初始化批量维护(快捷键 Alt + Y + _I)"></MenuItem>
+                    <MenuItem Name="item_SysParaManage" IsEnabled="True" Click="item_SysParaManage_Click" ToolTip="快捷键 Alt + Y + M"   Header="组织信息(_M)"></MenuItem>
+                    <MenuItem Name="item_TechRouteImport" IsEnabled="True" Click="item_TechRouteImport_Click" ToolTip="快捷键 Alt + Y + I"  Header="工艺路线初始化批量维护(_I)"></MenuItem>
                 </MenuItem>
                 <MenuItem Name="item_BasicFile"     Header="基础档案(_B)" >
-                    <MenuItem Name="item_WorkCenter" IsEnabled="False" Click="item_WorkCenterImport_Click"   Header="工作中心(快捷键 Alt + B + _D)"></MenuItem>
-                    <MenuItem Name="item_StaffInfoManage"  IsEnabled="False" Click="item_StaffInfoManage_Click"    Header="员工信息管理(快捷键 Alt + B + _G)"></MenuItem>
-                    <MenuItem Name="item_WorkTeamManage"   IsEnabled="False" Click="item_WorkTeamManage_Click"     Header="车间班组管理(快捷键 Alt + B + _H)"></MenuItem>
-                    <MenuItem Name="item_BeltlineManage"   IsEnabled="False" Click="item_BeltlineManage_Click" Visibility="Collapsed"    Header="生产线管理(快捷键 Alt + B + _J)"  ></MenuItem>
-                    <MenuItem Name="item_WorkEquipManage"  IsEnabled="False" Click="item_WorkEquipManage_Click"   Header="设备管理(快捷键 Alt + B + _K)"></MenuItem>
-                    <MenuItem Name="item_StockLocManage"   IsEnabled="False" Click="item_WarehouseManage_Click"  Header="仓库管理(快捷键 Alt + B + _L)"></MenuItem>
-                    <MenuItem Name="item_QualityFileManage" IsEnabled="False" Click="item_QualityFileManage_Click" Header="质量问题原因(快捷键 Alt + B + _Q)"></MenuItem>
-                    <MenuItem Name="item_QualitySort"  Click="item_QualitySort_Click" Header="质检分类(快捷键 Alt + B + _O)"></MenuItem>
+                    <MenuItem Name="item_WorkCenter" IsEnabled="True" Click="item_WorkCenterImport_Click"  ToolTip="快捷键 Alt + B + D"   Header="工作中心(_D)"></MenuItem>
+                    <MenuItem Name="item_StaffInfoManage"  IsEnabled="True" Click="item_StaffInfoManage_Click"  ToolTip="快捷键 Alt + B + G"    Header="员工信息管理(_G)"></MenuItem>
+                    <MenuItem Name="item_WorkTeamManage"   IsEnabled="True" Click="item_WorkTeamManage_Click"   ToolTip="快捷键 Alt + B + H"    Header="车间班组管理(_H)"></MenuItem>
+                    <MenuItem Name="item_BeltlineManage"   IsEnabled="True" Click="item_BeltlineManage_Click" ToolTip="快捷键 Alt + B + J"  Visibility="Collapsed"    Header="生产线管理(_J)"  ></MenuItem>
+                    <MenuItem Name="item_WorkEquipManage"  IsEnabled="True" Click="item_WorkEquipManage_Click" ToolTip="快捷键 Alt + B + K"    Header="设备管理(_K)"></MenuItem>
+                    <MenuItem Name="item_StockLocManage"   IsEnabled="True" Click="item_WarehouseManage_Click"  ToolTip="快捷键 Alt + B + L"  Header="仓库管理(_L)"></MenuItem>
+                    <MenuItem Name="item_QualityFileManage" IsEnabled="True" Click="item_QualityFileManage_Click" ToolTip="快捷键 Alt + B + Q"  Header="质量问题原因(_Q)"></MenuItem>
+                    <MenuItem Name="item_QualitySort"  Click="item_QualitySort_Click" ToolTip="快捷键 Alt + B + O"  Header="质检分类(_O)"></MenuItem>
                 </MenuItem>
-                <MenuItem Name="item_MateAndRoute"  Header="物料和工艺路线(_M)">
-                    <MenuItem Name="item_MaterialManage"   IsEnabled="False" Click="item_MaterialManage_Click" Header="料品档案(快捷键 Alt + M + _M)"></MenuItem>
-                    <MenuItem Name="item_ProcedureManage"  IsEnabled="False" Click="item_ProcedureManage_Click"  Header="工序管理(快捷键 Alt + M + _P)"></MenuItem>
-                    <MenuItem Name="item_TechRouteManage"  IsEnabled="False" Click="item_TechRouteManage_Click" Header="工艺路线管理(快捷键 Alt + M + _R)"></MenuItem>
-                    <MenuItem Name="item_DistFormula"      IsEnabled="False" Header="配额计算公式(快捷键 Alt + M + _D)" Visibility="Collapsed"></MenuItem>
-                    <MenuItem Name="item_WorkHourManage"   IsEnabled="False" Header="工时管理(快捷键 Alt + M + _W)" Visibility="Collapsed"></MenuItem>
+                <MenuItem Name="item_MateAndRoute"  Header="料品和工艺路线(_M)">
+                    <MenuItem Name="item_MaterialManage"   IsEnabled="True" Click="item_MaterialManage_Click"  ToolTip="快捷键 Alt + M + M"  Header="料品档案(_M)"></MenuItem>
+                    <MenuItem Name="item_ProcedureManage"  IsEnabled="True" Click="item_ProcedureManage_Click" ToolTip="快捷键 Alt + M + P"  Header="工序管理(_P)"></MenuItem>
+                    <MenuItem Name="item_TechRouteManage"  IsEnabled="True" Click="item_TechRouteManage_Click" ToolTip="快捷键 Alt + M + R"  Header="工艺路线管理(_R)"></MenuItem>
+                    <MenuItem Name="item_TechRouteExport"  IsEnabled="True" Click="item_TechRouteExport_Click" ToolTip="快捷键 Alt + M + E"  Header="工艺路线导出(_E)"></MenuItem>
+                    <MenuItem Name="item_DistFormula"      IsEnabled="True" ToolTip="快捷键 Alt + M + D"  Header="配额计算公式(_D)" Visibility="Collapsed"></MenuItem>
+                    <MenuItem Name="item_WorkHourManage"   IsEnabled="True" Click="item_WorkHourManage_Click" ToolTip="快捷键 Alt + M + W" Visibility="Visible"  Header="工时管理(_W)" ></MenuItem>
                 </MenuItem>
-                <MenuItem Name="item_ProdDispatch"  Header="生产订单及派工管理(_P)">
-                    <MenuItem Name="item_ProdOrderImport"  IsEnabled="False" Header="生产订单导入(快捷键 Alt + P + _O)"></MenuItem>
-                    <MenuItem Name="item_WorkCardCompose" Click="item_WorkCardCompose_Click" IsEnabled="False" Header="流转卡编制(快捷键 Alt + P + _C)"></MenuItem>
-                    <MenuItem Name="item_WorkCardReport"  Click="item_WorkCardReport_Click"    Header="流转卡报工(快捷键 Alt + P + _R)"></MenuItem>
-                    <MenuItem Name="item_WorkCardDis"  Click="item_WorkCardDis_Click"    Header="流转卡分批(快捷键 Alt + P + _D)"></MenuItem>
-                    <MenuItem Name="item_WorkCardClean" Click="item_WorkCardClean_Click" Header="流传卡清卡(快捷键 Alt + P + _Q)"></MenuItem>
-                    <MenuItem Name="item_WorkCardInfo"     IsEnabled="False" Header="流转卡信息采集(快捷键 Alt + P + _I)"></MenuItem>
-                    <MenuItem Name="item_FinishReport"     IsEnabled="False" Header="完工报告(快捷键 Alt + P + _F)"></MenuItem>
+                <MenuItem Name="item_ProdDispatch"  Header="流转卡管理(_P)">
+                    <MenuItem Name="item_WorkCardCompose" Click="item_WorkCardCompose_Click" IsEnabled="True"  ToolTip="快捷键 Alt + P + C" Header="流转卡编制(_C)"></MenuItem>
+                    <MenuItem Name="item_WorkCardReport"  Click="item_WorkCardReport_Click"   ToolTip="快捷键 Alt + P + R"   Header="流转卡报工(_R)"></MenuItem>
+                    <MenuItem Name="item_WorkCardDis"  Click="item_WorkCardDis_Click"   ToolTip="快捷键 Alt + P + D"   Header="流转卡分批(_D)"></MenuItem>
+                    <MenuItem Name="item_WorkCardClean" Click="item_WorkCardClean_Click" ToolTip="快捷键 Alt + P + Q"  Header="流传卡清卡(_Q)"></MenuItem>
+                    <MenuItem Name="item_WorkCardTransfer" Click="item_WorkCardTransfer_Click" ToolTip="快捷键 Alt + P  + T"  Header="流转卡转序(_T)"></MenuItem>
                 </MenuItem>
+
+                <MenuItem Header="库存管理(_O)" Name="item_StorageManage" >
+                    <MenuItem Header="完工报告审核(_F)" Name="item_FinishReport"  Click="item_FinishReport_Click"></MenuItem>
+                    <MenuItem Header="缴废单(_S)" Name="item_ScrapReport" Click="item_ScrapReport_Click" Visibility="Collapsed"></MenuItem>
+                </MenuItem>
+
+                <MenuItem Header="工资管理(_R)" Name="item_SalaryManage">
+                    <MenuItem Header="月度质量奖赔信息管理(_A)" Name="item_QualityMonthlySalary" ToolTip="快捷键 Alt + R + A"   Click="item_QualityMonthlySalary_Click"></MenuItem>
+                    <MenuItem Header="员工工资查询(_S)" Name="item_StaffSalaries" ToolTip="快捷键 Alt + R + S" Click="item_StaffSalaries_Click"></MenuItem>
+                </MenuItem>
+
                 <MenuItem Name="item_FileQuery"     Header="档案查询(_F)">
-                    <MenuItem Name="item_FileQuery1" Click="item_FileQuery1_Click" IsEnabled="False" Header="查询(_S)"></MenuItem>
+                    <MenuItem Name="item_FlowCardQuery" Click="item_FlowCardQuery_Click" IsEnabled="True"  ToolTip="快捷键 Alt + F + S" Header="流转卡查询(_S)"></MenuItem>
+                    <MenuItem Header="明细——不良品报表(_B)" ToolTip="快捷键 Alt + F + B" Name="item_BadProductDetail" Click="item_BadProductDetail_Click"></MenuItem>
+                    <MenuItem Header="汇总——不良品报表(_T)" ToolTip="快捷键 Alt + F + T" Name="item_BadProductTotal" Click="item_BadProductTotal_Click"></MenuItem>
                 </MenuItem>
+
                 <MenuItem Name="item_MaterialQuery" Header="物料查询(_Q)">
-                    <MenuItem Name="item_MaterialQuery1" IsEnabled="False" Header="物料查询1(_S)"></MenuItem>
+                    <MenuItem Name="item_MaterialQuery1" IsEnabled="True" Header="物料查询1(_S)"></MenuItem>
                 </MenuItem>
 
                 <MenuItem Name="item_TotalQuery"    Header="综合查询(_T)">
-                    <MenuItem Name="item_TotalQuery1" IsEnabled="False" Header="综合查询1(_S)"></MenuItem>
-                    <MenuItem Name="item_TotalQuery2" IsEnabled="False" Header="综合查询2(_D)"></MenuItem>
-                    <MenuItem Name="item_TotalQuery3" IsEnabled="False" Header="综合查询3(_G)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery1" IsEnabled="True" Header="综合查询1(_S)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery2" IsEnabled="True" Header="综合查询2(_D)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery3" IsEnabled="True" Header="综合查询3(_G)"></MenuItem>
                 </MenuItem>
             </Menu>
             <Popup></Popup>
@@ -89,11 +106,13 @@
             </namespc:NotificationAreaIcon.MenuItems>
         </namespc:NotificationAreaIcon>
 
-        <AvalonDock:DockingManager x:Name="dockingManager"   ClipToBounds="True" Grid.Row="1">
+        <AvalonDock:DockingManager x:Name="dockingManager"   AllowDrop="False" ClipToBounds="True" Grid.Row="1">
             <AvalonDock:LayoutRoot x:Name="lr">
                 <AvalonDock:LayoutPanel x:Name="lp" Orientation="Horizontal">
-                    <AvalonDock:LayoutDocumentPane x:Name="ldp">
-                    </AvalonDock:LayoutDocumentPane>
+                    <AvalonDock:LayoutDocumentPaneGroup>
+                        <AvalonDock:LayoutDocumentPane x:Name="ldp">
+                        </AvalonDock:LayoutDocumentPane>
+                    </AvalonDock:LayoutDocumentPaneGroup>
                 </AvalonDock:LayoutPanel>
             </AvalonDock:LayoutRoot>
         </AvalonDock:DockingManager>

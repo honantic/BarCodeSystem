@@ -1,0 +1,64 @@
+﻿<Window x:Class="BarCodeSystem.TechRouteExport"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        xmlns:convert="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
+        ResizeMode="NoResize"
+        Title="工艺路线导出窗口" Height="800" Width="1000" Loaded="Window_Loaded">
+    <Window.Resources>
+        <convert:TrueOrFalseConverter x:Key="boolConvert"></convert:TrueOrFalseConverter>
+        <convert:ReportWayConverter x:Key="reportWayConvert"></convert:ReportWayConverter>
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Row="1" Name="listview1">
+                <ListView.View>
+                    <GridView>
+                        <!--<GridViewColumn Header="行号" Width="50" DisplayMemberBinding="{Binding Line_Number}"></GridViewColumn>-->
+                        <GridViewColumn Header="U9料品编码" Width="80"  DisplayMemberBinding="{Binding II_Code}"></GridViewColumn>
+                        <GridViewColumn Header="名称" Width="80" DisplayMemberBinding="{Binding II_Name}"></GridViewColumn>
+                        <GridViewColumn Header="规格" Width="80" DisplayMemberBinding="{Binding II_Spec}"></GridViewColumn>
+                        <GridViewColumn Header="型号" Width="80" DisplayMemberBinding="{Binding II_Version}"></GridViewColumn>
+                        <GridViewColumn Header="工艺路线版本号" Width="80" DisplayMemberBinding="{Binding TRV_VersionCode}"></GridViewColumn>
+                        <GridViewColumn Header="工艺路线版本名称" Width="80" DisplayMemberBinding="{Binding TRV_VersionName}"></GridViewColumn>
+                        <GridViewColumn Header="是否默认版本" Width="80" DisplayMemberBinding="{Binding TRV_IsDefaultVer}"></GridViewColumn>
+                        <!--<GridViewColumn Header="报工方式" Width="80" DisplayMemberBinding="{Binding TRV_ReportWay,Converter={StaticResource reportWayConvert}}"></GridViewColumn>-->
+                        <GridViewColumn Header="报工方式" Width="80" DisplayMemberBinding="{Binding TRV_ReportWay}"></GridViewColumn>
+                        <GridViewColumn Header="是否返工版本" Width="80" DisplayMemberBinding="{Binding TRV_IsBackVersion}"></GridViewColumn>
+                        <GridViewColumn Header="车间编码" Width="80" DisplayMemberBinding="{Binding WC_Department_Code}"></GridViewColumn>
+                        <GridViewColumn Header="车间名称" Width="80" DisplayMemberBinding="{Binding WC_Department_Name}"></GridViewColumn>
+                        <GridViewColumn Header="工序号" Width="80" DisplayMemberBinding="{Binding TR_ProcessSequence}"></GridViewColumn>
+                        <GridViewColumn Header="工序编码" Width="80" DisplayMemberBinding="{Binding TR_ProcessCode}"></GridViewColumn>
+                        <GridViewColumn Header="工序名称" Width="80" DisplayMemberBinding="{Binding TR_ProcessName}"></GridViewColumn>
+                        <GridViewColumn Header="是否测试工序" Width="80" DisplayMemberBinding="{Binding TR_IsTestProcess}"></GridViewColumn>
+                        <GridViewColumn Header="默认检验员" Width="80" DisplayMemberBinding="{Binding TR_DefaultCheckPersonName}"></GridViewColumn>
+                        <GridViewColumn Header="绑定工序" Width="80" DisplayMemberBinding="{Binding TR_BindingProcess}"></GridViewColumn>
+                        <GridViewColumn Header="工时" Width="80" DisplayMemberBinding="{Binding WH_WorkHour}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+                <Button Grid.Column="2" Content="查询"  Height="30" Width="100" Name="btn_Query" Click="btn_Query_Click"></Button>
+                <Button Grid.Column="3" Content="导出" Height="30" Width="100" Name="btn_Export"  Click="btn_Export_Click"></Button>
+                <Button Grid.Column="4" Content="关闭"  Height="30" Width="100" Name="btn_Close" Click="btn_Close_Click"></Button>
+            </Grid>
+        </Grid>           
+    </Grid>
+</Window>

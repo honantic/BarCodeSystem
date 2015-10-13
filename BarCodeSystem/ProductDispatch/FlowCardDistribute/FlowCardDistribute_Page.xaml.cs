@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BarCodeSystem.ProductDispatch.FlowCardPrint;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
 {
@@ -28,7 +29,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            txtb_FlowCardSearch.Focus();
+            if (loadCount == 0)
+            {
+                txtb_FlowCardSearch.Focus();
+                loadCount++;
+            }
         }
 
         #region 变量
@@ -56,6 +61,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// 需要分批的流转卡工艺路线版本
         /// </summary>
         TechVersion tv = new TechVersion();
+
+        int loadCount = 0;
         #endregion
 
 
@@ -96,7 +103,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         {
             if (string.IsNullOrEmpty(_flowcode))//直接点击按钮，或者搜索空白流转卡号，展示所有可分批的流转卡
             {
-                GetAllFlowCards("All");
+                GetAllFlowCards();
             }
             else//输入某一流转卡号进行搜索，直接获取该流转卡信息
             {
@@ -108,10 +115,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// 获取所有可分批的流转卡，供用户选择
         /// </summary>
         /// <returns></returns>
-        private void GetAllFlowCards(string _flowcode)
+        private void GetAllFlowCards()
         {
             textb_SearcInfo.Visibility = Visibility.Visible;
-            FlowCardSearch_Page fcs = new FlowCardSearch_Page(RecieveFlowCardInfo, 0, _flowcode);
+            FlowCardSearch_Page fcs = new FlowCardSearch_Page(RecieveFlowCardInfo, 0, "All", false);
             frame_FlowCardSearch.Navigate(fcs);
         }
 
@@ -146,21 +153,47 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             string SQl = string.Format(@"Select Count(*) from [FlowCard] where [FC_Code]='{0}' and [FC_CardState] = 0", _flowcode);
             DataSet ds = new DataSet();
             MyDBController.GetConnection();
-            SqlDataReader sqlreader = MyDBController.GetDataReader(SQl);
-            while (sqlreader.Read())
+            int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+
+            if (count > 0)
             {
-                if (Convert.ToInt32(sqlreader[0]) > 0)
+                FlowCardSearch_Page fcs = new FlowCardSearch_Page(RecieveFlowCardInfo, 0, txtb_FlowCardSearch.Text, true);
+            }
+            else
+            {
+                SQl = string.Format(@"Select count(*) from [FlowCard] where [FC_Code]='{0}' ", _flowcode);
+                count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                if (count == 0)
                 {
-                    FlowCardSearch_Page fcs = new FlowCardSearch_Page(RecieveFlowCardInfo, 0, txtb_FlowCardSearch.Text, true);
+                    Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡编号不存在，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("输入的流转卡号有误，请重新输入！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    SQl = string.Format(@"Select [FC_CardState] from [FlowCard] where [FC_Code]='{0}' ", _flowcode);
+                    int state = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                    switch (state)
+                    {
+                        case 1:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经报工，不能分批，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case 2:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经完工，不能分批，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case 3:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经被分批，不能分批，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case 4:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经被转序，不能分批，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+
+                        default:
+                            break;
+                    }
                     fc = null;
                 }
+
+                MyDBController.CloseConnection();
             }
-            sqlreader.Close();
-            MyDBController.CloseConnection();
         }
         #endregion
 
@@ -172,16 +205,33 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// <param name="e"></param>
         private void btn_TryDistribute_Click(object sender, RoutedEventArgs e)
         {
-            int _currentFlowNum = CalCulateFlowNum();
-            newfcList.Clear();
-            for (int i = 0; i < intUD_DisNum.Value; i++)
+            if (!string.IsNullOrEmpty(fc.FC_Code))
             {
-                newfcList.Add(GenerateNewFlowCard(fc, _currentFlowNum));
-                _currentFlowNum++;
+                try
+                {
+                    int _currentFlowNum = CalCulateFlowNum();
+                    newfcList.Clear();
+                    for (int i = 0; i < intUD_DisNum.Value; i++)
+                    {
+                        newfcList.Add(GenerateNewFlowCard(fc, _currentFlowNum));
+                        _currentFlowNum++;
+                    }
+                    datagrid_NewFlowCardInfo.ItemsSource = newfcList;
+                    datagrid_NewFlowCardInfo.Items.Refresh();
+                    textb_NewCardCount.Text = datagrid_NewFlowCardInfo.Items.Count.ToString();
+                }
+                catch (Exception ee)
+                {
+                    MessageBox.Show(ee.Message);
+                }
+
             }
-            datagrid_NewFlowCardInfo.ItemsSource = newfcList;
-            datagrid_NewFlowCardInfo.Items.Refresh();
-            textb_NewCardCount.Text = datagrid_NewFlowCardInfo.Items.Count.ToString();
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("请先选择流转卡信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
         }
 
         /// <summary>
@@ -191,21 +241,24 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         private int CalCulateFlowNum()
         {
             int currentFlowNum = 0;
-            string SQl = string.Format(@"select max(FC_FlowNum) FC_FlowNum from FlowCard where convert(date,FC_Createtime,102)=Convert(date,getDate(),102) group by Fc_Createtime");
-            MyDBController.GetConnection();
-            SqlDataReader sqlReader = MyDBController.GetDataReader(SQl);
-            while (sqlReader.Read())
+            string SQl = string.Format(@"select max(FC_FlowNum) as FC_FlowNum from FlowCard where convert(date,FC_Createtime,102)=Convert(date,getDate(),102) ");
+            try
             {
-                try
+                MyDBController.GetConnection();
+                SqlDataReader sqlReader = MyDBController.GetDataReader(SQl);
+                while (sqlReader.Read())
                 {
                     currentFlowNum = (int)sqlReader["FC_FlowNum"] + 1;
                 }
-                catch (Exception ee)
-                {
-                    currentFlowNum = 0;
-                }
+                sqlReader.Close();
             }
-            sqlReader.Close();
+            catch (Exception ee)
+            {
+                currentFlowNum = 0;
+                //MessageBox.Show(ee.Message);
+            }
+
+
             MyDBController.CloseConnection();
             return currentFlowNum;
         }
@@ -223,9 +276,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             {
                 FC_Amount = 0,
                 FC_CardState = 0,
-                FC_CardType = 2,
+                FC_CardType = 0,
                 FC_Code = (_oldFlowCard.FC_Code.Split('-'))[0] + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", _currentFlowNum),
-                FC_CreateTime = DateTime.Now,
+                //FC_CreateTime = DateTime.Now,
                 FC_DistriSourceCard = _oldFlowCard.ID,
                 FC_FlowNum = _currentFlowNum,
                 FC_ItemID = _oldFlowCard.FC_ItemID,
@@ -236,7 +289,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                 PO_Code = _oldFlowCard.PO_Code,
                 PO_ItemCode = _oldFlowCard.PO_ItemCode,
                 PO_ItemName = _oldFlowCard.PO_ItemName,
-                PO_ItemSpec = _oldFlowCard.PO_ItemSpec
+                PO_ItemSpec = _oldFlowCard.PO_ItemSpec,
+                FC_BCSOrderID = _oldFlowCard.FC_BCSOrderID,
+                FC_FirstProcessNum = _oldFlowCard.FC_FirstProcessNum
             };
         }
 
@@ -263,6 +318,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             if (flag)
             {
                 NewFlowCardSubs();
+                PrintNewFC(newfcList);
+                AfterSetting();
             }
             else
             {
@@ -270,6 +327,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             }
             this.Cursor = Cursors.Arrow;
         }
+
+        /// <summary>
+        /// 批量打印
+        /// </summary>
+        private void PrintNewFC(List<FlowCardLists> fcList)
+        {
+            if (Xceed.Wpf.Toolkit.MessageBox.Show("是否需要批量打印？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                fcList.ForEach(p =>
+                {
+                    _10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window(p.FC_Code);
+                    _10lfc.ShowDialog();
+                });
+            }
+        }
+
 
         /// <summary>
         ///  检查新的流转卡派工数量加起来是否等于源流转卡派工数量
@@ -314,28 +387,36 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             string SQl = "";
             MyDBController.GetConnection();
 
-            foreach (FlowCardLists item in newfcList)
+            try
             {
-                int count = 0;
-                flag = false;
-                while (!flag)
+                foreach (FlowCardLists item in newfcList)
                 {
-                    SQl = string.Format(@"select count(*) from [FlowCard] where [FC_FlowNum]={0}", item.FC_FlowNum);
-                    count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
-                    if (count == 0)
+                    int count = 0;
+                    flag = false;
+                    while (!flag)
                     {
-                        InsertNewFlowCard(item);
-                        rightAmount++;
-                        flag = true;
-                    }
-                    else
-                    {
-                        maxFlowNum++;
-                        item.FC_Code = item.FC_Code.Replace(string.Format("{0:0000}", item.FC_FlowNum), string.Format("{0:0000}", maxFlowNum));
-                        item.FC_FlowNum = maxFlowNum;
+                        SQl = string.Format(@"select count(*) from [FlowCard] where [FC_FlowNum]={0} and convert(date,FC_Createtime,102)=Convert(date,getDate(),102)", item.FC_FlowNum);
+                        count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                        if (count == 0)
+                        {
+                            InsertNewFlowCard(item);
+                            rightAmount++;
+                            flag = true;
+                        }
+                        else
+                        {
+                            maxFlowNum++;
+                            item.FC_Code = item.FC_Code.Replace(string.Format("{0:0000}", item.FC_FlowNum), string.Format("{0:0000}", maxFlowNum));
+                            item.FC_FlowNum = maxFlowNum;
+                        }
                     }
                 }
             }
+            catch (Exception ee)
+            {
+                MessageBox.Show(ee.Message);
+            }
+
             MyDBController.CloseConnection();
             return rightAmount.Equals(newfcList.Count);
         }
@@ -345,8 +426,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// </summary>
         private void InsertNewFlowCard(FlowCardLists _fc)
         {
-            string SQl = string.Format(@"insert into [FlowCard]([FC_CardType],[FC_SourceOrderID],[FC_Code],[FC_ItemID],[FC_ItemTechVersionID],[FC_Amount],[FC_WorkCenter],[FC_CardState],[FC_DistriSourceCard],[FC_FlowNum],[FC_CreateBy],[FC_CreateTime],[FC_CheckBy],[FC_CheckTime]) values({0},{1},'{2}',{3},{4},{5},{6},{7},{8},{9},'{10}','{11}','','') ", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_Code, _fc.FC_ItemID, _fc.FC_ItemTechVersionID, _fc.FC_Amount, _fc.FC_WorkCenter, _fc.FC_CardState, _fc.FC_DistriSourceCard, _fc.FC_FlowNum, _fc.FC_CreateBy, _fc.FC_CreateTime);
-            string SQl1 = string.Format(@"Select [ID] from [FlowCard] where  [FC_CardType]={0} and [FC_SourceOrderID]={1} and [FC_DistriSourceCard]={2} and  [FC_CreateTime]='{3}' and [FC_Code]='{4}'", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_DistriSourceCard, _fc.FC_CreateTime, _fc.FC_Code);
+            string SQl = string.Format(@"insert into [FlowCard]([FC_CardType],[FC_SourceOrderID],[FC_Code],[FC_ItemID],[FC_ItemTechVersionID],[FC_Amount],[FC_WorkCenter],[FC_CardState],[FC_DistriSourceCard],[FC_FlowNum],[FC_CreateBy],[FC_CreateTime],[FC_CheckBy],[FC_CheckTime],[FC_BCSOrderID],[FC_FirstProcessNum]) values({0},{1},'{2}',{3},{4},{5},{6},{7},{8},{9},'{10}',getdate(),'','',{11},{12}) ", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_Code, _fc.FC_ItemID, _fc.FC_ItemTechVersionID, _fc.FC_Amount, _fc.FC_WorkCenter, _fc.FC_CardState, _fc.FC_DistriSourceCard, _fc.FC_FlowNum, _fc.FC_CreateBy, _fc.FC_BCSOrderID, _fc.FC_FirstProcessNum);
+            string SQl1 = string.Format(@"Select [ID] from [FlowCard] where  [FC_CardType]={0} and [FC_SourceOrderID]={1} and [FC_DistriSourceCard]={2}  and [FC_Code]='{3}'", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_DistriSourceCard, _fc.FC_Code);
             int count = 0;
             Int64 ID = 0;
             while (count == 0 || ID == 0)
@@ -368,60 +449,115 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             string SQl = string.Format(@"Select top 0 * from [FlowCardSub]");
             List<string> colList = new List<string>();
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
-            foreach (DataColumn col in ds.Tables["FlowCardSub"].Columns)
+            try
             {
-                colList.Add(col.ColumnName);
-            }
-            ds.Tables["FlowCardSub"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+                MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
+                foreach (DataColumn col in ds.Tables["FlowCardSub"].Columns)
+                {
+                    colList.Add(col.ColumnName);
+                }
+                ds.Tables["FlowCardSub"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
 
-            foreach (FlowCardLists _newfcl in _newfcList)
-            {
-                foreach (FlowCardSubLists _oldfcl in _fcslist)
+                foreach (FlowCardLists _newfcl in _newfcList)
                 {
-                    DataRow row = ds.Tables["FlowCardSub"].NewRow();
-                    row["ID"] = row["IDNew"] = -1;
-                    row["FCS_FlowCradID"] = _newfcl.ID;
-                    row["FCS_ItemId"] = _oldfcl.FCS_ItemId;
-                    row["FCS_TechRouteID"] = _oldfcl.FCS_TechRouteID;
-                    row["FCS_ProcessID"] = _oldfcl.FCS_ProcessID;
-                    row["FCS_ProcessName"] = _oldfcl.FCS_ProcessName;
-                    row["FCS_PersonCode"] = _oldfcl.FCS_PersonCode;
-                    row["FCS_PersonName"] = _oldfcl.FCS_PersonName;
-                    row["FCS_BeginAmount"] = _newfcl.FC_Amount;
-                    row["FCS_QulifiedAmount"] = _oldfcl.FCS_QulifiedAmount;
-                    row["FCS_ScrappedAmount"] = _oldfcl.FCS_ScrappedAmount;
-                    row["FCS_UnprocessedAm"] = _oldfcl.FCS_UnprocessedAm;
-                    row["FCS_CheckByID"] = _oldfcl.FCS_CheckByID;
-                    row["FCS_CheckByName"] = _oldfcl.FCS_CheckByName;
-                    row["FCS_PieceAmount"] = _oldfcl.FCS_PieceAmount;
-                    row["FCS_PieceDivNum"] = _oldfcl.FCS_PieceDivNum;
-                    row["FCS_IsFirstProcess"] = _oldfcl.FCS_IsFirstProcess;
-                    row["FCS_IsLastProcess"] = _oldfcl.FCS_IsLastProcess;
-                    row["FCS_IsReported"] = _oldfcl.FCS_IsReported;
-                    ds.Tables["FlowCardSub"].Rows.Add(row);
+                    foreach (FlowCardSubLists _oldfcl in _fcslist)
+                    {
+                        DataRow row = ds.Tables["FlowCardSub"].NewRow();
+                        row["ID"] = row["IDNew"] = -1;
+                        row["FCS_FlowCradID"] = _newfcl.ID;
+                        row["FCS_ItemId"] = _oldfcl.FCS_ItemId;
+                        row["FCS_TechRouteID"] = _oldfcl.FCS_TechRouteID;
+                        row["FCS_ProcessID"] = _oldfcl.FCS_ProcessID;
+                        row["FCS_ProcessName"] = _oldfcl.FCS_ProcessName;
+                        row["FCS_PersonCode"] = _oldfcl.FCS_PersonCode;
+                        row["FCS_PersonName"] = _oldfcl.FCS_PersonName;
+                        row["FCS_BeginAmount"] = _newfcl.FC_Amount;
+                        row["FCS_QulifiedAmount"] = _oldfcl.FCS_QulifiedAmount;
+                        row["FCS_ScrappedAmount"] = _oldfcl.FCS_ScrappedAmount;
+                        row["FCS_AddAmount"] = _oldfcl.FCS_AddAmount;
+                        row["FCS_UnprocessedAm"] = _oldfcl.FCS_UnprocessedAm;
+                        row["FCS_CheckByID"] = _oldfcl.FCS_CheckByID;
+                        row["FCS_CheckByName"] = _oldfcl.FCS_CheckByName;
+                        row["FCS_PieceAmount"] = _oldfcl.FCS_PieceAmount;
+                        row["FCS_PieceDivNum"] = _oldfcl.FCS_PieceDivNum;
+                        row["FCS_IsFirstProcess"] = _oldfcl.FCS_IsFirstProcess;
+                        row["FCS_IsLastProcess"] = _oldfcl.FCS_IsLastProcess;
+                        row["FCS_IsReported"] = _oldfcl.FCS_IsReported;
+                        //row["FCS_IsWorkTeam"] = _oldfcl.FCS_IsWorkTeam;
+                        //row["FCS_WorkTeamID"] = _oldfcl.FCS_WorkTeamID;
+                        ds.Tables["FlowCardSub"].Rows.Add(row);
+                    }
+                }
+                int updateNum, insertNum;
+                MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
+                MyDBController.GetConnection();
+                SQl = string.Format(@"update [FlowCard] set [FC_CardState]=3 where [ID]={0}", fc.ID);
+                MyDBController.ExecuteNonQuery(SQl);
+                if ((updateNum + insertNum).Equals(ds.Tables["FlowCardSub"].Rows.Count))
+                {
+                    string message = "";
+                    foreach (FlowCardLists item in newfcList)
+                    {
+                        message += item.FC_Code + "\r\n";
+                    }
+                    Xceed.Wpf.Toolkit.MessageBox.Show("操作成功！新的流转卡号为：\r\n" + message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+
                 }
             }
-            int updateNum, insertNum;
-            MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
-            MyDBController.GetConnection();
-            SQl = string.Format(@"update [FlowCard] set [FC_CardState]=3 where [ID]={0}", fc.ID);
-            MyDBController.ExecuteNonQuery(SQl);
-            if ((updateNum + insertNum).Equals(ds.Tables["FlowCardSub"].Rows.Count))
+            catch (Exception ee)
             {
-                string message = "";
-                foreach (FlowCardLists item in newfcList)
+                MessageBox.Show(ee.Message);
+            }
+
+            MyDBController.CloseConnection();
+        }
+
+
+        /// <summary>
+        /// 批量设置数量
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_SetAmount_Click(object sender, RoutedEventArgs e)
+        {
+            if (datagrid_NewFlowCardInfo.HasItems)
+            {
+                FlowCardAmountSet_Window fas = new FlowCardAmountSet_Window(datagrid_NewFlowCardInfo.Items.Count, Convert.ToInt32(txtb_OriginNum.Text), SetNewFCAmount);
+                fas.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// 批量设置数量委托函数
+        /// </summary>
+        /// <param name="_fisrtSetCount"></param>
+        /// <param name="_firstSetAmount"></param>
+        /// <param name="_secSetCount"></param>
+        /// <param name="_secSetAmount"></param>
+        private void SetNewFCAmount(int _fisrtSetCount, int _firstSetAmount, int _secSetCount, int _secSetAmount)
+        {
+            if (fc.FC_Amount >= _fisrtSetCount * _firstSetAmount + _secSetCount * _secSetAmount)
+            {
+                for (int i = 0; i < newfcList.Count; i++)
                 {
-                    message += item.FC_Code + "\r\n";
+                    if (i < _fisrtSetCount)
+                    {
+                        newfcList[i].FC_Amount = _firstSetAmount;
+                    }
+                    else if (_fisrtSetCount <= i && i < _fisrtSetCount + _secSetCount)
+                    {
+                        newfcList[i].FC_Amount = _secSetAmount;
+                    }
                 }
-                Xceed.Wpf.Toolkit.MessageBox.Show("操作成功！新的流转卡号为：\r\n" + message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                AfterSetting();
+                datagrid_NewFlowCardInfo.Items.Refresh();
             }
             else
             {
-
+                Xceed.Wpf.Toolkit.MessageBox.Show("总数量超过了原派工数量！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            MyDBController.CloseConnection();
         }
 
         /// <summary>
@@ -437,5 +573,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             txtb_FlowCardSearch.Text = txtb_ItemInfo.Text = txtb_OriginNum.Text = txtb_SourceOrderCode.Text = "";
         }
         #endregion
+
     }
 }

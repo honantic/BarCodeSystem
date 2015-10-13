@@ -11,6 +11,12 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using Xceed.Wpf.Toolkit;
 using System.ComponentModel;
+using BarCodeSystem.PublicClass.HelperClass;
+using BarCodeSystem.PublicClass;
+using System.Threading.Tasks;
+using BarCodeSystem.SystemManage;
+using System.Threading;
+using System.Reflection;
 
 namespace BarCodeSystem.ProductDispatch.FlowCardReport
 {
@@ -19,6 +25,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
     /// </summary>
     public partial class FlowCardReport_Page : Page
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public FlowCardReport_Page()
         {
             InitializeComponent();
@@ -71,6 +80,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         public bool isChanged = false;
 
         /// <summary>
+        /// 当前工序在数量更改后是否已经报工
+        /// </summary>
+        bool isReported = false;
+
+        /// <summary>
         /// 是否所有工序都报工完毕
         /// </summary>
         public bool isFinished = false;
@@ -92,11 +106,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         int lastindex = 0;
 
         /// <summary>
-        /// 在未保存已更改数量的情况下，提示错误信息的次数
+        /// 在未保存已更改数量的情况下，提示错误信息的次数，流水线报工的时候用的
         /// </summary>
         int selectErrorCount = 0;
+
+        int loadCount = 0;
         #endregion
 
+        #region 初始化
         /// <summary>
         /// 加载事件
         /// </summary>
@@ -104,11 +121,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            textb_FlowCard.Focus();
-            SetBinding();
+            if (loadCount == 0)
+            {
+                textb_FlowCard.Focus();
+                SetBinding();
+                loadCount++;
+            }
         }
 
-        #region 绑定合格数量
         /// <summary>
         /// 将合格数量自动计算绑定
         /// </summary>
@@ -117,16 +137,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             Binding bd1 = new Binding("Value") { Source = txtb_BeginAmount };
             Binding bd2 = new Binding("Text") { Source = txtb_ScrappedAmount };
             Binding bd3 = new Binding("Value") { Source = txtb_UnprocessedAm };
+            Binding bd4 = new Binding("Text") { Source = txtb_AddAmount };
             MultiBinding mb = new MultiBinding();
             mb.Converter = new QualifiedAmountConverter();
             mb.Bindings.Add(bd1);
             mb.Bindings.Add(bd2);
             mb.Bindings.Add(bd3);
+            mb.Bindings.Add(bd4);
             txtb_QulifiedAmount.SetBinding(TextBox.TextProperty, mb);
 
-            Binding bd4 = new Binding("HasItems") { Source = datagrid_PersonInfo };
-            bd4.Converter = new FlowCardHasItemsConverter();
-            txtb_UnprocessedAm.SetBinding(IntegerUpDown.IsReadOnlyProperty, bd4);
+            Binding bd5 = new Binding("HasItems") { Source = datagrid_PersonInfo };
+            bd5.Converter = new FlowCardHasItemsConverter();
+            txtb_UnprocessedAm.SetBinding(IntegerUpDown.IsReadOnlyProperty, bd5);
         }
         #endregion
 
@@ -139,16 +161,98 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_FlowCardSearch_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            if (textb_SearchInfo.Text.Equals("流转卡搜索页面"))
+            textb_SearchInfo.Text = "流转卡搜索页面";
+            if (string.IsNullOrEmpty(textb_FlowCard.Text))
             {
-
+                GetAllFlowCards();
             }
             else
             {
-                textb_SearchInfo.Text = "流转卡搜索页面";
-                searchFrame.Navigate(new FlowCardSearch_Page(FetchFlowCard));
+                GetInputFlowCard();
             }
+
             this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 回车快捷搜索流传卡编号
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textb_FlowCard_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btn_FlowCardSearch_Click(sender, e);
+            }
+        }
+
+        /// <summary>
+        /// 获取所有流转卡信息
+        /// </summary>
+        private void GetAllFlowCards()
+        {
+            searchFrame.Navigate(new FlowCardSearch_Page(FetchFlowCard));
+        }
+
+        /// <summary>
+        /// 获取指定编号的流转卡
+        /// </summary>
+        private void GetInputFlowCard()
+        {
+            bool flag = CheckForCode(textb_FlowCard.Text);
+            if (flag)
+            {
+                FlowCardSearch_Page fcs = new FlowCardSearch_Page(FetchFlowCard, "Report", textb_FlowCard.Text, true);
+            }
+        }
+
+        /// <summary>
+        /// 检查输入的流转卡编号是否存在
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckForCode(string _key)
+        {
+            bool flag = false;
+            MyDBController.GetConnection();
+            string SQl = string.Format(@"Select count(*) from [FlowCard] A left join  [FlowCardSub] B on A.[ID]=B.[FCS_FlowCradID]  where [FC_Code]='{0}' and  [FC_CardState] in ({1},{2})", _key, 0, 1);
+            int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+            if (count > 0)
+            {
+                flag = true;
+            }
+            else
+            {
+                SQl = string.Format(@"Select count(*) from [FlowCard] where [FC_Code]='{0}' ", _key);
+                count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                if (count == 0)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡编号不存在，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    SQl = string.Format(@"Select [FC_CardState] from [FlowCard] where [FC_Code]='{0}' ", _key);
+                    int state = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                    switch (state)
+                    {
+                        case 0:
+                        case 1:
+                            break;
+                        case 3:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经被分批，不能报工，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case 4:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经被转序，不能报工，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case 2:
+                            Xceed.Wpf.Toolkit.MessageBox.Show("该流转卡已经完工，不能报工，请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return flag;
         }
 
         /// <summary>
@@ -159,9 +263,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void FetchFlowCard(FlowCardLists fc, List<FlowCardSubLists> _fcslist, TechVersion tv)
         {
             handledcount = 0;
-
+            fcl = fc;
+            fcsls = _fcslist;
             HandleFlowCardSubInfo(fc, _fcslist);
-
             bool flag = DisplayFlowCardInfo(fc, tv);
             if (flag)
             {
@@ -208,8 +312,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             {
                 _fcslist.Sort((p1, p2) => p1.FCS_ProcessSequanece.CompareTo(p2.FCS_ProcessSequanece));
             }
-            fcl = fc;
-            fcsls = _fcslist;
+     
             var sequaneceList = fcsls.Select(p => p.FCS_ProcessSequanece).Distinct();
             for (int i = 0; i < fcsls.Count; i++)
             {
@@ -223,7 +326,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         }
                         else if (fcsls[i].FCS_ProcessSequanece != fcsls[i - 1].FCS_ProcessSequanece)
                         {
-                            fcsls[i].FCS_BeginAmount = fcsls[i - 1].FCS_QulifiedAmount;
+                            fcsls[i].FCS_BeginAmount = fcsls[i - 1].FCS_QulifiedAmount + fcsls[i - 1].FCS_AddAmount;
                         }
                         else
                         {
@@ -254,7 +357,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void GetTechRoute(TechVersion tv)
         {
             DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select [ID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_DefaultCheckPersonName] from [TechRoute] where [TR_VersionID]={0}", tv.ID);
+            string SQl = string.Format(@"Select [ID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_DefaultCheckPersonName] from [TechRoute] where [TR_VersionID]={0} and [TR_ProcessSequence]>={1}", tv.ID, fcl.FC_FirstProcessNum);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRoute");
             MyDBController.CloseConnection();
@@ -287,7 +390,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             {
                 if (handledcount == 0)
                 {
-                    cb_ProcessSequence.ItemsSource = trList.Join(fcslist, tr => tr.ID, fcs => fcs.FCS_TechRouteID, (tr, fcs) => tr).Distinct();
+                    //cb_ProcessSequence.ItemsSource = trList.Join(fcslist, tr => tr.ID, fcs => fcs.FCS_TechRouteID, (tr, fcs) => tr).Distinct();
+                    cb_ProcessSequence.ItemsSource = trList.Distinct();
                 }
                 else
                 {
@@ -297,14 +401,32 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             else//离散报工
             {
                 List<TechRouteLists> source = new List<TechRouteLists>();
-                if (trList.Join(fcslist.Where(f => f.FCS_IsReported == false), tr => tr.ID, fcs => fcs.FCS_TechRouteID, (tr, fcs) => tr).Distinct().Count() > 0)
+                if (fcslist.Count > 0)//整个流转卡有人
                 {
-                    source.Add(trList.Join(fcslist.Where(f => f.FCS_IsReported == false), tr => tr.ID, fcs => fcs.FCS_TechRouteID, (tr, fcs) => tr).Distinct().FirstOrDefault());
+                    if (fcslist.Where(f => f.FCS_IsReported == true).Distinct().Count() > 0)//已经开始报工了
+                    {
+                        source.Add(trList.FirstOrDefault(p => p.TR_ProcessSequence.CompareTo((fcsls.Where(item => item.FCS_IsReported == true).Max(obj => obj.FCS_ProcessSequanece))) > 0));
+                    }
+                    else//没有开始报工
+                    {
+                        source.Add(trList.FirstOrDefault());
+                    }
+                    cb_ProcessSequence.ItemsSource = source;
                 }
-                cb_ProcessSequence.ItemsSource = source;
+                else//整个流转卡没人
+                {
+                    source.Add(trList.FirstOrDefault());
+                    cb_ProcessSequence.ItemsSource = source;
+                }
+
             }
             cb_ProcessSequence.DisplayMemberPath = "TR_ProcessSequence";
             cb_ProcessSequence.SelectedValuePath = "ID";
+            if (cb_ProcessSequence.HasItems)
+            {
+                cb_ProcessSequence.SelectedIndex = 0;
+                SelectionChangedEvent();
+            }
             if (datagrid_PersonInfo.HasItems)
             {
                 image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
@@ -332,18 +454,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     }
                     else
                     {
-                        if (selectErrorCount == 0)
+                        if (selectErrorCount == 0 && !isReported)
                         {
-                            if (Xceed.Wpf.Toolkit.MessageBox.Show("该工序数量更改后并未报工,是否先报工再继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-                            {
-                                selectErrorCount++;
-                                cb_ProcessSequence.SelectedIndex = lastindex;
-                            }
-                            else
-                            {
-                                isChanged = false;
-                                SelectionChangedEvent();
-                            }
+                            //if (Xceed.Wpf.Toolkit.MessageBox.Show("该工序数量更改后并未报工,是否先报工再继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                            //{
+                            selectErrorCount++;
+                            //cb_ProcessSequence.SelectedIndex = lastindex;
+                            //}
+                            //else
+                            //{
+                            isChanged = false;
+                            SelectionChangedEvent();
+                            //}
                         }
                         else
                         {
@@ -353,7 +475,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 }
                 else
                 {
-                    if (selectErrorCount == 0)
+                    if (tvFlowCard.TRV_ReportWay == 0 && selectErrorCount == 0)
                     {
                         Xceed.Wpf.Toolkit.MessageBox.Show("请先保存填写的数量信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                         selectErrorCount++;
@@ -376,10 +498,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void SelectionChangedEvent()
         {
             List<Int64> _fcsID = new List<long>();
+            fcsls = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
             foreach (FlowCardSubLists item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
             {
                 _fcsID.Add(item.ID);
             }
+            //数量信息
+            datagrid_AmountInfo.ItemsSource = null;
             if (_fcsID.Count > 0)
             {
                 lastindex = cb_ProcessSequence.SelectedIndex;
@@ -392,13 +517,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     scrapamount += item.FCQ_ScrapAmount;
                 }
 
-                txtb_CheckPerson.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_DefaultCheckPersonName;
-                txtb_ProcessName.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessName;
-
-
-                personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
-                datagrid_PersonInfo.ItemsSource = personDataSource;
-
                 beginamount = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_BeginAmount;
                 txtb_BeginAmount.Minimum = beginamount;
                 txtb_BeginAmount.Text = beginamount.ToString();
@@ -407,10 +525,34 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 txtb_BeginAmount.IsReadOnly = !((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_IsFirstProcess;
                 txtb_UnprocessedAm.Text = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_UnprocessedAm.ToString();
 
-                txtb_QulifiedAmount.Text = (beginamount - scrapamount - Convert.ToInt32(txtb_UnprocessedAm.Text)).ToString();
+                txtb_AddAmount.Text = fcsls.Find(p => p.FCS_ProcessSequanece == ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessSequence).FCS_AddAmount.ToString();
+
             }
-            image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
-            image_Yes.Visibility = (!personDataSource[0].FCS_IsReported) ? Visibility.Hidden : Visibility.Visible;
+            //人员信息
+            if (cb_ProcessSequence.SelectedItem != null)
+            {
+                list = new List<FlowCardQualityLists>();
+                txtb_CheckPerson.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_DefaultCheckPersonName;
+                txtb_ProcessName.Text = ((TechRouteLists)cb_ProcessSequence.SelectedItem).TR_ProcessName;
+                personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
+                datagrid_PersonInfo.ItemsSource = null;
+                datagrid_PersonInfo.ItemsSource = personDataSource;
+                if (personDataSource.Count > 0)
+                {
+                    image_No.Visibility = personDataSource[0].FCS_IsReported ? Visibility.Hidden : Visibility.Visible;
+                    image_Yes.Visibility = (!personDataSource[0].FCS_IsReported) ? Visibility.Hidden : Visibility.Visible;
+                }
+                else
+                {
+                    image_No.Visibility = Visibility.Visible;
+                    image_Yes.Visibility = Visibility.Hidden;
+                }
+            }
+            if (datagrid_PersonInfo.HasItems)
+            {
+                SaveAmount();
+                btn_CancelAmount_Click(null, null);
+            }
         }
 
         /// <summary>
@@ -427,12 +569,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             {
                 fcsIDString += string.IsNullOrEmpty(fcsIDString) ? item.ToString() : "," + item.ToString();
             }
-            string SQl = string.Format("Select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],B.[QI_Code],B.[QI_Name] from [FlowCardQulity] A left join [QualityIssue] B on A.[FCQ_QulityIssueID]=B.[ID] where [FCQ_FlowCardSubID] in ({0})", fcsIDString);
+            string SQl = string.Format("Select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],B.[QI_Code],B.[QI_Name] from [FlowCardQuality] A left join [QualityIssue] B on A.[FCQ_QulityIssueID]=B.[ID] where [FCQ_FlowCardSubID] in ({0})", fcsIDString);
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCardQulity");
+            MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
             MyDBController.CloseConnection();
 
-            foreach (DataRow row in ds.Tables["FlowCardQulity"].Rows)
+            foreach (DataRow row in ds.Tables["FlowCardQuality"].Rows)
             {
                 _list.Add(new FlowCardQualityLists()
                 {
@@ -481,20 +623,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             this.Cursor = Cursors.Wait;
             if (datagrid_PersonInfo.HasItems)
             {
-                if (datagrid_AmountInfo.HasItems)
-                {
-                    list.Add(new FlowCardQualityLists() { QI_Code = "", QI_Name = "" });
-                    datagrid_AmountInfo.Items.Refresh();
-                }
-                else
-                {
-                    list.Add(new FlowCardQualityLists() { QI_Code = "", QI_Name = "" });
-                    datagrid_AmountInfo.Items.Refresh();
-                }
+                list.Add(new FlowCardQualityLists() { QI_Code = "", QI_Name = "" });
+                datagrid_AmountInfo.ItemsSource = list;
+                datagrid_AmountInfo.Items.Refresh();
             }
             this.Cursor = Cursors.Arrow;
         }
-
 
         /// <summary>
         /// 搜索质量问题信息
@@ -508,34 +642,107 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         }
 
         /// <summary>
+        /// 扫描质量问题
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_ScanScrapInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (datagrid_PersonInfo.HasItems)
+            {
+                FlowCardQualityIssues_Window fci = new FlowCardQualityIssues_Window(AcceptQualityIssueList);
+                fci.ShowDialog();
+            }
+        }
+
+
+        /// <summary>
         /// 将选定的质量信息添加到列表中,并且保存到数据库中
         /// </summary>
         /// <param name="qil"></param>
         private void AcceptQualityIssue(QualityIssuesLists qil)
         {
+            if (list.Exists(p => p.FCQ_QulityIssueID.Equals(qil.ID)))
+            {
+
+            }
+            else
+            {
+                isChanged = true;
+                FlowCardQualityLists item = ((FlowCardQualityLists)datagrid_AmountInfo.SelectedItem);
+                item.QI_Code = qil.QI_Code;
+                item.QI_Name = qil.QI_Name;
+                DataSet ds = new DataSet();
+                string SQl = string.Format(@"Select top 0 * from [FlowCardQuality]");
+                MyDBController.GetConnection();
+                MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
+                List<string> colList = new List<string>();
+                foreach (DataColumn col in ds.Tables["FlowCardQuality"].Columns)
+                {
+                    colList.Add(col.ColumnName);
+                }
+                ds.Tables["FlowCardQuality"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+                DataRow row = ds.Tables["FlowCardQuality"].NewRow();
+                row["ID"] = row["IDNew"] = item.ID;
+                row["FCQ_FlowCardSubID"] = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).ID;
+                row["FCQ_QulityIssueID"] = qil.ID;
+                row["FCQ_ScrapAmount"] = item.FCQ_ScrapAmount;
+                ds.Tables["FlowCardQuality"].Rows.Add(row);
+
+                int updateNum, insertNum;
+                MyDBController.InsertSqlBulk(ds.Tables["FlowCardQuality"], colList, out updateNum, out insertNum);
+                MyDBController.CloseConnection();
+                List<Int64> _fcsID = new List<long>();
+                foreach (FlowCardSubLists _item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
+                {
+                    _fcsID.Add(_item.ID);
+                }
+                list = GetQualityInfo(_fcsID);
+                datagrid_AmountInfo.ItemsSource = list;
+                datagrid_AmountInfo.Items.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// 接收扫描添加的报废信息
+        /// </summary>
+        /// <param name="_qilList"></param>
+        private void AcceptQualityIssueList(List<QualityIssuesLists> _qilList)
+        {
             isChanged = true;
-            FlowCardQualityLists item = ((FlowCardQualityLists)datagrid_AmountInfo.SelectedItem);
-            item.QI_Code = qil.QI_Code;
-            item.QI_Name = qil.QI_Name;
+
             DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select top 0 * from [FlowCardQulity]");
+            string SQl = string.Format(@"Select top 0 * from [FlowCardQuality]");
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCardQulity");
+            MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
             List<string> colList = new List<string>();
-            foreach (DataColumn col in ds.Tables["FlowCardQulity"].Columns)
+            foreach (DataColumn col in ds.Tables["FlowCardQuality"].Columns)
             {
                 colList.Add(col.ColumnName);
             }
-            ds.Tables["FlowCardQulity"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
-            DataRow row = ds.Tables["FlowCardQulity"].NewRow();
-            row["ID"] = row["IDNew"] = item.ID;
-            row["FCQ_FlowCardSubID"] = item.FCQ_FlowCardSubID > -1 ? item.FCQ_FlowCardSubID : ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).ID;
-            row["FCQ_QulityIssueID"] = qil.ID;
-            row["FCQ_ScrapAmount"] = item.FCQ_ScrapAmount;
-            ds.Tables["FlowCardQulity"].Rows.Add(row);
+            ds.Tables["FlowCardQuality"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+            foreach (var _item in _qilList)
+            {
+                if (list.Exists(p => p.FCQ_QulityIssueID.Equals(_item.ID)))
+                {
+                    continue;
+                }
+                else
+                {
+                    FlowCardQualityLists item = new FlowCardQualityLists() { };
+                    item.QI_Code = _item.QI_Code;
+                    item.QI_Name = _item.QI_Name;
+                    DataRow row = ds.Tables["FlowCardQuality"].NewRow();
+                    row["ID"] = row["IDNew"] = item.ID;
+                    row["FCQ_FlowCardSubID"] = item.FCQ_FlowCardSubID > -1 ? item.FCQ_FlowCardSubID : ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).ID;
+                    row["FCQ_QulityIssueID"] = _item.ID;
+                    row["FCQ_ScrapAmount"] = item.FCQ_ScrapAmount;
+                    ds.Tables["FlowCardQuality"].Rows.Add(row);
+                }
+            }
 
             int updateNum, insertNum;
-            MyDBController.InsertSqlBulk(ds.Tables["FlowCardQulity"], colList, out updateNum, out insertNum);
+            MyDBController.InsertSqlBulk(ds.Tables["FlowCardQuality"], colList, out updateNum, out insertNum);
             MyDBController.CloseConnection();
             List<Int64> _fcsID = new List<long>();
             foreach (FlowCardSubLists _item in fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue)))
@@ -546,7 +753,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             datagrid_AmountInfo.ItemsSource = list;
             datagrid_AmountInfo.Items.Refresh();
         }
-
         /// <summary>
         /// 删除报废信息、移除工序操作人员信息
         /// </summary>
@@ -565,7 +771,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         {
                             isChanged = true;
                             FlowCardQualityLists item = (FlowCardQualityLists)datagrid_AmountInfo.SelectedItem;
-                            string SQl = string.Format(@"Delete from [FlowCardQulity] where [ID]={0}", item.ID);
+                            string SQl = string.Format(@"Delete from [FlowCardQuality] where [ID]={0}", item.ID);
                             MyDBController.GetConnection();
                             int x = MyDBController.ExecuteNonQuery(SQl);
                             MyDBController.CloseConnection();
@@ -594,7 +800,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         if (Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除该人员信息吗？该操作不可逆！", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                         {
                             FlowCardSubLists item = (FlowCardSubLists)datagrid_PersonInfo.SelectedItem;
-                            string SQl = string.Format(@"Delete from [FlowCardSub] where [FCS_PersonCode]='{0}' and [FCS_TechRouteID]={1}", item.FCS_PersonCode, item.FCS_TechRouteID);
+                            personDataSource.RemoveAt(datagrid_PersonInfo.SelectedIndex);
+                            string SQl = string.Format(@"Delete from [FlowCardSub] where [FCS_PersonCode]='{0}' and [FCS_TechRouteID]={1} and [FCS_FlowCradID]={2} and [FCS_ProcessID]={3}", item.FCS_PersonCode, item.FCS_TechRouteID, item.FCS_FlowCradID, item.FCS_ProcessID);
                             MyDBController.GetConnection();
                             int x = MyDBController.ExecuteNonQuery(SQl);
                             MyDBController.CloseConnection();
@@ -618,15 +825,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_AddPerson_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            if (datagrid_PersonInfo.HasItems)
+            TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工");
+            trcp.ShowDialog();
+            List<FlowCardSubLists> tempList = new List<FlowCardSubLists>();
+            if ((bool)trcp.DialogResult)
             {
-                TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工");
-                trcp.ShowDialog();
-                if ((bool)trcp.DialogResult)
+                FlowCardSubLists newPerson = new FlowCardSubLists();
+                if (datagrid_PersonInfo.HasItems)
                 {
                     FlowCardSubLists item = (FlowCardSubLists)datagrid_PersonInfo.Items[0];
-                    FlowCardSubLists newPerson = new FlowCardSubLists()
+                    newPerson = new FlowCardSubLists()
                     {
+                        ID = -1,
                         FCS_BeginAmount = item.FCS_BeginAmount,
                         FCS_CheckByID = item.FCS_CheckByID,
                         FCS_CheckByName = item.FCS_CheckByName,
@@ -643,27 +853,163 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FCS_QulifiedAmount = item.FCS_QulifiedAmount,
                         FCS_ScrappedAmount = item.FCS_ScrappedAmount,
                         FCS_TechRouteID = item.FCS_TechRouteID,
+                        FCS_AddAmount = item.FCS_AddAmount,
                         FCS_UnprocessedAm = item.FCS_UnprocessedAm,
                         FCS_PersonCode = trcp.checkPerson.code,
-                        FCS_PersonName = trcp.checkPersonName
+                        FCS_PersonName = trcp.checkPersonName,
+                        FCS_ReportTime = DateTime.Now
                     };
-                    string SQl = string.Format(@"insert into [FlowCardSub]([FCS_FlowCradID],[FCS_ItemId],[FCS_TechRouteID],[FCS_ProcessID],[FCS_ProcessName],[FCS_PersonCode],[FCS_PersonName],[FCS_BeginAmount],[FCS_QulifiedAmount],[FCS_ScrappedAmount],[FCS_UnprocessedAm],[FCS_CheckByID],[FCS_CheckByName],[FCS_PieceAmount],[FCS_PieceDivNum],[FCS_IsFirstProcess],[FCS_IsLastProcess],[FCS_IsReported]) values({0},{1},{2},{3},'{4}','{5}','{6}',{7},{8},{9},{10},{11},'{12}',{13},{14},'{15}','{16}','{17}') ", newPerson.FCS_FlowCradID, newPerson.FCS_ItemId, newPerson.FCS_TechRouteID, newPerson.FCS_ProcessID, newPerson.FCS_ProcessName, newPerson.FCS_PersonCode, newPerson.FCS_PersonName, newPerson.FCS_BeginAmount, 0, 0, newPerson.FCS_UnprocessedAm, newPerson.FCS_CheckByID, newPerson.FCS_CheckByName, newPerson.FCS_PieceAmount, newPerson.FCS_PieceDivNum, newPerson.FCS_IsFirstProcess, newPerson.FCS_IsLastProcess, newPerson.FCS_IsReported);
-                    MyDBController.GetConnection();
-                    int count = MyDBController.ExecuteNonQuery(SQl);
-                    MyDBController.CloseConnection();
-                    if (count == 1)
-                    {
-                        isChanged = true;
-                        Xceed.Wpf.Toolkit.MessageBox.Show("添加成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        fcsls.Add(newPerson);
-                        personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
-                        datagrid_PersonInfo.ItemsSource = personDataSource;
-                    }
                 }
+                else
+                {
+                    TechRouteLists trl = (TechRouteLists)cb_ProcessSequence.SelectedItem;
+                    newPerson = new FlowCardSubLists()
+                    {
+                        ID = -1,
+                        FCS_BeginAmount = fcl.FC_Amount,
+                        //FCS_CheckByID = item.FCS_CheckByID,
+                        FCS_CheckByName = trl.TR_DefaultCheckPersonName,
+                        FCS_FlowCradID = fcl.ID,
+                        FCS_IsFirstProcess = trl.TR_IsFirstProcess,
+                        FCS_IsLastProcess = trl.TR_IsLastProcess,
+                        FCS_IsReported = false,
+                        FCS_ItemId = trl.TR_ItemID,
+                        FCS_PieceAmount = 0,
+                        FCS_PieceDivNum = 0,
+                        FCS_ProcessID = trl.TR_ProcessID,
+                        FCS_ProcessName = trl.TR_ProcessName,
+                        FCS_ProcessSequanece = trl.TR_ProcessSequence,
+                        FCS_QulifiedAmount = 0,
+                        FCS_ScrappedAmount = 0,
+                        FCS_TechRouteID = trl.ID,
+                        FCS_AddAmount = 0,
+                        FCS_UnprocessedAm = 0,
+                        FCS_PersonCode = trcp.checkPerson.code,
+                        FCS_PersonName = trcp.checkPersonName,
+                        FCS_ReportTime = DateTime.Now
+                    };
+                }
+                isChanged = true;
+                tempList.Add(newPerson);
+                FlowCardSubLists.SaveFCSInfo(tempList);
+                fcsls = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
+                fcsls.Sort(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_ProcessSequanece.CompareTo(p2.FCS_ProcessSequanece)));
+                HandleData(tvFlowCard, fcsls);
+                personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
+                datagrid_PersonInfo.ItemsSource = personDataSource;
+                SaveAmount();
+                btn_CancelAmount_Click(null, null);
+                //Xceed.Wpf.Toolkit.MessageBox.Show("添加成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             this.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// 扫描添加人员
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_ScanPersonInfo_Click(object sender, RoutedEventArgs e)
+        {
+            TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工", AcceptPersonList);
+            trcp.ShowDialog();
+        }
+
+        /// <summary>
+        /// 接收扫描添加的人员信息
+        /// </summary>
+        /// <param name="_plList"></param>
+        private void AcceptPersonList(List<PersonLists> _plList)
+        {
+            if (datagrid_PersonInfo.HasItems)
+            {
+                FlowCardSubLists item = (FlowCardSubLists)datagrid_PersonInfo.Items[0];
+                List<FlowCardSubLists> tempList = new List<FlowCardSubLists>();
+                foreach (PersonLists pl in _plList)
+                {
+                    FlowCardSubLists newPerson = new FlowCardSubLists()
+                    {
+                        ID = -1,
+                        FCS_BeginAmount = item.FCS_BeginAmount,
+                        FCS_CheckByID = item.FCS_CheckByID,
+                        FCS_CheckByName = item.FCS_CheckByName,
+                        FCS_FlowCradID = item.FCS_FlowCradID,
+                        FCS_IsFirstProcess = item.FCS_IsFirstProcess,
+                        FCS_IsLastProcess = item.FCS_IsLastProcess,
+                        FCS_IsReported = item.FCS_IsReported,
+                        FCS_ItemId = item.FCS_ItemId,
+                        FCS_PieceAmount = item.FCS_PieceAmount,
+                        FCS_PieceDivNum = item.FCS_PieceDivNum,
+                        FCS_ProcessID = item.FCS_ProcessID,
+                        FCS_ProcessName = item.FCS_ProcessName,
+                        FCS_ProcessSequanece = item.FCS_ProcessSequanece,
+                        FCS_QulifiedAmount = item.FCS_QulifiedAmount,
+                        FCS_ScrappedAmount = item.FCS_ScrappedAmount,
+                        FCS_TechRouteID = item.FCS_TechRouteID,
+                        FCS_AddAmount = item.FCS_AddAmount,
+                        FCS_UnprocessedAm = item.FCS_UnprocessedAm,
+                        FCS_PersonCode = pl.code,
+                        FCS_PersonName = pl.name,
+                        FCS_ReportTime = DateTime.Now
+                    };
+                    if (!fcsls.Exists(p => p.FCS_PersonCode == newPerson.FCS_PersonCode && p.FCS_ProcessSequanece.Equals(newPerson.FCS_ProcessSequanece)))
+                    {
+                        fcsls.Add(newPerson);
+                        tempList.Add(newPerson);
+                    }
+                }
+                FlowCardSubLists.SaveFCSInfo(tempList);
+            }
+            else
+            {
+                TechRouteLists trl = (TechRouteLists)cb_ProcessSequence.SelectedItem;
+                List<FlowCardSubLists> tempList = new List<FlowCardSubLists>();
+                foreach (PersonLists pl in _plList)
+                {
+                    FlowCardSubLists newPerson = new FlowCardSubLists()
+                    {
+                        ID = -1,
+                        FCS_BeginAmount = fcl.FC_Amount,
+                        //FCS_CheckByID = item.FCS_CheckByID,
+                        FCS_CheckByName = trl.TR_DefaultCheckPersonName,
+                        FCS_FlowCradID = fcl.ID,
+                        FCS_IsFirstProcess = trl.TR_IsFirstProcess,
+                        FCS_IsLastProcess = trl.TR_IsLastProcess,
+                        FCS_IsReported = false,
+                        FCS_ItemId = trl.TR_ItemID,
+                        FCS_PieceAmount = 0,
+                        FCS_PieceDivNum = 0,
+                        FCS_ProcessID = trl.TR_ProcessID,
+                        FCS_ProcessName = trl.TR_ProcessName,
+                        FCS_ProcessSequanece = trl.TR_ProcessSequence,
+                        FCS_QulifiedAmount = 0,
+                        FCS_ScrappedAmount = 0,
+                        FCS_TechRouteID = trl.ID,
+                        FCS_AddAmount = 0,
+                        FCS_UnprocessedAm = 0,
+                        FCS_PersonCode = pl.code,
+                        FCS_PersonName = pl.name,
+                        FCS_ReportTime = DateTime.Now
+                    };
+                    if (!fcsls.Exists(p => p.FCS_PersonCode == newPerson.FCS_PersonCode && p.FCS_ProcessSequanece.Equals(newPerson.FCS_ProcessSequanece)))
+                    {
+                        fcsls.Add(newPerson);
+                        tempList.Add(newPerson);
+                    }
+                }
+                FlowCardSubLists.SaveFCSInfo(tempList);
+            }
+            fcsls = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
+            fcsls.Sort(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_ProcessSequanece.CompareTo(p2.FCS_ProcessSequanece)));
+            HandleData(tvFlowCard, fcsls);
+            isAmountSaved = false;
+            isChanged = true;
+            personDataSource = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(cb_ProcessSequence.SelectedValue));
+            datagrid_PersonInfo.ItemsSource = personDataSource;
+            SaveAmount();
+            btn_CancelAmount_Click(null, null);
+            //Xceed.Wpf.Toolkit.MessageBox.Show("添加成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
         /// <summary>
         /// 数量改变
         /// </summary>
@@ -671,7 +1017,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void integer_Amount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            int? scrapamount = MyDBController.FindVisualChild<IntegerUpDown>(datagrid_AmountInfo).Sum(p => p.Value);
+            ((FlowCardQualityLists)datagrid_AmountInfo.SelectedItem).FCQ_ScrapAmount = (int)((IntegerUpDown)sender).Value;
+
+            int? scrapamount = ((List<FlowCardQualityLists>)datagrid_AmountInfo.ItemsSource).Sum(p => p.FCQ_ScrapAmount);
             int qualifiedAmount = (int)(txtb_BeginAmount.Value - scrapamount - txtb_UnprocessedAm.Value);
             if (qualifiedAmount < 0)
             {
@@ -689,6 +1037,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 txtb_ScrappedAmount.Text = scrapamount.ToString();
             }
             isAmountSaved = false;
+            isReported = false;
         }
 
         /// <summary>
@@ -698,7 +1047,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void txtb_QulifiedAmount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            btn_SaveAmount.IsEnabled = true;
+            if (datagrid_PersonInfo.HasItems)
+            {
+                if (!Convert.ToInt32(txtb_QulifiedAmount.Text).Equals(personDataSource[0].FCS_QulifiedAmount))
+                {
+                    btn_SaveAmount.IsEnabled = true;
+                }
+                else
+                {
+                    btn_SaveAmount.IsEnabled = false;
+                }
+            }
         }
 
         /// <summary>
@@ -710,6 +1069,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             if (personDataSource.Count > 0 && !Convert.ToInt32(txtb_BeginAmount.Text).Equals(personDataSource[0].FCS_BeginAmount))
             {
+                isReported = false;
                 isAmountSaved = false;
             }
         }
@@ -723,7 +1083,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
 
         }
-
 
         /// <summary>
         /// 待处理数改变
@@ -750,6 +1109,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                             txtb_UnprocessedAm.Value = (int?)e.OldValue;
                         }
                         isAmountSaved = false;
+                        isReported = false;
                     }
                 }
             }
@@ -763,6 +1123,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_SaveAmount_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
+            SaveAmount();
+            Xceed.Wpf.Toolkit.MessageBox.Show("保存成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 保存报废数量的事情
+        /// </summary>
+        private void SaveAmount()
+        {
             if (datagrid_PersonInfo.HasItems && !isAmountSaved)
             {
                 isChanged = true;
@@ -781,18 +1151,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 foreach (var item in datagrid_AmountInfo.Items)
                 {
                     FlowCardQualityLists _item = (FlowCardQualityLists)item;
-                    string SQl = string.Format(@"Update [FlowCardQulity] set [FCQ_ScrapAmount]={0} where [ID]={1}", _item.FCQ_ScrapAmount, _item.ID);
+                    string SQl = string.Format(@"Update [FlowCardQuality] set [FCQ_ScrapAmount]={0} where [ID]={1}", _item.FCQ_ScrapAmount, _item.ID);
                     MyDBController.ExecuteNonQuery(SQl);
                 }
                 MyDBController.CloseConnection();
                 isAmountSaved = true;
-                HandleFlowCardSubInfo(fcl, fcsls);
             }
-            Xceed.Wpf.Toolkit.MessageBox.Show("保存成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            this.Cursor = Cursors.Arrow;
+            HandleFlowCardSubInfo(fcl, fcsls);
         }
-
-
         /// <summary>
         /// 取消数量更改，重置为原始值
         /// </summary>
@@ -825,6 +1191,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 {
                     txtb_UnprocessedAm.Value = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_UnprocessedAm;//未处理信息
                     txtb_BeginAmount.Value = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_BeginAmount;//投入数
+                    txtb_AddAmount.Text = ((FlowCardSubLists)datagrid_PersonInfo.Items[0]).FCS_AddAmount.ToString();//转序新增数
                 }
                 isAmountSaved = true;
                 #endregion
@@ -836,11 +1203,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             finally
             {
                 string message = isAmountSaved ? "重置成功！" : "重置失败，请重试！";
-                Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, isAmountSaved ? MessageBoxImage.Information : MessageBoxImage.Error);
+                if (!isAmountSaved)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, isAmountSaved ? MessageBoxImage.Information : MessageBoxImage.Error);
+                }
             }
-
         }
-
 
         #endregion
 
@@ -853,44 +1221,83 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_Report_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            bool? flag = CheckIsFinishingReport();
-            isFinished = (bool)flag;
-            if (flag != null)
+            if (datagrid_PersonInfo.HasItems)
             {
-                if (isAmountSaved)
+                bool? flag = CheckIsFinishingReport();
+                isFinished = flag == null ? false : (bool)flag;
+                if (flag != null)
                 {
-                    UpdateProcess();
-                    UpdateQuality();
-                    UpdateFlowCard(flag);
-
-                    handledcount++;
-                    HandleData(tvFlowCard, fcsls);
-                    isChanged = false;
-                    if ((bool)flag)
+                    bool reportFlag = false;
+                    if (!isAmountSaved)
                     {
-                        AfterReportSetting();
+                        if (Xceed.Wpf.Toolkit.MessageBox.Show("您还有数量信息没有保存！\r\n是否保存并报工？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            SaveAmount();
+                            reportFlag = true;
+                        }
+                    }
+                    else
+                    {
+                        reportFlag = true;
+                    }
+                    if (reportFlag)
+                    {
+                        UpdateProcess();
+                        UpdateQuality();
+                        UpdateFlowCard(flag);
+                        HandleFlowCardSubInfo(fcl, fcsls);
+                        handledcount++;
+                        fcsls = FlowCardSubLists.FetchFCS_InfoByFC(fcl);
+                        HandleData(tvFlowCard, fcsls);
+                        isChanged = false;
+                        isReported = true;
+                        if ((bool)flag)
+                        {
+                            btn_TotalReport_Click(sender, e);
+                            AfterReportSetting();
+                        }
                     }
                 }
-                else
-                {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("您还有数量信息没有保存，请先保存数量！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
             }
-
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("没有操作人员，不能报工！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             this.Cursor = Cursors.Arrow;
         }
+
 
         /// <summary>
         /// 报工完成之后，改变操作选项
         /// </summary>
         private void AfterReportSetting()
         {
-            cb_ProcessSequence.IsReadOnly = true;
-            txtb_UnprocessedAm.IsReadOnly = true;
-            datagrid_AmountInfo.IsReadOnly = datagrid_PersonInfo.IsReadOnly = true;
-            btn_CheckPersonSearch.IsEnabled = btn_DeleteScrapInfo.IsEnabled = btn_CancelAmount.IsEnabled = btn_AddScrapInfo.IsEnabled = btn_AddPerson.IsEnabled = btn_DeleteScrapInfo.IsEnabled = btn_RemovePerson.IsEnabled = btn_SaveAmount.IsEnabled = btn_Report.IsEnabled = false;
-            btn_TotalReport.IsEnabled = true;
+
+            fcsls = new List<FlowCardSubLists>();
+            list = new List<FlowCardQualityLists>();
+            personDataSource = new List<FlowCardSubLists>();
+            trList = new List<TechRouteLists>();
+            fcl = new FlowCardLists();
+            tvFlowCard = new TechVersion();
+            isAmountSaved = true;
+            isNewFlowCard = false;
+            isChanged = false;
+            isReported = false;
+            isFinished = false;
+            isAfterHandled = false;
+            handledcount = 0;
+            lastindex = 0;
+            selectErrorCount = 0;
+            textb_FlowCard.Focus();
+            datagrid_AmountInfo.ItemsSource = null;
+            datagrid_PersonInfo.ItemsSource = null;
+            MyDBController.FindVisualChild<TextBox>(this).ForEach(t =>
+            {
+                t.Text = "";
+            });
+            date_PresentDate.SelectedDate = DateTime.Now;
         }
+
         /// <summary>
         /// 检查是否最后一道报工的工序，最后一道工序的话，报工后，整张流转卡的状态变成完工状态。报工信息不再修改！
         /// 是最后一道并且继续，返回true，是最后一道，不继续，返回null，不是最后一道，返回false
@@ -978,11 +1385,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             }
 
             ds.Tables["FlowCardSub"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+
             foreach (FlowCardSubLists item in personDataSource)
             {
                 item.FCS_ScrappedAmount = Convert.ToInt32(txtb_ScrappedAmount.Text);
                 item.FCS_UnprocessedAm = Convert.ToInt32(txtb_UnprocessedAm.Text);
                 item.FCS_QulifiedAmount = Convert.ToInt32(txtb_QulifiedAmount.Text);
+                item.FCS_PieceDivNum = datagrid_PersonInfo.Items.Count;
+                item.FCS_PieceAmount = trList.Find(p => p.ID.Equals(item.FCS_TechRouteID)).TR_IsTestProcess ? item.FCS_BeginAmount + item.FCS_AddAmount : item.FCS_QulifiedAmount;
                 item.FCS_IsReported = true;
                 DataRow row = ds.Tables["FlowCardSub"].NewRow();
                 row["FCS_FlowCradID"] = item.FCS_FlowCradID;
@@ -995,17 +1405,34 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 row["FCS_BeginAmount"] = item.FCS_BeginAmount;
                 row["FCS_QulifiedAmount"] = item.FCS_QulifiedAmount;
                 row["FCS_ScrappedAmount"] = item.FCS_ScrappedAmount;
+                row["FCS_AddAmount"] = item.FCS_AddAmount;
                 row["FCS_UnprocessedAm"] = item.FCS_UnprocessedAm;
                 row["FCS_CheckByID"] = item.FCS_CheckByID;
                 row["FCS_CheckByName"] = item.FCS_CheckByName;
-                row["FCS_PieceAmount"] = item.FCS_PieceAmount;
-                row["FCS_PieceDivNum"] = item.FCS_PieceDivNum;
                 row["FCS_IsFirstProcess"] = item.FCS_IsFirstProcess;
                 row["FCS_IsLastProcess"] = item.FCS_IsLastProcess;
                 row["FCS_IsReported"] = item.FCS_IsReported;
                 row["IDNew"] = row["ID"] = item.ID;
+                TechRouteLists tl = (TechRouteLists)cb_ProcessSequence.SelectedItem;
+                if (tl.TR_IsBackProcess)
+                {
+                    row["FCS_PieceAmount"] = 0;
+                    row["FCS_PieceDivNum"] = personDataSource.Count;
+                }
+                else if (tl.TR_IsTestProcess)
+                {
+                    row["FCS_PieceAmount"] = txtb_BeginAmount.Text.Trim();
+                    row["FCS_PieceDivNum"] = personDataSource.Count;
+                }
+                else
+                {
+                    row["FCS_PieceAmount"] = txtb_QulifiedAmount.Text.Trim();
+                    row["FCS_PieceDivNum"] = personDataSource.Count;
+                }
+                row["FCS_ReportTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
                 ds.Tables["FlowCardSub"].Rows.Add(row);
             }
+
             int updateNum1, insertNum1;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum1, out insertNum1);
         }
@@ -1017,26 +1444,26 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             MyDBController.GetConnection();
             DataSet ds = new DataSet();
-            string SQl = "Select top 0 * from [FlowCardQulity]";
-            MyDBController.GetDataSet(SQl, ds, "FlowCardQulity");
+            string SQl = "Select top 0 * from [FlowCardQuality]";
+            MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
             List<string> colList = new List<string>();
-            foreach (DataColumn col in ds.Tables["FlowCardQulity"].Columns)
+            foreach (DataColumn col in ds.Tables["FlowCardQuality"].Columns)
             {
                 colList.Add(col.ColumnName);
             }
-            ds.Tables["FlowCardQulity"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
+            ds.Tables["FlowCardQuality"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
             foreach (FlowCardQualityLists fcql in list)
             {
-                DataRow row = ds.Tables["FlowCardQulity"].NewRow();
+                DataRow row = ds.Tables["FlowCardQuality"].NewRow();
                 row["ID"] = row["IDNew"] = fcql.ID;
                 row["FCQ_FlowCardSubID"] = fcql.FCQ_FlowCardSubID;
                 row["FCQ_QulityIssueID"] = fcql.FCQ_QulityIssueID;
                 row["FCQ_ScrapAmount"] = fcql.FCQ_ScrapAmount;
-                ds.Tables["FlowCardQulity"].Rows.Add(row);
+                ds.Tables["FlowCardQuality"].Rows.Add(row);
             }
 
             int updateNum2, insertNum2;
-            MyDBController.InsertSqlBulk(ds.Tables["FlowCardQulity"], colList, out updateNum2, out insertNum2);
+            MyDBController.InsertSqlBulk(ds.Tables["FlowCardQuality"], colList, out updateNum2, out insertNum2);
             MyDBController.CloseConnection();
             Xceed.Wpf.Toolkit.MessageBox.Show(string.Format("报工成功"), "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -1062,15 +1489,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void btn_TotalReport_Click(object sender, RoutedEventArgs e)
         {
             isAfterHandled = true;
+            if (fcsls.Any(p => p.FCS_ScrappedAmount > 0))
+            {
+                ScrapReportList.GenerateNewSR(fcl, fcsls);
+            }
+            if (fcsls.LastOrDefault().FCS_IsLastProcess)
+            {
+                FinishReportList.GenerateNewFR(fcl, fcsls);
+            }
         }
 
-        /// <summary>
-        /// 所有工序完成报工之后，就可以进行整个流转卡的报工了，报工之后进行类似于完工报、入库单等等。
-        /// </summary>
-        private void TotalReport()
-        {
-
-        }
 
         /// <summary>
         /// 关闭事件
@@ -1103,17 +1531,19 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             }
             else if (isFinished && !isAfterHandled)
             {
-                if (Xceed.Wpf.Toolkit.MessageBox.Show("流转卡所有工序都已报工，但是并没有进行完工操作，" + "\r\n" + "是否要退出？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                {
+                //if (Xceed.Wpf.Toolkit.MessageBox.Show("流转卡所有工序都已报工，但是并没有进行完工操作，" + "\r\n" + "是否要退出？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                //{
 
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
+                //}
+                //else
+                //{
+                //    e.Cancel = true;
+                //}
             }
         }
         #endregion
+
+
 
     }
 }

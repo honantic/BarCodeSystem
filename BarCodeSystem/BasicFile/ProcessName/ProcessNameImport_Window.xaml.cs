@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Data;
+using BarCodeSystem.PublicClass.HelperClass;
 
 namespace BarCodeSystem
 {
@@ -46,10 +47,10 @@ namespace BarCodeSystem
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //这段代码在正式环境中将被注释掉，测试用
-            MyDBController.Server = User_Info.server[1];
-            MyDBController.Database = User_Info.database[1];
-            MyDBController.Pwd = User_Info.pwd[1];
-            MyDBController.Uid = User_Info.uid[1];
+            //MyDBController.Server = User_Info.server[1];
+            //MyDBController.Database = User_Info.database[1];
+            //MyDBController.Pwd = User_Info.pwd[1];
+            //MyDBController.Uid = User_Info.uid[1];
 
 
             //去除关闭按钮
@@ -103,25 +104,35 @@ namespace BarCodeSystem
 
                 int x = copiedData.Rows.Count;
                 int y = exisitProcessName.Rows.Count;
-
+                List<DBLog> _dbLogList = new List<DBLog>();
                 //循环检查是否有质量档案已经存在，存在，则将ID值赋值给IDNew
                 for (int i = 0; i < x; i++)
                 {
+                    DBLog _dbLog = new DBLog();
+                    _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
+                    _dbLog.DBL_OperateTable = "ProcessName";
+                    _dbLog.DBL_OperateTime = DateTime.Now.ToString();
+                    _dbLog.DBL_Content = "更新工序信息:" + copiedData.Rows[i]["PN_Code"].ToString();
+                    _dbLog.DBL_OperateType = OperateType.Insert;
+                    
                     for (int j = 0; j < y; j++)
                     {
                         if (copiedData.Rows[i]["PN_Code"].ToString()
                             == exisitProcessName.Rows[j]["PN_Code"].ToString())
                         {
                             copiedData.Rows[i]["IDNew"] = exisitProcessName.Rows[j]["ID"];
+                            _dbLog.DBL_OperateType = OperateType.Update;
                             break;
                         }
                     }
+                    _dbLogList.Add(_dbLog);
                 }
                 MyDBController.GetConnection();
                 int updateNum = 0, insertNum = 0;
                 MyDBController.InsertSqlBulk(copiedData, colList, out updateNum, out insertNum);
                 MyDBController.CloseConnection();
                 string message = string.Format(@"共更新 {0} 条质量档案！" + "\n新增 {1} 条质量档案！", updateNum, insertNum);
+                DBLog.WriteDBLog(_dbLogList);
                 if (MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                     MessageBoxResult.OK)
                 {

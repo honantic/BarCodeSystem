@@ -35,7 +35,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <GridSplitter Grid.Column="1" Width="5" Foreground="LightBlue" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
-                <DataGrid Name="datagrid_DisPlanVer" ColumnWidth="Auto" SelectionChanged="datagrid_DisPlanVer_SelectionChanged" CanUserAddRows="False" IsReadOnly="True" AutoGenerateColumns="False">
+                <DataGrid Name="datagrid_DisPlanVer" ColumnWidth="Auto" MouseDoubleClick="datagrid_DisPlanVer_MouseDoubleClick" SelectionChanged="datagrid_DisPlanVer_SelectionChanged" CanUserAddRows="False" IsReadOnly="True" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="料品名" Binding="{Binding Path=DPV_ItemName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="编号" Binding="{Binding Path=DPV_ItemCode}"></DataGridTextColumn>

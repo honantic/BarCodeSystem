@@ -77,7 +77,7 @@
                   ItemContainerStyleSelector="{DynamicResource mySelector}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="工序序号" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
+                        <GridViewColumn Header="行号" DisplayMemberBinding="{Binding Path=TR_ProcessSequence}"></GridViewColumn>
                         <GridViewColumn Header="工序名称" DisplayMemberBinding="{Binding Path=TR_ProcessName}"></GridViewColumn>
                         <GridViewColumn Header="工时" DisplayMemberBinding="{Binding Path=TR_WorkHour}"></GridViewColumn>
                         <GridViewColumn Header="工作中心" DisplayMemberBinding="{Binding Path=WC_Department_Name}"></GridViewColumn>
