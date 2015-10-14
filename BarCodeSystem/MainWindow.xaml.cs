@@ -25,6 +25,7 @@ using BarCodeSystem.BasicFile.QualityIssues;
 using System.Data.SqlClient;
 using BarCodeSystem.TechRoute.TechRouteWorkHourManually;
 using BarCodeSystem.PublicClass.HelperClass;
+using BarCodeSystem.FileQuery.ProduceOrderQuery;
 
 namespace BarCodeSystem
 {
@@ -984,6 +985,11 @@ namespace BarCodeSystem
         #endregion
 
         #region 档案查询
+        /// <summary>
+        /// 流转卡查询
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void item_FlowCardQuery_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
@@ -1005,6 +1011,43 @@ namespace BarCodeSystem
                 topFrame.Content = fcq;
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "流转卡查询";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 生产订单查询
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_ProduceOrderQuery_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "生产订单卡查询")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                ProduceOrderQuery_Page poq = new ProduceOrderQuery_Page() { ShowsNavigationUI = true };
+                topFrame.Content = poq;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "生产订单卡查询";
                 la.Content = topFrame;
 
                 ldp.Children.Add(la);
@@ -1257,7 +1300,9 @@ namespace BarCodeSystem
 
 
             MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46");
+            
         }
+
 
 
 

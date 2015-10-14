@@ -273,6 +273,49 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!--按钮鼠标悬挂按钮-->
+    <Style TargetType="Button" x:Key="bd_SelectStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#458B00"></Setter>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard x:Name="growStoryBoard">
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             To="135" Duration="0:0:1.5">
+                                <DoubleAnimation.EasingFunction>
+                                    <ElasticEase EasingMode="EaseOut" Oscillations="8"></ElasticEase>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard x:Name="fadeStoryBoard">
+                            <DoubleAnimation Storyboard.TargetProperty="Width"
+                                             To="125" Duration="0:0:1.5">
+                                <DoubleAnimation.EasingFunction>
+                                    <ElasticEase EasingMode="EaseOut" Oscillations="4" Springiness="5"></ElasticEase>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!--listviewitem样式，没用着。-->
     <Style TargetType="ListViewItem" x:Key="lbi_NormalStyle">
         <Setter Property="Template">

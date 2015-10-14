@@ -270,7 +270,7 @@ namespace BarCodeSystem
         /// 新账号登陆的话,将账号添加进xml文档
         /// 如果登录账号密码发生更改,在登录成功的状态下,把账号密码更新进入XML文档
         /// </summary>
-        private void SaveUserAccountInfo()
+        public  void SaveUserAccountInfo()
         {
             bool IsNewAccount = true, IsKeepPassWord = (bool)cBox_KeepPassWord.IsChecked, IsAutoLogin = (bool)cBox_AutoLogin.IsChecked;
             string passWord = "";

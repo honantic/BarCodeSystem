@@ -20,7 +20,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <summary>
         /// 员工姓名
         /// </summary>
-        public string SS_PersonName
+        public string PersonName
         {
             get;
             set;
@@ -28,7 +28,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <summary>
         /// 员工编码
         /// </summary>
-        public string SS_PersonCode
+        public string PersonCode
         {
             get;
             set;
@@ -37,7 +37,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <summary>
         /// 员工工资
         /// </summary>
-        public decimal SS_Salary
+        public decimal Salary
         {
             get;
             set;
@@ -62,7 +62,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <summary>
         /// 合格数
         /// </summary>
-        public int QulifiedAmount
+        public decimal QulifiedAmount
         {
             get;
             set;
@@ -77,6 +77,16 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             set;
         }
 
+
+        /// <summary>
+        /// 人员数量
+        /// </summary>
+        public decimal PeopleAmount
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// 流转卡号
         /// </summary>
@@ -85,5 +95,63 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             get;
             set;
         }
+
+        /// <summary>
+        /// 部门名称
+        /// </summary>
+        public string Department_Name
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 报工时间
+        /// </summary>
+        public string ReportTime
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 工时
+        /// </summary>
+        public decimal WorkHour
+        {
+            get;
+            set;
+        }
+
+
+        /// <summary>
+        /// 流转卡ID
+        /// </summary>
+        public Int64 FC_ID
+        {
+            get;
+            set;
+
+        }
+
+        /// <summary>
+        /// 工艺路线ID
+        /// </summary>
+        public Int64 TR_ID
+        {
+            get;
+            set;
+        }
+
+
+        /// <summary>
+        /// 工序ID
+        /// </summary>
+        public Int64 ProcessID
+        {
+            get;
+            set;
+        }
+
     }
 }

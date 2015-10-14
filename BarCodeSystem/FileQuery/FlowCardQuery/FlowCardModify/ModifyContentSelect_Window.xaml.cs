@@ -155,7 +155,8 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             this.Cursor = Cursors.Wait;
             if (fc != null && fcsls != null)
             {
-                FlowCardModify_Window fm = new FlowCardModify_Window(fc, fcsls, tv, sfc);
+                //FlowCardModify_Window fm = new FlowCardModify_Window(fc, fcsls, tv, sfc);
+                FlowCardModify_Window fm = new FlowCardModify_Window(fc, fcsls, tv);
                 fm.ShowDialog();
                 if (fm.DialogResult == true)
                 {

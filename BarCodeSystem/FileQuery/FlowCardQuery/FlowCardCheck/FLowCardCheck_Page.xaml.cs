@@ -21,9 +21,9 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
     /// <summary>
     /// FLowCardCheck_Page.xaml 的交互逻辑
     /// </summary>
-    public partial class FLowCardCheck_Page : Page
+    public partial class FlowCardCheck_Page : Page
     {
-        public FLowCardCheck_Page()
+        public FlowCardCheck_Page()
         {
             InitializeComponent();
         }
@@ -31,7 +31,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <summary>
         /// 构造函数
         /// </summary>
-        public FLowCardCheck_Page(SubmitFlowCard _sfc)
+        public FlowCardCheck_Page(SubmitFlowCard _sfc)
         {
             InitializeComponent();
             sfc = _sfc;
@@ -153,6 +153,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                 datagrid_FlowCardList.SelectedIndex = 0;
                 btn_Select_Click(null, null);
             }
+            else if (datagrid_FlowCardList.Items.Count == 0)
+            {
+                MyDBController.FindVisualParent<FlowCardQuery_Page>(this).ForEach(p => p.ClearInfo());
+            }
             lastIndex = -1;
         }
 
@@ -164,6 +168,16 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         private void datagrid_FlowCardList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             btn_Select_Click(sender, e);
+        }
+
+        /// <summary>
+        /// 选中项改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_FlowCardList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            datagrid_FlowCardList_MouseDoubleClick(null, null);
         }
     }
 }

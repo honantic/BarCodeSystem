@@ -44,7 +44,7 @@
             <GroupBox.Header>
                 <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡列表</TextBlock>
             </GroupBox.Header>
-            <DataGrid IsReadOnly="True" MouseDoubleClick="datagrid_FlowCardList_MouseDoubleClick" Name="datagrid_FlowCardList" RowHeaderWidth="30" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+            <DataGrid IsReadOnly="True" SelectionChanged="datagrid_FlowCardList_SelectionChanged" MouseDoubleClick="datagrid_FlowCardList_MouseDoubleClick" Name="datagrid_FlowCardList" RowHeaderWidth="30" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Path=FC_Code}" Header="流转卡编号"></DataGridTextColumn>
                 </DataGrid.Columns>

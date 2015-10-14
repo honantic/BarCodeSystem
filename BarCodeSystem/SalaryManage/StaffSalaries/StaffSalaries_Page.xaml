@@ -23,13 +23,20 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <GroupBox Name="gb_SearchInfo" Margin="5" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="3">
-            <GroupBox.Header>
-                <TextBlock Name="textb_SearchInfo"  Style="{StaticResource textb_NormalStyle}" FontFamily="华文行楷"></TextBlock>
-            </GroupBox.Header>
-        </GroupBox>
+
+
+        <GridSplitter  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5" Grid.Row="1" Grid.RowSpan="3" Margin="0 10 0 0">
+            <GridSplitter.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="LightBlue" Offset="0.8"></GradientStop>
+                    <GradientStop Color="Salmon" Offset="0.4"></GradientStop>
+                    <GradientStop Color="LightGreen"></GradientStop>
+                </LinearGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
 
         <Label Grid.ColumnSpan="3">
             <TextBlock FontSize="15" Foreground="White">员工工资查询页面</TextBlock>
@@ -44,7 +51,7 @@
         </Label>
         <GridSplitter Grid.Row="2" Height="5" Margin="5 0"  Foreground="AliceBlue" VerticalAlignment="Center" HorizontalAlignment="Stretch" ></GridSplitter>
         <Grid Grid.Row="1"  >
-            <GroupBox Name="gb_header" Margin="5">
+            <GroupBox Name="gb_header">
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}" >人员工资查询条件</TextBlock>
                 </GroupBox.Header>
@@ -108,11 +115,11 @@
 
                     <DataGrid ClipboardCopyMode="None" CanUserDeleteRows="False" MouseDoubleClick="datagrid_Salaries_MouseDoubleClick"  CanUserReorderColumns="False" CanUserSortColumns="False" 
                               CanUserAddRows="False" AutoGenerateColumns="False" ColumnWidth="Auto" Name="datagrid_Salaries"  
-                              RowHeaderWidth="30" >
+                              RowHeaderWidth="30" SelectionChanged="datagrid_Salaries_SelectionChanged" >
                         <DataGrid.Columns >
-                            <DataGridTextColumn Header="人员编码" IsReadOnly="True" Binding="{Binding Path=SS_PersonCode}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="人员姓名" IsReadOnly="True" Binding="{Binding Path=SS_PersonName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="工资" IsReadOnly="True"  Binding="{Binding Path=SS_Salary}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="人员编码" IsReadOnly="True" Binding="{Binding Path=PersonCode}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="人员姓名" IsReadOnly="True" Binding="{Binding Path=PersonName}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="工资" IsReadOnly="True"  Binding="{Binding Path=Salary}"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -121,14 +128,24 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <toolkit:WatermarkTextBox Name="txtb_SearchKey" VerticalAlignment="Center" TextChanged="txtb_SearchKey_TextChanged" Watermark="输入筛选条件" FontSize="14" VerticalContentAlignment="Center" ></toolkit:WatermarkTextBox>
-                        <Button Content="查询" MaxWidth="120" MinWidth="80" Name="btn_Query" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Query_Click"></Button>
-                        <Button Content="查看明细" MaxWidth="120" MinWidth="80"  Name="btn_Detail" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Detail_Click"></Button>
+                        <Button Content="导出" MaxWidth="120" MinWidth="80" Name="btn_Export" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_Export_Click"></Button>
+                        <Button Content="查询" MaxWidth="120" MinWidth="80" Name="btn_Query" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_Query_Click"></Button>
+                        <Button Content="查看明细" MaxWidth="120" MinWidth="80"  Name="btn_Detail" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_Detail_Click"></Button>
                     </Grid>
                 </Grid>
             </GroupBox>
         </Grid>
-        <Frame Name="frame_Search" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden" Margin="5" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></Frame>
+        
+        <GroupBox Grid.Row="1" Grid.Column="2" Grid.RowSpan="3">
+            <GroupBox.Header>
+                <TextBlock Text="查询结果" Style="{StaticResource textb_NormalStyle}"></TextBlock>
+            </GroupBox.Header>
+
+            <Frame Name="frame_Search" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden" Margin="5" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"></Frame>
+        </GroupBox>
+        
     </Grid>
 </Page>

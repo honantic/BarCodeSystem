@@ -32,6 +32,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
     public delegate void SubmitProduceOrderInfo(ProduceOrderLists pol);
 
     /// <summary>
+    /// 接收生产订单查询函数的委托
+    /// </summary>
+    /// <param name="polList"></param>
+    public delegate void SubmitProduceOrderList(List<ProduceOrderLists> polList);
+    /// <summary>
     /// 接收人员信息的委托
     /// </summary>
     /// <param name="person"></param>

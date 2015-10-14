@@ -631,7 +631,7 @@ public class MyDBController
         return flag;
     }
 
- 
+
     /// <summary>
     /// 快捷更新数据库，自动根据ID区分update和insert。海量数据秒级更新
     /// </summary>
@@ -722,7 +722,7 @@ public class MyDBController
     }
 
     /// <summary>
-    /// 将list转换成指定结构的dt
+    /// 将list转换成指定结构的dt，用来进行数据库更新的
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="_list"></param>
@@ -751,7 +751,49 @@ public class MyDBController
                 if (colList.Contains(prop.Name))
                 {
                     string name = prop.Name;
-                    row[name] = prop.GetValue(item);
+                    row[name] = prop.GetValue(item, null);
+                }
+            }
+            _dt.Rows.Add(row);
+        }
+        return _dt;
+    }
+
+    /// <summary>
+    /// 将list转换成指定结构的dt,用来excel导出
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="_list"></param>
+    /// <returns></returns>
+    public static DataTable ListToDataTable<T>(List<T> _list)
+    {
+        DataTable _dt = new DataTable();
+        PropertyInfo[] props = null;
+        List<string> colList = new List<string>();
+        if (_list.Count > 0)
+        {
+            props = _list[0].GetType().GetProperties();
+        }
+
+        foreach (PropertyInfo prop in props)
+        {
+            _dt.Columns.Add(prop.Name, prop.PropertyType);
+        }
+
+        foreach (DataColumn col in _dt.Columns)
+        {
+            colList.Add(col.ColumnName);
+        }
+
+        foreach (T item in _list)
+        {
+            DataRow row = _dt.NewRow();
+            foreach (PropertyInfo prop in props)
+            {
+                if (colList.Contains(prop.Name))
+                {
+                    string name = prop.Name;
+                    row[name] = prop.GetValue(item, null);
                 }
             }
             _dt.Rows.Add(row);
@@ -784,9 +826,9 @@ public class MyDBController
                     {
                         if (!pi.PropertyType.IsGenericType)
                         {
-                            if (pi.GetValue(p) != null)
+                            if (pi.GetValue(p, null) != null)
                             {
-                                pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), pi.PropertyType));
+                                pi.SetValue(item, Convert.ChangeType(pi.GetValue(p, null), pi.PropertyType), null);
                             }
                         }
                         else
@@ -794,9 +836,9 @@ public class MyDBController
                             Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
                             if (genericTypeDefinition == typeof(Nullable<>))
                             {
-                                if (pi.GetValue(p) != null)
+                                if (pi.GetValue(p, null) != null)
                                 {
-                                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), Nullable.GetUnderlyingType(pi.PropertyType)));
+                                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(p, null), Nullable.GetUnderlyingType(pi.PropertyType)), null);
                                 }
                             }
                         }
@@ -822,9 +864,9 @@ public class MyDBController
                     {
                         if (!pi.PropertyType.IsGenericType)
                         {
-                            if (pi.GetValue(_t) != null)
+                            if (pi.GetValue(_t, null) != null)
                             {
-                                pi.SetValue(item, Convert.ChangeType(pi.GetValue(_t), pi.PropertyType));
+                                pi.SetValue(item, Convert.ChangeType(pi.GetValue(_t, null), pi.PropertyType), null);
                             }
                         }
                         else
@@ -832,70 +874,14 @@ public class MyDBController
                             Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
                             if (genericTypeDefinition == typeof(Nullable<>))
                             {
-                                if (pi.GetValue(_t) != null)
+                                if (pi.GetValue(_t, null) != null)
                                 {
-                                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(_t), Nullable.GetUnderlyingType(pi.PropertyType)));
+                                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(_t, null), Nullable.GetUnderlyingType(pi.PropertyType)), null);
                                 }
                             }
                         }
                     });
         return item;
-    }
-
-    /// <summary>
-    /// 异步地完成list的复制工作
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="_list"></param>
-    /// <param name="_destList"></param>
-    private static async void ListCopyAsync<T>(List<T> _list, List<T> _destList) where T : new()
-    {
-        List<Task> taskList = new List<Task>();
-        PropertyInfo[] props = null;
-        if (_list.Count > 0)
-        {
-            props = _list[0].GetType().GetProperties();
-        }
-
-        _list.ForEach(
-            p =>
-            {
-                Task t = new Task(() =>
-                {
-                    T item = new T();
-                    props.ToList().ForEach(
-                        pi =>
-                        {
-
-                            if (!pi.PropertyType.IsGenericType)
-                            {
-                                if (pi.GetValue(p) != null)
-                                {
-                                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), pi.PropertyType));
-                                }
-                            }
-                            else
-                            {
-                                Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
-                                if (genericTypeDefinition == typeof(Nullable<>))
-                                {
-                                    if (pi.GetValue(p) != null)
-                                    {
-                                        pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), Nullable.GetUnderlyingType(pi.PropertyType)));
-                                    }
-                                }
-                            }
-                            _destList.Add(item);
-                        });
-                });
-                taskList.Add(t);
-            });
-
-        var copyTasks = taskList.Select(async t =>
-        {
-            await t;
-        }).ToArray();
-        await Task.WhenAll(copyTasks);
     }
 
     /// <summary>

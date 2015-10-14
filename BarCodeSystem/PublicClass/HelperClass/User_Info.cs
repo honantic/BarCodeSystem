@@ -67,7 +67,7 @@ namespace BarCodeSystem
         /// </summary>
         public static string[] server = { "172.16.100.64", "172.16.100.53", "172.16.100.40" };
         //public static string[] server = { "172.16.100.24", "172.16.100.40" };
-        //public static string[] server = { "172.16.100.24", "127.0.0.1" };
+        //public static string[] server = { "172.16.100.24", "172.16.52.150" };
 
         /// <summary>
         /// U9测试数据库；条码测试数据库

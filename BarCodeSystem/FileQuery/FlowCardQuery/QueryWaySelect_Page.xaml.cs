@@ -122,7 +122,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
 
             this.Cursor = Cursors.Wait;
-            frame_QueryWay.Navigate(new FLowCardCheck_Page(sfc));
+            frame_QueryWay.Navigate(new FlowCardCheck_Page(sfc));
             this.Cursor = Cursors.Arrow;
         }
 

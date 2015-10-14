@@ -54,7 +54,10 @@ namespace BarCodeSystem
             if (loadCount == 0)
             {
                 ListBeforeSearch();
+
+
                 CreatTableAndCol();
+
                 loadCount++;
             }
         }
@@ -79,6 +82,8 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "QualityIssue");
 
+
+            End_Date += " 23:59:59";
 
             SQl = @" select " +
                "D.FC_CreateTime, " +
@@ -137,20 +142,14 @@ namespace BarCodeSystem
 
             foreach (DataRow row in drc)
             {
-                if (row["QI_Name"] is DBNull)
+                if (row["QI_Name"] is DBNull || btable.Columns.Contains(row["QI_Name"].ToString()))
                 {
 
                 }
                 else
                 {
                     //datagrid_BadProductListDetail.Columns.Add(new DataGridTextColumn() { Header = row["QI_Name"].ToString(), Binding = new System.Windows.Data.Binding(row["QI_Name"].ToString()) });
-                    if (btable.Columns.Contains(row["QI_Name"].ToString()))
-                    {
-                    }
-                    else
-                    {
-                        btable.Columns.Add(row["QI_Name"].ToString(), typeof(string));
-                    }
+                    btable.Columns.Add(row["QI_Name"].ToString(), typeof(string));
                 }
             }
 
@@ -229,9 +228,9 @@ namespace BarCodeSystem
         private void export_btn_Click(object sender, RoutedEventArgs e)
         {
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
-            //qk.OutToExcel(btable);
+            qk.OutToExcel(btable);
 
-            QkRowChangeToColClass.CreateExcelFileForDataTable(btable);
+            //QkRowChangeToColClass.CreateExcelFileForDataTable(btable);
 
             System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }

@@ -26,25 +26,16 @@ namespace BarCodeSystem
         DataSet ds = new DataSet();
         string Dept_Code;
         List<WorkCenterLists> wcls = new List<WorkCenterLists>();
-        int loadCount = 0;
+        int loadcount = 0;
 
         public BadProductSummary_Page()
         {
-            InitializeComponent();
-        }
-
-        /// <summary>
-        /// 窗口加载事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (loadCount == 0)
+            if (loadcount == 0)
             {
-                ListBeforeSearch();
-                loadCount++;
+                InitializeComponent();
+                loadcount++;
             }
+            
         }
 
         /// <summary>
@@ -71,7 +62,15 @@ namespace BarCodeSystem
             datagrid_Dept.ItemsSource = wcls;
         }
 
-
+        /// <summary>
+        /// 窗口加载事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListBeforeSearch();
+        }
 
 
 
@@ -133,7 +132,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void datagrid_Dept_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            btn_Chose_Click(sender, e);
+            btn_Chose_Click(sender,e);
         }
     }
 }

@@ -19,12 +19,12 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
-            <ColumnDefinition Width="4.5*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0 10" Width="5" Grid.RowSpan="4">
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5" Grid.Row="1" Grid.RowSpan="3" Margin="0 10 0 0">
             <GridSplitter.Background>
                 <LinearGradientBrush>
                     <GradientStop Color="LightBlue" Offset="0.8"></GradientStop>
@@ -35,12 +35,7 @@
             
         </GridSplitter>
 
-        <GroupBox  Margin="5" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="3">
-            <GroupBox.Header >
-                <TextBlock Name="txtb_SearchInfo" Style="{StaticResource textb_NormalStyle}" FontFamily="华文行楷"></TextBlock>
-            </GroupBox.Header>
-        </GroupBox>
-
+       
         <Label Grid.ColumnSpan="3">
             <TextBlock FontSize="15" Foreground="White">不良品明细表查询页面</TextBlock>
             <Label.Background>
@@ -52,11 +47,11 @@
                 </LinearGradientBrush>
             </Label.Background>
         </Label>
-        <GridSplitter Grid.Row="2" Height="5" Margin="5 0"  Foreground="AliceBlue" VerticalAlignment="Center" HorizontalAlignment="Stretch"></GridSplitter>
+        <GridSplitter Grid.Row="2" Height="5" Margin="5 10"  Foreground="AliceBlue" VerticalAlignment="Center" HorizontalAlignment="Stretch"></GridSplitter>
         <Grid Grid.Row="1">
-            <GroupBox Name="gb_header" Margin="5">
+            <GroupBox Name="gb_header">
                 <GroupBox.Header>
-                    <TextBlock Text="不良品明细查询条件" Style="{StaticResource textb_NormalStyle}"></TextBlock>
+                    <TextBlock Text="不良品明细表查询条件" Style="{StaticResource textb_NormalStyle}"></TextBlock>
                 </GroupBox.Header>
 
                 <Grid Name="BadProductHeadGrid">
@@ -70,8 +65,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition ></ColumnDefinition>
-
                     </Grid.ColumnDefinitions>
 
 
@@ -89,7 +82,7 @@
                     <DatePicker  Name="datepicker_StartDate"  Width="180" Cursor="Hand" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>
 
                     <TextBlock Text="结束日期：" Grid.Row="2" Grid.Column="0" Margin="0 0 5 0" VerticalAlignment="Center" HorizontalAlignment="Right" ></TextBlock>
-                    <DatePicker  Name="datepicker_EndDate"  Width="180" Cursor="Hand" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>
+                    <DatePicker  Name="datepicker_EndDate" SelectedDate="{x:Static sys:DateTime.Now}" Width="180" Cursor="Hand" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></DatePicker>
 
                     <TextBlock Text="料品型号：" Grid.Row="3" Grid.Column="0" Margin="0 0 5 0" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                     <toolkit:WatermarkTextBox Name="txtb_SearchKey" VerticalAlignment="Center" TextChanged="txtb_SearchKey_TextChanged"  FontSize="14" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="180"></toolkit:WatermarkTextBox>
@@ -111,7 +104,7 @@
 
                     <DataGrid ClipboardCopyMode="None" CanUserDeleteRows="False"  CanUserReorderColumns="False" CanUserSortColumns="False" 
                               CanUserAddRows="False" AutoGenerateColumns="False" ColumnWidth="Auto" Name="datagrid_Dept"  
-                              RowHeaderWidth="30" Width="355" MouseLeftButtonDown="datagrid_Dept_MouseLeftButtonDown" HorizontalAlignment ="Left">
+                              RowHeaderWidth="30"  MouseLeftButtonDown="datagrid_Dept_MouseLeftButtonDown" >
                         <DataGrid.Columns >
                             <DataGridTextColumn Header="车间编码" IsReadOnly="True" Binding="{Binding Path=department_code}"></DataGridTextColumn>
                             <DataGridTextColumn Header="车间名称" IsReadOnly="True" Binding="{Binding Path=department_name}"></DataGridTextColumn>
@@ -126,17 +119,22 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         
-                        <Button Content="选择" MaxWidth="120" MinWidth="80"  Name="btn_Chose" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Chose_Click"></Button>
-                        <Button Content="查询" MaxWidth="120" MinWidth="80"  Name="btn_Query" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" Click="btn_Query_Click"></Button>
+                        <Button Content="选择" MaxWidth="120" MinWidth="80"  Name="btn_Chose" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Left" Width="80" Click="btn_Chose_Click"></Button>
+                        <Button Content="查询" MaxWidth="120" MinWidth="80"  Name="btn_Query" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_Query_Click"></Button>
                     </Grid>
 
                 </Grid>
-
-
-                 
             </GroupBox>
             
         </Grid>
-        <Frame Name="frame_Search" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden" Margin="10,5,0,5" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"></Frame>
+        <GroupBox Grid.Column="2" Grid.Row="1" Grid.RowSpan="3">
+            <GroupBox.Header>
+                <TextBlock Text="不良品明细表" Style="{StaticResource textb_NormalStyle}"></TextBlock>
+            </GroupBox.Header>
+
+            <Frame Name="frame_Search" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden" 
+               Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3"></Frame>
+        </GroupBox>
+        
     </Grid>
 </Page>

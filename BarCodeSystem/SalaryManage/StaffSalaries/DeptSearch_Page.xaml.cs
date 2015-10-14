@@ -165,5 +165,10 @@ namespace BarCodeSystem
                 btn_Submit_Click(null, null);
             }
         }
+
+        private void btn_Export_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

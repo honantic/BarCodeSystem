@@ -32,8 +32,8 @@
     <SuiteName>生产条码软件</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.10.13.01</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.10.14.02</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -156,11 +156,9 @@
     </Compile>
     <Compile Include="FileQuery\BadProduct\BadProductListDetail_Page.xaml.cs">
       <DependentUpon>BadProductListDetail_Page.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileQuery\BadProduct\BadProductList_Page.xaml.cs">
       <DependentUpon>BadProductList_Page.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileQuery\BadProduct\BadProductSummaryDetail_Page.xaml.cs">
       <DependentUpon>BadProductSummaryDetail_Page.xaml</DependentUpon>
@@ -168,8 +166,8 @@
     <Compile Include="FileQuery\BadProduct\BadProductSummary_Page.xaml.cs">
       <DependentUpon>BadProductSummary_Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileQuery\FlowCardQuery\FlowCardCheck\FLowCardCheck_Page.xaml.cs">
-      <DependentUpon>FLowCardCheck_Page.xaml</DependentUpon>
+    <Compile Include="FileQuery\FlowCardQuery\FlowCardCheck\FlowCardCheck_Page.xaml.cs">
+      <DependentUpon>FlowCardCheck_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileQuery\FlowCardQuery\FlowCardModify\FCPersonModify_Window.xaml.cs">
       <DependentUpon>FCPersonModify_Window.xaml</DependentUpon>
@@ -202,6 +200,24 @@
       <DependentUpon>QueryByOrderCode_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileQuery\FlowCardQuery\QueryWaySelect_Page.xaml.cs">
+      <DependentUpon>QueryWaySelect_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.xaml.cs">
+      <DependentUpon>ProduceOrderQuery_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\QueryByFCCode_Page.xaml.cs">
+      <DependentUpon>QueryByFCCode_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\QueryByItemCode_Page.xaml.cs">
+      <DependentUpon>QueryByItemCode_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\QueryByPOCode_Page.xaml.cs">
+      <DependentUpon>QueryByPOCode_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\QueryByWorkCenter_Page.xaml.cs">
+      <DependentUpon>QueryByWorkCenter_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\ProduceOrderQuery\QueryWaySelect_Page.xaml.cs">
       <DependentUpon>QueryWaySelect_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProductDispatch\FlowCardClean\FlowCardClean_Page.xaml.cs">
@@ -542,14 +558,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileQuery\BadProduct\BadProductSummaryDetail_Page.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileQuery\BadProduct\BadProductSummary_Page.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FileQuery\FlowCardQuery\FlowCardCheck\FLowCardCheck_Page.xaml">
+    <Page Include="FileQuery\FlowCardQuery\FlowCardCheck\FlowCardCheck_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -594,6 +610,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileQuery\FlowCardQuery\QueryWaySelect_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\QueryByFCCode_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\QueryByItemCode_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\QueryByPOCode_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\QueryByWorkCenter_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\ProduceOrderQuery\QueryWaySelect_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -930,6 +970,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BasicFile\ProduceLine\" />
+    <Folder Include="FileQuery\ProduceOrderQuery\ProduceOrderModify\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\FLowCardWatermark.png" />

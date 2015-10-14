@@ -74,6 +74,7 @@
 
                 <MenuItem Name="item_FileQuery"     Header="档案查询(_F)">
                     <MenuItem Name="item_FlowCardQuery" Click="item_FlowCardQuery_Click" IsEnabled="True"  ToolTip="快捷键 Alt + F + S" Header="流转卡查询(_S)"></MenuItem>
+                    <MenuItem Name="item_ProduceOrderQuery" Click="item_ProduceOrderQuery_Click" Header="生产订单查询(_F)" ToolTip="快捷键 Alt + F + F"></MenuItem>
                     <MenuItem Header="明细——不良品报表(_B)" ToolTip="快捷键 Alt + F + B" Name="item_BadProductDetail" Click="item_BadProductDetail_Click"></MenuItem>
                     <MenuItem Header="汇总——不良品报表(_T)" ToolTip="快捷键 Alt + F + T" Name="item_BadProductTotal" Click="item_BadProductTotal_Click"></MenuItem>
                 </MenuItem>

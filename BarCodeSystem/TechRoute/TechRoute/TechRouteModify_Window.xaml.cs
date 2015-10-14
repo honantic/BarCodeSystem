@@ -135,6 +135,7 @@ namespace BarCodeSystem
                 cb_IsSpecialVersion_False.IsChecked = !techversion.TRV_IsSpecialVersion;
                 radio_IsBackVersion_False.IsChecked = !techversion.TRV_IsBackVersion;
                 radio_ReportWay_Flow.IsChecked = techversion.TRV_ReportWay == 0 ? true : false;
+                btn_DeleteProcess.IsEnabled = false;
             }
 
         }
@@ -633,6 +634,7 @@ namespace BarCodeSystem
             txtb_ItemName.IsReadOnly = txtb_ItemCode.IsReadOnly = true;
             txtb_ProcessName.Text = txtb_TechSequence.Text = txtb_WorkCenterName.Text
                 = txtb_WorkHour.Text = txtb_TechVersion.Text = "";
+            btn_DeleteProcess.IsEnabled = true;
             //cb_WageAllotScheme.SelectedIndex = -1;
         }
 

@@ -198,6 +198,11 @@ namespace BarCodeSystem.PublicClass
         }
 
         /// <summary>
+        /// 条码系统导入时间
+        /// </summary>
+        public DateTime PO_BCSCreateTime { get; set; }
+
+        /// <summary>
         /// 生产部门名称
         /// </summary>
         public string PO_ProduceDepartName
@@ -421,7 +426,7 @@ namespace BarCodeSystem.PublicClass
             {
                 SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount] and [PO_ProduceDepartCode]='{0}'", User_Info.User_Workcenter_Code);//订单数量>开工数量
             }
-            
+
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "ProduceOrder");
             MyDBController.CloseConnection();
@@ -456,6 +461,7 @@ namespace BarCodeSystem.PublicClass
                     pol.PO_FinishedAmount = Convert.ToInt32(row["PO_FinishedAmount"]);
                     pol.PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]);
                     pol.PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]);
+                    pol.PO_BCSCreateTime = row["PO_BCSCreateTime"] is DBNull ? new DateTime() : Convert.ToDateTime(row["PO_BCSCreateTime"]);
                     pols.Add(pol);
 
                 }
@@ -468,6 +474,78 @@ namespace BarCodeSystem.PublicClass
             return pols;
         }
 
+        /// <summary>
+        /// 获取条码系统中生产订单信息
+        /// </summary>
+        /// <param name="_key">关键词</param>
+        /// <param name="type">关键词种类 0：生产订单编号，1：车间编号，2：料号，3：流转卡号</param>
+        /// <returns></returns>
+        public static List<ProduceOrderLists> FetchProduceOrderInfo(string _key, int type)
+        {
+            DataSet ds = new DataSet();
+            List<ProduceOrderLists> pols = new List<ProduceOrderLists>();
+            string SQl = "";
+            switch (type)
+            {
+                case 0:
+                    SQl = string.Format(@"Select * from [ProduceOrder] where [PO_Code] = '{0}'", _key);
+                    break;
+                case 1:
+                    SQl = string.Format(@"Select * from [ProduceOrder] where [PO_ProduceDepartCode] like '%{0}%'", _key);
+                    break;
+                case 2:
+                    SQl = string.Format(@"Select * from [ProduceOrder] where [PO_ItemCode] = '{0}'", _key);
+                    break;
+                case 3:
+                    SQl = string.Format(@"select * from [ProduceOrder] where [PO_ID]=(select FC_SourceOrderID from [FlowCard] where [FC_Code]='{0}')", _key);
+                    break;
+                default:
+                    break;
+            }
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "ProduceOrder");
+            MyDBController.CloseConnection();
+            DataRowCollection drc = ds.Tables["ProduceOrder"].Rows;
+            try
+            {
+                foreach (DataRow row in drc)
+                {
+                    ProduceOrderLists pol = new ProduceOrderLists();
+                    pol.ID = Convert.ToInt64(row["ID"]);
+                    pol.PO_ID = Convert.ToInt64(row["PO_ID"]);
+                    pol.PO_Code = row["PO_Code"].ToString();
+                    pol.PO_ItemID = row["PO_ItemID"].ToString();
+                    pol.PO_ItemCode = row["PO_ItemCode"].ToString();
+                    pol.PO_ItemSpec = row["PO_ItemSpec"].ToString();
+                    pol.PO_ItemVersion = row["PO_ItemVersion"].ToString();
+                    pol.PO_ProjectCode = row["PO_ProjectCode"].ToString();
+                    pol.PO_ProjectName = row["PO_ProjectName"].ToString();
+                    //pol.PO_WorkCenter = Convert.ToInt64(row["PO_WorkCenter"]);
+                    pol.PO_ProduceDepartCode = row["PO_ProduceDepartCode"].ToString();
+                    pol.PO_ProduceDepartName = row["PO_ProduceDepartName"].ToString();
+                    pol.PO_ItemName = row["PO_ItemName"].ToString();
+                    pol.PO_Itemunit = row["PO_Itemunit"].ToString();
+                    pol.PO_CreateTime = Convert.ToDateTime(row["PO_CreateTime"]);
+                    pol.PO_CreateBy = row["PO_CreateBy"].ToString();
+                    pol.PO_ModifyTime = Convert.ToDateTime(row["PO_ModifyTime"]);
+                    pol.PO_ModifyBy = row["PO_ModifyBy"].ToString();
+                    pol.PO_StartDate = Convert.ToDateTime(row["PO_StartDate"]);
+                    pol.PO_OrderAmount = Convert.ToInt32(row["PO_OrderAmount"]);
+                    pol.PO_StartAmount = Convert.ToInt32(row["PO_StartAmount"]);
+                    pol.PO_FinishedAmount = Convert.ToInt32(row["PO_FinishedAmount"]);
+                    pol.PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]);
+                    pol.PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]);
+                    pol.PO_BCSCreateTime = row["PO_BCSCreateTime"] is DBNull ? new DateTime() : Convert.ToDateTime(row["PO_BCSCreateTime"]);
+                    pols.Add(pol);
+                }
+            }
+            catch (Exception ee)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            pols = pols.Distinct(new ListComparer<ProduceOrderLists>((x, y) => { return x.PO_Code.Equals(y.PO_Code); })).ToList();
+            return pols;
+        }
         /// <summary>
         /// 获取条码系统中所有的订单信息,用来做U9生产订单信息排除的
         /// </summary>

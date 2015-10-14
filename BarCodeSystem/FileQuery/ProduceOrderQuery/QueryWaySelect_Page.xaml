@@ -1,0 +1,33 @@
+﻿<Page x:Class="BarCodeSystem.FileQuery.ProduceOrderQuery.QueryWaySelect_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+           Loaded="Page_Loaded"
+      d:DesignHeight="1240" d:DesignWidth="120"
+	Title="QueryWaySelect_Page">
+
+    <Grid>
+        <Frame Name="frame_QueryWay" JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden">
+            <Frame.Content>
+                <Grid VerticalAlignment="Top" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button Name="btn_QueryByWorkCenter" Click="btn_QueryByWorkCenter_Click" ClickMode="Release" Content="按车间查询->" Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0" Margin="5" Height="25"></Button>
+                    <Button Name="btn_QueryByOrderCode" Click="btn_QueryByOrderCode_Click" ClickMode="Release"  Height="25" Grid.Row="1" Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Content="按订单号查询->" Margin="5"></Button>
+                    <Button Name="btn_QueryByItemCode" Click="btn_QueryByItemCode_Click" ClickMode="Release"  Height="25" Grid.Row="2"  Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0" Content="按料号查询->" Margin="5"></Button>
+                    <Button Name="btn_QueryByFlowCode" Click="btn_QueryByFlowCode_Click" ClickMode="Release"  Height="25"   Grid.Row="3"  Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0" Content="按流转卡号查询->" Margin="5"></Button>
+                    <Button Name="btn_ModifyProduceOrder" Click="btn_ModifyProduceOrder_Click" ClickMode="Release"  Height="25" Grid.Row="4"   Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Content="修改生产订单->" Margin="5"></Button>
+                </Grid>
+            </Frame.Content>
+        </Frame>
+    </Grid>
+</Page>

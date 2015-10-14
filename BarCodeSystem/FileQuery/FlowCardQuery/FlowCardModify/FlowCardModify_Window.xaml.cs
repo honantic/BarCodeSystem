@@ -48,6 +48,18 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             tv = _tv;
         }
 
+        /// <summary>
+        /// 修改数据的构造函数
+        /// </summary>
+        /// <param name="_fc">流转卡信息</param>
+        /// <param name="_fcsls">流转卡行表信息</param>
+        public FlowCardModify_Window(FlowCardLists _fc, List<FlowCardSubLists> _fcsls, TechVersion _tv)
+        {
+            InitializeComponent();
+            fc = _fc;
+            fcsls = _fcsls;
+            tv = _tv;
+        }
 
         #region 变量
         /// <summary>
@@ -103,10 +115,6 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     if (string.IsNullOrEmpty(name))
                     {
                         name += item.FCS_PersonName + "、";
-                        if (newfcsls.IndexOf(item) == newfcsls.Count - 1)
-                        {
-                            nameList.Add(name);
-                        }
                     }
                     else
                     {
@@ -117,10 +125,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                 else
                 {
                     name += item.FCS_PersonName + "、";
-                    if (newfcsls.IndexOf(item) == newfcsls.Count - 1)
-                    {
-                        nameList.Add(name);
-                    }
+                }
+                if (newfcsls.IndexOf(item) == newfcsls.Count - 1)
+                {
+                    nameList.Add(name);
                 }
             }
             List<FlowCardSubLists> tempList = newfcsls.Distinct(new ListComparer<FlowCardSubLists>((x, y) => { return x.FCS_ProcessSequanece.Equals(y.FCS_ProcessSequanece); })).ToList();

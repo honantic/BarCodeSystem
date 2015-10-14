@@ -116,6 +116,8 @@ namespace BarCodeSystem
             //    SQl += " and F.II_Spec like '%" + Item_Space + "%'";
             //}
 
+            End_Date += " 23:59:59";
+
             SQl = @" select " +
                 "D.FC_CreateTime, " +
                 "E.II_Code," +
@@ -160,12 +162,12 @@ namespace BarCodeSystem
             btable = null;
             btable = new DataTable();
 
-
+            
             DataTable table = ds.Tables["table"];
 
+            
 
-
-            btable.Columns.Add("日期", typeof(string));
+            btable.Columns.Add("日期",typeof(string));
             btable.Columns.Add("料号", typeof(string));
             btable.Columns.Add("料名", typeof(string));
             btable.Columns.Add("型号", typeof(string));
@@ -178,26 +180,20 @@ namespace BarCodeSystem
 
             foreach (DataRow row in drc)
             {
-                if (row["QI_Name"] is DBNull)
+                if (row["QI_Name"] is DBNull || btable.Columns.Contains(row["QI_Name"].ToString()))
                 {
 
                 }
                 else
                 {
                     //datagrid_BadProductListDetail.Columns.Add(new DataGridTextColumn() { Header = row["QI_Name"].ToString(), Binding = new System.Windows.Data.Binding(row["QI_Name"].ToString()) });
-                    if (btable.Columns.Contains(row["QI_Name"].ToString()))
-                    {
-                    }
-                    else
-                    {
-                        btable.Columns.Add(row["QI_Name"].ToString(), typeof(string));
-                    }
+                    btable.Columns.Add(row["QI_Name"].ToString(), typeof(string));
                 }
             }
 
             drc = ds.Tables["table"].Rows;
 
-            foreach (DataRow row in drc)
+            foreach(DataRow row in drc)
             {
                 DataRow r1 = btable.NewRow();
 
@@ -222,14 +218,14 @@ namespace BarCodeSystem
                     btable.Rows.Add(r1);
                     btable.AcceptChanges();
                 }
-
+   
             }
 
 
             datagrid_BadProductListDetail.DataContext = btable.DefaultView;
 
         }
-
+        
 
         public void ShowDeptInfo(string Dept_Code, string Start_Date, string End_Date, string Item_Space)
         {
@@ -247,11 +243,14 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void export_btn_Click(object sender, RoutedEventArgs e)
         {
+
+            
+
             //QkRowChangeToColClass.CreateExcelFileForDataTable(btable);
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
             qk.OutToExcel(btable);
 
-            System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+           System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

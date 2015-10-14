@@ -1,4 +1,5 @@
 ﻿using BarCodeSystem.PublicClass.DatabaseEntity;
+using BarCodeSystem.PublicClass.HelperClass;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,15 +26,25 @@ namespace BarCodeSystem
         //展示员工工资信息
         List<StaffSalariesList> ssls = new List<StaffSalariesList>();
 
+        /// <summary>
+        /// 汇总工资列表
+        /// </summary>
+        List<StaffSalariesList> totalsslList = new List<StaffSalariesList>();
         //得到选中部门的信息
         WorkCenterLists wls = new WorkCenterLists();
+
+        //工资汇总表
         DataTable datatable = new DataTable();
+
+        //奖惩信息表
         DataTable datatable2 = new DataTable();
         DataSet ds = new DataSet();
         DateTime dtime, dtime2;
 
         string year;
         string month;
+
+        int loadcount = 0;
 
 
         public StaffSalaries_Page()
@@ -49,14 +60,29 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            //加载年份
-            for (int i = 2015; i < 2100; i++)
+            if (loadcount == 0)
             {
-                comobox_year.Items.Add(i.ToString());
+                //加载年份
+                for (int i = 2015; i < 2100; i++)
+                {
+                    comobox_year.Items.Add(i.ToString());
+                }
+
+                comobox_year.Text = DateTime.Now.Year.ToString();
+                comobox_month.Text = DateTime.Now.Month.ToString();
+
+                loadcount++;
             }
+
+
         }
 
 
+        /// <summary>
+        /// 获取月度质量将赔表信息
+        /// </summary>
+        /// <param name="dtimestr">起始日期</param>
+        /// <param name="dtime2str">结束日期</param>
         private void QualitySalary(string dtimestr, string dtime2str)
         {
             string SQl = @"select " +
@@ -87,20 +113,64 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 获得员工工资明细表
+        /// </summary>
+        private void SalariesSum()
+        {
+            MyDBController.GetConnection();
+
+
+            string SQl = @"select " +
+                    "B.FCS_PersonCode," +
+                    "B.FCS_PersonName," +
+                    "C.WC_Department_Name," +
+                    "A.FC_Code," +
+                    "B.FCS_FlowCradID," +
+                    "B.FCS_TechRouteID," +
+                    "B.FCS_ProcessID," +
+                    "B.FCS_ProcessName," +
+                    "B.FCS_ReportTime," +
+                    "FCS_QulifiedAmount," +
+                    "E.WH_WorkHour " +
+                    " from FlowCard as A " +
+                    " left join FlowCardSub as B on (A.ID = B.FCS_FlowCradID) " +
+                    " left join WorkCenter as C on (A.FC_WorkCenter = C.WC_Department_ID) " +
+                    " left join TechRoute as D on (D.ID = B.FCS_TechRouteID) " +
+                    " left join WorkHour as E on (D.ID = E.WH_TechRouteID)  " +
+                    " where " +
+                    " CONVERT(date, B.FCS_ReportTime) >='" + dtime.ToString("yyyy/MM/dd HH:MM:ss") + "'" +
+                    " and CONVERT(date,B.FCS_ReportTime) <='" + dtime2.ToString("yyyy/MM/dd HH:MM:ss") + "'" +
+                    " and B.FCS_IsReported='true'" +
+                    " and C.WC_Department_Code = '" + wls.department_code + "'" +
+                    " and E.ID = (select MAX(F.id) from WorkHour F where F.WH_TechRouteID=D.ID and CONVERT(date, F.WH_StartDate)<=CONVERT(date, B.FCS_ReportTime) " +
+                    " and CONVERT(date, F.WH_EndDate)>=CONVERT(date, B.FCS_ReportTime))";
+
+
+
+
+            datatable = MyDBController.GetDataSet(SQl, ds, "StaffSalaries").Tables["StaffSalaries"];
+
+            MyDBController.CloseConnection();
+        }
+
+        /// <summary>
         /// 查询事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btn_Query_Click(object sender, RoutedEventArgs e)
         {
+
+            this.Cursor = Cursors.Wait;
             year = comobox_year.Text;
             month = comobox_month.Text;
 
-            dtime = Convert.ToDateTime(year + "-" + month + "-01 00:00:00");//每月第一天
-            string dtimestr = MyDBController.HandleTimeInfo(dtime.ToString());
+            //dtime = Convert.ToDateTime(year + "-" + month + "-01 00:00:00");//每月第一天
+            dtime = Convert.ToDateTime(year + "-" + month + "-01");//每月第一天
+            //string dtimestr = MyDBController.HandleTimeInfo(dtime.ToString());
 
-            dtime2 = dtime.AddMonths(1).AddDays(-1).AddSeconds(86399);//每月最后一天最后一秒
-            string dtime2str = MyDBController.HandleTimeInfo(dtime2.ToString());
+            dtime2 = dtime.AddMonths(1).AddDays(-1);//每月最后一天最后一秒
+            //string dtime2str = MyDBController.HandleTimeInfo(dtime2.ToString());
 
 
             if (txtb_DeptInfo.Text != "点击放大镜选择" && comobox_year.Text != null && comobox_month.Text != null)
@@ -108,57 +178,56 @@ namespace BarCodeSystem
                 ssls.Clear();
 
 
-                QualitySalary(dtimestr, dtime2str);
+                //QualitySalary(dtimestr, dtime2str);
 
-                MyDBController.GetConnection();
-                string SQl = @"select " +
-                    "B.FCS_PersonCode," +
-                    "B.FCS_PersonName," +
-                    "C.WC_Department_Name," +
-                    "SUM(B.FCS_PieceAmount/B.FCS_PieceDivNum *D.TR_WorkHour) as Salary " +
-                    "from FlowCard as A " +
-                    " left join FlowCardSub as B on (A.ID = B.FCS_FlowCradID) " +
-                    " left join WorkCenter as C on (A.FC_WorkCenter = C.WC_Department_ID) " +
-                    " left join TechRoute as D on (D.ID = B.FCS_TechRouteID) " +
-                    " where B.FCS_PieceDivNum <>0  " +
-                    " and A.FC_CreateTime >= '" + dtimestr + "'" +
-                    " and A.FC_CreateTime <= '" + dtime2str + "'" +
-                    " and C.WC_Department_Code = '" + wls.department_code + "'" +
-                    " group by B.FCS_PersonCode,B.FCS_PersonName,C.WC_Department_Name";
-
-                datatable = MyDBController.GetDataSet(SQl, ds, "StaffSalaries").Tables["StaffSalaries"];
-                MyDBController.CloseConnection();
-
+                SalariesSum();
 
                 DataRowCollection drc = ds.Tables["StaffSalaries"].Rows;
 
-                foreach (DataRow row in drc)
-                {
-                    if (datatable2.Select("QMS_PersonCode = '" + row["FCS_PersonCode"].ToString() + "'").Length > 0)
-                    {
-                        DataRow r1 = datatable2.Select("QMS_PersonCode = '" + row["FCS_PersonCode"].ToString() + "'")[0];
-
-                        row["Salary"] = decimal.Parse(row["Salary"].ToString()) + decimal.Parse(r1["QMS_QualityMoney"].ToString());
-                    }
-                }
-
-
-
-                drc = ds.Tables["StaffSalaries"].Rows;
 
                 foreach (DataRow row in drc)
                 {
                     StaffSalariesList ssl = new StaffSalariesList();
 
-                    ssl.SS_PersonCode = row["FCS_PersonCode"].ToString();
-                    ssl.SS_PersonName = row["FCS_PersonName"].ToString();
-                    ssl.SS_Salary = decimal.Parse(row["Salary"].ToString());
+
+                    ssl.PersonCode = row["FCS_PersonCode"].ToString();
+                    ssl.PersonName = row["FCS_PersonName"].ToString();
+                    ssl.Department_Name = row["WC_Department_Name"].ToString();
+                    ssl.FC_Code = row["FC_Code"].ToString();
+
+                    ssl.FC_ID = Int64.Parse(row["FCS_FlowCradID"].ToString());
+                    ssl.TR_ID = Int64.Parse(row["FCS_TechRouteID"].ToString());
+                    ssl.ProcessID = Int64.Parse(row["FCS_ProcessID"].ToString());
+
+                    ssl.ProcessName = row["FCS_ProcessName"].ToString();
+                    ssl.ReportTime = row["FCS_ReportTime"].ToString();
+                    ssl.QulifiedAmount = decimal.Parse(row["FCS_QulifiedAmount"].ToString());
+                    ssl.WorkHour = decimal.Parse(row["WH_WorkHour"].ToString());
                     ssls.Add(ssl);
                 }
 
-                datagrid_Salaries.ItemsSource = ssls;
+
+                foreach (StaffSalariesList item in ssls)
+                {
+                    decimal peopelAmount = (decimal)ssls.FindAll(p => p.FC_ID == item.FC_ID && p.TR_ID == item.TR_ID && p.ProcessID == item.ProcessID).Count;
+
+                    item.PeopleAmount = peopelAmount;
+
+                    item.Salary = decimal.Round(item.QulifiedAmount / item.PeopleAmount * item.WorkHour / 100, 3);
+                }
+
+                totalsslList = MyDBController.ListCopy<StaffSalariesList>(ssls.Distinct(new ListComparer<StaffSalariesList>((p1, p2) => p1.PersonCode.Equals(p2.PersonCode))).ToList());
+                totalsslList.ForEach(
+                     p =>
+                     {
+                         p.Salary = ssls.FindAll(item => item.PersonCode.Equals(p.PersonCode)).Sum(var => var.Salary);
+                     });
+
+                datagrid_Salaries.ItemsSource = totalsslList;
                 datagrid_Salaries.Items.Refresh();
             }
+
+            this.Cursor = Cursors.Arrow;
 
         }
 
@@ -176,7 +245,9 @@ namespace BarCodeSystem
                 //MyDBController.FindVisualChild<StaffSalariesDetail_Page>(this).FirstOrDefault().ShowDeptInfo(x, dtime, dtime2, wls.department_code);
                 StaffSalariesDetail_Page ssd = new StaffSalariesDetail_Page();
                 frame_Search.Navigate(ssd);
-                ssd.ShowDeptInfo(x, dtime, dtime2, wls.department_code);
+                //ssd.ShowDeptInfo(x, dtime, dtime2, wls.department_code);
+
+                ssd.ShowDeepInfo(ssls, ((StaffSalariesList)datagrid_Salaries.SelectedItem).PersonCode);
             }
 
         }
@@ -220,12 +291,62 @@ namespace BarCodeSystem
             if (txtb_SearchKey.Text.Length > 0)
             {
                 string key = txtb_SearchKey.Text;
-                datagrid_Salaries.ItemsSource = ssls.FindAll(p => p.SS_PersonCode.IndexOf(key) != -1 || p.SS_PersonName.IndexOf(key) != -1);
+                datagrid_Salaries.ItemsSource = totalsslList.FindAll(p => p.PersonCode.IndexOf(key) != -1 || p.PersonName.IndexOf(key) != -1);
             }
             else
             {
-                datagrid_Salaries.ItemsSource = ssls;
+                datagrid_Salaries.ItemsSource = totalsslList;
             }
+        }
+
+        /// <summary>
+        /// datagrid选项改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_Salaries_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btn_Detail_Click(null, null);
+            //btn_Detail_Click(sender, e);
+        }
+
+        /// <summary>
+        /// 导出按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Export_Click(object sender, RoutedEventArgs e)
+        {
+            if (ssls.Count > 0)
+            {
+
+                DataTable table = MyDBController.ListToDataTable<StaffSalariesList>(totalsslList);
+
+                table.Columns.Remove("IsSelected");
+                table.Columns.Remove("ProcessName");
+                table.Columns.Remove("BeginAmount");
+                table.Columns.Remove("QulifiedAmount");
+                table.Columns.Remove("ScrappedAmount");
+                table.Columns.Remove("PeopleAmount");
+                table.Columns.Remove("FC_Code");
+                table.Columns.Remove("Department_Name");
+                table.Columns.Remove("ReportTime");
+                table.Columns.Remove("WorkHour");
+                table.Columns.Remove("FC_ID");
+                table.Columns.Remove("TR_ID");
+                table.Columns.Remove("ProcessID");
+
+
+                table.Columns["PersonName"].ColumnName = "员工名称";
+                table.Columns["PersonCode"].ColumnName = "员工编码";
+                table.Columns["Salary"].ColumnName = "工资";
+
+                QkRowChangeToColClass qk = new QkRowChangeToColClass();
+                qk.OutToExcel(table);
+
+                System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
         }
 
     }

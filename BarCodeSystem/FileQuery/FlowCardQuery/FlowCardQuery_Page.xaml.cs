@@ -236,7 +236,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     List<FlowCardLists> _fcList = new List<FlowCardLists>() { fc };
                     FlowCardLists.UpdateFCInfo(_fcList);
                     this.ClearInfo();
-                    MyDBController.FindVisualChild<FLowCardCheck_Page>(this).ForEach(p => p.FetchFlowCardInfo());
+                    MyDBController.FindVisualChild<FlowCardCheck_Page>(this).ForEach(p => p.FetchFlowCardInfo());
                 }
             }
             this.Cursor = Cursors.Arrow;

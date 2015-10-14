@@ -98,6 +98,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                 datagrid_FlowCardList.SelectedIndex = 0;
                 btn_Select_Click(null, null);
             }
+            else if (datagrid_FlowCardList.Items.Count == 0)
+            {
+                MyDBController.FindVisualParent<FlowCardQuery_Page>(this).ForEach(p => p.ClearInfo());
+            }
         }
 
         /// <summary>
@@ -147,6 +151,16 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                 lastIndex = datagrid_FlowCardList.SelectedIndex;
             }
             this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 选中项改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_FlowCardList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            datagrid_FlowCardList_MouseDoubleClick(null, null);
         }
     }
 }

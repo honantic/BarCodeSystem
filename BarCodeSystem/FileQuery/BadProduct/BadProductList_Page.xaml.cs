@@ -27,27 +27,12 @@ namespace BarCodeSystem
 
         List<WorkCenterLists> wcls = new List<WorkCenterLists>();
 
+        int loadcount = 0;
+
         public BadProductList_Page()
         {
             InitializeComponent();
         }
-
-        int loadCount = 0;
-
-        /// <summary>
-        /// 页面窗口加载事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (loadCount == 0)
-            {
-                ListBeforeSearch();
-                loadCount++;
-            }
-        }
-
 
         /// <summary>
         /// 部门查询按钮
@@ -83,7 +68,22 @@ namespace BarCodeSystem
 
         }
 
+        /// <summary>
+        /// 页面窗口加载事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
 
+            if (loadcount == 0)
+            {
+                ListBeforeSearch();
+                loadcount++;
+            }
+
+            
+        }
 
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Chose_Click(object sender, RoutedEventArgs e)
         {
-            int x = datagrid_Dept.SelectedIndex;
+            int x = datagrid_Dept.SelectedIndex;           
 
             if (x > -1)
             {
@@ -119,7 +119,7 @@ namespace BarCodeSystem
                 txtb_DeptInfo.Text = k.department_name;
                 Dept_Code = k.department_code;
             }
-
+            
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void datagrid_Dept_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            btn_Chose_Click(sender, e);
+            btn_Chose_Click(sender,e);
         }
     }
 }

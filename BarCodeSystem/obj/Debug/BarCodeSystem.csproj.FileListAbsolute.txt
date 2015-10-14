@@ -228,3 +228,15 @@ C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\Fil
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FlowCardModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FCPersonModify_Window.baml
 C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\FlowCardQuery\FlowCardModify\FCPersonModify_Window.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryWaySelect_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryWaySelect_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByPOCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByWorkCenter_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByPOCode_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByWorkCenter_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByItemCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByItemCode_Page.g.cs
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByFCCode_Page.baml
+C:\Users\Administrator\Desktop\BarCode\BarCodeSystem\BarCodeSystem\obj\Debug\FileQuery\ProduceOrderQuery\QueryByFCCode_Page.g.cs
