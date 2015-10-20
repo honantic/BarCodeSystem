@@ -26,6 +26,10 @@ using System.Data.SqlClient;
 using BarCodeSystem.TechRoute.TechRouteWorkHourManually;
 using BarCodeSystem.PublicClass.HelperClass;
 using BarCodeSystem.FileQuery.ProduceOrderQuery;
+using BarCodeSystem.SystemManage.AuthorityManagement;
+using BarCodeSystem.PublicClass.DatabaseEntity;
+using BarCodeSystem.FileQuery.DailyReport_Page;
+using System.Deployment.Application;
 
 namespace BarCodeSystem
 {
@@ -42,10 +46,9 @@ namespace BarCodeSystem
         #region 变量
 
 
-        private List<MenuItem> MainMenuItemList = new List<MenuItem> { };
+        public List<MenuItem> MainMenuItemList = new List<MenuItem>();
         List<UserAuthorityLists> AuthorityList = new List<UserAuthorityLists> { };
         DataSet ds = new DataSet();
-        System.Windows.Forms.NotifyIcon notifyIcon;
         #endregion
 
         #region 初始化
@@ -99,12 +102,16 @@ namespace BarCodeSystem
                     User_Info.P_Position = ds.Tables["Person"].Rows[0]["P_Position"].ToString();
                     User_Info.User_Workcenter_ID = Convert.ToInt64(ds.Tables["Person"].Rows[0]["WC_Department_ID"]);
                     User_Info.POType = "WG20101";
-                    //User_Info.EnterpriseCode = "200";
                 }
                 catch (Exception)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show("该账号信息不全！请检查。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
+            }
+            else
+            {
+                //检查系统菜单是否有变更，有变更则更新数据库。
+                SystemAuthority.CheckSystemAuthority();
             }
         }
 
@@ -141,6 +148,7 @@ namespace BarCodeSystem
         /// <returns></returns>
         public List<MenuItem> GetMainMenuItemList()
         {
+            MainMenuItemList = new List<MenuItem>();
             foreach (MenuItem item in System_Menu.Items)
             {
                 EnumChildMenu(item);
@@ -181,21 +189,20 @@ namespace BarCodeSystem
                 //1.第一步，获得系统中菜单列表
                 GetMainMenuItemList();
                 //2.第二步，获得登陆账号菜单权限列表
-                List<string> strList = GetUserAuthority();
+                List<UserAuthorityLists> strList = GetUserAuthority();
                 //3.对菜单进行权限管控
                 EnableMenuItem(strList, MainMenuItemList);
             }
-
         }
 
         /// <summary>
         /// 获得系统账号菜单权限
         /// </summary>
         /// <returns></returns>
-        private List<string> GetUserAuthority()
+        private List<UserAuthorityLists> GetUserAuthority()
         {
-            List<string> strList = new List<string>();
-            UserAuthorityLists.FetchUAListByUserID(User_Info.Account_ID).ForEach(p => strList.Add(p.SA_AuthorityName));
+            List<UserAuthorityLists> strList = new List<UserAuthorityLists>();
+            strList = UserAuthorityLists.FetchUAListByUserID(User_Info.Account_ID);
             return strList;
         }
 
@@ -204,14 +211,14 @@ namespace BarCodeSystem
         /// </summary>
         /// <param name="strlist"></param>
         /// <param name="milist"></param>
-        private void EnableMenuItem(List<string> strlist, List<MenuItem> milist)
+        private void EnableMenuItem(List<UserAuthorityLists> strlist, List<MenuItem> milist)
         {
             int x = strlist.Count;
             int y = milist.Count;
             //List<string> miNameList = milist.Select(p => p.Name).ToList();
             milist.ForEach(p =>
             {
-                if (!strlist.Contains(p.Name) && !p.HasItems && !p.Name.Equals("item_Close") && !p.Name.Equals("item_SwitchAccount"))
+                if (!strlist.Exists(item => item.SA_AuthorityCode.Equals(p.Name)) && !p.HasItems)
                 {
                     p.IsEnabled = false;
                 }
@@ -240,10 +247,39 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_AccountAuthority_Click(object sender, RoutedEventArgs e)
         {
-            Authority_Window AW = new Authority_Window();
-            AW.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
-            AW.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
-            AW.ShowDialog();
+            //Authority_Window AW = new Authority_Window();
+            //AW.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            //AW.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            //AW.Show();
+
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "账号授权中心")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                AuthorityManagement_Page am = new AuthorityManagement_Page() { ShowsNavigationUI = true };
+                topFrame.Content = am;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "账号授权中心";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -471,34 +507,6 @@ namespace BarCodeSystem
         #endregion
 
         #region 系统托盘操作等
-
-        /// <summary>
-        /// 初始化系统托盘
-        /// </summary>
-        private void SetNotifyIcon()
-        {
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
-            this.notifyIcon.BalloonTipText = "系统监控中... ...";
-            this.notifyIcon.ShowBalloonTip(2000);
-            this.notifyIcon.Text = "系统监控中... ...";
-            this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
-            this.notifyIcon.Visible = true;
-            //打开菜单项
-            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem("显示");
-            open.Click += new EventHandler(Show);
-            //退出菜单项
-            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem("退出");
-            exit.Click += new EventHandler(Close);
-            //关联托盘控件
-            System.Windows.Forms.MenuItem[] childen = new System.Windows.Forms.MenuItem[] { open, exit };
-            notifyIcon.ContextMenu = new System.Windows.Forms.ContextMenu(childen);
-
-            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler((o, e) =>
-            {
-                if (e.Button == System.Windows.Forms.MouseButtons.Left) this.Show(o, e);
-            });
-        }
-
         /// <summary>
         /// 显示
         /// </summary>
@@ -544,10 +552,7 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Wait;
             DBLog.WriteLogoutRecord();
             MyDBController.CloseConnection();
-            //foreach (LayoutAnchorable item in ldp.Children)
-            //{
-            //    item.Close();
-            //}
+            this.notification.Close();
             this.Closing -= Window_Closing;
             this.Close();
             Login_Window lw = new Login_Window();
@@ -906,6 +911,43 @@ namespace BarCodeSystem
 
         #region 库存管理
         /// <summary>
+        /// 日报表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_DailyReport_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "完工日报表")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                DailyReport_Page fcr = new DailyReport_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcr;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "完工日报表";
+                la.Content = topFrame;
+                //la.Closing += fcr.Closing;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+        /// <summary>
         /// 完工报告
         /// </summary>
         /// <param name="sender"></param>
@@ -1216,95 +1258,16 @@ namespace BarCodeSystem
         #endregion
 
         /// <summary>
-        /// 
+        /// 设置按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void item_Settings_Click(object sender, RoutedEventArgs e)
         {
-            //PrintTemplateSelect_Window pts = new PrintTemplateSelect_Window();
-            //pts.ShowDialog();
-
-            //EmptyFlowCard_Window efc = new EmptyFlowCard_Window("PT-20150914-0003");
-            //efc.ShowDialog();
-
             //_10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window("PT-20150919-0014");
             //_10lfc.ShowDialog();
-
-            //MessageBox.Show(DateTime.Now.AddHours(-2).ToString() + "\r\n" + MyDBController.HandleTimeInfo(DateTime.Now.AddHours(-1).ToString()));
-            //MessageBox.Show(DateTime.Now.ToString() + "\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            //DataTable dt = new DataTable();
-            //dt.Columns.Add(new DataColumn("time", typeof(DateTime)));
-            //DataRow row = dt.NewRow();
-            //row["time"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            //dt.Rows.Add(row);
-            //MessageBox.Show(dt.Rows[0]["time"].ToString());
-
-
-            //PersonLists p = new PersonLists() { code = "11402607", name = "汪梦秋" };
-            //PropertyInfo[] props = p.GetType().GetProperties();
-            //PersonLists item = new PersonLists();
-            //props.ToList().ForEach(
-            //    pi =>
-            //    {
-            //        if (!pi.PropertyType.IsGenericType)
-            //        {
-            //            if (pi.GetValue(p) != null)
-            //            {
-            //                pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), pi.PropertyType));
-            //            }
-            //        }
-            //        else
-            //        {
-            //            Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
-            //            if (genericTypeDefinition == typeof(Nullable<>))
-            //            {
-            //                if (pi.GetValue(p) != null)
-            //                {
-            //                    pi.SetValue(item, Convert.ChangeType(pi.GetValue(p), Nullable.GetUnderlyingType(pi.PropertyType)));
-            //                }
-            //            }
-            //        }
-            //    });
-
-            //MessageBox.Show(item.name + "|" + item.code);
-
-
-            //TechRoute_Window trw = new TechRoute_Window(true);
-            //trw.ShowDialog();
-
-
-            //QualityIssuesPrint_Window qip = new QualityIssuesPrint_Window();
-            //qip.ShowDialog();
-
-            //List<PersonLists> plList = new List<PersonLists>() { new PersonLists() { name = "汪梦秋", code = "11402607" }, new PersonLists() { name = "汪梦秋", code = "11402608" }, new PersonLists() { name = "汪梦秋", code = "11402609" } };
-
-            //List<PersonLists> newList =
-            //MyDBController.ListCopy(plList);
-            //newList.ForEach(p => { MessageBox.Show(p.code + p.name); });
-
-            //List<PersonLists> secList = new List<PersonLists>();
-            //MyDBController.ListCopyAsync(plList, secList);
-            //secList.ForEach(p => { MessageBox.Show(p.code + p.name); });
-            //List<MenuItem> itemList =
-            //GetMainMenuItemList();
-            //string NameList = "";
-            //MyDBController.GetConnection();
-            //itemList.ForEach(p =>
-            //{
-            //    string SQl = string.Format("insert into [SystemAuthority]([SA_AuthorityName]) values('{0}')", p.Name);
-            //    MyDBController.ExecuteNonQuery(SQl);
-            //});
-            //MyDBController.CloseConnection();
-            //MessageBox.Show("OK");
-
-
-            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46");
-            
+            ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46" + "\r\n" + "程序集版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\r\n" + ad.CurrentVersion.ToString());
         }
-
-
-
-
     }
 }

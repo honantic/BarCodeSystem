@@ -207,7 +207,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
             if (fc != null && fcsls != null)
             {
-                ModifyContentSelect_Window mcs = new ModifyContentSelect_Window(fc, fcsls, ShowFCSInfo, ShowFCInfo, tv);
+                ModifyContentSelect_Window mcs = new ModifyContentSelect_Window(_fc: fc, _fcsls: fcsls, _sfcs: ShowFCSInfo, _sfc: ShowFCInfo, _tv: tv);
                 mcs.ShowDialog();
             }
         }

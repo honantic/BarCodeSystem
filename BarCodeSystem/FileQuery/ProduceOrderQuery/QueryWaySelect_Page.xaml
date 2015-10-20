@@ -26,6 +26,7 @@
                     <Button Name="btn_QueryByItemCode" Click="btn_QueryByItemCode_Click" ClickMode="Release"  Height="25" Grid.Row="2"  Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0" Content="按料号查询->" Margin="5"></Button>
                     <Button Name="btn_QueryByFlowCode" Click="btn_QueryByFlowCode_Click" ClickMode="Release"  Height="25"   Grid.Row="3"  Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0" Content="按流转卡号查询->" Margin="5"></Button>
                     <Button Name="btn_ModifyProduceOrder" Click="btn_ModifyProduceOrder_Click" ClickMode="Release"  Height="25" Grid.Row="4"   Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Content="修改生产订单->" Margin="5"></Button>
+                    <Button Name="btn_FetchPOFromU9" Click="btn_FetchPOFromU9_Click" ClickMode="Release"  Height="25" Grid.Row="5"   Width="125" Cursor="Hand"  Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Content="同步生产订单->" Margin="5"></Button>
                 </Grid>
             </Frame.Content>
         </Frame>

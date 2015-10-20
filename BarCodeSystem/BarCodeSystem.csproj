@@ -32,8 +32,8 @@
     <SuiteName>生产条码软件</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.10.14.02</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.10.19.01</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -99,6 +99,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Serialization" />
@@ -267,6 +268,7 @@
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\QualityMonthlySalarList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\StaffSalariesList.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\SystemAuthority.cs" />
     <Compile Include="PublicClass\DatabaseEntity\WorkHourLists.cs" />
     <Compile Include="PublicClass\HelperClass\DBLog.cs" />
     <Compile Include="PublicClass\HelperClass\FlowCardDelegete.cs" />
@@ -353,6 +355,12 @@
     <Compile Include="SalaryManage\StaffSalaries\StaffSalaries_Page.xaml.cs">
       <DependentUpon>StaffSalaries_Page.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StorageManage\DailyReport\DailyReportDetail_Page.xaml.cs">
+      <DependentUpon>DailyReportDetail_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StorageManage\DailyReport\DailyReport_Page.xaml.cs">
+      <DependentUpon>DailyReport_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StorageManage\FinishReport\FinishReportSearch_Page.xaml.cs">
       <DependentUpon>FinishReportSearch_Page.xaml</DependentUpon>
     </Compile>
@@ -368,13 +376,16 @@
     <Compile Include="SystemBak\SystemBak_Window.xaml.cs">
       <DependentUpon>SystemBak_Window.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SystemManage\Authority_Window.xaml.cs">
+    <Compile Include="SystemManage\AuthorityManagement\AuthorityManagement_Page.xaml.cs">
+      <DependentUpon>AuthorityManagement_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SystemManage\AuthorityManagement\Authority_Window.xaml.cs">
       <DependentUpon>Authority_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemManage\Loading_Window.xaml.cs">
       <DependentUpon>Loading_Window.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SystemManage\SysSettings_Window.xaml.cs">
+    <Compile Include="SystemManage\SystemSettings\SysSettings_Window.xaml.cs">
       <DependentUpon>SysSettings_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemManage\U9User_Window.xaml.cs">
@@ -836,6 +847,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="StorageManage\DailyReport\DailyReportDetail_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StorageManage\DailyReport\DailyReport_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StorageManage\FinishReport\FinishReportSearch_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -856,7 +875,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SystemManage\Authority_Window.xaml">
+    <Page Include="SystemManage\AuthorityManagement\AuthorityManagement_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SystemManage\AuthorityManagement\Authority_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -864,7 +887,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SystemManage\SysSettings_Window.xaml">
+    <Page Include="SystemManage\SystemSettings\SysSettings_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -969,7 +992,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BasicFile\ProduceLine\" />
     <Folder Include="FileQuery\ProduceOrderQuery\ProduceOrderModify\" />
   </ItemGroup>
   <ItemGroup>
@@ -1059,6 +1081,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\sanhua.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="stdole">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

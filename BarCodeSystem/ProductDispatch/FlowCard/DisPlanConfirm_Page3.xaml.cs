@@ -198,6 +198,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
 
                 int updateNum, insertNum;
                 MyDBController.InsertSqlBulk(ds.Tables["DisPlan"], colList, out updateNum, out insertNum);
+                MyDBController.CloseConnection();
             }
             catch (Exception)
             {

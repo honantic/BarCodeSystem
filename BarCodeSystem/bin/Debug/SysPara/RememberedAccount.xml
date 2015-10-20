@@ -9,7 +9,7 @@
     <UserName>11402607</UserName>
     <PassWord>MTIzNDU2</PassWord>
   </Account>
-  <Account IsRemembered="True" IsAutoLogin="True" IsLastAccount="true">
+  <Account IsRemembered="True" IsAutoLogin="False" IsLastAccount="true">
     <UserName>11101725</UserName>
     <PassWord>NDU2NDU2</PassWord>
   </Account>

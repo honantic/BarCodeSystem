@@ -603,15 +603,23 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             row1["m_completeDate"] = DateTime.Now;
             row1["m_actualRcvTime"] = DateTime.Now;
             row1["m_eligibleQty"] = qualifiedAmount;
-            //row1["m_scrapQty"] = fcsls.Distinct(new ListComparer<FlowCardSubLists>((x, y) => (x.FCS_TechRouteID.Equals(y.FCS_TechRouteID)))).Sum(p => p.FCS_ScrappedAmount);
-            //row1["m_eligibleQty"] = 0;
             row1["m_reworkingQty"] = 0;
             row1["m_scrapQty"] = 0;
+            #region 报废数量、待处理数量都不填。
+            //row1["m_scrapQty"] = fcsls.Distinct(new ListComparer<FlowCardSubLists>((x, y) => (x.FCS_TechRouteID.Equals(y.FCS_TechRouteID)))).Sum(p => p.FCS_ScrappedAmount);
+            //row1["m_eligibleQty"] = 0;
             //row1["m_reworkingQty"] = fcsls.Distinct(new ListComparer<FlowCardSubLists>((x, y) => (x.FCS_TechRouteID.Equals(y.FCS_TechRouteID)))).Sum(p => p.FCS_UnprocessedAm);
-
-            string SQl = string.Format(@"select [PO_Code] from [ProduceOrder] where [PO_ID]={0}", orderID);
-            MyDBController.GetConnection();
-            row1["m_mO.m_code"] = MyDBController.ExecuteScalar(SQl).ToString();
+            #endregion
+            if (orderID < 0)
+            {
+                row1["m_mO.m_code"] = "";
+            }
+            else
+            {
+                string SQl = string.Format(@"select [PO_Code] from [ProduceOrder] where [PO_ID]={0}", orderID);
+                MyDBController.GetConnection();
+                row1["m_mO.m_code"] = MyDBController.ExecuteScalar(SQl).ToString();
+            }
             MyDBController.CloseConnection();
             dt2.Rows.Add(row1);
             ds.Tables.Add(dt1);

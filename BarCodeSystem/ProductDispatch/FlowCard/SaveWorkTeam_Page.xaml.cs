@@ -185,7 +185,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["WorkTeam"], colList, out updateNum, out insertNum);
 
-            MyDBController.GetConnection();
             SQl = string.Format(@"Select [ID] from [WorkTeam] where [WT_Code]='{0}'", teamMemberList[0].WTM_WorkTeamCode);
             SqlDataReader reader = MyDBController.GetDataReader(SQl);
             while (reader.Read())

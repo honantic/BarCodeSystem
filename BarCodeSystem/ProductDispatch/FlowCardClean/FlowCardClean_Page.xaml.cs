@@ -169,7 +169,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardClean
             }
             int updateNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
-            MyDBController.GetConnection();
             if ((updateNum + insertNum).Equals(ds.Tables["FlowCardSub"].Rows.Count))
             {
                 DeleteQualityInfo(subID);

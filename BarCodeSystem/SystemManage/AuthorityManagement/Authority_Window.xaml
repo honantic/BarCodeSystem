@@ -1,0 +1,275 @@
+﻿<Window x:Class="BarCodeSystem.Authority_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterScreen"
+        xmlns:namespc="clr-namespace:BarCodeSystem"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        Title="权限管理中心" Height="800" Width="600" MouseMove="Window_MouseMove">
+    <Window.Resources>
+        <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="0 0 0 1" Style="{StaticResource bd_NormalStyle}" ></Border>
+                <ListView Name="Listview1" Margin="5 0 5 0"
+                          ItemContainerStyleSelector="{DynamicResource mySelector}" SelectionChanged="Listview1_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns >
+                                <GridViewColumn Width="60" Header="账号" DisplayMemberBinding="{Binding Path=UA_LoginAccount}"></GridViewColumn>
+                                <GridViewColumn Width="60" Header="姓名" DisplayMemberBinding="{Binding Path=UA_UserName}"></GridViewColumn>
+                                <GridViewColumn Width="60" Header="是否生效" DisplayMemberBinding="{Binding Path=UA_IsValidated}"></GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="5 0 5 0">
+                    <Label Content=" 在这里输入搜索信息:" FontSize="14"></Label>
+                    <TextBox Name="txtb_SearchKey" FontSize="14" Height="25" MinWidth="80" TextWrapping="Wrap" TextChanged="txtb_SearchKey_TextChanged" ></TextBox>
+                </StackPanel>
+                <Grid Grid.Column="1" Margin="0 0 10 0" Background="Beige">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource textb_NormalStyle}" Text="账号:"></TextBlock>
+                    <TextBlock Style="{StaticResource textb_NormalStyle}" Grid.Column="2" Text="姓名:"></TextBlock>
+                    <TextBlock Style="{StaticResource textb_NormalStyle}" Grid.Row="1" Text="部门:"></TextBlock>
+                    <TextBlock Style="{StaticResource textb_NormalStyle}" Grid.Row="1" Grid.Column="2" Text="是否生效:"></TextBlock>
+                    <TextBox Name="txtb_Account" IsReadOnly="True" Grid.Column="1" Style="{StaticResource txtb_SmallStyle}"></TextBox>
+                    <TextBox Name="txtb_Name"  IsReadOnly="True" Grid.Column="3" Style="{StaticResource txtb_SmallStyle}"></TextBox>
+                    <TextBox Name="txtb_Department"  IsReadOnly="True" Grid.Row="1" Grid.Column="1" Style="{StaticResource txtb_SmallStyle}"></TextBox>
+                    <TextBox Name="txtb_IsValidated"  IsReadOnly="True" Grid.Row="1" Grid.Column="3" Style="{StaticResource txtb_SmallStyle}"></TextBox>
+                </Grid>
+                <Button Name="btn_GetAccountAuthority" Click="btn_GetAccountAuthority_Click" MinWidth="80" Height="25" HorizontalAlignment="Right" Content="获取账号权限" FontSize="14" Margin="0 0 10 0" Grid.Column="1" Grid.Row="1"></Button>
+            </Grid>
+            
+            <Label Margin="15 0 30 0 " Grid.Row="1"  Background="Lavender" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Name="CB_SelectAll" FontSize="14" Margin="5 0 0 0" Click="CB_SelectAll_Click">系统权限清单(全选/清空)</CheckBox>
+                    <TextBlock Name="label_AcountInfo" FontSize="14" Margin="10 0 0 0" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </Label>
+            
+            <ScrollViewer Grid.Row="2" Margin="5" Name="sv_Authority" >
+                <StackPanel Orientation="Vertical" Margin="5 0 5 5">
+                    <Expander Name="Exp_SysManage"  Header="系统管理模块" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_U9Account" Style="{StaticResource CB_NormalStyle}">U9账号导入</CheckBox>
+                            <CheckBox Name="CB_AccountAuthority" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">系统授权</CheckBox>
+                            <CheckBox Name="CB_Settings" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">设置</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander  Header="系统参数管理模块" Style="{StaticResource Exp_NormalStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Name="CB_SysParaManage" Style="{StaticResource CB_NormalStyle}">组织信息</CheckBox>
+                            <CheckBox Name="CB_TechRouteImport" Style="{StaticResource CB_NormalStyle}">工艺路线批量维护</CheckBox>
+                        </StackPanel>
+                    </Expander>
+
+                    <Expander  Header="基础档案模块" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <CheckBox Name="CB_WorkCenter"  Style="{StaticResource CB_NormalStyle}">工作中心</CheckBox>
+                            <CheckBox Name="CB_StaffInfoManage" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">员工信息管理</CheckBox>
+                            <CheckBox Name="CB_WorkTeamManage" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">车间班组管理</CheckBox>
+                            <CheckBox Visibility="Collapsed" Name="CB_BeltlineManage" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">生产线管理</CheckBox>
+                            <CheckBox Name="CB_WorkEquipManage" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">报工设备管理</CheckBox>
+                            <CheckBox Name="CB_StockLocManage" Grid.Row="1" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">仓库管理</CheckBox>
+                            <CheckBox Name="CB_QualityFileManage" Grid.Row="1" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">质量问题原因</CheckBox>
+                            <CheckBox Name="CB_QualitySort" Grid.Row="1" Grid.Column="3" Style="{StaticResource CB_NormalStyle}">质检分类</CheckBox>
+                        </Grid>
+                    </Expander>
+                    <Expander Header="料品和工艺路线模块" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_MaterialManage"  Style="{StaticResource CB_NormalStyle}">料品档案</CheckBox>
+                            <CheckBox Name="CB_ProcedureManage" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">工序管理</CheckBox>
+                            <CheckBox Name="CB_TechRouteManage" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">工艺路线管理</CheckBox>
+                            <CheckBox Name="CB_TechRouteExport" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">工艺路线导出</CheckBox>
+                            <CheckBox Name="CB_WorkHourManage" Grid.Row="1" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">工时管理</CheckBox>
+                        </Grid>
+                    </Expander>
+                    <Expander  Header="流转卡管理" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_WorkCardCompose"  Style="{StaticResource CB_NormalStyle}">流转卡编制</CheckBox>
+                            <CheckBox Name="CB_WorkCardReport" Grid.Column="1"  Style="{StaticResource CB_NormalStyle}">流转卡报工</CheckBox>
+                            <CheckBox Name="CB_WorkCardDis"  Grid.Column="2" Style="{StaticResource CB_NormalStyle}">流转卡分批</CheckBox>
+                            <CheckBox Name="CB_WorkCardClean"  Grid.Column="3" Style="{StaticResource CB_NormalStyle}">流传卡清卡</CheckBox>
+                            <CheckBox Name="CB_WorkCardTransfer" Grid.Row="1" Style="{StaticResource CB_NormalStyle}">流转卡转序</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Header="库存管理" Style="{StaticResource Exp_NormalStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="CB_FinishReport"  Style="{StaticResource CB_NormalStyle}">完工报告审核</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Header="工资管理" Style="{StaticResource Exp_NormalStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="CB_QualityMonthlySalary"  Style="{StaticResource CB_NormalStyle}">月度质量奖赔信息管理</CheckBox>
+                            <CheckBox Name="CB_StaffSalaries" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">员工工资查询</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Grid.Row="1" Header="档案查询" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_FlowCardQuery"  Style="{StaticResource CB_NormalStyle}">流转卡查询</CheckBox>
+                            <CheckBox Name="CB_BadProductDetail" Grid.Column="1"  Style="{StaticResource CB_NormalStyle}">不良品明细报表</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Grid.Row="1" Header="物料查询模块" Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_MaterialQuery1"  Style="{StaticResource CB_NormalStyle}">物料查询1</CheckBox>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Grid.Row="1" Header="综合查询模块"  Style="{StaticResource Exp_NormalStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Name="CB_TotalQuery1"  Style="{StaticResource CB_NormalStyle}">综合查询1</CheckBox>
+                            <CheckBox Name="CB_TotalQuery2" Grid.Column="1" Style="{StaticResource CB_NormalStyle}">综合查询2</CheckBox>
+                            <CheckBox Name="CB_TotalQuery3" Grid.Column="2" Style="{StaticResource CB_NormalStyle}">综合查询3</CheckBox>
+                        </Grid>
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+       
+        
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Name="btn_Save" Click="btn_Save_Click" Content="保存" Style="{StaticResource btn_NormalStyle}"></Button>
+            <Button Grid.Column="3" Name="btn_Close" Click="btn_Close_Click" Content="关闭" Style="{StaticResource btn_NormalStyle}"></Button>
+        </Grid>
+    </Grid>
+</Window>

@@ -125,7 +125,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
         {
             pls = new List<PersonLists>();
             DataSet ds = new DataSet();
-            string SQl = string.Format("Select [ID],[P_Name],[P_Code] from [Person] where [P_Position]='{0}'", key);
+            string SQl = string.Format("Select [ID],[P_Name],[P_Code] from [Person] where [P_Position]='{0}' and [P_WorkCenterID]={1}", key, User_Info.User_Workcenter_ID);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "Person");
             MyDBController.CloseConnection();

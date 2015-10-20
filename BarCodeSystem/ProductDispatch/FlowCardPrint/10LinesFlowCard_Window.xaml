@@ -59,12 +59,14 @@
                 <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1 0" Grid.RowSpan="2"></Border>
                 <Border Grid.Column="4" BorderBrush="Black" BorderThickness="0 0 1 0" Grid.RowSpan="2"></Border>
             </Grid>
-            
-            <TextBlock  Grid.Column="1" Grid.ColumnSpan="2"  VerticalAlignment="Bottom" FontSize="8" Text="JL/04-04/05" Margin="2 10" ></TextBlock>
+            <StackPanel  Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
+                <TextBlock  VerticalAlignment="Bottom" FontSize="8" Text="HSF状态：" Margin="5 0" ></TextBlock>
+                <TextBlock  VerticalAlignment="Bottom" FontSize="8" Text="JL/04-04/05" Margin="5"  ></TextBlock>
+            </StackPanel>
             <Image Name="image_Logo" Grid.Column="3" Source="../../Images/sanhua.png" VerticalAlignment="Center" Margin="5"></Image>
-            <TextBlock Grid.Column="1"  Margin="5" Grid.Row="1"  FontSize="8" VerticalAlignment="Center" Text="客户:"></TextBlock>
+            <TextBlock Grid.Column="1"  Margin="5" Grid.Row="1"  FontSize="8" VerticalAlignment="Center" Text="原材料标识卡号:"></TextBlock>
             <TextBlock Grid.Row="2" Margin="5" Grid.Column="1"  FontSize="8"  VerticalAlignment="Center"  Text="产品名称:"></TextBlock>
-            <TextBlock Grid.Row="1" Margin="5" Grid.Column="4"  FontSize="8"  VerticalAlignment="Center" Text="客户型号:"></TextBlock>
+            <TextBlock Grid.Row="1" Margin="5" Grid.Column="4"  FontSize="8"  VerticalAlignment="Center" Text="分磁环标识卡号:"></TextBlock>
             <TextBlock Grid.Row="2" Margin="5" Grid.Column="4"  FontSize="8"  VerticalAlignment="Center" Text="产品规格:"></TextBlock>
             <TextBlock Grid.Row="2" Margin="5" Grid.Column="6"  FontSize="8"  VerticalAlignment="Center" HorizontalAlignment="Right" Text="流转卡号:"></TextBlock>
             <TextBlock Grid.Row="0" Margin="5" Grid.Column="6"  FontSize="8"  VerticalAlignment="Center" HorizontalAlignment="Right"  Text="流转卡一维码:"></TextBlock>
@@ -89,9 +91,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="70"></ColumnDefinition>
                 <ColumnDefinition Width="0.9*"></ColumnDefinition>
-                <ColumnDefinition Width="1.2*"></ColumnDefinition>
-                <ColumnDefinition Width="1.2*"></ColumnDefinition>
-                <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1.6*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="1.2*"></ColumnDefinition>
                 <ColumnDefinition Width="0.9*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -125,54 +127,6 @@
             <TextBlock Grid.Column="9" Text="检验员确认"  TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             <TextBlock Grid.Column="10" Text="备     注" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
 
-
-            <!--<TextBlock Grid.Column="2" Grid.Row="1" Name="txtb_PersonCode_01" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="2" Name="txtb_PersonCode_02" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="3" Name="txtb_PersonCode_03" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="4" Name="txtb_PersonCode_04" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="5" Name="txtb_PersonCode_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="6" Name="txtb_PersonCode_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="7" Name="txtb_PersonCode_07" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="8" Name="txtb_PersonCode_08" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="9" Name="txtb_PersonCode_09" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="2" Grid.Row="10" Name="txtb_PersonCode_10" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-
-            <TextBlock Grid.Column="3" Grid.Row="1" Name="txtb_PersonName_01" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="2" Name="txtb_PersonName_02" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="3" Name="txtb_PersonName_03" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="4" Name="txtb_PersonName_04" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="5" Name="txtb_PersonName_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="6" Name="txtb_PersonName_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="7" Name="txtb_PersonName_07" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="8" Name="txtb_PersonName_08" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="9" Name="txtb_PersonName_09" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="3" Grid.Row="10" Name="txtb_PersonName_10" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-
-
-            <TextBlock Grid.Column="4" Grid.Row="1" Name="txtb_ProcessCode_01" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="2" Name="txtb_ProcessCode_02" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="3" Name="txtb_ProcessCode_03" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="4" Name="txtb_ProcessCode_04" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="5" Name="txtb_ProcessCode_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="6" Name="txtb_ProcessCode_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="7" Name="txtb_ProcessCode_07" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="8" Name="txtb_ProcessCode_08" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="9" Name="txtb_ProcessCode_09" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="4" Grid.Row="10" Name="txtb_ProcessCode_10" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-
-            <TextBlock Grid.Column="5" Grid.Row="1" Name="txtb_ProcessName_01" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="2" Name="txtb_ProcessName_02" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="3" Name="txtb_ProcessName_03" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="4" Name="txtb_ProcessName_04" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="5" Name="txtb_ProcessName_05" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="6" Name="txtb_ProcessName_06" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="7" Name="txtb_ProcessName_07" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="8" Name="txtb_ProcessName_08" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="9" Name="txtb_ProcessName_09" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Column="5" Grid.Row="10" Name="txtb_ProcessName_10" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-
-            <TextBlock Grid.Column="6" Grid.Row="1" Name="txtb_StartAmount01" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>-->
-            
             <Border Grid.Column="1" Name="border_01"   BorderThickness="0 1" BorderBrush="Black" Grid.ColumnSpan="10"></Border>
             <Border Grid.Column="1" Name="border_02"   Grid.Row="2"   BorderThickness="0 1"  BorderBrush="Black" Grid.ColumnSpan="10"></Border>
             <Border Grid.Column="1" Name="border_03"   Grid.Row="4"   BorderThickness="0 1"  BorderBrush="Black" Grid.ColumnSpan="10"></Border>

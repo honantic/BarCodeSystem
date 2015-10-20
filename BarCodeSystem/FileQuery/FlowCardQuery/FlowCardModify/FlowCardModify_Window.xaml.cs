@@ -178,9 +178,9 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     this.DialogResult = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ee)
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("保存失败，请重试！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show("保存失败，请重试！\r\n" + ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -100,7 +100,7 @@ public class MyDBController
     /// <returns>SQL命令</returns>
     public static SqlCommand CreateCommand(string commandstring)
     {
-        SqlCommand M_scm = new SqlCommand(commandstring, M_scn_myConn);
+        SqlCommand M_scm = new SqlCommand(commandstring, M_scn_myConn) { CommandTimeout = 180 };
         return M_scm;
     }
 
@@ -116,7 +116,7 @@ public class MyDBController
         {
             _sqlcon.Open();
         }
-        SqlCommand M_scm = new SqlCommand(commandstring, _sqlcon);
+        SqlCommand M_scm = new SqlCommand(commandstring, _sqlcon) { CommandTimeout = 180 };
         return M_scm;
     }
 
@@ -285,7 +285,8 @@ public class MyDBController
             {
                 _sqlcon.Open();
             }
-            SqlDataAdapter M_sda = new SqlDataAdapter(commandstring, _sqlcon);
+            SqlDataAdapter M_sda = new SqlDataAdapter() { };
+            M_sda.SelectCommand = CreateCommand(_sqlcon, commandstring);
             M_sda.Fill(data_set, tablename);
             if (_sqlcon.State == ConnectionState.Open)
             {
@@ -327,21 +328,21 @@ public class MyDBController
         updateNum = insertNum = 0;
         try
         {
-            using (SqlConnection conn = MyDBController.M_scn_myConn)
-            {
-                #region
-                SqlCommand cmd = conn.CreateCommand();
-                StringBuilder sb = new StringBuilder();
-                DataTable pk = new DataTable();
-                string tempTableName = "#bulktable";//#表名 为当前连接有效的临时表 ##表名 为全局有效的临时表
-                string filedstr = "";//临时表获取表结构命令字符串
-                string filedsetstr = "";//update set 命令字符串
-                string pkfiledwherestr = "";//insert 命令用来排除已经存在记录的 not exist 命令中where条件字符串
-                string colmunstr = "";//列名字符串
-                string colmunstrs = "";//t.+列名 字符串
+            SqlConnection conn = MyDBController.M_scn_myConn;
 
-                sb = new StringBuilder();
-                sb.AppendFormat(@"select a.name as Name,b.name as Type from syscolumns a
+            #region
+            SqlCommand cmd = conn.CreateCommand();
+            StringBuilder sb = new StringBuilder();
+            DataTable pk = new DataTable();
+            string tempTableName = "#bulktable";//#表名 为当前连接有效的临时表 ##表名 为全局有效的临时表
+            string filedstr = "";//临时表获取表结构命令字符串
+            string filedsetstr = "";//update set 命令字符串
+            string pkfiledwherestr = "";//insert 命令用来排除已经存在记录的 not exist 命令中where条件字符串
+            string colmunstr = "";//列名字符串
+            string colmunstrs = "";//t.+列名 字符串
+
+            sb = new StringBuilder();
+            sb.AppendFormat(@"select a.name as Name,b.name as Type from syscolumns a
                                   left join systypes b 
                                   on a.xtype = b.xtype 
                                     where colid in 
@@ -355,108 +356,108 @@ public class MyDBController
                                                                   )
                                                  )
                                          ) and a.id = object_id('{0}');", dt.TableName);
-                cmd.CommandText = sb.ToString();
-                pk.Load(cmd.ExecuteReader());//查询主键列表
-                #endregion
+            cmd.CommandText = sb.ToString();
+            pk.Load(cmd.ExecuteReader());//查询主键列表
+            #endregion
 
-                #region
-                /* 利用传递进来的DataTable列名列表，从数据库的源表获取
+            #region
+            /* 利用传递进来的DataTable列名列表，从数据库的源表获取
                  * 临时表的表结构*/
-                for (int i = 0; i < colList.Count; i++)
+            for (int i = 0; i < colList.Count; i++)
+            {
+                if (filedsetstr.Length > 0)
                 {
-                    if (filedsetstr.Length > 0)
-                    {
-                        filedsetstr += ",";
-                        colmunstr += ",";
-                        colmunstrs += ",";
-                    }
-                    for (int j = 0; j < pk.Rows.Count; j++)
-                    {
-                        /* 如果当前列是主键,set命令字符串跳过不作处理,
-                         * 临时表获取表结构命令字符串不论何种情况都不跳过 */
-                        if (colList[i] != pk.Rows[j]["Name"].ToString())
-                        {
-                            filedsetstr += colList[i] + "= t." + colList[i];
-                            colmunstr += colList[i];
-                            colmunstrs += colList[i];
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        filedstr += ",";
-                    }
-                    filedstr += "s." + colList[i];
+                    filedsetstr += ",";
+                    colmunstr += ",";
+                    colmunstrs += ",";
                 }
-                #endregion
-
-                #region
-                sb = new StringBuilder();
-                sb.AppendFormat("select top 0 {0} into {1} from {2} s;", filedstr, tempTableName, dt.TableName);
-                cmd.CommandText = sb.ToString();
-                cmd.ExecuteNonQuery();//创建临时表
-
-                /* 根据获得的目标表主键，来为SQL Server 系统中的临时表增加相应的非主键但是数据相等
-                 * 的 影射列，因为有些系统的主键为自增类型，在调用bulk.WriteToServer方法的时候，自增主键会
-                 * 在临时表中从0开始计算，没办法用临时表的主键和目标表的主键做 where 条件，故用影射列代替*/
-                for (int i = 0; i < pk.Rows.Count; i++)
+                for (int j = 0; j < pk.Rows.Count; j++)
                 {
-                    if (i > 0)
+                    /* 如果当前列是主键,set命令字符串跳过不作处理,
+                     * 临时表获取表结构命令字符串不论何种情况都不跳过 */
+                    if (colList[i] != pk.Rows[j]["Name"].ToString())
                     {
-                        pkfiledwherestr += " and ";
+                        filedsetstr += colList[i] + "= t." + colList[i];
+                        colmunstr += colList[i];
+                        colmunstrs += colList[i];
                     }
-                    string newColName = pk.Rows[i]["name"].ToString() + "New";
-                    sb = new StringBuilder();
-                    sb.AppendFormat("alter table {0} add {1} {2}",
-                                    tempTableName, newColName, pk.Rows[i]["Type"].ToString());
-                    cmd.CommandText = sb.ToString();
-                    cmd.ExecuteNonQuery();
-                    pkfiledwherestr += "t." + newColName + "=s." + pk.Rows[i]["name"];
                 }
 
-                using (System.Data.SqlClient.SqlBulkCopy bulk = new System.Data.SqlClient.SqlBulkCopy(conn))
+                if (i > 0)
                 {
-
-                    bulk.DestinationTableName = tempTableName;
-                    bulk.BulkCopyTimeout = 36000;
-                    try
-                    {
-                        bulk.WriteToServer(dt);//将数据写入临时表
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
+                    filedstr += ",";
                 }
-                #endregion
-
-                #region
-                if (pkfiledwherestr.Equals(""))//如果不存在主键
-                {
-                    sb = new StringBuilder();
-                    sb.AppendFormat("insert into {0} select {1} from {2} s;", dt.TableName, filedstr, tempTableName);
-                    cmd.CommandText = sb.ToString();
-                    insertNum = cmd.ExecuteNonQuery();//插入临时表数据到目的表
-                }
-                else
-                {
-                    sb = new StringBuilder();
-                    sb.AppendFormat("update {0} set {1} from {0} s INNER JOIN {2} t on {3}",
-                                    dt.TableName, filedsetstr, tempTableName, pkfiledwherestr);
-                    cmd.CommandText = sb.ToString();
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
-                    updateNum = cmd.ExecuteNonQuery();//更新已存在主键数据
-                    sw.Stop();
-                    sb = new StringBuilder();
-                    sb.AppendFormat("insert into {0}({4}) select {1} from {2} t where not EXISTS(select 1 from {0} s where {3});",
-                                     dt.TableName, colmunstrs, tempTableName, pkfiledwherestr, colmunstr);
-                    cmd.CommandText = sb.ToString();
-                    insertNum = cmd.ExecuteNonQuery();//插入新数据
-                    //MessageBox.Show("共用时"+sw.Elapsed+"\n 共新增:"+insertNum+"条记录,更新:"+updateNum+"条记录！");
-                }
-                #endregion
+                filedstr += "s." + colList[i];
             }
+            #endregion
+
+            #region
+            sb = new StringBuilder();
+            sb.AppendFormat("select top 0 {0} into {1} from {2} s;", filedstr, tempTableName, dt.TableName);
+            cmd.CommandText = sb.ToString();
+            cmd.ExecuteNonQuery();//创建临时表
+
+            /* 根据获得的目标表主键，来为SQL Server 系统中的临时表增加相应的非主键但是数据相等
+             * 的 影射列，因为有些系统的主键为自增类型，在调用bulk.WriteToServer方法的时候，自增主键会
+             * 在临时表中从0开始计算，没办法用临时表的主键和目标表的主键做 where 条件，故用影射列代替*/
+            for (int i = 0; i < pk.Rows.Count; i++)
+            {
+                if (i > 0)
+                {
+                    pkfiledwherestr += " and ";
+                }
+                string newColName = pk.Rows[i]["name"].ToString() + "New";
+                sb = new StringBuilder();
+                sb.AppendFormat("alter table {0} add {1} {2}",
+                                tempTableName, newColName, pk.Rows[i]["Type"].ToString());
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+                pkfiledwherestr += "t." + newColName + "=s." + pk.Rows[i]["name"];
+            }
+
+            using (System.Data.SqlClient.SqlBulkCopy bulk = new System.Data.SqlClient.SqlBulkCopy(conn))
+            {
+
+                bulk.DestinationTableName = tempTableName;
+                bulk.BulkCopyTimeout = 36000;
+                try
+                {
+                    bulk.WriteToServer(dt);//将数据写入临时表
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+            #endregion
+
+            #region
+            if (pkfiledwherestr.Equals(""))//如果不存在主键
+            {
+                sb = new StringBuilder();
+                sb.AppendFormat("insert into {0} select {1} from {2} s;", dt.TableName, filedstr, tempTableName);
+                cmd.CommandText = sb.ToString();
+                insertNum = cmd.ExecuteNonQuery();//插入临时表数据到目的表
+            }
+            else
+            {
+                sb = new StringBuilder();
+                sb.AppendFormat("update {0} set {1} from {0} s INNER JOIN {2} t on {3}",
+                                dt.TableName, filedsetstr, tempTableName, pkfiledwherestr);
+                cmd.CommandText = sb.ToString();
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                updateNum = cmd.ExecuteNonQuery();//更新已存在主键数据
+                sw.Stop();
+                sb = new StringBuilder();
+                sb.AppendFormat("insert into {0}({4}) select {1} from {2} t where not EXISTS(select 1 from {0} s where {3});",
+                                 dt.TableName, colmunstrs, tempTableName, pkfiledwherestr, colmunstr);
+                cmd.CommandText = sb.ToString();
+                insertNum = cmd.ExecuteNonQuery();//插入新数据
+                //MessageBox.Show("共用时"+sw.Elapsed+"\n 共新增:"+insertNum+"条记录,更新:"+updateNum+"条记录！");
+            }
+            #endregion
+
             return flag;
         }
         catch (Exception e)
@@ -481,25 +482,24 @@ public class MyDBController
         updateNum = insertNum = 0;
         try
         {
-            using (SqlConnection conn = _sqlcon)
+            SqlConnection conn = _sqlcon;
+            #region
+            if (_sqlcon.State == ConnectionState.Closed)
             {
-                #region
-                if (_sqlcon.State == ConnectionState.Closed)
-                {
-                    _sqlcon.Open();
-                }
-                SqlCommand cmd = conn.CreateCommand();
-                StringBuilder sb = new StringBuilder();
-                DataTable pk = new DataTable();
-                string tempTableName = "#bulktable";//#表名 为当前连接有效的临时表 ##表名 为全局有效的临时表
-                string filedstr = "";//临时表获取表结构命令字符串
-                string filedsetstr = "";//update set 命令字符串
-                string pkfiledwherestr = "";//insert 命令用来排除已经存在记录的 not exist 命令中where条件字符串
-                string colmunstr = "";//列名字符串
-                string colmunstrs = "";//t.+列名 字符串
+                _sqlcon.Open();
+            }
+            SqlCommand cmd = conn.CreateCommand();
+            StringBuilder sb = new StringBuilder();
+            DataTable pk = new DataTable();
+            string tempTableName = "#bulktable";//#表名 为当前连接有效的临时表 ##表名 为全局有效的临时表
+            string filedstr = "";//临时表获取表结构命令字符串
+            string filedsetstr = "";//update set 命令字符串
+            string pkfiledwherestr = "";//insert 命令用来排除已经存在记录的 not exist 命令中where条件字符串
+            string colmunstr = "";//列名字符串
+            string colmunstrs = "";//t.+列名 字符串
 
-                sb = new StringBuilder();
-                sb.AppendFormat(@"select a.name as Name,b.name as Type from syscolumns a
+            sb = new StringBuilder();
+            sb.AppendFormat(@"select a.name as Name,b.name as Type from syscolumns a
                                   left join systypes b 
                                   on a.xtype = b.xtype 
                                     where colid in 
@@ -513,108 +513,107 @@ public class MyDBController
                                                                   )
                                                  )
                                          ) and a.id = object_id('{0}');", dt.TableName);
-                cmd.CommandText = sb.ToString();
-                pk.Load(cmd.ExecuteReader());//查询主键列表
-                #endregion
+            cmd.CommandText = sb.ToString();
+            pk.Load(cmd.ExecuteReader());//查询主键列表
+            #endregion
 
-                #region
-                /* 利用传递进来的DataTable列名列表，从数据库的源表获取
+            #region
+            /* 利用传递进来的DataTable列名列表，从数据库的源表获取
                  * 临时表的表结构*/
-                for (int i = 0; i < colList.Count; i++)
+            for (int i = 0; i < colList.Count; i++)
+            {
+                if (filedsetstr.Length > 0)
                 {
-                    if (filedsetstr.Length > 0)
-                    {
-                        filedsetstr += ",";
-                        colmunstr += ",";
-                        colmunstrs += ",";
-                    }
-                    for (int j = 0; j < pk.Rows.Count; j++)
-                    {
-                        /* 如果当前列是主键,set命令字符串跳过不作处理,
-                         * 临时表获取表结构命令字符串不论何种情况都不跳过 */
-                        if (colList[i] != pk.Rows[j]["Name"].ToString())
-                        {
-                            filedsetstr += colList[i] + "= t." + colList[i];
-                            colmunstr += colList[i];
-                            colmunstrs += colList[i];
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        filedstr += ",";
-                    }
-                    filedstr += "s." + colList[i];
+                    filedsetstr += ",";
+                    colmunstr += ",";
+                    colmunstrs += ",";
                 }
-                #endregion
-
-                #region
-                sb = new StringBuilder();
-                sb.AppendFormat("select top 0 {0} into {1} from {2} s;", filedstr, tempTableName, dt.TableName);
-                cmd.CommandText = sb.ToString();
-                cmd.ExecuteNonQuery();//创建临时表
-
-                /* 根据获得的目标表主键，来为SQL Server 系统中的临时表增加相应的非主键但是数据相等
-                 * 的 影射列，因为有些系统的主键为自增类型，在调用bulk.WriteToServer方法的时候，自增主键会
-                 * 在临时表中从0开始计算，没办法用临时表的主键和目标表的主键做 where 条件，故用影射列代替*/
-                for (int i = 0; i < pk.Rows.Count; i++)
+                for (int j = 0; j < pk.Rows.Count; j++)
                 {
-                    if (i > 0)
+                    /* 如果当前列是主键,set命令字符串跳过不作处理,
+                     * 临时表获取表结构命令字符串不论何种情况都不跳过 */
+                    if (colList[i] != pk.Rows[j]["Name"].ToString())
                     {
-                        pkfiledwherestr += " and ";
+                        filedsetstr += colList[i] + "= t." + colList[i];
+                        colmunstr += colList[i];
+                        colmunstrs += colList[i];
                     }
-                    string newColName = pk.Rows[i]["name"].ToString() + "New";
-                    sb = new StringBuilder();
-                    sb.AppendFormat("alter table {0} add {1} {2}",
-                                    tempTableName, newColName, pk.Rows[i]["Type"].ToString());
-                    cmd.CommandText = sb.ToString();
-                    cmd.ExecuteNonQuery();
-                    pkfiledwherestr += "t." + newColName + "=s." + pk.Rows[i]["name"];
                 }
 
-                using (System.Data.SqlClient.SqlBulkCopy bulk = new System.Data.SqlClient.SqlBulkCopy(conn))
+                if (i > 0)
                 {
-
-                    bulk.DestinationTableName = tempTableName;
-                    bulk.BulkCopyTimeout = 36000;
-                    try
-                    {
-                        bulk.WriteToServer(dt);//将数据写入临时表
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
+                    filedstr += ",";
                 }
-                #endregion
-
-                #region
-                if (pkfiledwherestr.Equals(""))//如果不存在主键
-                {
-                    sb = new StringBuilder();
-                    sb.AppendFormat("insert into {0} select {1} from {2} s;", dt.TableName, filedstr, tempTableName);
-                    cmd.CommandText = sb.ToString();
-                    insertNum = cmd.ExecuteNonQuery();//插入临时表数据到目的表
-                }
-                else
-                {
-                    sb = new StringBuilder();
-                    sb.AppendFormat("update {0} set {1} from {0} s INNER JOIN {2} t on {3}",
-                                    dt.TableName, filedsetstr, tempTableName, pkfiledwherestr);
-                    cmd.CommandText = sb.ToString();
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
-                    updateNum = cmd.ExecuteNonQuery();//更新已存在主键数据
-                    sw.Stop();
-                    sb = new StringBuilder();
-                    sb.AppendFormat("insert into {0}({4}) select {1} from {2} t where not EXISTS(select 1 from {0} s where {3});",
-                                     dt.TableName, colmunstrs, tempTableName, pkfiledwherestr, colmunstr);
-                    cmd.CommandText = sb.ToString();
-                    insertNum = cmd.ExecuteNonQuery();//插入新数据
-                    //MessageBox.Show("共用时"+sw.Elapsed+"\n 共新增:"+insertNum+"条记录,更新:"+updateNum+"条记录！");
-                }
-                #endregion
+                filedstr += "s." + colList[i];
             }
+            #endregion
+
+            #region
+            sb = new StringBuilder();
+            sb.AppendFormat("select top 0 {0} into {1} from {2} s;", filedstr, tempTableName, dt.TableName);
+            cmd.CommandText = sb.ToString();
+            cmd.ExecuteNonQuery();//创建临时表
+
+            /* 根据获得的目标表主键，来为SQL Server 系统中的临时表增加相应的非主键但是数据相等
+             * 的 影射列，因为有些系统的主键为自增类型，在调用bulk.WriteToServer方法的时候，自增主键会
+             * 在临时表中从0开始计算，没办法用临时表的主键和目标表的主键做 where 条件，故用影射列代替*/
+            for (int i = 0; i < pk.Rows.Count; i++)
+            {
+                if (i > 0)
+                {
+                    pkfiledwherestr += " and ";
+                }
+                string newColName = pk.Rows[i]["name"].ToString() + "New";
+                sb = new StringBuilder();
+                sb.AppendFormat("alter table {0} add {1} {2}",
+                                tempTableName, newColName, pk.Rows[i]["Type"].ToString());
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+                pkfiledwherestr += "t." + newColName + "=s." + pk.Rows[i]["name"];
+            }
+
+            using (System.Data.SqlClient.SqlBulkCopy bulk = new System.Data.SqlClient.SqlBulkCopy(conn))
+            {
+
+                bulk.DestinationTableName = tempTableName;
+                bulk.BulkCopyTimeout = 36000;
+                try
+                {
+                    bulk.WriteToServer(dt);//将数据写入临时表
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+            #endregion
+
+            #region
+            if (pkfiledwherestr.Equals(""))//如果不存在主键
+            {
+                sb = new StringBuilder();
+                sb.AppendFormat("insert into {0} select {1} from {2} s;", dt.TableName, filedstr, tempTableName);
+                cmd.CommandText = sb.ToString();
+                insertNum = cmd.ExecuteNonQuery();//插入临时表数据到目的表
+            }
+            else
+            {
+                sb = new StringBuilder();
+                sb.AppendFormat("update {0} set {1} from {0} s INNER JOIN {2} t on {3}",
+                                dt.TableName, filedsetstr, tempTableName, pkfiledwherestr);
+                cmd.CommandText = sb.ToString();
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                updateNum = cmd.ExecuteNonQuery();//更新已存在主键数据
+                sw.Stop();
+                sb = new StringBuilder();
+                sb.AppendFormat("insert into {0}({4}) select {1} from {2} t where not EXISTS(select 1 from {0} s where {3});",
+                                 dt.TableName, colmunstrs, tempTableName, pkfiledwherestr, colmunstr);
+                cmd.CommandText = sb.ToString();
+                insertNum = cmd.ExecuteNonQuery();//插入新数据
+                //MessageBox.Show("共用时"+sw.Elapsed+"\n 共新增:"+insertNum+"条记录,更新:"+updateNum+"条记录！");
+            }
+            #endregion
         }
         catch (Exception e)
         {
@@ -666,7 +665,7 @@ public class MyDBController
                 if (colList.Contains(prop.Name))
                 {
                     string name = prop.Name;
-                    row[name] = prop.GetValue(item);
+                    row[name] = prop.GetValue(item, null);
                 }
             }
             dt.Rows.Add(row);
@@ -722,13 +721,25 @@ public class MyDBController
     }
 
     /// <summary>
+    /// 用list和带指定结构的dt来更新数据库
+    /// </summary>
+    /// <typeparam name="T">泛型类型</typeparam>
+    /// <param name="_list">数据列表</param>
+    /// <param name="_dt">跟数据库结构吻合的dt</param>
+    public static void InsertSqlBulk<T>(List<T> _list, DataTable _dt)
+    {
+        _dt = ListToDataTable(_list, _dt);
+        InsertSqlBulk(_dt);
+    }
+
+    /// <summary>
     /// 将list转换成指定结构的dt，用来进行数据库更新的
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="_list"></param>
     /// <param name="_dt"></param>
     /// <returns></returns>
-    public DataTable ListToDataTable<T>(List<T> _list, DataTable _dt)
+    public static DataTable ListToDataTable<T>(List<T> _list, DataTable _dt)
     {
         PropertyInfo[] props = null;
         List<string> colList = new List<string>();
@@ -826,7 +837,7 @@ public class MyDBController
                     {
                         if (!pi.PropertyType.IsGenericType)
                         {
-                            if (pi.GetValue(p, null) != null)
+                            if (pi.SetMethod != null && pi.GetValue(p, null) != null)
                             {
                                 pi.SetValue(item, Convert.ChangeType(pi.GetValue(p, null), pi.PropertyType), null);
                             }

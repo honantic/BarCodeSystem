@@ -1,4 +1,6 @@
 ﻿using BarCodeSystem.ProductDispatch.FlowCard;
+using BarCodeSystem.PublicClass.DatabaseEntity;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -120,12 +122,32 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_CheckFlowCard_Click(object sender, RoutedEventArgs e)
         {
-
             this.Cursor = Cursors.Wait;
             frame_QueryWay.Navigate(new FlowCardCheck_Page(sfc));
             this.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// 虚拟审核
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_VritualCheck_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
 
+            bool flag = true;
+            MessageBoxResult mbs = Xceed.Wpf.Toolkit.MessageBox.Show("是否需要生成U9完工报告？", "提示", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (mbs != MessageBoxResult.Cancel)
+            {
+                if (mbs == MessageBoxResult.Yes)
+                {
+                    int qualifiedAmount = 0;
+                    Int64 orderID = -1;
+                    flag = FlowCardLists.CreateU9POFinishReprot(qualifiedAmount, orderID);
+                }
+            }
+            this.Cursor = Cursors.Arrow;
+        }
     }
 }

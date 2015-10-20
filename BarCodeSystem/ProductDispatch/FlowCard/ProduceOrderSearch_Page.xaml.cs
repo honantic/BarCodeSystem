@@ -49,17 +49,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             if (loadCount == 0)
             {
-                //this.Cursor = Cursors.Wait;
-                //Thread t3 = new Thread(() => { Loading_Window lw = new Loading_Window("正在同步U9生产订单数据，请稍等...") { }; lw.ShowDialog(); }) { };
-                //t3.SetApartmentState(ApartmentState.STA);
-                //t3.Start();
-                //TaskFactory tf = new TaskFactory();
-                //Task t1 = tf.StartNew(ProduceOrderLists.FetchPOFromU9);
-                //while (!t1.IsCompleted)
-                //{
-
-                //}
-                //t3.Abort();
                 OrderInfo();
                 this.Cursor = Cursors.Arrow;
                 loadCount++;

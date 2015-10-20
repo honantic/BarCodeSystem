@@ -82,7 +82,7 @@ namespace BarCodeSystem
                 loadcount++;
             }
 
-            
+
         }
 
 
@@ -110,7 +110,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Chose_Click(object sender, RoutedEventArgs e)
         {
-            int x = datagrid_Dept.SelectedIndex;           
+            int x = datagrid_Dept.SelectedIndex;
 
             if (x > -1)
             {
@@ -119,7 +119,7 @@ namespace BarCodeSystem
                 txtb_DeptInfo.Text = k.department_name;
                 Dept_Code = k.department_code;
             }
-            
+
         }
 
         /// <summary>
@@ -131,16 +131,12 @@ namespace BarCodeSystem
         {
             if (txtb_DeptInfo.Text != "点击放大镜选择" && !string.IsNullOrEmpty(datepicker_StartDate.Text) && !string.IsNullOrEmpty(datepicker_EndDate.Text))
             {
-                BadProductListDetail_Page bp = new BadProductListDetail_Page();
+                BadProductListDetail_Page bp = new BadProductListDetail_Page(Dept_Code, Convert.ToDateTime(datepicker_StartDate.SelectedDate).ToString("yyyy/MM/dd"), Convert.ToDateTime(datepicker_EndDate.SelectedDate).ToString("yyyy/MM/dd"), txtb_SearchKey.Text);
                 frame_Search.Navigate(bp);
-
-
-                //string[] S_D = datepicker_StartDate.Text.Split(" ");
-                //Start_Data = datepicker_StartDate.Text.Substring(11);
-
-                //End_Data = datepicker_EndDate.Text.Substring(11);
-
-                bp.ShowDeptInfo(Dept_Code, datepicker_StartDate.Text, datepicker_EndDate.Text, txtb_SearchKey.Text);
+            }
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("请检查车间信息和日期信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -151,7 +147,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void datagrid_Dept_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            btn_Chose_Click(sender,e);
+            btn_Chose_Click(sender, e);
         }
     }
 }

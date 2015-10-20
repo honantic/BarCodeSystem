@@ -119,14 +119,14 @@
                         <TextBlock Text="设置失效时间：" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <DatePicker Name="dp_EndDate"  SelectedDate="{x:Static sys:DateTime.Now }" Grid.Column="3" VerticalAlignment="Center"  Cursor="Hand"></DatePicker>
                     </Grid>
-                    <DataGrid Name="dg_TechRouteInfo" Grid.Row="1" RowHeaderWidth="30" RowHeight="40"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False">
+                    <DataGrid Name="dg_TechRouteInfo" RowHeaderWidth="30" RowHeight="40"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" Margin="0,33,0,17" Grid.RowSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn  Header="行号"  Width="Auto" Binding="{Binding Path=TR_ProcessSequence}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="工序名称" Width="Auto" Binding="{Binding Path=TR_ProcessName}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTemplateColumn Header="工时" Width="60">
                                 <DataGridTemplateColumn.CellTemplate >
                                     <DataTemplate >
-                                        <TextBlock Text="{Binding Path=TR_WorkHour}"></TextBlock>
+                                        <TextBlock Text="{Binding Path=WorkHour}"></TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                                 <DataGridTemplateColumn.CellEditingTemplate>

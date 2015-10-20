@@ -26,7 +26,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 工时
         /// </summary>
         public decimal WH_WorkHour { get; set; }
-
+        public string WorkHour { get { return WH_WorkHour.ToString("C"); } }
         /// <summary>
         /// 生效时间
         /// </summary>

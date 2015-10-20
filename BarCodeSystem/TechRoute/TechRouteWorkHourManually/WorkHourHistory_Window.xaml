@@ -24,11 +24,11 @@
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}">历史数据</TextBlock>
                 </GroupBox.Header>
-                <DataGrid Name="dg_HistoryData" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" IsReadOnly="True" RowHeaderWidth="15">
+                <DataGrid  Name="dg_HistoryData" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" IsReadOnly="True" RowHeaderWidth="15">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="行号"     Width="Auto" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
                         <DataGridTextColumn Header="工序名称" Width="Auto" Binding="{Binding Path=TR_ProcessName}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="工时"     Width="60"   Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="工时"     Width="60"   Binding="{Binding Path=WorkHour}"></DataGridTextColumn>
                         <DataGridTextColumn Header="生效时间" Width="Auto" Binding="{Binding Path=WH_StartDate,StringFormat=yyyy-MM-dd}"></DataGridTextColumn>
                         <DataGridTextColumn Header="失效时间" Width="Auto" Binding="{Binding Path=WH_EndDate,StringFormat=yyyy-MM-dd}" ></DataGridTextColumn>
                     </DataGrid.Columns>
@@ -43,7 +43,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="行号"     Width="Auto" Binding="{Binding Path=TR_ProcessSequence}"></DataGridTextColumn>
                         <DataGridTextColumn Header="工序名称" Width="Auto" Binding="{Binding Path=TR_ProcessName}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="工时"     Width="60"   Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="工时"     Width="60"   Binding="{Binding Path=WorkHour}"></DataGridTextColumn>
                         <DataGridTextColumn Header="生效时间" Width="Auto"  Binding="{Binding Path=WH_StartDate,StringFormat=yyyy-MM-dd}"></DataGridTextColumn>
                         <DataGridTextColumn Header="失效时间" Width="Auto" Binding="{Binding Path=WH_EndDate,StringFormat=yyyy-MM-dd}" ></DataGridTextColumn>
                     </DataGrid.Columns>

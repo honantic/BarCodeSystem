@@ -1435,6 +1435,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
 
             int updateNum1, insertNum1;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum1, out insertNum1);
+            MyDBController.CloseConnection();
         }
 
         /// <summary>

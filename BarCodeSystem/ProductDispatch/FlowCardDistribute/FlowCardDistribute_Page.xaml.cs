@@ -490,7 +490,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                 }
                 int updateNum, insertNum;
                 MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
-                MyDBController.GetConnection();
                 SQl = string.Format(@"update [FlowCard] set [FC_CardState]=3 where [ID]={0}", fc.ID);
                 MyDBController.ExecuteNonQuery(SQl);
                 if ((updateNum + insertNum).Equals(ds.Tables["FlowCardSub"].Rows.Count))

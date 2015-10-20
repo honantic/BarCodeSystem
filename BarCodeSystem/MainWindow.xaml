@@ -63,6 +63,7 @@
                 </MenuItem>
 
                 <MenuItem Header="库存管理(_O)" Name="item_StorageManage" >
+                    <MenuItem Header="完工日报表(_D)" Name="item_DailyReport" Click="item_DailyReport_Click"></MenuItem>
                     <MenuItem Header="完工报告审核(_F)" Name="item_FinishReport"  Click="item_FinishReport_Click"></MenuItem>
                     <MenuItem Header="缴废单(_S)" Name="item_ScrapReport" Click="item_ScrapReport_Click" Visibility="Collapsed"></MenuItem>
                 </MenuItem>
@@ -87,6 +88,7 @@
                     <MenuItem Name="item_TotalQuery1" IsEnabled="True" Header="综合查询1(_S)"></MenuItem>
                     <MenuItem Name="item_TotalQuery2" IsEnabled="True" Header="综合查询2(_D)"></MenuItem>
                     <MenuItem Name="item_TotalQuery3" IsEnabled="True" Header="综合查询3(_G)"></MenuItem>
+                    <MenuItem Name="item_TotalQuery4" IsEnabled="True" Header="综合查询4(_G)"></MenuItem>
                 </MenuItem>
             </Menu>
             <Popup></Popup>
@@ -117,5 +119,6 @@
                 </AvalonDock:LayoutPanel>
             </AvalonDock:LayoutRoot>
         </AvalonDock:DockingManager>
+        
     </Grid>
 </Window>

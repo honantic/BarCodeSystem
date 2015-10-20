@@ -19,6 +19,7 @@
                         <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Button Name="btn_QueryByFlowCode" Click="btn_QueryByFlowCode_Click" Cursor="Hand" Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Height="25" Width="125"  Content="按流转卡号查询->" Margin="5"></Button>
@@ -27,6 +28,7 @@
                     <Button Name="btn_QueryByDate" Click="btn_QueryByDate_Click" Height="25"  Cursor="Hand" Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Grid.Row="3"  Width="125"  Content="按订日期查询->" Margin="5"></Button>
                     <Button Name="btn_ModifyFlowCard" Click="btn_ModifyFlowCard_Click" Height="25" Cursor="Hand" Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Grid.Row="4" Width="125"  Content="修改流转卡->" Margin="5"></Button>
                     <Button Name="btn_CheckFlowCard" Click="btn_CheckFlowCard_Click" Height="25"  Cursor="Hand" Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Grid.Row="5" Width="125"   Content="审核流转卡->" Margin="5"></Button>
+                    <Button Name="btn_VritualCheck" Click="btn_VritualCheck_Click" Height="25"  Cursor="Hand" Style="{StaticResource bd_SelectStyle}" BorderThickness="0"  Grid.Row="6" Width="125"   Content="虚拟审核流转卡->" Margin="5"></Button>
                 </Grid>
             </Frame.Content>
         </Frame>

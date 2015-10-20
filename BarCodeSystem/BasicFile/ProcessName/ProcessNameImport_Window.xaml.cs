@@ -144,7 +144,6 @@ namespace BarCodeSystem
             {
                 MessageBox.Show("导入的数据有误！请检查是否有记录为空值！","提示",MessageBoxButton.OK,MessageBoxImage.Error);
             }
-
         }
 
 

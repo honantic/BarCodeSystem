@@ -53,7 +53,6 @@ namespace BarCodeSystem
             else
             {
                 CheckResult = Login_Check.IsValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
-               
             }
             if (!CheckResult)
             {
@@ -63,7 +62,6 @@ namespace BarCodeSystem
             {
                 User_Info.User_Code = this.txtBox_Uid.Text.ToString().Trim();
                 storyboard.Begin();
-                
             }
         }
 

@@ -35,14 +35,26 @@ namespace BarCodeSystem
         //页面加载次数
         int loadCount = 0;
 
-        //List<BadProductList> bpls = new List<BadProductList>();
-
-
         public BadProductSummaryDetail_Page()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="Dept_Code"></param>
+        /// <param name="Start_Date"></param>
+        /// <param name="End_Date"></param>
+        /// <param name="Item_Space"></param>
+        public BadProductSummaryDetail_Page(string Dept_Code, string Start_Date, string End_Date, string Item_Space)
+        {
+            InitializeComponent();
+            this.Dept_Code = Dept_Code;
+            this.Start_Date = Start_Date;
+            this.End_Date = End_Date;
+            this.Item_Space = Item_Space;
+        }
 
         /// <summary>
         /// 页面加载程序
@@ -210,14 +222,6 @@ namespace BarCodeSystem
         }
 
 
-
-        public void ShowDeptInfo(string Dept_Code, string Start_Date, string End_Date, string Item_Space)
-        {
-            this.Dept_Code = Dept_Code;
-            this.Start_Date = Start_Date;
-            this.End_Date = End_Date;
-            this.Item_Space = Item_Space;
-        }
 
 
         /// <summary>

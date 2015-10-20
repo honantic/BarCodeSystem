@@ -61,6 +61,11 @@ namespace BarCodeSystem
             Dispatcher.ShutdownStarted += OnDispatcherShutdownStarted;
         }
 
+        public void Close()
+        {
+            OnDispatcherShutdownStarted(null,null);
+        }
+
         private void OnDispatcherShutdownStarted(object sender, EventArgs e)
         {
             notifyIcon.Dispose();

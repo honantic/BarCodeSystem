@@ -342,7 +342,6 @@ namespace BarCodeSystem.PublicClass
 
                         //修改最新操作时间
                         SQl = string.Format(@"select max([PO_ModifyTime]) from  produceorder as A  where A.[PO_ModifyTime] > '{0}' ", lastOperateTime);
-                        MyDBController.GetConnection();
                         lastOperateTime = MyDBController.HandleTimeInfo(MyDBController.ExecuteScalar(SQl).ToString());
 
                         //修改条码系统中订单时间戳，这次从条码系统中获取生产订单的最大修改时间

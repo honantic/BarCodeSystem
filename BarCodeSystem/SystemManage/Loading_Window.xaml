@@ -7,7 +7,8 @@
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         Background="Transparent"
-        Title="Loading_Window" Height="200" Width="600">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Title="Loading_Window" Height="40" Width="400">
     <Grid Background="Transparent">
         <Grid Width="400" Height="40" Background="Green" Opacity="1">
             <Grid.ColumnDefinitions>

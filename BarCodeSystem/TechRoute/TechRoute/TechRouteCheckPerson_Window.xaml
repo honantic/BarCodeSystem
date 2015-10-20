@@ -37,9 +37,10 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            
             <extool:WatermarkTextBox Margin="5" Name="txtb_SearchKey" TextChanged="txtb_SearchKey_TextChanged" VerticalAlignment="Center" Watermark="搜索员工姓名或编号" Grid.Row="2"></extool:WatermarkTextBox>
-            <Button Grid.Row="2" Padding="20 0" Grid.Column="1" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
-            <Button Grid.Row="2" Padding="20 0" Grid.Column="2" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
+            <Button Grid.Row="2"  Padding="30 5"  Grid.Column="1" Content="选择" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Select" Click="btn_Select_Click"></Button>
+            <Button Grid.Row="2"  Padding="30 5"  Grid.Column="2" Content="关闭" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" Click="btn_Close_Click"></Button>
         </Grid>
 
         <Grid Name="grid_Two">
@@ -56,12 +57,12 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListView Grid.Row="1" Grid.ColumnSpan="3" Margin="10 5" Name="listview2" >
+            <ListView  Grid.Row="1" Grid.ColumnSpan="3" Margin="10 5" Name="listview2" >
                 <ListView.Background>
                     <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
                 </ListView.Background>
                 <ListView.View>
-                    <GridView>
+                    <GridView >
                         <GridViewColumn Header="员工名称" Width="180"  DisplayMemberBinding="{Binding Path=name}">
                         </GridViewColumn>
                         <GridViewColumn Header="员工编号" Width="180" DisplayMemberBinding="{Binding Path=code}"></GridViewColumn>

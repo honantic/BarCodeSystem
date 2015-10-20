@@ -77,7 +77,6 @@
         <!--可有可无________________________________________________________________________________-->
     </ControlTemplate>
 
-
     <Style TargetType="{x:Type Grid}">
         <Style.Triggers>
         </Style.Triggers>
@@ -231,7 +230,6 @@
         </Style.Triggers>
     </Style>
 
-
     <!--登陆按钮样式-->
     <Style TargetType="Button" x:Key="bd_LoginStyle">
         <Setter Property="Template">
@@ -347,6 +345,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 </ResourceDictionary>
     
     

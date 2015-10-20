@@ -1,20 +1,7 @@
-﻿using BarCodeSystem.PublicClass.DatabaseEntity;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BarCodeSystem
 {
@@ -33,11 +20,32 @@ namespace BarCodeSystem
         string Item_Space;
         int loadCount = 0;
 
-
+        /// <summary>
+        /// 默认构造函数
+        /// </summary>
         public BadProductListDetail_Page()
         {
             InitializeComponent();
         }
+
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="Dept_Code"></param>
+        /// <param name="Start_Date"></param>
+        /// <param name="End_Date"></param>
+        /// <param name="Item_Space"></param>
+        public BadProductListDetail_Page(string Dept_Code, string Start_Date, string End_Date, string Item_Space)
+        {
+            InitializeComponent();
+            this.Dept_Code = Dept_Code;
+            this.Start_Date = Start_Date;
+            this.End_Date = End_Date;
+            this.Item_Space = Item_Space;
+        }
+
+
 
         /// <summary>
         /// 页面弹出事件
@@ -48,11 +56,14 @@ namespace BarCodeSystem
         {
             if (loadCount == 0)
             {
-                ListBeforeSearch();
-
-                //AddColumns();
-
-                //ShowTable();
+                try
+                {
+                    ListBeforeSearch();
+                }
+                catch (Exception ee)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 CreatAndShowTable();
                 loadCount++;
             }
@@ -67,14 +78,6 @@ namespace BarCodeSystem
             string SQl = @" select " +
                 " distinct B.QI_Code, " +
                 " B.QI_Name " +
-                //" from FlowCard as A " +
-                //" left join FlowCardSub as B on (A.ID = B.FCS_FlowCradID) " +
-                //" left join ItemInfo as F on (B.FCS_ItemId = F.ID) " +
-                //" left join WorkCenter as C on (A.FC_WorkCenter = C.WC_Department_ID) " +
-                //" left join TechRoute as D on (D.ID = B.FCS_TechRouteID) " +
-                //" left join FlowCardQuality as E on (E.FCQ_QulityIssueID = B.ID) " +
-                //" left join QualityIssue as G on (E.FCQ_QulityIssueID = G.ID) " +
-                //" order by G.QI_Code Asc";
                 "from FlowCardQuality as A " +
                 "left join QualityIssue as B on (A.FCQ_QulityIssueID = B.ID) " +
                 "left join FlowCardSub as C on (A.FCQ_FlowCardSubID = C.ID) " +
@@ -82,40 +85,8 @@ namespace BarCodeSystem
                 "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +
                 " left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
                 "order by B.QI_Code Asc";
-
-
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "QualityIssue");
-
-
-            //SQl = @" select " +
-            //    "A.FC_CreateTime ," +
-            //    "F.II_Code," +
-            //    "F.II_Name," +
-            //    "F.II_Version ," +
-            //    "B.FCS_ProcessName," +
-            //    "B.FCS_BeginAmount," +
-            //    "B.FCS_QulifiedAmount ," +
-            //    "B.FCS_ScrappedAmount," +
-            //    //"G.QI_Code," +
-            //    "G.QI_Name " +
-            //    "from FlowCard as A " +
-            //    " left join FlowCardSub as B on (A.ID = B.FCS_FlowCradID) " +
-            //    " left join ItemInfo as F on (B.FCS_ItemId = F.ID) " +
-            //    " left join WorkCenter as C on (A.FC_WorkCenter = C.WC_Department_ID)  " +
-            //    " left join TechRoute as D on (D.ID = B.FCS_TechRouteID) " +
-            //    " left join FlowCardQuality as E on (E.FCQ_QulityIssueID = B.ID) " +
-            //    " left join QualityIssue as G on (E.FCQ_QulityIssueID = G.ID) " +
-            //    " where " +
-            //    " C.WC_Department_Code = '" + Dept_Code + "'" +
-            //    " and FC_CreateTime >= '" + Start_Date + "'" +
-            //    " and FC_CreateTime <= '" + End_Date + "'";
-
-            //if (!string.IsNullOrEmpty(Item_Space))
-            //{
-            //    SQl += " and F.II_Spec like '%" + Item_Space + "%'";
-            //}
-
             End_Date += " 23:59:59";
 
             SQl = @" select " +
@@ -137,10 +108,8 @@ namespace BarCodeSystem
                 "left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
                 "where " +
                 " F.WC_Department_Code = '" + Dept_Code + "'" +
-                " and D.FC_CreateTime >= '" + Start_Date + "'" +
+                " and D.FC_CreateTime >= '" + Start_Date+ "'" +
                 " and D.FC_CreateTime <= '" + End_Date + "'";
-
-
             if (!string.IsNullOrEmpty(Item_Space))
             {
                 SQl += " and E.II_Version like '%" + Item_Space + "%'";
@@ -161,13 +130,8 @@ namespace BarCodeSystem
         {
             btable = null;
             btable = new DataTable();
-
-            
             DataTable table = ds.Tables["table"];
-
-            
-
-            btable.Columns.Add("日期",typeof(string));
+            btable.Columns.Add("日期", typeof(string));
             btable.Columns.Add("料号", typeof(string));
             btable.Columns.Add("料名", typeof(string));
             btable.Columns.Add("型号", typeof(string));
@@ -186,14 +150,13 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    //datagrid_BadProductListDetail.Columns.Add(new DataGridTextColumn() { Header = row["QI_Name"].ToString(), Binding = new System.Windows.Data.Binding(row["QI_Name"].ToString()) });
                     btable.Columns.Add(row["QI_Name"].ToString(), typeof(string));
                 }
             }
 
             drc = ds.Tables["table"].Rows;
 
-            foreach(DataRow row in drc)
+            foreach (DataRow row in drc)
             {
                 DataRow r1 = btable.NewRow();
 
@@ -203,7 +166,6 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    //r1["日期"] = row["FC_CreateTime"].ToString().Substring(0,11);
                     r1["日期"] = Convert.ToDateTime(row["FC_CreateTime"]).ToShortDateString();
                     r1["料号"] = row["II_Code"].ToString();
                     r1["料名"] = row["II_Name"].ToString();
@@ -218,22 +180,14 @@ namespace BarCodeSystem
                     btable.Rows.Add(r1);
                     btable.AcceptChanges();
                 }
-   
+
             }
 
 
             datagrid_BadProductListDetail.DataContext = btable.DefaultView;
 
         }
-        
 
-        public void ShowDeptInfo(string Dept_Code, string Start_Date, string End_Date, string Item_Space)
-        {
-            this.Dept_Code = Dept_Code;
-            this.Start_Date = Start_Date;
-            this.End_Date = End_Date;
-            this.Item_Space = Item_Space;
-        }
 
 
         /// <summary>
@@ -243,14 +197,10 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void export_btn_Click(object sender, RoutedEventArgs e)
         {
-
-            
-
-            //QkRowChangeToColClass.CreateExcelFileForDataTable(btable);
             QkRowChangeToColClass qk = new QkRowChangeToColClass();
             qk.OutToExcel(btable);
 
-           System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

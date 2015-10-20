@@ -100,6 +100,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
 
             int updataNum, insertNum;
             MyDBController.InsertSqlBulk(ds.Tables["DisPlan"], colList, out updataNum, out insertNum);
+            MyDBController.CloseConnection();
             MessageBox.Show("成功保存派工方案！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             return (insertNum + updataNum) == ds.Tables["DisPlan"].Rows.Count;
         }

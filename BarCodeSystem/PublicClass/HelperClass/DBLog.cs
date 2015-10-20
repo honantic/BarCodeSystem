@@ -70,6 +70,7 @@ namespace BarCodeSystem.PublicClass.HelperClass
             row["DBL_Content"] = _dbLog.DBL_Content;
             ds.Tables["DBLog"].Rows.Add(row);
             MyDBController.InsertSqlBulk(ds.Tables["DBLog"]);
+            MyDBController.CloseConnection();
         }
 
         /// <summary>
@@ -95,6 +96,7 @@ namespace BarCodeSystem.PublicClass.HelperClass
                 ds.Tables["DBLog"].Rows.Add(row);
             }
             MyDBController.InsertSqlBulk(ds.Tables["DBLog"]);
+            MyDBController.CloseConnection();
         }
 
         /// <summary>

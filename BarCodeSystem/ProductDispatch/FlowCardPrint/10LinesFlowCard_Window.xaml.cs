@@ -200,7 +200,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
                     if (trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p)).Count > 0)
                     {
                         processNameList[index].Text = trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p))[0].TR_ProcessName;
-                        processCodeList[index].Text = trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p))[0].TR_ProcessSequence.ToString();
+                        processCodeList[index].Text = trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p))[0].PN_CodeInWorkCenter;
                     }
                 }
                 startAmountList[0].Text = fcl.FC_Amount.ToString();
@@ -240,37 +240,37 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
 
             for (int i = 0; i < lineCount; i++)
             {
-                TextBlock t1 = new TextBlock() { Name = "txtb_PersonCode_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t1 = new TextBlock() { Name = "txtb_PersonCode_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t1);
                 Grid.SetColumn(t1, 2); Grid.SetRow(t1, i + 1);
                 personCodeList.Add(t1);
 
-                TextBlock t2 = new TextBlock() { Name = "txtb_PersonName_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t2 = new TextBlock() { Name = "txtb_PersonName_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t2);
                 Grid.SetColumn(t2, 3); Grid.SetRow(t2, i + 1);
                 personNameList.Add(t2);
 
-                TextBlock t3 = new TextBlock() { Name = "txtb_ProcessCode_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t3 = new TextBlock() { Name = "txtb_ProcessCode_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t3);
                 Grid.SetColumn(t3, 4); Grid.SetRow(t3, i + 1);
                 processCodeList.Add(t3);
 
-                TextBlock t4 = new TextBlock() { Name = "txtb_ProcessName_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t4 = new TextBlock() { Name = "txtb_ProcessName_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t4);
                 Grid.SetColumn(t4, 5); Grid.SetRow(t4, i + 1);
                 processNameList.Add(t4);
 
-                TextBlock t5 = new TextBlock() { Name = "txtb_StartAmount_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t5 = new TextBlock() { Name = "txtb_StartAmount_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t5);
                 Grid.SetColumn(t5, 6); Grid.SetRow(t5, i + 1);
                 startAmountList.Add(t5);
 
-                TextBlock t6 = new TextBlock() { Name = "txtb_QualifiedAmount_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 8 };
+                TextBlock t6 = new TextBlock() { Name = "txtb_QualifiedAmount_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t6);
                 Grid.SetColumn(t6, 7); Grid.SetRow(t6, i + 1);
                 qualifiedAmountList.Add(t6);
 
-                TextBlock t7 = new TextBlock() { Name = "txtb_ScrapReason_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left, FontSize = 8 };
+                TextBlock t7 = new TextBlock() { Name = "txtb_ScrapReason_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left, FontSize = 10 };
                 grid_CenterGrid.Children.Add(t7);
                 Grid.SetColumn(t7, 8); Grid.SetRow(t7, i + 1); Grid.SetColumnSpan(t7, 2);
                 scrapReasonList.Add(t7);
