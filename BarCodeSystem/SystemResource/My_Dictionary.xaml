@@ -101,12 +101,30 @@
     <Style TargetType="TextBlock" x:Key="textb_NormalStyle">
         <Setter Property="FontSize" Value="14"></Setter>
         <!--<Setter Property="Margin" Value="5"></Setter>-->
-        <Setter Property="Foreground" Value="Blue"/>
+        <Setter Property="Foreground" Value="Blue"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
         <Setter Property="FontFamily" Value="华文行楷"></Setter>
         <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
     </Style>
 
+    <!--textblock普通样式-->
+    <Style TargetType="TextBlock" x:Key="textb_NormalStyle_White">
+        <Setter Property="FontSize" Value="14"></Setter>
+        <!--<Setter Property="Margin" Value="5"></Setter>-->
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+
+
+    <!--空样式-->
+    <Style TargetType="GroupBox">
+        
+    </Style>
+    
+    
     <!-- 普通按钮样式-->
     <Style TargetType="Button" x:Key="btn_NormalStyle">
         <Setter Property="Width" Value="80"></Setter>

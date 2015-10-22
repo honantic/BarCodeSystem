@@ -468,6 +468,7 @@ public class MyDBController
         }
     }
 
+
     /// <summary>
     /// 用指定的sql连接来批量更新/插入数据
     /// </summary>
@@ -683,7 +684,7 @@ public class MyDBController
     /// 使用默认数据库连接更新数据库，参数dt的tablename属性必须与数据库中目标表名一致
     /// </summary>
     /// <param name="_dt">数据表</param>
-    public static void InsertSqlBulk(DataTable _dt)
+    public static bool InsertSqlBulk(DataTable _dt)
     {
         List<string> colList = new List<string>();
         foreach (DataColumn col in _dt.Columns)
@@ -696,7 +697,7 @@ public class MyDBController
             row["IDNew"] = row["ID"];
         }
         int updateNum, insertNum;
-        InsertSqlBulk(_dt, colList, out updateNum, out insertNum);
+        return InsertSqlBulk(_dt, colList, out updateNum, out insertNum);
     }
 
     /// <summary>
@@ -704,7 +705,7 @@ public class MyDBController
     /// </summary>
     /// <param name="_sqlcon"></param>
     /// <param name="_dt"></param>
-    public static void InsertSqlBulk(SqlConnection _sqlcon, DataTable _dt)
+    public static bool InsertSqlBulk(SqlConnection _sqlcon, DataTable _dt)
     {
         List<string> colList = new List<string>();
         foreach (DataColumn col in _dt.Columns)
@@ -717,7 +718,7 @@ public class MyDBController
             row["IDNew"] = row["ID"];
         }
         int updateNum, insertNum;
-        InsertSqlBulk(_sqlcon, _dt, colList, out updateNum, out insertNum);
+        return InsertSqlBulk(_sqlcon, _dt, colList, out updateNum, out insertNum);
     }
 
     /// <summary>
@@ -726,10 +727,185 @@ public class MyDBController
     /// <typeparam name="T">泛型类型</typeparam>
     /// <param name="_list">数据列表</param>
     /// <param name="_dt">跟数据库结构吻合的dt</param>
-    public static void InsertSqlBulk<T>(List<T> _list, DataTable _dt)
+    public static bool InsertSqlBulk<T>(List<T> _list, DataTable _dt)
     {
         _dt = ListToDataTable(_list, _dt);
-        InsertSqlBulk(_dt);
+        return InsertSqlBulk(_dt);
+    }
+
+    /// <summary>
+    /// 批量删除信息，输入的dt参数必须有TableName这个属性，这个属性值等于数据库中目标表的表名
+    /// </summary>
+    /// <param name="dt">dt参数</param>
+    /// <param name="_message">提示信息</param>
+    /// <param name="_pk">主键参数,当数据库中有主键的时候，可以不指定。当数据库中没有主键的时候，必须指定该参数，否则删除记录的时候找不到条件字段</param>
+    /// <param name="_sqlCon">选参数，数据库连接串</param>
+    /// <returns></returns>
+    public static bool DeleteSqlBulk(DataTable dt, out string _message, string _pk = "", SqlConnection _sqlCon = null)
+    {
+        #region 变量
+        bool flag = false;
+        _message = "";
+        string SQl = "";
+        DataTable pkTable = new DataTable();
+        DataSet ds = new DataSet();
+        string whereStr = "";
+        string colList = "";
+        #endregion
+        if (string.IsNullOrEmpty(dt.TableName))
+        {
+            _message = "dt的TableName属性不能为空！";
+        }
+        else
+        {
+            #region 检查数据表是否存在
+            string tableName = dt.TableName;
+            string tempTableName = "#" + tableName;
+            SQl = string.Format("select COUNT(*) from sysobjects where id = object_id(N'[{0}]') and OBJECTPROPERTY(id, N'IsUserTable') = 1", tableName);
+            int count = _sqlCon == null ? Convert.ToInt32(MyDBController.ExecuteScalar(SQl)) : Convert.ToInt32(MyDBController.ExecuteScalar(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, SQl));
+            #endregion
+
+            if (count == 0)
+            {
+                _message = string.Format("在数据库中，找不到名为{0}的数据表！", tableName);
+                return flag;
+            }
+            else
+            {
+                #region 获取主键信息，生成SQl中的where条件
+                SQl = string.Format("select a.name as Name,b.name as Type from syscolumns a left join systypes b on a.xtype = b.xtype where colid in (select colid from sysindexkeys where id = object_id('{0}') and indid = (select indid from sysindexes where name = (select name from sysobjects where xtype='pk' and parent_obj = object_id('{0}')))) and a.id = object_id('{0}')", tableName);
+                if (_sqlCon == null)
+                {
+                    pkTable = MyDBController.GetDataSet(SQl, ds, "pkTable").Tables["pkTable"];
+                }
+                else
+                {
+                    pkTable = MyDBController.GetDataSet(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, SQl, ds, "pkTable").Tables["pkTable"];
+                }
+                if (string.IsNullOrEmpty(_pk))
+                {
+                    if (pkTable.Rows.Count == 0)
+                    {
+                        _message = string.Format("数据表{0}没有主键，请指定可选参数_pk", tableName);
+                        return flag;
+                    }
+                    else
+                    {
+                        foreach (DataRow item in pkTable.Rows)
+                        {
+                            whereStr += string.IsNullOrEmpty(whereStr) ? string.Format("{0}.{2} in( select {0}.[{2}] from {0} right join {1} on {0}.[{2}] = {1}.[{2}])", tableName, tempTableName, item["name"]) : string.Format(" and {0}.{2} in( select {0}.[{2}] from {0} right join {1} on  {0}.[{2}] = {1}.[{2}])", tableName, tempTableName, item["name"]);
+                        }
+                    }
+                }
+                else
+                {
+                    whereStr = string.Format("{0}.{2} in( select {0}.[{2}] from {1} right join on {1} {0}.[{2}] = {1}.[{2}])", tableName, tempTableName, _pk);
+                }
+                #endregion
+
+                #region 开始删除
+                SQl = string.Format("create table {0} (", tempTableName);
+                foreach (DataColumn col in dt.Columns)
+                {
+                    colList += colList.Length == 0 ? col.ColumnName : "," + col.ColumnName;
+                    SQl += string.Format("{0} {1},", col.ColumnName, SysTypeToSqlType(col.DataType));
+                }
+                SQl += ")";
+                if (_sqlCon == null)
+                {
+                    MyDBController.ExecuteNonQuery(SQl);
+                }
+                else
+                {
+                    MyDBController.ExecuteNonQuery(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, SQl);
+                }
+                System.Data.SqlClient.SqlBulkCopy bulk = _sqlCon == null ? new System.Data.SqlClient.SqlBulkCopy(M_scn_myConn) : new System.Data.SqlClient.SqlBulkCopy(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString });
+                bulk.DestinationTableName = tempTableName;
+                bulk.BulkCopyTimeout = 36000;
+                try
+                {
+                    bulk.WriteToServer(dt);//将数据写入临时表
+                    SQl = string.Format("select * from {0}", tempTableName);
+                    MyDBController.GetDataSet(SQl, ds, tempTableName);
+                    bulk.Close();
+                }
+                catch (Exception e)
+                {
+                    _message = e.Message;
+                    bulk.Close();
+                }
+
+                SQl = string.Format("delete from {0}  where {1}", tableName, whereStr);
+                if (_sqlCon == null)
+                {
+                    count = MyDBController.ExecuteNonQuery(SQl);
+                }
+                else
+                {
+                    count = MyDBController.ExecuteNonQuery(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, SQl);
+                }
+                _message = string.Format("应该删除{0}条记录\r\n共删除{1}条记录！", dt.Rows.Count, count);
+                flag = true;
+                #endregion
+            }
+        }
+        return flag;
+    }
+
+    /// <summary>
+    /// 用list和空dt删除信息
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="_list">数据源list</param>
+    /// <param name="dt">空表</param>
+    /// <param name="_message">提示信息</param>
+    /// <param name="_pk">可选参数，主键</param>
+    /// <param name="_sqlCon">可选参数，数据连接</param>
+    /// <returns></returns>
+    public static bool DeleteSqlBulk<T>(List<T> _list, DataTable dt, out string _message, string _pk = "", SqlConnection _sqlCon = null)
+    {
+        dt = ListToDataTable<T>(_list, dt);
+        return DeleteSqlBulk(dt, out _message, _pk, _sqlCon);
+    }
+
+    /// <summary>
+    /// 将C#的数据类型转换成数据库数据类型
+    /// </summary>
+    /// <param name="_type"></param>
+    /// <returns></returns>
+    private static string SysTypeToSqlType(Type _type)
+    {
+        string typeName = "";
+        switch (_type.Name)
+        {
+            case "Int64":
+            case "long":
+                typeName = "bigint";
+                break;
+            case "Int32":
+            case "int":
+                typeName = "int";
+                break;
+            case "Byte":
+                typeName = "tinyint";
+                break;
+            case "Boolean":
+                typeName = "bit";
+                break;
+            case "Decimal":
+                typeName = "decimal";
+                break;
+            case "DateTime":
+                typeName = "datetime";
+                break;
+            case "string":
+            case "String":
+                typeName = "varchar(500)";
+                break;
+            default:
+                break;
+        }
+        return typeName;
     }
 
     /// <summary>
@@ -1048,59 +1224,6 @@ public class MyDBController
         }
     }
 
-
-    /// <summary>
-    /// 处理时间信息，保证系统的时间字符串能够成为被sql server 数据库识别的格式，目前只识别中文系统语言 不需要用到了
-    /// </summary>
-    /// <param name="timestring"></param>
-    /// <returns></returns>
-    public static string HandleTimeInfo(string timestring)
-    {
-        int formatType = -1;//0代表只包含星期信息，1代表包含只包含上下午信息，2代表两个信息都包含
-        int index = -1;
-        if (timestring.IndexOf("星期") != -1 || timestring.IndexOf("午") != -1)
-        {
-            if (timestring.IndexOf("星期") != -1 && timestring.IndexOf("午") == -1)
-            {
-                formatType = 0;
-            }
-            else if (timestring.IndexOf("星期") == -1 && timestring.IndexOf("午") != -1)
-            {
-                formatType = 1;
-            }
-            else if (timestring.IndexOf("星期") != -1 && timestring.IndexOf("午") != -1)
-            {
-                formatType = 2;
-            }
-        }
-        switch (formatType)
-        {
-            case -1:
-                return timestring;
-            case 0:
-                index = timestring.IndexOf("星");
-                timestring = timestring.Remove(index, "星".Length * 3);
-                return timestring;
-            case 1:
-                index = timestring.IndexOf("午");
-                if (timestring.Contains("下"))
-                {
-                    string time = timestring.Substring(index + "午".Length);
-                    string hour = time.Split(':')[0].ToString().Trim();
-                    if (Convert.ToInt32(hour) == 12)
-                    {
-                    }
-                    else
-                        timestring = timestring.Replace(hour, (Convert.ToInt32(hour) + 12).ToString());
-
-                }
-                timestring = timestring.Remove(index - "午".Length, "午".Length * 2);
-                return timestring;
-            case 2:
-            default:
-                return timestring;
-        }
-    }
 
     struct Person
     {

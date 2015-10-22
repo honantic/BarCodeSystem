@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BarCodeSystem.PublicClass.HelperClass;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -111,25 +112,11 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             List<FlowCardQualityLists> fcqList = new List<FlowCardQualityLists>();
             DataSet ds = new DataSet();
             MyDBController.GetConnection();
+            _fcsList.Distinct(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_TechRouteID.Equals(p2.FCS_TechRouteID)));
             foreach (FlowCardSubLists p in _fcsList)
             {
-                SQl = string.Format(@"select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],B.[QI_Code],B.[QI_Name] from [FlowCardQuality]  A left join [QualityIssue] B on A.[FCQ_QulityIssueID]=B.[ID] where [FCQ_FlowCardSubID]={0}", p.ID);
-                MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
-                if (ds.Tables["FlowCardQuality"].Rows.Count > 0)
-                {
-                    foreach (DataRow row in ds.Tables["FlowCardQuality"].Rows)
-                    {
-                        FlowCardQualityLists fcql = new FlowCardQualityLists();
-                        fcql.FCQ_FlowCardSubID = p.ID;
-                        fcql.FCQ_QulityIssueID = Convert.ToInt64(row["FCQ_QulityIssueID"]);
-                        fcql.FCQ_ScrapAmount = Convert.ToInt32(row["FCQ_ScrapAmount"]);
-                        fcql.ID = Convert.ToInt64(row["ID"]);
-                        fcql.QI_Name = row["QI_Name"].ToString();
-                        fcql.QI_Code = row["QI_Code"].ToString();
-                        fcqList.Add(fcql);
-                    }
-                    break;
-                }
+                SQl = string.Format(@"select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],B.[QI_Code],B.[QI_Name],C.[TR_ProcessSequence] from [FlowCardQuality] A left join [QualityIssue] B on A.[FCQ_QulityIssueID]=B.[ID] left join [FlowCardSub] D on A.[FCQ_FlowCardSubID]=D.[ID] left join [TechRoute] C on D.[FCS_TechRouteID]=C.[ID] where [FCQ_FlowCardSubID]={0}", p.ID);
+                fcqList.AddRange(ExecuteSQlCommand(SQl));
             }
             MyDBController.CloseConnection();
             return fcqList;
@@ -142,12 +129,21 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardQualityLists> FetchFCQByFlowCardInfo(FlowCardLists _fc)
         {
-            string SQl = "";
+            string SQl = string.Format(@"select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],C.[TR_ProcessSequence],D.[QI_Name],D.[QI_Code] from [FlowCardQuality] A left join [FlowCardSub] B on A.[FCQ_FlowCardSubID]=B.[ID] left join [TechRoute] C on B.[FCS_TechRouteID] = C.[ID] left join [QualityIssue] D on A.[FCQ_QulityIssueID] = D.[ID] where A.[FCQ_FlowCardSubID] in ( select ID from [Flowcardsub] where [FCS_FlowCradID]={0})", _fc.ID);
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<FlowCardQualityLists> ExecuteSQlCommand(string _command)
+        {
             List<FlowCardQualityLists> fcqlList = new List<FlowCardQualityLists>();
             DataSet ds = new DataSet();
             MyDBController.GetConnection();
-            SQl = string.Format(@"select A.[ID],A.[FCQ_FlowCardSubID],A.[FCQ_QulityIssueID],A.[FCQ_ScrapAmount],C.[TR_ProcessSequence],D.[QI_Name],D.[QI_Code] from [FlowCardQuality] A left join [FlowCardSub] B on A.[FCQ_FlowCardSubID]=B.[ID] left join [TechRoute] C on B.[FCS_TechRouteID] = C.[ID] left join [QualityIssue] D on A.[FCQ_QulityIssueID] = D.[ID] where A.[FCQ_FlowCardSubID] in ( select ID from [Flowcardsub] where [FCS_FlowCradID]={0})", _fc.ID);
-            MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
+            MyDBController.GetDataSet(_command, ds, "FlowCardQuality");
             if (ds.Tables["FlowCardQuality"].Rows.Count > 0)
             {
                 foreach (DataRow row in ds.Tables["FlowCardQuality"].Rows)
@@ -182,6 +178,21 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            return flag;
+        }
+
+        /// <summary>
+        /// 删除信息
+        /// </summary>
+        /// <param name="_fcqlList"></param>
+        public static bool DeleteInfo(List<FlowCardQualityLists> _fcqlList, out string _message)
+        {
+            DataSet ds = new DataSet();
+            string SQl = "select top 0 * from  [FlowCardQuality]";
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "FlowCardQuality");
+            bool flag = MyDBController.DeleteSqlBulk<FlowCardQualityLists>(_fcqlList, ds.Tables["FlowCardQuality"], out _message);
+            MyDBController.CloseConnection();
             return flag;
         }
     }

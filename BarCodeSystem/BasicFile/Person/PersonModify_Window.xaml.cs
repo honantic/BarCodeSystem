@@ -319,11 +319,10 @@ namespace BarCodeSystem
                 txtb_WorkCenterName.Text = pl.departName;
                 txtb_Position.Text = pl.position;
             }
-            txtb_Position.ItemsSource = new List<string> { "操作工", "检验员", "仓管员", "工段长", "计划员", "统计员" };
+            txtb_Position.ItemsSource = new List<string> { "部长","车间主任","工段长","检验员","操作工",  "仓管员",  "计划员", "统计员" };
         }
 
-
-        /// <summary>
+        ///··   ··      ·   ·   ·   ·   ·                   `   `AZAZXZAXAZ<summary>
         /// 文本框双击事件
         /// </summary>
         /// <param name="sender"></param>

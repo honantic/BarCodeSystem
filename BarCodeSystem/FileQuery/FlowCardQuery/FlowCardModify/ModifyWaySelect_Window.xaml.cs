@@ -38,6 +38,11 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// </summary>
         List<FlowCardQualityLists> fcqlList = new List<FlowCardQualityLists>();
 
+
+        /// <summary>
+        /// 保存要删除的报废信息的列表
+        /// </summary>
+        List<FlowCardQualityLists> fcqlDeleteList = new List<FlowCardQualityLists>();
         /// <summary>
         /// 流转卡行表信息
         /// </summary>
@@ -176,6 +181,35 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             {
                 this.DragMove();
             }
+        }
+
+        /// <summary>
+        /// 删除报废信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            if (datagrid_AmountInfo.SelectedIndex != -1)
+            {
+                fcqlDeleteList.Add((FlowCardQualityLists)datagrid_AmountInfo.SelectedItem);
+                string message;
+                bool flag = FlowCardQualityLists.DeleteInfo(fcqlDeleteList, out message);
+                if (flag)
+                {
+                    fcqlList.Remove((FlowCardQualityLists)datagrid_AmountInfo.SelectedItem);
+                    datagrid_AmountInfo.Items.Refresh();
+                    fcqlDeleteList.Clear();
+                    Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    fcqlDeleteList.Clear();
+                    Xceed.Wpf.Toolkit.MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            this.Cursor = Cursors.Arrow;
         }
     }
 }

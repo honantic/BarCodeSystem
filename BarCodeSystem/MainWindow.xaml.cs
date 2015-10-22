@@ -30,6 +30,9 @@ using BarCodeSystem.SystemManage.AuthorityManagement;
 using BarCodeSystem.PublicClass.DatabaseEntity;
 using BarCodeSystem.FileQuery.DailyReport_Page;
 using System.Deployment.Application;
+using BarCodeSystem.FileQuery.GiveSalaries;
+using BarCodeSystem.BasicFile.WorkTeam;
+using BarCodeSystem.FileQuery.InputOutput;
 
 namespace BarCodeSystem
 {
@@ -59,10 +62,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             SetBasicInfo();
             SetUser_Authority();
             GetOrgInfo();
             DBLog.WriteLoginRecord();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -315,10 +320,39 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WorkTeamManage_Click(object sender, RoutedEventArgs e)
         {
-            WorkTeam_Window wt = new WorkTeam_Window();
-            wt.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
-            wt.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
-            wt.ShowDialog();
+            //WorkTeam_Window wt = new WorkTeam_Window();
+            //wt.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            //wt.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            //wt.ShowDialog();
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "车间班组管理")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                WorkTeam_Page wh = new WorkTeam_Page() { ShowsNavigationUI = true };
+                topFrame.Content = wh;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "车间班组管理";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+
         }
 
         /// <summary>
@@ -1177,6 +1211,42 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// 投入产出报表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_InputOutput_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "投入产出报表")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                InputOutput_Page bps = new InputOutput_Page() { ShowsNavigationUI = true };
+                topFrame.Content = bps;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "投入产出报表";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
         #endregion
 
         #region 工资管理
@@ -1218,6 +1288,42 @@ namespace BarCodeSystem
             this.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// 工资发放核对
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_SalaryCheck_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "工资发放核对")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+
+                GiveSalaries_Page gsp = new GiveSalaries_Page() { ShowsNavigationUI = true };
+                topFrame.Content = gsp;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "工资发放核对";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
 
         /// <summary>
         /// 员工工资查询
@@ -1266,8 +1372,19 @@ namespace BarCodeSystem
         {
             //_10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window("PT-20150919-0014");
             //_10lfc.ShowDialog();
-            ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46" + "\r\n" + "程序集版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\r\n" + ad.CurrentVersion.ToString());
+            try
+            {
+                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+                MessageBox.Show(ad.CurrentVersion.ToString());
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show(ee.Message);
+            }
+            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46" + "\r\n" + "程序集版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\r\n");
         }
+
+
+      
     }
 }

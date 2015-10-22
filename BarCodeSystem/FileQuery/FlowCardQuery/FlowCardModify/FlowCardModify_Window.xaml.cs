@@ -5,18 +5,9 @@ using BarCodeSystem.PublicClass.HelperClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Xceed.Wpf.Toolkit;
 
 namespace BarCodeSystem.FileQuery.FlowCardQuery
@@ -80,8 +71,15 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// 接收流转卡信息的委托函数
         /// </summary>
         SubmitFlowCard sfc;
-
+        /// <summary>
+        /// 流转卡行表列表
+        /// </summary>
         List<FlowCardSubLists> newfcsls = new List<FlowCardSubLists>();
+
+        /// <summary>
+        /// 数据是否发生了改变
+        /// </summary>
+        bool haveChanged = false;
         #endregion
 
         /// <summary>
@@ -168,8 +166,13 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             try
             {
+                if (!haveChanged)
+                {
+                    btn_Apply_Click(null, null);
+                }
                 AcceptNewData(newfcsls, fcsls);
                 bool flag = FlowCardSubLists.SaveFCSInfo(fcsls);
                 if (flag)
@@ -182,6 +185,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("保存失败，请重试！\r\n" + ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -211,7 +215,9 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_Refresh_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             InitDateInfo();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -259,7 +265,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     }
                     else
                     {
+                        fcs.FCS_UnprocessedAm = Convert.ToInt32(e.NewValue);
                         fcs.FCS_QulifiedAmount = fcs.FCS_BeginAmount + fcs.FCS_AddAmount - fcs.FCS_ScrappedAmount - fcs.FCS_UnprocessedAm;
+                        haveChanged = true;
+                        btn_Apply_Click(null, null);
                     }
                 }
                 else
@@ -280,17 +289,23 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_ModifyScrapAmount_Click(object sender, RoutedEventArgs e)
         {
-            FlowCardSubLists fcs = (FlowCardSubLists)datagrid_FlowCardSub.SelectedItem;
-            if (fcs.FCS_IsReported)
+            if (datagrid_FlowCardSub.SelectedIndex != -1)
             {
-                ModifyWaySelect_Window mws = new ModifyWaySelect_Window(_fcs: fcs, _sfcqList: AcceptScrapInfo);
-                mws.ShowDialog();
-            }
-            else
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show("改道工序没有报工，不允许修改报废信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Press(Key.Escape);
-                BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Release(Key.Escape);
+                FlowCardSubLists fcs = (FlowCardSubLists)datagrid_FlowCardSub.SelectedItem;
+                if (fcs.FCS_IsReported)
+                {
+                    ModifyWaySelect_Window mws = new ModifyWaySelect_Window(_fcs: fcs, _sfcqList: AcceptScrapInfo);
+                    mws.ShowDialog();
+                    //KeyboardSimulation.Press(Key.Escape);
+                    //KeyboardSimulation.Release(Key.Escape);
+                    btn_Apply_Click(null, null);
+                }
+                else
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("改道工序没有报工，不允许修改报废信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Press(Key.Escape);
+                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Release(Key.Escape);
+                }
             }
         }
 
@@ -318,8 +333,11 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_Apply_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             ApplyDataChange(newfcsls);
-            datagrid_FlowCardSub.Items.Refresh();
+            //datagrid_FlowCardSub.Items.Refresh();
+            haveChanged = false;
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>

@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <Border BorderBrush="LightBlue" Grid.RowSpan="2" BorderThickness="10"></Border>
 
-        <DataGrid Name="datagrid_FlowCardSub" Margin="20"  RowHeaderWidth="30" CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+        <DataGrid Name="datagrid_FlowCardSub"  Margin="20"  RowHeaderWidth="30" CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="行号" Binding="{Binding Path=FCS_ProcessSequanece}" IsReadOnly="True"></DataGridTextColumn>
                 <!--<DataGridTemplateColumn Header="工序名称"  Width="100" IsReadOnly="True" >
@@ -114,11 +114,10 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Content="取消" Height="25" MaxWidth="80" Name="btn_Cancel" Click="btn_Cancel_Click" ClickMode="Release"></Button>
-            <Button Content="应用" Height="25" MaxWidth="80"  Grid.Column="1" Name="btn_Apply" Click="btn_Apply_Click"></Button>
-            <Button Content="刷新" Height="25" MaxWidth="80" Name="btn_Refresh" Click="btn_Refresh_Click" ClickMode="Release" Grid.Column="2"></Button>
+            <Button Content="应用" Visibility="Hidden" Height="25" MaxWidth="80"  Grid.Column="1" Name="btn_Apply" Click="btn_Apply_Click"></Button>
+            <Button Content="重置" Height="25" MaxWidth="80" Name="btn_Refresh" Click="btn_Refresh_Click" ClickMode="Release"  Grid.Column="1"></Button>
             <Button Content="保存退出" Height="25" MaxWidth="80" Name="btn_Save" Click="btn_Save_Click" ClickMode="Release" Grid.Column="3"></Button>
         </Grid>
     </Grid>

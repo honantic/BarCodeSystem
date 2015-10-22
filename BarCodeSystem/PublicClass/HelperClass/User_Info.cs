@@ -65,30 +65,30 @@ namespace BarCodeSystem
         /// <summary>
         /// U9测试库；条码测试库；
         /// </summary>
-        public static string[] server = { "172.16.100.64", "172.16.100.53", "172.16.100.40" };
-        //public static string[] server = { "172.16.100.24", "172.16.100.40" };
+        //public static string[] server = { "172.16.100.64", "172.16.100.53", "172.16.100.40" };
+        public static string[] server = { "172.16.100.24", "172.16.100.40" };
         //public static string[] server = { "172.16.100.24", "172.16.52.150" };
 
         /// <summary>
         /// U9测试数据库；条码测试数据库
         /// </summary>
-        public static string[] database = { "SANHUADATA", "fajianBarCodeSystem", "BarCodeSystem" };
-        //public static string[] database = { "SANHUADATA0801", "fajianBarCodeSystem" };
+        //public static string[] database = { "SANHUADATA", "fajianBarCodeSystem", "BarCodeSystem" };
+        public static string[] database = { "SANHUADATA20150917", "fajianBarCodeSystem" };
 
 
         /// <summary>
         /// U9测试库账号；条码测试库账号
         /// </summary>
-        public static string[] uid = { "sa", "sa", "sa" };
-        //public static string[] uid = { "sa", "sa" };
+        //public static string[] uid = { "sa", "sa", "sa" };
+        public static string[] uid = { "sa", "sa" };
         //public static string[] uid = { "sa", "sa" };
 
         /// <summary>
         /// U9测试库密码；条码测试库密码
         /// </summary>
-        public static string[] pwd = { "Aa123456", "Ab123456", "Bb123" };
-        //public static string[] pwd = { "Sql2008",  "Bb123" };
-        //public static string[] pwd = { "Sql2008", "Aa123" };
+        //public static string[] pwd = { "Aa123456", "Ab123456", "Bb123" };
+        public static string[] pwd = { "Sql2008", "Bb123" };
+        //public static string[] pwd = { "Sql2008", "Aa1" };
 
         /// <summary>
         /// U9应用服务器

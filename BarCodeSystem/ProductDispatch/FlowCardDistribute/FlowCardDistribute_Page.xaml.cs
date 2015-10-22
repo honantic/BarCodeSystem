@@ -382,42 +382,47 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// <returns></returns>
         private bool EnsureFlowNum()
         {
-            bool flag = false;
-            int maxFlowNum = newfcList.Max(p => p.FC_FlowNum), rightAmount = 0;
-            string SQl = "";
-            MyDBController.GetConnection();
-
-            try
+            int rightAmount = 0;
+            if (fc != null)
             {
-                foreach (FlowCardLists item in newfcList)
+                bool flag = false;
+                int maxFlowNum = newfcList.Max(p => p.FC_FlowNum);
+                string SQl = "";
+                MyDBController.GetConnection();
+
+                try
                 {
-                    int count = 0;
-                    flag = false;
-                    while (!flag)
+                    foreach (FlowCardLists item in newfcList)
                     {
-                        SQl = string.Format(@"select count(*) from [FlowCard] where [FC_FlowNum]={0} and convert(date,FC_Createtime,102)=Convert(date,getDate(),102)", item.FC_FlowNum);
-                        count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
-                        if (count == 0)
+                        int count = 0;
+                        flag = false;
+                        while (!flag)
                         {
-                            InsertNewFlowCard(item);
-                            rightAmount++;
-                            flag = true;
-                        }
-                        else
-                        {
-                            maxFlowNum++;
-                            item.FC_Code = item.FC_Code.Replace(string.Format("{0:0000}", item.FC_FlowNum), string.Format("{0:0000}", maxFlowNum));
-                            item.FC_FlowNum = maxFlowNum;
+                            SQl = string.Format(@"select count(*) from [FlowCard] where [FC_FlowNum]={0} and convert(date,FC_Createtime,102)=Convert(date,getDate(),102)", item.FC_FlowNum);
+                            count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+                            if (count == 0)
+                            {
+                                InsertNewFlowCard(item);
+                                rightAmount++;
+                                flag = true;
+                            }
+                            else
+                            {
+                                maxFlowNum++;
+                                item.FC_Code = item.FC_Code.Replace(string.Format("{0:0000}", item.FC_FlowNum), string.Format("{0:0000}", maxFlowNum));
+                                item.FC_FlowNum = maxFlowNum;
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ee)
-            {
-                MessageBox.Show(ee.Message);
+                catch (Exception ee)
+                {
+                    MessageBox.Show(ee.Message);
+                }
+
+                MyDBController.CloseConnection();
             }
 
-            MyDBController.CloseConnection();
             return rightAmount.Equals(newfcList.Count);
         }
 

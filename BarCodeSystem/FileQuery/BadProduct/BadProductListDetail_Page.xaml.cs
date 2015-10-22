@@ -75,6 +75,8 @@ namespace BarCodeSystem
         /// </summary>
         private void ListBeforeSearch()
         {
+            End_Date += " 23:59:59";
+
             string SQl = @" select " +
                 " distinct B.QI_Code, " +
                 " B.QI_Name " +
@@ -84,10 +86,15 @@ namespace BarCodeSystem
                 "left join FlowCard as D on (C.FCS_FlowCradID = D.ID) " +
                 "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +
                 " left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
+                " where " +
+                " F.WC_Department_Code = '" + Dept_Code + "' " +
+                " and D.FC_CreateTime >= '" + Start_Date + "' " +
+                " and D.FC_CreateTime <= '" + End_Date + "' " +
+                " and D.FC_CardState = 5 " +
+                " and C.FCS_IsReported = 1 " +
                 "order by B.QI_Code Asc";
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "QualityIssue");
-            End_Date += " 23:59:59";
 
             SQl = @" select " +
                 "D.FC_CreateTime, " +
@@ -108,8 +115,10 @@ namespace BarCodeSystem
                 "left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
                 "where " +
                 " F.WC_Department_Code = '" + Dept_Code + "'" +
-                " and D.FC_CreateTime >= '" + Start_Date+ "'" +
-                " and D.FC_CreateTime <= '" + End_Date + "'";
+                " and D.FC_CreateTime >= '" + Start_Date + "'" +
+                " and D.FC_CreateTime <= '" + End_Date + "'" +
+                " and D.FC_CardState = 5 " +
+                " and C.FCS_IsReported = 1";
             if (!string.IsNullOrEmpty(Item_Space))
             {
                 SQl += " and E.II_Version like '%" + Item_Space + "%'";

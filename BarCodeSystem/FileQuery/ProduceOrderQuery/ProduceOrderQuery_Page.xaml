@@ -197,13 +197,6 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn >
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=FCS_PersonName}" TextWrapping="Wrap"></TextBlock>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="投入数" Binding="{Binding Path=FCS_BeginAmount}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="转序新增数" Binding="{Binding Path=FCS_AddAmount}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="报废数" Binding="{Binding Path=FCS_ScrappedAmount}"></DataGridTextColumn>

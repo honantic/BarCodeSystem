@@ -15,11 +15,11 @@
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Administrator\Desktop\ClickOnceTest\</PublishUrl>
+    <PublishUrl>E:\BarCodeSystemDeploy\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
@@ -27,13 +27,14 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://172.16.100.40:8081/BarCodeSystem_64/</InstallUrl>
     <UpdateUrl>http://172.16.100.40:8081/BarCodeSystem_64/</UpdateUrl>
+    <TargetCulture>zh-Hans</TargetCulture>
     <ProductName>生产条码软件</ProductName>
     <PublisherName>FreeStyle</PublisherName>
     <SuiteName>生产条码软件</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.10.19.01</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.10.21.00</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -74,7 +75,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -83,6 +84,12 @@
   <PropertyGroup>
     <StartupObject>BarCodeSystem.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="BarCodeByDcj">
       <HintPath>..\..\..\BarCodeByDcj.dll</HintPath>
@@ -92,6 +99,9 @@
     </Reference>
     <Reference Include="GifImageLib">
       <HintPath>..\..\..\..\Documents\Visual Studio 2013\Projects\MissTangProject\MissTangProject\bin\Debug\GifImageLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro">
+      <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -106,6 +116,9 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -155,6 +168,9 @@
     <Compile Include="BasicFile\QualitySort\QualitySort_Window.xaml.cs">
       <DependentUpon>QualitySort_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BasicFile\WorkTeam\WorkTeam_Page.xaml.cs">
+      <DependentUpon>WorkTeam_Page.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileQuery\BadProduct\BadProductListDetail_Page.xaml.cs">
       <DependentUpon>BadProductListDetail_Page.xaml</DependentUpon>
     </Compile>
@@ -202,6 +218,12 @@
     </Compile>
     <Compile Include="FileQuery\FlowCardQuery\QueryWaySelect_Page.xaml.cs">
       <DependentUpon>QueryWaySelect_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\InputOutput\InputOutputDetail_Page.xaml.cs">
+      <DependentUpon>InputOutputDetail_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileQuery\InputOutput\InputOutput_Page.xaml.cs">
+      <DependentUpon>InputOutput_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.xaml.cs">
       <DependentUpon>ProduceOrderQuery_Page.xaml</DependentUpon>
@@ -345,6 +367,12 @@
     </Compile>
     <Compile Include="SalaryManage\QualityMonthlySalary\QualityMonthlySalary_Page.xaml.cs">
       <DependentUpon>QualityMonthlySalary_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SalaryManage\SalaryCheck\GiveSalariesDetail_Page.xaml.cs">
+      <DependentUpon>GiveSalariesDetail_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SalaryManage\SalaryCheck\GiveSalaries_Page.xaml.cs">
+      <DependentUpon>GiveSalaries_Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="SalaryManage\StaffSalaries\DeptSearch_Page.xaml.cs">
       <DependentUpon>DeptSearch_Page.xaml</DependentUpon>
@@ -556,6 +584,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="BasicFile\WorkTeam\WorkTeam_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BasicFile\WorkTeam\WorkTeam_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -623,6 +655,14 @@
     <Page Include="FileQuery\FlowCardQuery\QueryWaySelect_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileQuery\InputOutput\InputOutputDetail_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileQuery\InputOutput\InputOutput_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="FileQuery\ProduceOrderQuery\ProduceOrderQuery_Page.xaml">
       <SubType>Designer</SubType>
@@ -834,6 +874,14 @@
     <Page Include="SalaryManage\QualityMonthlySalary\QualityMonthlySalary_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SalaryManage\SalaryCheck\GiveSalariesDetail_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SalaryManage\SalaryCheck\GiveSalaries_Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SalaryManage\StaffSalaries\DeptSearch_Page.xaml">
       <Generator>MSBuild:Compile</Generator>

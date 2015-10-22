@@ -119,7 +119,7 @@ namespace BarCodeSystem
         {
             if (txtb_DeptInfo.Text != "点击放大镜选择" && !string.IsNullOrEmpty(datepicker_StartDate.Text) && !string.IsNullOrEmpty(datepicker_EndDate.Text))
             {
-                BadProductListDetail_Page bp = new BadProductListDetail_Page(Dept_Code, Convert.ToDateTime(datepicker_StartDate.SelectedDate).ToString("yyyy/MM/dd"), Convert.ToDateTime(datepicker_EndDate.SelectedDate).ToString("yyyy/MM/dd"), txtb_SearchKey.Text);
+                BadProductSummaryDetail_Page bp = new BadProductSummaryDetail_Page(Dept_Code, Convert.ToDateTime(datepicker_StartDate.SelectedDate).ToString("yyyy/MM/dd"), Convert.ToDateTime(datepicker_EndDate.SelectedDate).ToString("yyyy/MM/dd"), txtb_SearchKey.Text);
                 frame_Search.Navigate(bp);
             }
             else

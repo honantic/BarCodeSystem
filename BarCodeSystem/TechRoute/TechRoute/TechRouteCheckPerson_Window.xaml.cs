@@ -151,6 +151,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
         /// <param name="e"></param>
         private void btn_Select_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (listview1.SelectedIndex != -1)
             {
                 if (spi == null)
@@ -166,6 +167,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
                     this.DialogResult = true;
                 }
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>

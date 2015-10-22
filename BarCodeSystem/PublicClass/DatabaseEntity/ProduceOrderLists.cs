@@ -246,18 +246,15 @@ namespace BarCodeSystem.PublicClass
 
             DataRow row = ds.Tables[0].Rows[ds.Tables[0].Rows.Count - 1];
             //flagTime = Convert.ToDateTime(row["POF_LastImportDate"]);//这个会受到电脑系统设置影响  会出现星期几 和上下午的中文
-            string lastOperateTime = MyDBController.HandleTimeInfo(row["POF_LastImportDate"].ToString());
+            string lastOperateTime = Convert.ToDateTime(row["POF_LastImportDate"]).ToString("yyyy/MM/dd HH:MM:ss");
 
-            string PO_CodeList = "";
+            //条码系统中现有的生产订单的编号列表
+            List<string> PO_CodeList = new List<string>();
             FetchProduceOrderInfo(true).ForEach(
                     p =>
                     {
-                        PO_CodeList += PO_CodeList.Length == 0 ? "'" + p.PO_Code + "'" : ",'" + p.PO_Code + "'";
+                        PO_CodeList.Add(p.PO_Code);
                     });
-            if (string.IsNullOrEmpty(PO_CodeList))
-            {
-                PO_CodeList = "''";
-            }
             try
             {
                 if (!Convert.ToBoolean(row["POF_IsImportingFlag"]))
@@ -275,8 +272,7 @@ namespace BarCodeSystem.PublicClass
                         itemCodeList.Add(Convert.ToInt64(codeRow["ID"]), codeRow["II_Code"].ToString());
                     }
 
-                    //这段sql中，做了互斥操作，即，已经在条码系统中存在的生产订单不再导入系统中。
-                    SQl = string.Format(@"select A.[ID] as U9订单Id,A.[CreatedOn] as 创建日期, A.[CreatedBy] as 创建人姓名,A.[ModifiedOn] as 修改日期, A.[ModifiedBy] as 修改人姓名, A.[DocNo] as 生产订单_单号, A.[ProductQty] as 订单数量,A.[StartDate] as 开工日期, A.[TotalStartQty] as 开工数量, A.[TotalCompleteQty] as 已完工数量, A.[TotalEligibleQty] as 累计合格数量, A.[TotalScrapQty] as 累计报废数量, A.[TotalReworkingQty] as 累计返工数量, A1.[ID] as 料品Id,A1.[Code] as 料号, A1.[Name] as 料品名称, A1.[SPECS] as 料品规格,A1.[DescFlexField_PubDescSeg1] as 料品型号,A6.[ID] as 计量单位ID,A7.[name] as 料品计量单位,A6.[Code] as 计量单位编码 ,A3.[Name] as 部门名称, A2.[Code] as 部门编号, A4.[Code] as 项目编号, A5.[Name] as 项目名称 ,A.[DescFlexField_PubDescSeg8] as 是否导入条码系统标记 from  MO_MO as A  left join [CBO_ItemMaster] as A1 on (A.[ItemMaster] = A1.[ID]) left join [Base_UOM] as A6 on (A1.[InventoryUOM]=A6.[ID])left join [Base_UOM_Trl] as A7 on (A6.[ID]=A7.[ID] )left join [CBO_Department] as A2 on (A.[Department] = A2.[ID])  left join [CBO_Department_Trl] as A3 on (A3.SysMlFlag = 'zh-CN') and (A2.[ID] = A3.[ID])  left join [CBO_Project] as A4 on (A.[Project] = A4.[ID])  left join [CBO_Project_Trl] as A5 on (A5.SysMlFlag = 'zh-CN') and (A4.[ID] = A5.[ID]) where A.[ModifiedOn] > '{0}' and A.[DocState]=2 and A.[Org]={1} and A.[DocNo] not in ({2})", lastOperateTime, User_Info.Org_Id, PO_CodeList);
+                    SQl = string.Format(@"select A.[ID] as U9订单Id,A.[CreatedOn] as 创建日期, A.[CreatedBy] as 创建人姓名,A.[ModifiedOn] as 修改日期, A.[ModifiedBy] as 修改人姓名, A.[DocNo] as 生产订单_单号, A.[ProductQty] as 订单数量,A.[StartDate] as 开工日期, A.[TotalStartQty] as 开工数量, A.[TotalCompleteQty] as 已完工数量, A.[TotalEligibleQty] as 累计合格数量, A.[TotalScrapQty] as 累计报废数量, A.[TotalReworkingQty] as 累计返工数量, A1.[ID] as 料品Id,A1.[Code] as 料号, A1.[Name] as 料品名称, A1.[SPECS] as 料品规格,A1.[DescFlexField_PubDescSeg1] as 料品型号,A6.[ID] as 计量单位ID,A7.[name] as 料品计量单位,A6.[Code] as 计量单位编码 ,A3.[Name] as 部门名称, A2.[Code] as 部门编号, A4.[Code] as 项目编号, A5.[Name] as 项目名称 ,A.[DescFlexField_PubDescSeg8] as 是否导入条码系统标记 from  MO_MO as A  left join [CBO_ItemMaster] as A1 on (A.[ItemMaster] = A1.[ID]) left join [Base_UOM] as A6 on (A1.[InventoryUOM]=A6.[ID])left join [Base_UOM_Trl] as A7 on (A6.[ID]=A7.[ID] )left join [CBO_Department] as A2 on (A.[Department] = A2.[ID])  left join [CBO_Department_Trl] as A3 on (A3.SysMlFlag = 'zh-CN') and (A2.[ID] = A3.[ID])  left join [CBO_Project] as A4 on (A.[Project] = A4.[ID])  left join [CBO_Project_Trl] as A5 on (A5.SysMlFlag = 'zh-CN') and (A4.[ID] = A5.[ID]) where A.[ModifiedOn] > '{0}' and A.[DocState]=2 and A.[Org]={1} ", lastOperateTime, User_Info.Org_Id);
                     MyDBController.GetDataSet(new SqlConnection() { ConnectionString = sqlcon.ConnectionString }, SQl, ds, "Mo_Mo");
 
 
@@ -290,59 +286,60 @@ namespace BarCodeSystem.PublicClass
                             colList.Add(col.ColumnName);
                         }
                         ds.Tables["ProduceOrder"].Columns.Add(new DataColumn("IDNew", typeof(Int64)));
-
                         foreach (DataRow originrow in ds.Tables["Mo_Mo"].Rows)
                         {
-                            Int64 itemid = -1;
-                            if (itemCodeList.Values.Contains(originrow["料号"].ToString()))
+                            if (!PO_CodeList.Contains(originrow["生产订单_单号"].ToString()))
                             {
-                                itemid = itemCodeList.First(p => p.Value.Equals(originrow["料号"].ToString())).Key;
+                                Int64 itemid = -1;
+                                if (itemCodeList.Values.Contains(originrow["料号"].ToString()))
+                                {
+                                    itemid = itemCodeList.First(p => p.Value.Equals(originrow["料号"].ToString())).Key;
+                                }
+                                else
+                                {
+                                    SQl = string.Format(@"insert into [ItemInfo](II_Code,II_Spec,II_Version,II_Name,II_UnitID,II_UnitCode,II_UnitName) values('{0}','{1}','{2}','{3}',{4},'{5}','{6}')", originrow["料号"].ToString(), originrow["料品规格"].ToString(), originrow["料品型号"].ToString(), originrow["料品名称"].ToString(), Convert.ToInt64(originrow["计量单位ID"]), originrow["计量单位编码"].ToString(), originrow["料品计量单位"].ToString());
+                                    MyDBController.ExecuteNonQuery(SQl);
+                                    SQl = string.Format(@"select [ID] from [ItemInfo] where [II_Code]='{0}'", originrow["料号"].ToString());
+                                    itemid = Convert.ToInt64(MyDBController.ExecuteScalar(SQl));
+                                    itemCodeList.Add(itemid, originrow["料号"].ToString());
+                                }
+
+                                DataRow newrow = ds.Tables["ProduceOrder"].NewRow();
+                                newrow["PO_ID"] = originrow["U9订单Id"];
+                                newrow["PO_Code"] = originrow["生产订单_单号"];
+                                newrow["PO_ItemID"] = itemid;
+                                newrow["PO_ItemCode"] = originrow["料号"];
+                                newrow["PO_ItemSpec"] = originrow["料品规格"];
+                                newrow["PO_ItemVersion"] = originrow["料品型号"];
+                                newrow["PO_ProjectCode"] = originrow["项目编号"] == null ? "" : originrow["项目编号"];
+                                newrow["PO_ProjectName"] = originrow["项目名称"] == null ? "" : originrow["项目名称"];
+                                newrow["PO_ItemName"] = originrow["料品名称"];
+                                newrow["PO_Itemunit"] = originrow["料品计量单位"];
+                                newrow["PO_CreateTime"] = originrow["创建日期"];
+                                newrow["PO_CreateBy"] = originrow["创建人姓名"];
+                                newrow["PO_ModifyTime"] = originrow["修改日期"];
+                                newrow["PO_ModifyBy"] = originrow["修改人姓名"];
+                                newrow["PO_StartDate"] = originrow["开工日期"];
+                                newrow["PO_OrderAmount"] = originrow["开工数量"];//u9订单开工数量，就是条码系统里面的可派工数量
+                                newrow["PO_StartAmount"] = originrow["已完工数量"];//已派工数量，第一次导入条码系统里面的都等于已完工数量，正常情况下都是零
+                                newrow["PO_FinishedAmount"] = originrow["已完工数量"];
+                                newrow["PO_OrderSource"] = 0;
+                                newrow["PO_ProduceDepartName"] = originrow["部门名称"];
+                                newrow["PO_ProduceDepartCode"] = originrow["部门编号"];
+                                newrow["PO_IsReturn"] = false;
+                                newrow["PO_BCSCreateTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                                ds.Tables["ProduceOrder"].Rows.Add(newrow);
+
+                                sb.Append(sb.Length == 0 ? originrow["U9订单Id"].ToString() : "," + originrow["U9订单Id"].ToString());
+                                originrow["是否导入条码系统标记"] = "已导入条码系统";
                             }
-                            else
-                            {
-                                SQl = string.Format(@"insert into [ItemInfo](II_Code,II_Spec,II_Version,II_Name,II_UnitID,II_UnitCode,II_UnitName) values('{0}','{1}','{2}','{3}',{4},'{5}','{6}')", originrow["料号"].ToString(), originrow["料品规格"].ToString(), originrow["料品型号"].ToString(), originrow["料品名称"].ToString(), Convert.ToInt64(originrow["计量单位ID"]), originrow["计量单位编码"].ToString(), originrow["料品计量单位"].ToString());
-                                MyDBController.ExecuteNonQuery(SQl);
-                                SQl = string.Format(@"select [ID] from [ItemInfo] where [II_Code]='{0}'", originrow["料号"].ToString());
-                                itemid = Convert.ToInt64(MyDBController.ExecuteScalar(SQl));
-                                itemCodeList.Add(itemid, originrow["料号"].ToString());
-                            }
-
-                            DataRow newrow = ds.Tables["ProduceOrder"].NewRow();
-                            newrow["PO_ID"] = originrow["U9订单Id"];
-                            newrow["PO_Code"] = originrow["生产订单_单号"];
-                            newrow["PO_ItemID"] = itemid;
-                            newrow["PO_ItemCode"] = originrow["料号"];
-                            newrow["PO_ItemSpec"] = originrow["料品规格"];
-                            newrow["PO_ItemVersion"] = originrow["料品型号"];
-                            newrow["PO_ProjectCode"] = originrow["项目编号"] == null ? "" : originrow["项目编号"];
-                            newrow["PO_ProjectName"] = originrow["项目名称"] == null ? "" : originrow["项目名称"];
-                            newrow["PO_ItemName"] = originrow["料品名称"];
-                            newrow["PO_Itemunit"] = originrow["料品计量单位"];
-                            newrow["PO_CreateTime"] = originrow["创建日期"];
-                            newrow["PO_CreateBy"] = originrow["创建人姓名"];
-                            newrow["PO_ModifyTime"] = originrow["修改日期"];
-                            newrow["PO_ModifyBy"] = originrow["修改人姓名"];
-                            newrow["PO_StartDate"] = originrow["开工日期"];
-                            newrow["PO_OrderAmount"] = originrow["开工数量"];//u9订单开工数量，就是条码系统里面的可派工数量
-                            newrow["PO_StartAmount"] = originrow["已完工数量"];//已派工数量，第一次导入条码系统里面的都等于已完工数量，正常情况下都是零
-                            newrow["PO_FinishedAmount"] = originrow["已完工数量"];
-                            newrow["PO_OrderSource"] = 0;
-                            newrow["PO_ProduceDepartName"] = originrow["部门名称"];
-                            newrow["PO_ProduceDepartCode"] = originrow["部门编号"];
-                            newrow["PO_IsReturn"] = false;
-                            newrow["PO_BCSCreateTime"] = MyDBController.HandleTimeInfo(DateTime.Now.ToString());
-                            ds.Tables["ProduceOrder"].Rows.Add(newrow);
-
-                            sb.Append(sb.Length == 0 ? originrow["U9订单Id"].ToString() : "," + originrow["U9订单Id"].ToString());
-                            originrow["是否导入条码系统标记"] = "已导入条码系统";
-
                         }
                         int updateNum, insertNum;
                         MyDBController.InsertSqlBulk(ds.Tables["ProduceOrder"], colList, out updateNum, out insertNum);
 
                         //修改最新操作时间
                         SQl = string.Format(@"select max([PO_ModifyTime]) from  produceorder as A  where A.[PO_ModifyTime] > '{0}' ", lastOperateTime);
-                        lastOperateTime = MyDBController.HandleTimeInfo(MyDBController.ExecuteScalar(SQl).ToString());
+                        lastOperateTime = Convert.ToDateTime(MyDBController.ExecuteScalar(SQl)).ToString("yyyy/MM/dd HH:MM:ss");
 
                         //修改条码系统中订单时间戳，这次从条码系统中获取生产订单的最大修改时间
                         SQl = string.Format(@"update [ProduceOrderFlag] set [POF_LastImportDate]='{0}' ,[POF_IsImportingFlag] ='false' where [ID]={1}", lastOperateTime, Convert.ToInt64(row["ID"]));

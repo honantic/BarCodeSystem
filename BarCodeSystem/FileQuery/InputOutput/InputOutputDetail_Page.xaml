@@ -1,0 +1,70 @@
+﻿<Page x:Class="BarCodeSystem.FileQuery.InputOutput.InputOutputDetail_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+	Title="InputOutputDetail_Page" Loaded="Page_Loaded">
+    
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label >
+                <TextBlock Foreground="White">投入产出详细信息</TextBlock>
+                <Label.Background>
+                    <LinearGradientBrush>
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="1" Color="Chocolate"></GradientStop>
+                            <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
+                            <GradientStop Color="Crimson"></GradientStop>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+
+            <DataGrid ClipboardCopyMode="None"  x:Name="datagrid_InputOutDetail" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
+                <DataGrid.Columns>
+                    <!--<DataGridTextColumn Header="流转卡编号" Binding="{Binding Path=FC_Code}"></DataGridTextColumn>-->
+                    <DataGridTextColumn Header="料号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="料名" Binding="{Binding Path=II_Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="型号" Binding="{Binding Path=II_Spec}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="上期结存"></DataGridTextColumn>
+                    <DataGridTextColumn Header="投入数" Binding="{Binding Path=FC_Amount}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="投入合计"></DataGridTextColumn>
+                    <DataGridTextColumn Header="产出数" Binding="{Binding Path=FCS_QulifiedAmount}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="本期结存"></DataGridTextColumn>
+                    <DataGridTextColumn Header="本月调差"></DataGridTextColumn>
+                    <DataGridTextColumn Header="产出合计"></DataGridTextColumn>
+                    <DataGridTextColumn Header="合格率"></DataGridTextColumn>
+                    <DataGridTextColumn Header="数量率"></DataGridTextColumn>
+                    <DataGridTextColumn Header="数量差异数"></DataGridTextColumn>
+                    <DataGridTextColumn Header="差异率"></DataGridTextColumn>
+                    <DataGridTextColumn Header="原因分析"></DataGridTextColumn>
+                        
+               </DataGrid.Columns>
+
+
+
+            </DataGrid>
+            <TextBlock Name="txb_Tip" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+            <Button Content="导出" MaxWidth="120" MinWidth="80"  Name="btn_export" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Grid.Row="2" Click="btn_export_Click"></Button>
+        </Grid>
+    </Grid>
+</Page>

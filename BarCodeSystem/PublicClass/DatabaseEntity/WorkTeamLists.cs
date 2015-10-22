@@ -40,6 +40,7 @@ namespace BarCodeSystem
             set;
         }
 
+
         //工作中心编码
         public string workcenterCode
         {
@@ -56,20 +57,35 @@ namespace BarCodeSystem
 
 
         /// <summary>
+        /// 是否展示
+        /// </summary>
+        public bool IsShown { get; set; }
+
+        /// <summary>
         /// 检查当前编码是否在班组表中存在
         /// </summary>
         /// <param name="_key">编码</param>
+        /// <param name="_wcID">可选参数，车间id</param>
         /// <returns></returns>
-        public static bool CheckIfCodeExsist(string _key)
+        public static bool CheckIfCodeExsist(string _key, Int64 _wcID = -1)
         {
             bool flag = false;
-            string SQl = string.Format("Select count(*) from WorkTeam where [WT_Code]='{0}'", _key);
+            string SQl = "";
+            if (_wcID == -1)
+            {
+                SQl = string.Format("Select count(*) from WorkTeam where [WT_Code]='{0}' ", _key);
+            }
+            else
+            {
+                SQl = string.Format("Select count(*) from WorkTeam where [WT_Code]='{0}' and [WT_WorkCenterID]={1}", _key, _wcID);
+            }
             MyDBController.GetConnection();
             int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
             MyDBController.CloseConnection();
             flag = count > 0;
             return flag;
         }
+
 
         /// <summary>
         /// 根据班组编码获取人员列表
@@ -201,6 +217,83 @@ namespace BarCodeSystem
             //        }
             //    });
             #endregion
+        }
+
+        /// <summary>
+        /// 根据车间id获取班组列表
+        /// </summary>
+        /// <param name="_wcID"></param>
+        /// <returns></returns>
+        public static List<WorkTeamLists> FetchWTInfoByWCID(Int64 _wcID = -1)
+        {
+            string SQl = "";
+            if (_wcID == -1)
+            {
+                SQl = "select A.[ID],A.[WT_Code],A.[WT_Name],A.[WT_WorkCenterID],A.[WT_IsShown],B.[WC_Department_Code],B.[WC_Department_Name] from [WorkTeam] A left join [WorkCenter] B on A.[WT_WorkCenterID]=B.[WC_Department_ID]";
+            }
+            else
+            {
+                SQl = string.Format("select A.[ID],A.[WT_Code],A.[WT_Name],A.[WT_WorkCenterID],A.[WT_IsShown],B.[WC_Department_Code],B.[WC_Department_Name] from [WorkTeam] A left join [WorkCenter] B on A.[WT_WorkCenterID]=B.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _wcID);
+            }
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 执行查询班组信息的sql 命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<WorkTeamLists> ExecuteSQlCommand(string _command)
+        {
+            DataSet ds = new DataSet();
+            List<WorkTeamLists> _wtlList = new List<WorkTeamLists>();
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(_command, ds, "WorkTeam");
+            MyDBController.CloseConnection();
+            foreach (DataRow row in ds.Tables["WorkTeam"].Rows)
+            {
+                WorkTeamLists wtl = new WorkTeamLists();
+                wtl.ID = Convert.ToInt64(row["ID"]);
+                wtl.workcenterCode = row["WC_Department_Code"].ToString();
+                wtl.workcenterName = row["WC_Department_Name"].ToString();
+                wtl.IsShown = row["WT_IsShown"] is DBNull ? true : Convert.ToBoolean(row["WT_IsShown"]);
+                wtl.WT_Code = row["WT_Code"].ToString();
+                wtl.WT_Name = row["WT_Name"].ToString();
+                wtl.WT_WorkCenterID = Convert.ToInt64(row["WT_WorkCenterID"]);
+                _wtlList.Add(wtl);
+            }
+            return _wtlList;
+        }
+
+        /// <summary>
+        /// 保存班组信息
+        /// </summary>
+        /// <param name="_wtl"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(WorkTeamLists _wtl)
+        {
+            bool flag = false;
+            DataSet ds = new DataSet();
+            string SQl = string.Format("select top 0 * from [WorkTeam]");
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "WorkTeam");
+            List<WorkTeamLists> wtlList = new List<WorkTeamLists>() { _wtl };
+            flag = MyDBController.InsertSqlBulk<WorkTeamLists>(wtlList, ds.Tables["WorkTeam"]);
+            MyDBController.CloseConnection();
+            return flag;
+        }
+
+
+        /// <summary>
+        /// 根据班组编号和车间id获取班组的ID
+        /// </summary>
+        /// <param name="_wtCode"></param>
+        /// <param name="_wcID"></param>
+        /// <returns></returns>
+        public static List<WorkTeamLists> FetchWTID(string _wtCode, Int64 _wcID)
+        {
+            string SQl = string.Format("select A.[ID],A.[WT_Code],A.[WT_Name],A.[WT_WorkCenterID],A.[WT_IsShown],B.[WC_Department_Code],B.[WC_Department_Name] from [WorkTeam] A left join [WorkCenter] B on A.[WT_WorkCenterID]=B.[WC_Department_ID] where A.[WT_Code]='{0}' and  A.[WT_WorkCenterID]={1}", _wtCode, _wcID);
+            return ExecuteSQlCommand(SQl);
         }
     }
 }

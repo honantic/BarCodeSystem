@@ -22,6 +22,58 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             }
         }
         /// <summary>
+        /// 投入数量
+        /// </summary>
+        public int FC_Amount { get; set; }
+
+        /// <summary>
+        /// 应发工资
+        /// </summary>
+        public decimal TotalPayMount { get; set; }
+
+
+        /// <summary>
+        /// 实发工资
+        /// </summary>
+        public decimal FinalPayMount { get; set; }
+
+        /// <summary>
+        /// 流转卡编号
+        /// </summary>
+        public string FC_Code { get; set; }
+
+
+        /// <summary>
+        /// 流转卡ID
+        /// </summary>
+        public Int64 FC_ID { get; set; }
+
+
+        /// <summary>
+        /// 料品编码
+        /// </summary>
+        public string II_Code { get; set; }
+
+
+        /// <summary>
+        /// 料品名称
+        /// </summary>
+        public string II_Name { get; set; }
+
+
+        /// <summary>
+        /// 料品型号
+        /// </summary>
+        public string II_Spec { get; set; }
+
+
+
+        /// <summary>
+        /// 工时
+        /// </summary>
+        public decimal WH_WorkHour { get; set; } 
+
+        /// <summary>
         /// 主键，自增
         /// </summary>
         public Int64 ID { get; set; }
@@ -294,6 +346,86 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             _fcsls.Sort(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_ProcessSequanece.CompareTo(p2.FCS_ProcessSequanece)));
             return _fcsls;
         }
+
+        /// <summary>
+        /// 根据参数返回行表信息
+        /// </summary>
+        /// <param name="start_time">起始时间</param>
+        /// <param name="end_time">结束时间</param>
+        /// <param name="dept_code">部门编码</param>
+        /// <returns></returns>
+        public static List<FlowCardSubLists> FetchFCS_Info(DateTime start_time, DateTime end_time, string dept_code)
+        {
+            DataSet ds = new DataSet();
+            DataTable tb = new DataTable();
+            List<FlowCardSubLists> fcsll = new List<FlowCardSubLists>();
+
+            string SQl = string.Format(@"select F.II_Code,F.II_Name,F.II_Spec,A.FCS_ProcessName,A.FCS_QulifiedAmount,B.FC_Code,D.WH_WorkHour,B.ID as FC_ID,C.ID as TR_ID,A.FCS_ProcessID as ProcessID from FlowCardSub as A left join  FlowCard as B on (A.FCS_FlowCradID = B.ID) left join  TechRoute as C on (A.FCS_TechRouteID = C.ID) left join  WorkHour as D on (D.WH_TechRouteID = C.ID) left join WorkCenter as E on (E.WC_Department_ID = C.TR_WorkCenterID) left join ItemInfo as F on (F.ID = C.TR_ItemID) where E.WC_Department_Code ='{0}'and A.FCS_ReportTime >= '{1}'and A.FCS_ReportTime <='{2}'and D.ID = (select MAX(ID) from WorkHour as G  where G.WH_TechRouteID = C.ID and CONVERT(date, G.WH_StartDate)<=CONVERT(date, A.FCS_ReportTime)and CONVERT(date, G.WH_EndDate)>=CONVERT(date, A.FCS_ReportTime)) and A.FCS_IsReported = 1", dept_code, start_time.ToString("yyyy-MM-dd HH:MM:ss"), end_time.ToString("yyyy-MM-dd HH:MM:ss"));
+
+
+            MyDBController.GetConnection();
+            tb = MyDBController.GetDataSet(SQl, ds, "GiveSalaries").Tables["GiveSalaries"];
+            MyDBController.CloseConnection();
+
+            foreach (DataRow dr in tb.Rows)
+            {
+                FlowCardSubLists fcsl = new FlowCardSubLists();
+                fcsl.FCS_FlowCradID = (Int64)dr["FC_ID"];
+                fcsl.FCS_TechRouteID = (Int64)dr["TR_ID"];
+                fcsl.FCS_ProcessID = (Int64)dr["ProcessID"];
+
+                fcsl.FC_Code = dr["FC_Code"].ToString();
+                fcsl.II_Code = dr["II_Code"].ToString();
+                fcsl.II_Name = dr["II_Name"].ToString();
+                fcsl.II_Spec = dr["II_Spec"].ToString();
+
+                fcsl.FCS_ProcessName = dr["FCS_ProcessName"].ToString();
+                fcsl.WH_WorkHour = decimal.Parse(dr["WH_WorkHour"].ToString());
+                fcsl.FCS_QulifiedAmount = Convert.ToInt32(dr["FCS_QulifiedAmount"].ToString());
+
+                fcsll.Add(fcsl);
+            }
+            return fcsll;
+        }
+
+        /// <summary>
+        /// 根据参数返回投入产出信息
+        /// </summary>
+        /// <param name="start_time"></param>
+        /// <param name="end_time"></param>
+        /// <param name="dept_code"></param>
+        /// <returns></returns>
+        public static List<FlowCardSubLists> FetchFCS_IOInfo(DateTime start_time, DateTime end_time, string dept_code)
+        {
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+            List<FlowCardSubLists> fcslList = new List<FlowCardSubLists>();
+            string SQl = string.Format(@"select B.FC_Code,B.FC_Amount,D.II_Code,D.II_Name,D.II_Spec,A.FCS_ProcessName,A.FCS_PersonName,C.TR_IsFirstProcess,C.TR_IsLastProcess,A.FCS_BeginAmount,A.FCS_QulifiedAmount  from FlowCardSub as A  left join FlowCard as B on (A.FCS_FlowCradID = B.ID) left join TechRoute as C on (A.FCS_TechRouteID = C.ID) left join ItemInfo as D on (C.TR_ItemID = D.ID) left join WorkCenter as E on (E.WC_Department_ID = C.TR_WorkCenterID) where  E.WC_Department_Code = '{0}' and A.FCS_ReportTime >='{1}' and A.FCS_ReportTime <='{2}'and B.FC_CardState = 5 and A.FCS_IsReported = 1", dept_code, start_time.ToString("yyyy-MM-dd HH:MM:ss"), end_time.ToString("yyyy-MM-dd HH:MM:ss"));
+
+            MyDBController.GetConnection();
+            dt = MyDBController.GetDataSet(SQl, ds, "InputOutput").Tables["InputOutput"];
+            MyDBController.CloseConnection();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                FlowCardSubLists fcsl = new FlowCardSubLists();
+                fcsl.FC_Code = dr["FC_Code"].ToString();
+                fcsl.FC_Amount = Int32.Parse(dr["FC_Amount"].ToString());
+                fcsl.II_Code = dr["II_Code"].ToString();
+                fcsl.II_Name = dr["II_Name"].ToString();
+                fcsl.II_Spec = dr["II_Spec"].ToString();
+                fcsl.FCS_ProcessName = dr["FCS_ProcessName"].ToString();
+                fcsl.FCS_PersonName = dr["FCS_PersonName"].ToString();
+                fcsl.FCS_IsFirstProcess = Convert.ToBoolean(dr["TR_IsFirstProcess"].ToString());
+                fcsl.FCS_IsLastProcess = Convert.ToBoolean(dr["TR_IsLastProcess"].ToString());
+                fcsl.FCS_BeginAmount = Int32.Parse(dr["FCS_BeginAmount"].ToString());
+                fcsl.FCS_QulifiedAmount = Int32.Parse(dr["FCS_QulifiedAmount"].ToString());
+                fcslList.Add(fcsl);
+            }
+
+            return fcslList;
+        }
+
 
         /// <summary>
         /// 快速保存数据
