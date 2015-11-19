@@ -2,6 +2,7 @@
 using BarCodeSystem.PublicClass.DatabaseEntity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -152,6 +153,7 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             tb_DepartmentName.Text = _pol.PO_ProduceDepartName;
             tb_FinishedAmount.Text = _pol.PO_FinishedAmount.ToString();
             tb_ItemInfo.Text = _pol.PO_ItemCode + " | " + _pol.PO_ItemName + " | " + _pol.PO_ItemSpec;
+            tb_ItemVersion.Text = _pol.PO_ItemVersion;
             tb_OrderAmount.Text = _pol.PO_OrderAmount.ToString();
             tb_POCode.Text = _pol.PO_Code;
             tb_ProjectCode.Text = _pol.PO_ProjectCode;
@@ -237,6 +239,8 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
         {
             fcslList = FlowCardSubLists.FetchFCS_InfoByFC_Id(_fc.ID);
             dg_FlowCardSubInfo.ItemsSource = fcslList;
+            ICollectionView view = CollectionViewSource.GetDefaultView(dg_FlowCardSubInfo.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("FCS_ProcessName"));
             dg_FlowCardSubInfo.Items.Refresh();
         }
 

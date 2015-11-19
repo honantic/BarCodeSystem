@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="QualitySortModify_Window" Height="400" Width="600" Loaded="Window_Loaded">
+        Title="QualitySortModify_Window" Height="400" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"></RowDefinition>

@@ -115,7 +115,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="_fcCode"></param>
         private void FetchFlowCardInfo()
         {
-            souceFCList = FlowCardLists.FetchFC_InfoByState(0, 1, 2);
+            souceFCList = FlowCardLists.FetchFC_InfoByState(null, 0, 1, 2);
             datagrid_FlowCardList.ItemsSource = souceFCList.OrderBy(p => p.FC_Code);
         }
 

@@ -102,8 +102,13 @@
                         </Button>-->
                     </StackPanel>
 
-                    <TextBlock Text="生产订单:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Row="2"></TextBlock>
-                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
+
+                    <TextBlock Name="textb_IsSalaryCalculating" Text="是否计算工资"  Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" ></TextBlock>
+                    <StackPanel Margin="10 0 0 0"  Grid.Row="2"  Grid.Column="1"  VerticalAlignment="Center" Background="LightGray">
+                        <CheckBox Name="cb_IsSalaryCalcuating" IsChecked="True" Style="{StaticResource CB_NormalStyle}" Content="{Binding Path=IsChecked,ElementName=cb_IsSalaryCalcuating,Converter={StaticResource boolConvert}}" Click="cb_IsSalaryCalcuating_Click" ></CheckBox>
+                    </StackPanel>
+                    <TextBlock Name="textb_POInfo" Text="生产订单:" VerticalAlignment="Center" HorizontalAlignment="Right"  Grid.Row="2"></TextBlock>
+                    <StackPanel Name="sp_POInfo" Grid.Column="1" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Height="30">
                         <TextBox VerticalAlignment="Center" Name="txtb_ProduceOrderInfo" IsReadOnly="True" Text="点击放大镜选择" 
                                  Width="{Binding Path=ActualWidth,ElementName=cb_FlowCardType}"  BorderBrush="White"></TextBox>
                         <Button Cursor="Hand" Style="{StaticResource btn_SearchStyle}" Height="{Binding Path=ActualHeight,ElementName=txtb_ProduceOrderInfo}" 

@@ -56,7 +56,7 @@
                         <DataGridTextColumn Header="员工姓名" Binding="{Binding Path=QMS_PersonName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="质量奖赔" Binding="{Binding Path=QMS_QualityMoney}"></DataGridTextColumn>
                         <DataGridTextColumn Header="杂工工资" Binding="{Binding Path=QMS_SundryMoney}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="创建人" Binding="{Binding Path=QMS_CreateBy}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="创建人" Binding="{Binding Path=QMS_CreateByName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="创建日期" Binding="{Binding Path=QMS_CreateOn}"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>

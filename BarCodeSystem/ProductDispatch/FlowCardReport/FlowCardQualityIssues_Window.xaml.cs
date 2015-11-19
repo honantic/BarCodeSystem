@@ -23,19 +23,21 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// 报工手动选择质量信息
         /// </summary>
         /// <param name="_sqi"></param>
-        public FlowCardQualityIssues_Window(SubmitQualityIssue _sqi)
+        public FlowCardQualityIssues_Window(SubmitQualityIssue _sqi,ProcessNameLists _pnl)
         {
             InitializeComponent();
             sqi = _sqi;
+            pnl = _pnl;
         }
 
         /// <summary>
         /// 报工扫描质量信息
         /// </summary>
-        public FlowCardQualityIssues_Window(SubmitQualityIssueList _sqil)
+        public FlowCardQualityIssues_Window(SubmitQualityIssueList _sqil, ProcessNameLists _pnl)
         {
             InitializeComponent();
             sqil = _sqil;
+            pnl = _pnl;
         }
         /// <summary>
         /// 加载事件
@@ -46,18 +48,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             FetchQualityInfo();
         }
-
+        #region 变量
         SubmitQualityIssue sqi;
         SubmitQualityIssueList sqil;
         public QualityIssuesLists qil;
         List<QualityIssuesLists> list1, list2 = new List<QualityIssuesLists>();
-
+        /// <summary>
+        /// 接受报废信息的工序
+        /// </summary>
+        ProcessNameLists pnl;
+        #endregion
         /// <summary>
         /// 获取质量信息
         /// </summary>
         private void FetchQualityInfo()
         {
-            list1 = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+            list1 = QualityIssuesLists.FetchBCSQIInfoByPNL(pnl);
             listview1.ItemsSource = list1;
             if (sqi != null)
             {

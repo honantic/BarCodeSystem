@@ -1,0 +1,194 @@
+﻿<Page x:Class="BarCodeSystem.TechRoute.TechRoute.TechRouteNew_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
+      xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      Loaded="Page_Loaded"
+      d:DesignHeight="600" d:DesignWidth="800"
+	Title="TechRouteNew_Page">
+    <Page.Resources>
+        <local:TrueOrFalseConverter x:Key="boolConverter"></local:TrueOrFalseConverter>
+        <local:BoolReverseConverter x:Key="boolReverseConverter"></local:BoolReverseConverter>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <GroupBox  Margin="5">
+            <GroupBox.Header >
+                <TextBlock  Style="{StaticResource textb_NormalStyle}">料品信息</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="料号：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <TextBox Name="tb_ItemCode" TextWrapping="Wrap" IsReadOnly="True" Grid.Column="1" VerticalAlignment="Center" Background="LightGray"></TextBox>
+                <TextBlock Text="品名：" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <TextBox Name="tb_ItemName"  TextWrapping="Wrap" IsReadOnly="True" Grid.Column="3" VerticalAlignment="Center" Background="LightGray"></TextBox>
+                <TextBlock Text="规格：" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <TextBox Name="tb_ItemSpec"  TextWrapping="Wrap" IsReadOnly="True" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray"></TextBox>
+                <TextBlock Text="型号：" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                <TextBox Name="tb_ItemVersion"  TextWrapping="Wrap" IsReadOnly="True" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Center" Background="LightGray"></TextBox>
+
+                <Button Name="btn_ChooseItem" Click="btn_ChooseItem_Click" Grid.Row="2"  Grid.ColumnSpan="4" VerticalAlignment="Center" HorizontalAlignment="Center" Content="选择料品" Padding="20 5"></Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Margin="5">
+            <GroupBox.Header >
+                <TextBlock  Style="{StaticResource textb_NormalStyle}">工艺版本信息</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="版本编号:" Margin="0 0 5 0" TextWrapping="Wrap"></TextBlock>
+                <TextBox Name="tb_VersionCode" TextChanged="tb_VersionCode_TextChanged" IsReadOnly="True"  LostFocus="tb_VersionCode_LostFocus" VerticalAlignment="Center" Grid.Column="1" Background="LightGray"></TextBox>
+                <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 5 0"  Text="版本名称:" TextWrapping="Wrap"></TextBlock>
+                <TextBox Name="tb_VersionName" IsReadOnly="True" VerticalAlignment="Center" Grid.Column="4" Background="LightGray"></TextBox>
+                <TextBlock VerticalAlignment="Center" Text="是否显示:" Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Right" Margin="0 0 5 0"></TextBlock>
+                <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Background="LightGray">
+                    <CheckBox  Name="cb_TRVIsShown" FontSize="12" Style="{StaticResource CB_NormalStyle}" IsThreeState="False" Content="{Binding Path=IsChecked,ElementName=cb_TRVIsShown,Converter={StaticResource  boolConverter}}"
+                           VerticalAlignment="Center"  Margin="5 0 0 0">
+                    </CheckBox>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="报工方式:" HorizontalAlignment="Right"  Margin="0 0 5 0"  TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
+                <StackPanel  Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Background="LightGray">
+                    <RadioButton Style="{StaticResource rb_NormalStyle}" Name="rb_ScatterReport" IsThreeState="False" Content="离散报工" GroupName="ReportWay"></RadioButton>
+                    <RadioButton Style="{StaticResource rb_NormalStyle}" Name="rb_IntegrateReport" Content="流水报工"  IsThreeState="False" GroupName="ReportWay"></RadioButton>
+                </StackPanel>
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="是否默认版本:" HorizontalAlignment="Right"  Margin="0 0 5 0" TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
+                <StackPanel  Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Background="LightGray">
+                    <CheckBox  Name="cb_IsDefaulVersion" FontSize="12" Style="{StaticResource CB_NormalStyle}" IsThreeState="False" Content="{Binding Path=IsChecked,ElementName=cb_IsDefaulVersion,Converter={StaticResource  boolConverter}}"
+                           VerticalAlignment="Center"  Margin="5 0 0 0">
+                    </CheckBox>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="是否返工版本:" HorizontalAlignment="Right"  Margin="0 0 5 0" TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
+                <StackPanel  Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Background="LightGray">
+                    <CheckBox  Name="cb_IsBackVersion" FontSize="12" Style="{StaticResource CB_NormalStyle}" IsThreeState="False" Content="{Binding Path=IsChecked,ElementName=cb_IsBackVersion,Converter={StaticResource  boolConverter}}"
+                           VerticalAlignment="Center"  Margin="5 0 0 0">
+                    </CheckBox>
+                </StackPanel>
+
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="是否有流转卡:"  HorizontalAlignment="Right"  Margin="0 0 5 0" TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
+                <StackPanel  Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Background="LightGray">
+                    <CheckBox  Name="cb_TRV_HasFlowCard"  IsEnabled="False" FontSize="12" Style="{StaticResource CB_NormalStyle}" IsThreeState="False" Content="{Binding Path=IsChecked,ElementName=cb_TRV_HasFlowCard,Converter={StaticResource  boolConverter}}"
+                           VerticalAlignment="Center"  Margin="5 0 0 0">
+                    </CheckBox>
+                </StackPanel>
+                
+                <Button Grid.Column="2" Name="btn_AddNewVersion" Click="btn_AddNewVersion_Click" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="新增版本" Width="70"></Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Grid.ColumnSpan="2"  Margin="5">
+            <GroupBox.Header >
+                <TextBlock  Style="{StaticResource textb_NormalStyle}">工艺详细信息</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <DataGrid Name="dg_TechRouteInfo" RowHeaderWidth="30" ColumnWidth="Auto" Margin="5" AutoGenerateColumns="False" CanUserAddRows="False"  >
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="行号"  IsReadOnly="{Binding Path=IsChecked,ElementName=cb_TRV_HasFlowCard}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TR_ProcessSequence}"></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <extool:IntegerUpDown Name="iud_TechSequence" LostFocus="iud_TechSequence_LostFocus" Value="{Binding Path=TR_ProcessSequence,Mode=TwoWay}" Increment="10" Minimum="0" ></extool:IntegerUpDown>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="工序名称"  IsReadOnly="{Binding Path=IsChecked,ElementName=cb_TRV_HasFlowCard}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TR_ProcessName}"></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <Button Content="选择工序" Name="btn_ChooseProcess" Click="btn_ChooseProcess_Click"></Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="首道"  IsReadOnly="True" Binding="{Binding Path=TR_IsFirstProcess,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="末道"  IsReadOnly="True" Binding="{Binding Path=TR_IsLastProcess,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
+                        <DataGridTemplateColumn Header="检验员"   >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TR_DefaultCheckPersonName}"></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <Button Content="选择检验员" Name="btn_ChooseCheckPerson" Click="btn_ChooseCheckPerson_Click"></Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="是否统计工序" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TR_IsCountingProcess,Converter={StaticResource boolConverter}}"></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Path=TR_IsCountingProcess,Mode=TwoWay}" Content="{Binding Path=TR_IsCountingProcess,Converter={StaticResource boolConverter}}"></CheckBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Name="btn_AddTR" Click="btn_AddTR_Click" IsEnabled="{Binding Path=IsChecked,ElementName=cb_TRV_HasFlowCard,Converter={StaticResource boolReverseConverter}}" Content="添加行" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="30 5"></Button>
+                    <Button Name="btn_DeleteTR" Click="btn_DeleteTR_Click" IsEnabled="{Binding Path=IsChecked,ElementName=cb_TRV_HasFlowCard,Converter={StaticResource boolReverseConverter}}"  Content="删除行" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="30 5"></Button>
+                    <Button Name="btn_Cancel" Click="btn_Cancel_Click" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="35 5" Content="取消"></Button>
+                    <Button Name="btn_SaveInfo" Click="btn_SaveInfo_Click" Grid.Row="1"  Grid.Column="1" Content="保存信息" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25 5"></Button>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Page>

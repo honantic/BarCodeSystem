@@ -121,12 +121,15 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         /// <param name="e"></param>
         private void btn_Select_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (datagrid_QMSCode.SelectedIndex != -1)
             {
                 QualityMonthlySalaryList qms = (QualityMonthlySalaryList)datagrid_QMSCode.SelectedItem;
                 List<QualityMonthlySalaryList> newList = qmsList.FindAll(p => p.QMS_Code.Equals(qms.QMS_Code));
                 sqs.Invoke(newList);
+                MyDBController.FindVisualParent<QualityMonthlySalary_Page>(this).ForEach(p => { p.frame_SearchQMSInfo.Content = null; });
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>

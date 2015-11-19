@@ -42,6 +42,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
             fcslList = _fcslList;
             fcl = _fcl;
             sfcs = _sfcs;
+            _previousFCSL = fcslList.DefaultIfEmpty().FirstOrDefault();
         }
 
         #region 变量
@@ -50,6 +51,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// </summary>
         public List<FlowCardSubLists> fcslList = new List<FlowCardSubLists>();
 
+        /// <summary>
+        /// 修改报工数据之前的行表信息  用来记录工艺路线等信息的
+        /// </summary>
+        private FlowCardSubLists _previousFCSL = new FlowCardSubLists();
         /// <summary>
         /// 添加人员的临时list
         /// </summary>
@@ -115,15 +120,15 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// <param name="e"></param>
         private void btn_ScanPerson_Click(object sender, RoutedEventArgs e)
         {
-            if (datagrid_PersonInfo.HasItems)
-            {
-                TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工", "扫描", AcceptPersonInfo);
-                trcp.ShowDialog();
-            }
-            else
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show("没有人员信息！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //if (datagrid_PersonInfo.HasItems)
+            //{
+            TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工", "扫描", AcceptPersonInfo);
+            trcp.ShowDialog();
+            //}
+            //else
+            //{
+            //    Xceed.Wpf.Toolkit.MessageBox.Show("没有人员信息！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         /// <summary>
@@ -132,31 +137,30 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// <param name="_plList"></param>
         private void AcceptPersonInfo(List<PersonLists> _plList)
         {
-            FlowCardSubLists item = (FlowCardSubLists)datagrid_PersonInfo.Items[0];
-            tempList = new List<FlowCardSubLists>();
+            //tempList = new List<FlowCardSubLists>();
             foreach (PersonLists pl in _plList)
             {
                 FlowCardSubLists newPerson = new FlowCardSubLists()
                 {
                     ID = -1,
-                    FCS_BeginAmount = item.FCS_BeginAmount,
-                    FCS_CheckByID = item.FCS_CheckByID,
-                    FCS_CheckByName = item.FCS_CheckByName,
-                    FCS_FlowCradID = item.FCS_FlowCradID,
-                    FCS_IsFirstProcess = item.FCS_IsFirstProcess,
-                    FCS_IsLastProcess = item.FCS_IsLastProcess,
-                    FCS_IsReported = item.FCS_IsReported,
-                    FCS_ItemId = item.FCS_ItemId,
-                    FCS_PieceAmount = item.FCS_PieceAmount,
-                    FCS_PieceDivNum = item.FCS_PieceDivNum,
-                    FCS_ProcessID = item.FCS_ProcessID,
-                    FCS_ProcessName = item.FCS_ProcessName,
-                    FCS_ProcessSequanece = item.FCS_ProcessSequanece,
-                    FCS_QulifiedAmount = item.FCS_QulifiedAmount,
-                    FCS_ScrappedAmount = item.FCS_ScrappedAmount,
-                    FCS_TechRouteID = item.FCS_TechRouteID,
-                    FCS_AddAmount = item.FCS_AddAmount,
-                    FCS_UnprocessedAm = item.FCS_UnprocessedAm,
+                    FCS_BeginAmount = _previousFCSL.FCS_BeginAmount,
+                    FCS_CheckByID = _previousFCSL.FCS_CheckByID,
+                    FCS_CheckByName = _previousFCSL.FCS_CheckByName,
+                    FCS_FlowCardID = _previousFCSL.FCS_FlowCardID,
+                    FCS_IsFirstProcess = _previousFCSL.FCS_IsFirstProcess,
+                    FCS_IsLastProcess = _previousFCSL.FCS_IsLastProcess,
+                    FCS_IsReported = _previousFCSL.FCS_IsReported,
+                    FCS_ItemId = _previousFCSL.FCS_ItemId,
+                    FCS_PieceAmount = _previousFCSL.FCS_PieceAmount,
+                    FCS_PieceDivNum = _previousFCSL.FCS_PieceDivNum,
+                    FCS_ProcessID = _previousFCSL.FCS_ProcessID,
+                    FCS_ProcessName = _previousFCSL.FCS_ProcessName,
+                    FCS_ProcessSequanece = _previousFCSL.FCS_ProcessSequanece,
+                    FCS_QulifiedAmount = _previousFCSL.FCS_QulifiedAmount,
+                    FCS_ScrappedAmount = _previousFCSL.FCS_ScrappedAmount,
+                    FCS_TechRouteID = _previousFCSL.FCS_TechRouteID,
+                    FCS_AddAmount = _previousFCSL.FCS_AddAmount,
+                    FCS_UnprocessedAm = _previousFCSL.FCS_UnprocessedAm,
                     FCS_PersonCode = pl.code,
                     FCS_PersonName = pl.name,
                     FCS_ReportTime = DateTime.Now
@@ -180,15 +184,15 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         private void btn_AddPerson_Click(object sender, RoutedEventArgs e)
         {
 
-            if (datagrid_PersonInfo.HasItems)
-            {
-                TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工", "手工", AcceptPersonInfo);
-                trcp.ShowDialog();
-            }
-            else
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show("没有人员信息！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //if (datagrid_PersonInfo.HasItems)
+            //{
+            TechRouteCheckPerson_Window trcp = new TechRouteCheckPerson_Window("操作工", "手工", AcceptPersonInfo);
+            trcp.ShowDialog();
+            //}
+            //else
+            //{
+            //    Xceed.Wpf.Toolkit.MessageBox.Show("没有人员信息！请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         /// <summary>
@@ -198,14 +202,25 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// <param name="e"></param>
         private void btn_DeletePerson_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (datagrid_PersonInfo.SelectedItem != null)
             {
-                FlowCardSubLists.DeleteFCSInfo((FlowCardSubLists)datagrid_PersonInfo.SelectedItem);
-                fcslList.RemoveAt(datagrid_PersonInfo.SelectedIndex);
+                List<FlowCardSubLists> _tempList = new List<FlowCardSubLists>();
+                foreach (FlowCardSubLists item in datagrid_PersonInfo.SelectedItems)
+                {
+                    fcslList.Remove(item);
+                    _tempList.Add(item);
+                    if (tempList.Exists(p=>p.FCS_PersonCode.Equals(item.FCS_PersonCode)))
+                    {
+                        tempList.Remove(item);
+                    }
+                }
+                FlowCardSubLists.DeleteFCSInfo(_tempList);
                 datagrid_PersonInfo.Items.Refresh();
                 IsDeleted = true;
                 IsChanged = true;
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -215,18 +230,27 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (IsChanged)
+            this.Cursor = Cursors.Wait;
+            if (datagrid_PersonInfo.HasItems)
             {
-                bool flag = FlowCardSubLists.SaveFCSInfo(tempList);
-                fcslList = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
-                if (flag)
+                if (IsChanged)
                 {
-                    sfcs.Invoke(fcslList);
-                    IsChanged = false;
-                    IsDeleted = false;
-                    this.DialogResult = true;
+                    bool flag = FlowCardSubLists.SaveFCSInfo(tempList);
+                    fcslList = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
+                    if (flag)
+                    {
+                        sfcs.Invoke(fcslList);
+                        IsChanged = false;
+                        IsDeleted = false;
+                        this.DialogResult = true;
+                    }
                 }
             }
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("人员不能为空！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -236,17 +260,25 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
         /// <param name="e"></param>
         private void btn_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            if (IsDeleted)
+            this.Cursor = Cursors.Wait;
+            if (datagrid_PersonInfo.HasItems)
             {
-                fcslList = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
-                sfcs.Invoke(fcslList);
-                this.DialogResult = true;
+                if (IsDeleted)
+                {
+                    fcslList = FlowCardSubLists.FetchFCS_InfoByFC_Id(fcl.ID);
+                    sfcs.Invoke(fcslList);
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    this.Close();
+                }
             }
             else
             {
-                this.Close();
+                Xceed.Wpf.Toolkit.MessageBox.Show("人员不能为空！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            this.Cursor = Cursors.Arrow;
         }
-
     }
 }

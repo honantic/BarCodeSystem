@@ -87,7 +87,9 @@
                             <Image Height="15" Source="../../Images/Zoom.ico"></Image>
                         </Button>
                     </StackPanel>
-                    <DataGrid Name="dg_TechVersion"  MouseDoubleClick="dg_TechVersion_MouseDoubleClick" ColumnWidth="Auto" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
+                    <DataGrid Name="dg_TechVersion"  MouseDoubleClick="dg_TechVersion_MouseDoubleClick"
+                              ColumnWidth="Auto" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                              CanUserAddRows="False" CanUserDeleteRows="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="版本名称" Binding="{Binding Path=TRV_VersionName}"></DataGridTextColumn>
                             <DataGridTextColumn Header="版本编码" Binding="{Binding Path=TRV_VersionCode}"></DataGridTextColumn>
@@ -115,11 +117,12 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="设置生效时间：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <DatePicker Name="dp_StartDate"  Grid.Column="1" VerticalAlignment="Center"  Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Now }"></DatePicker>
+                        <DatePicker Name="dp_StartDate"  IsEnabled="False"  Grid.Column="1" VerticalAlignment="Center"  Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Now }"></DatePicker>
                         <TextBlock Text="设置失效时间：" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <DatePicker Name="dp_EndDate"  SelectedDate="{x:Static sys:DateTime.Now }" Grid.Column="3" VerticalAlignment="Center"  Cursor="Hand"></DatePicker>
+                        <DatePicker Name="dp_EndDate"  IsEnabled="False" SelectedDate="{x:Static sys:DateTime.Now }" Grid.Column="3" VerticalAlignment="Center"  Cursor="Hand"></DatePicker>
                     </Grid>
-                    <DataGrid Name="dg_TechRouteInfo" RowHeaderWidth="30" RowHeight="40"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" Margin="0,33,0,17" Grid.RowSpan="2">
+                    <DataGrid Name="dg_TechRouteInfo" IsReadOnly="True" Margin="5" Grid.Row="1" RowHeaderWidth="30" RowHeight="40"  AutoGenerateColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" >
                         <DataGrid.Columns>
                             <DataGridTextColumn  Header="行号"  Width="Auto" Binding="{Binding Path=TR_ProcessSequence}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="工序名称" Width="Auto" Binding="{Binding Path=TR_ProcessName}" IsReadOnly="True"></DataGridTextColumn>
@@ -131,7 +134,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                                 <DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <extool:DecimalUpDown Increment="0.01" Minimum="0" Value="{Binding Path=TR_WorkHour,Mode=TwoWay}"></extool:DecimalUpDown>
+                                        <extool:DecimalUpDown Increment="0.01" Minimum="0" Value="{Binding Path=WH_WorkHour,Mode=TwoWay}"></extool:DecimalUpDown>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellEditingTemplate>
                             </DataGridTemplateColumn>
@@ -140,8 +143,6 @@
                             <DataGridTextColumn Header="版本名称" Width="Auto" Binding="{Binding Path=TRV_VersionName}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="料品编码" Width="Auto" Binding="{Binding Path=TR_ItemCode}" IsReadOnly="True"></DataGridTextColumn>
                             <DataGridTextColumn Header="检验员"   Width="Auto" Binding="{Binding Path=TR_DefaultCheckPersonName}" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否测试" Width="Auto" Binding="{Binding Path=TR_IsTestProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
-                            <DataGridTextColumn Header="是否返工" Width="Auto" Binding="{Binding Path=TR_IsBackProcess,Converter={StaticResource boolConvert}}" IsReadOnly="True"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <Grid Grid.Row="2">
@@ -149,10 +150,14 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Content="对比历史数据" Name="btn_ViewHistory" Margin="10" Click="btn_ViewHistory_Click"  ClickMode="Release" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="30 5"></Button>
-                        <Button Name="btn_Save" Click="btn_Save_Click" Margin="10"  ClickMode="Release" Content="保存" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="30 5"></Button>
-                        <Button Content="重写" Name="btn_Rewrite" Margin="10"  Click="btn_Rewrite_Click" Padding="30 5" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="1"></Button>
+                        <Button Content="对比历史数据" Name="btn_ViewHistory" Margin="10" Click="btn_ViewHistory_Click"  ClickMode="Release" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="5"></Button>
+                        <Button  Name="btn_AddNew" Click="btn_AddNew_Click" Grid.Column="1" Padding="30 5" Content="新增" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Center"></Button>
+                        <Button Name="btn_Cancel" Click="btn_Cancel_Click" Margin="10"  ClickMode="Release" Content="放弃" Grid.Column="3" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="30 5"> </Button>
+                        <Button Name="btn_Save" Click="btn_Save_Click" Margin="10"  ClickMode="Release" Content="保存" Grid.Column="4" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="30 5"></Button>
+                        <Button Content="重写" Name="btn_Rewrite" Margin="10"  Click="btn_Rewrite_Click" Padding="30 5" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="2"></Button>
                     </Grid>
                 </Grid>
             </GroupBox>

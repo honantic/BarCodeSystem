@@ -7,7 +7,7 @@
         xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        Title="TechRouteModify_Window" Height="600" Width="600">
+        Title="TechRouteModify_Window" Height="600" Width="600" Icon="/BarCodeSystem;component/Images/burn.ico">
 
 
     <Window.Resources>

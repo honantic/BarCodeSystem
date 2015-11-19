@@ -1,5 +1,6 @@
 ﻿using BarCodeSystem.PublicClass.DatabaseEntity;
 using BarCodeSystem.PublicClass.HelperClass;
+using BarCodeSystem.SalaryManage.SalaryCheck;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -82,7 +83,7 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
         }
 
         /// <summary>
-        /// 根据SQL语得到表并将其存入类文件
+        /// 根据SQL语得到表并将其存入类文件,测试SQL语句用
         /// </summary>
         private void ListBeforeSearch()
         {
@@ -101,7 +102,7 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
                 "C.ID as TR_ID," +
                 "A.FCS_ProcessID as ProcessID " +
                 "from FlowCardSub as A " +
-                "left join  FlowCard as B on (A.FCS_FlowCradID = B.ID) " +
+                "left join  FlowCard as B on (A.FCS_FlowCardID = B.ID) " +
                 "left join  TechRoute as C on (A.FCS_TechRouteID = C.ID) " +
                 "left join  WorkHour as D on (D.WH_TechRouteID = C.ID) " +
                 "left join WorkCenter as E on (E.WC_Department_ID = C.TR_WorkCenterID) " +
@@ -113,7 +114,8 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
                 " and D.ID = (select MAX(ID) from WorkHour as G  where G.WH_TechRouteID = C.ID  " +
                 " and CONVERT(date, G.WH_StartDate)<=CONVERT(date, A.FCS_ReportTime) " +
                 " and CONVERT(date, G.WH_EndDate)>=CONVERT(date, A.FCS_ReportTime)) " +
-                " and A.FCS_IsReported = 1";
+                " and A.FCS_IsReported = 1" +
+                " and B.FC_CardState = 5";
 
             MyDBController.GetConnection();
             tb = MyDBController.GetDataSet(SQl, ds, "GiveSalaries").Tables["GiveSalaries"];
@@ -122,7 +124,7 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
             foreach (DataRow dr in tb.Rows)
             {
                 FlowCardSubLists fcsl = new FlowCardSubLists();
-                fcsl.FCS_FlowCradID = (Int64)dr["FC_ID"];
+                fcsl.FCS_FlowCardID = (Int64)dr["FC_ID"];
                 fcsl.FCS_TechRouteID = (Int64)dr["TR_ID"];
                 fcsl.FCS_ProcessID = (Int64)dr["ProcessID"];
 
@@ -148,10 +150,11 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
         {
             List<FlowCardSubLists> newfcsll = new List<FlowCardSubLists>();
 
-            foreach (IGrouping<long, FlowCardSubLists> item in fcsll.GroupBy(p => p.FC_ID).ToList())
+            foreach (IGrouping<long, FlowCardSubLists> item in fcsll.GroupBy(p => p.FCS_FlowCardID))
             {
                 List<FlowCardSubLists> _fcslList = item.Distinct(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_TechRouteID.Equals(p2.FCS_TechRouteID))).ToList();
                 newfcsll.AddRange(_fcslList);
+
             }
             //fcsll.GroupBy(p => p.FC_ID).ToList().ForEach(p => p.Distinct(new ListComparer<FlowCardSubLists>((p1, p2) => p1.FCS_TechRouteID.Equals(p2.FCS_TechRouteID))).ToList().ForEach(item => newfcsll.Add(item)));
 
@@ -162,19 +165,11 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
                 p =>
                 {
                     p.FCS_QulifiedAmount = newfcsll.FindAll(item => item.FCS_ProcessName.Equals(p.FCS_ProcessName) && item.II_Code.Equals(p.II_Code)).Sum(var => var.FCS_QulifiedAmount);
-                    p.TotalPayMount = decimal.Round(p.WH_WorkHour * p.FCS_QulifiedAmount, 2)/100;
+                    p.TotalPayMount = decimal.Round(p.WH_WorkHour * p.FCS_QulifiedAmount / 100, 2);
                     p.FinalPayMount = decimal.Round(p.TotalPayMount, 0);
 
                 });
 
-
-            //fcsllsum.ForEach(
-            //    p =>
-            //    {
-            //        p.TotalPayMount = decimal.Round(p.WH_WorkHour * p.FCS_QulifiedAmount, 2);
-            //        p.FinalPayMount = decimal.Round(p.TotalPayMount, 0);
-            //    }
-            //    );
 
             datagrid_GiveSalariesDetail.ItemsSource = fcsllsum;
         }
@@ -224,10 +219,35 @@ namespace BarCodeSystem.FileQuery.GiveSalaries
                 table.Columns["WH_WorkHour2"].ColumnName = "单件工资(分 )";
                 table.Columns["FinalPayMount"].ColumnName = "单件实发工资";
 
-                QkRowChangeToColClass qk = new QkRowChangeToColClass();
-                qk.OutToExcel(table);
+                QkRowChangeToColClass.CreateExcelFileForDataTable(table);
 
             }
+        }
+
+        /// <summary>
+        /// 查看明细事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_details_Click(object sender, RoutedEventArgs e)
+        {
+            if(datagrid_GiveSalariesDetail.SelectedIndex > -1)
+            {
+                this.Cursor = Cursors.Wait;
+                var x = (FlowCardSubLists)datagrid_GiveSalariesDetail.SelectedItem;
+                frame_Detail.Navigate(new GiveSalariesDetailView_Page(fcsll.FindAll(p => p.II_Code.Equals(x.II_Code) && p.FCS_ProcessName.Equals(x.FCS_ProcessName))));
+                this.Cursor = Cursors.Arrow;
+            }
+        }
+
+        /// <summary>
+        /// datagrid鼠标双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void datagrid_GiveSalariesDetail_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            btn_details_Click(sender,e);
         }
 
     }

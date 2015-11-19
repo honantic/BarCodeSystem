@@ -13,8 +13,12 @@ namespace BarCodeSystem.PublicClass.ValueConverters
                 case 0:
                     return "普通流转卡";
                 case 1:
-                    return "返工流传卡";
+                    return "分批流转卡";
                 case 2:
+                    return "转序流转卡";
+                case 3:
+                    return "返工流转卡";
+                case 4:
                     return "无来源流转卡";
                 default:
                     return "普通流转卡";
@@ -27,10 +31,14 @@ namespace BarCodeSystem.PublicClass.ValueConverters
             {
                 case "普通流转卡":
                     return 0;
-                case "返工流转卡":
+                case "分批流转卡":
                     return 1;
-                case "无来源流转卡":
+                case "转序流转卡":
                     return 2;
+                case "返工流转卡":
+                    return 3;
+                case "无来源流转卡":
+                    return 4;
                 default:
                     return 0;
             }

@@ -130,9 +130,11 @@ namespace BarCodeSystem.FileQuery.DailyReport_Page
         {
             if (txtb_DeptInfo.Text != "点击放大镜选择")
             {
+                this.Cursor = Cursors.Wait;
                 DailyReportDetail_Page drdp = new DailyReportDetail_Page();
                 frame_Search.Navigate(drdp);
                 drdp.ShowDeptInfo(comobox_year.Text,comobox_month.Text,dept_code);
+                this.Cursor = Cursors.Arrow;
             }
         }
 

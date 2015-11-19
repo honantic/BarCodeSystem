@@ -33,6 +33,8 @@ using System.Deployment.Application;
 using BarCodeSystem.FileQuery.GiveSalaries;
 using BarCodeSystem.BasicFile.WorkTeam;
 using BarCodeSystem.FileQuery.InputOutput;
+using BarCodeSystem.ProductDispatch.FlowCardReproduce;
+using System.Threading;
 
 namespace BarCodeSystem
 {
@@ -239,10 +241,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_U9Account_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             U9User_Window UUW = new U9User_Window();
             UUW.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             UUW.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             UUW.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -294,10 +298,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WorkCenterImport_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             WorkCenter_Window wc = new WorkCenter_Window();
             wc.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             wc.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             wc.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -307,10 +313,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_StaffInfoManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             Person_Window p = new Person_Window();
             p.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             p.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             p.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -372,10 +380,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WorkEquipManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             Device_Window d = new Device_Window();
             d.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             d.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             d.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -385,10 +395,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_WarehouseManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             Warehouse_Window w = new Warehouse_Window();
             w.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             w.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             w.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -398,10 +410,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_QualityFileManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             QualityIssues_Window qi = new QualityIssues_Window();
             qi.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             qi.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             qi.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -411,10 +425,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_MaterialManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             ItemInfo_Window ii = new ItemInfo_Window();
             ii.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             ii.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             ii.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -424,10 +440,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void item_ProcedureManage_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             ProcessName_Window pn = new ProcessName_Window();
             pn.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
             pn.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
             pn.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -438,10 +456,37 @@ namespace BarCodeSystem
         private void item_TechRouteManage_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            TechRoute_Window tr = new TechRoute_Window();
-            tr.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
-            tr.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
-            tr.ShowDialog();
+            //TechRoute_Window tr = new TechRoute_Window();
+            //tr.Width = Math.Min(User_Info.ScreenWidth * 3 / 5, 600);
+            //tr.Height = Math.Min(User_Info.ScreenHeight * 4 / 5, 800);
+            //tr.ShowDialog();
+
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "工艺路线管理")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                TechRoute_Page fcr = new TechRoute_Page() { ShowsNavigationUI = true };
+                topFrame.Content = fcr;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "工艺路线管理";
+                la.Content = topFrame;
+                //la.Closing += fcr.Closing;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
             this.Cursor = Cursors.Arrow;
         }
 
@@ -872,46 +917,46 @@ namespace BarCodeSystem
             bool flag = false;
 
             #region  AvalonDock排他性尝试
-            foreach (var item in dockingManager.Layout.RootPanel.Children)
-            {
-                if (item is LayoutAnchorablePane)
-                {
-                    var _item = (LayoutAnchorablePane)item;
-                    foreach (var child in _item.Children)
-                    {
-                        if (child is LayoutAnchorable)
-                        {
-                            var x = (LayoutAnchorable)child;
-                            if ((x).Title == "流转卡转序")
-                            {
-                                flag = true;
-                                x.IsSelected = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else if (item is LayoutDocumentPaneGroup)
-                {
-                    var _item = (LayoutDocumentPaneGroup)item;
-                    foreach (var child in _item.Children)
-                    {
-                        foreach (var _child in child.Children)
-                        {
-                            if (_child is LayoutAnchorable)
-                            {
-                                var x = (LayoutAnchorable)_child;
-                                if (x.Title == "流转卡转序")
-                                {
-                                    flag = true;
-                                    x.IsSelected = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //foreach (var item in dockingManager.Layout.RootPanel.Children)
+            //{
+            //    if (item is LayoutAnchorablePane)
+            //    {
+            //        var _item = (LayoutAnchorablePane)item;
+            //        foreach (var child in _item.Children)
+            //        {
+            //            if (child is LayoutAnchorable)
+            //            {
+            //                var x = (LayoutAnchorable)child;
+            //                if ((x).Title == "流转卡转序")
+            //                {
+            //                    flag = true;
+            //                    x.IsSelected = true;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else if (item is LayoutDocumentPaneGroup)
+            //    {
+            //        var _item = (LayoutDocumentPaneGroup)item;
+            //        foreach (var child in _item.Children)
+            //        {
+            //            foreach (var _child in child.Children)
+            //            {
+            //                if (_child is LayoutAnchorable)
+            //                {
+            //                    var x = (LayoutAnchorable)_child;
+            //                    if (x.Title == "流转卡转序")
+            //                    {
+            //                        flag = true;
+            //                        x.IsSelected = true;
+            //                        break;
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
             #endregion
 
             foreach (LayoutAnchorable item in ldp.Children)
@@ -940,6 +985,79 @@ namespace BarCodeSystem
             }
             this.Cursor = Cursors.Arrow;
             #endregion
+        }
+        /// <summary>
+        /// 返工流转卡
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_WorkCardReproduce_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "返工流转卡")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame() { };
+                FlowCardReproduce_Page fcq = new FlowCardReproduce_Page() { ShowsNavigationUI = false };
+                topFrame.Content = fcq;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "返工流转卡";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 流转卡修改
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ietm_WorkCardModify_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "流转卡修改")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame() { };
+                FlowCardQuery_Page fcq = new FlowCardQuery_Page() { ShowsNavigationUI = false };
+                //FlowCardModify_Page fcm = new FlowCardModify_Page(fcq.ShowFCInfo);
+                //fcq = new FlowCardQuery_Page(fcm) { ShowsNavigationUI = true };
+                topFrame.Content = fcq;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "流转卡修改";
+                la.Content = topFrame;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
         }
         #endregion
 
@@ -970,6 +1088,44 @@ namespace BarCodeSystem
                 topFrame.Content = fcr;
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "完工日报表";
+                la.Content = topFrame;
+                //la.Closing += fcr.Closing;
+
+                ldp.Children.Add(la);
+                la.IsSelected = true;
+            }
+            else
+            {
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 盘库报告
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_StorageCounting_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+
+            bool flag = false;
+            foreach (LayoutAnchorable item in ldp.Children)
+            {
+                if (item.Title == "在制品报告")
+                {
+                    flag = true;
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+            if (!flag)//MyDBController.FindVisualChild<FlowCardReport_Page>(this).Count == 0
+            {
+                Frame topFrame = new Frame();
+                StoreReport_Page sr = new StoreReport_Page() { ShowsNavigationUI = true };
+                topFrame.Content = sr;
+                LayoutAnchorable la = new LayoutAnchorable();
+                la.Title = "在制品报告";
                 la.Content = topFrame;
                 //la.Closing += fcr.Closing;
 
@@ -1238,7 +1394,6 @@ namespace BarCodeSystem
                 LayoutAnchorable la = new LayoutAnchorable();
                 la.Title = "投入产出报表";
                 la.Content = topFrame;
-
                 ldp.Children.Add(la);
                 la.IsSelected = true;
             }
@@ -1372,19 +1527,34 @@ namespace BarCodeSystem
         {
             //_10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window("PT-20150919-0014");
             //_10lfc.ShowDialog();
+            this.Cursor = Cursors.Wait;
+            string message = "";
             try
             {
                 ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-                MessageBox.Show(ad.CurrentVersion.ToString());
+                message = ad.CurrentVersion.ToString();
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                message = ee.Message;
             }
-            MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46" + "\r\n" + "程序集版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\r\n");
+
+            if (User_Info.User_Code.Equals("admin"))
+            {
+                Thread t1 = new Thread(() =>
+                {
+                    FlowCardLists.CheckAllFCInfo();
+                    FlowCardLists.CheckAllFCSInfo();
+                    FlowCardLists.ModifyCheckTime();
+                });
+                t1.SetApartmentState(ApartmentState.STA);
+                t1.Start();
+            }
+            else
+            {
+                MessageBox.Show(User_Info.server[1] + "\r\n" + User_Info.database[1] + "\r\n" + User_Info.server[0] + "\r\n" + User_Info.database[0] + "\r\n" + "172.16.100.46" + "\r\n" + "程序集版本：" + message + "\r\n");
+            }
+            this.Cursor = Cursors.Arrow;
         }
-
-
-      
     }
 }

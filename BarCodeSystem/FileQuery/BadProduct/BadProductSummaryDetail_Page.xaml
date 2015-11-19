@@ -38,8 +38,6 @@
                     <DataGridTextColumn Header="工序名称"></DataGridTextColumn>
                     <DataGridTextColumn Header="投入数"></DataGridTextColumn>
                     <DataGridTextColumn Header="合格数"></DataGridTextColumn>-->
-
-
                 </DataGrid.Columns>
             </DataGrid>
 

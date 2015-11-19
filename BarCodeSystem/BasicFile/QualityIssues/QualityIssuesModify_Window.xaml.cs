@@ -79,8 +79,24 @@ namespace BarCodeSystem
                 txtb_Code.Text = qil.QI_Code;
                 txtb_Name.Text = qil.QI_Name;
                 txtb_Name.IsReadOnly = txtb_Code.IsReadOnly = txtb_BarCode.IsReadOnly = true;
+                switch (qil.QI_Type)
+                {
+                    case 1:
+                        rb_ItemScrap.IsChecked = true;
+                        break;
+                    case 2:
+                        rb_Reproduce.IsChecked = true;
+                        break;
+                    case 0:
+                    default:
+                        rb_PersonScrap.IsChecked = true;
+                        break;
+                }
             }
-
+            else
+            {
+                rb_PersonScrap.IsChecked = true;
+            }
             MyDBController.GetConnection();
             string SQl = "SELECT [ID],[QI_Code] FROM [QualityIssue]";
             dt = MyDBController.GetDataSet(SQl, ds, "QualityIssue").Tables["QualityIssue"];
@@ -109,13 +125,24 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             CheckCode();
             string SQl = "";
+            int type = -1;
+            if (rb_ItemScrap.IsChecked == true)
+            {
+                type = 1;
+            }
+            else if (rb_Reproduce.IsChecked == true)
+            {
+                type = 2;
+            }
+            else
+            {
+                type = 0;
+            }
             if (this.Title == "质量档案新增窗口")
             {
                 if (!IsExist)
                 {
-                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_WorkCenterID])
-                                VALUES('{0}','{1}','{2}',{3})"
-                                  , txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, User_Info.User_Workcenter_ID);
+                    SQl = string.Format(@"INSERT INTO [QualityIssue]([QI_Code],[QI_Name],[QI_BarCode],[QI_WorkCenterID],[QI_Type]) VALUES('{0}','{1}','{2}',{3},{4})", txtb_Code.Text, txtb_Name.Text, txtb_BarCode.Text, User_Info.User_Workcenter_ID,type);
                     DBLog _dbLog = new DBLog();
                     _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
                     _dbLog.DBL_OperateTable = "QualityIssue";
@@ -140,7 +167,17 @@ namespace BarCodeSystem
             }
             else//不存在修改的情况 只有新增和删除
             {
-
+                qil.QI_Type = type;
+                bool flag = QualityIssuesLists.SaveInfo(qil);
+                if (flag)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("保存成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("保存失败，请重试！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             MyDBController.CloseConnection();
         }

@@ -29,8 +29,10 @@ FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\FileQuery\ProduceOrderQuery\P
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\MainWindow.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\ProductDispatch\FlowCardClean\FlowCardClean_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\ProductDispatch\FlowCardReport\FlowCardSearch_Page.xaml;;
+FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\ProductDispatch\FlowCardReproduce\FlowCardReproduce_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\ProductDispatch\FlowCard\FlowCard_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\ProductDispatch\FlowCard\TechRouteSearch_Page.xaml;;
+FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\StorageManage\StorageCountingReport\StoreReportDetailView_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\SystemManage\AuthorityManagement\AuthorityManagement_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\SystemManage\AuthorityManagement\Authority_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\SystemManage\U9User_Window.xaml;;
@@ -38,10 +40,13 @@ FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRouteWorkHourAu
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImportItem_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRouteWorkHourAuto\TechRouteWorkHourImport_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRouteWorkHourManually\WorkHour_Page.xaml;;
+FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteCurrent_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteExport_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteImportError_Windows.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteImport_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteItemList_Window.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteModify_Window.xaml;;
+FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRouteNew_Page.xaml;;
+FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRoute_Page.xaml;;
 FE:\visual studio 2013\BarCodeSystem\BarCodeSystem\TechRoute\TechRoute\TechRoute_Window.xaml;;
 

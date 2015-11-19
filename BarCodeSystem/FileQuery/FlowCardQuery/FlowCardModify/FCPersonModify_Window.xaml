@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          WindowStyle="None"
         WindowStartupLocation="CenterScreen"
+        Icon="/BarCodeSystem;component/Images/burn.ico"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="FCPersonModify_Window"  Height="400" Width="400">
+        Title="人员修改窗口"  Height="400" Width="400">
     <Grid>
         <Border BorderBrush="LightBlue" Grid.RowSpan="4" Grid.ColumnSpan="2" BorderThickness="10"></Border>
         <Grid Margin="10">

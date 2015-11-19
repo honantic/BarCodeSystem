@@ -60,10 +60,13 @@
                     <MenuItem Name="item_WorkCardDis"      Click="item_WorkCardDis_Click"   ToolTip="快捷键 Alt + P + D"   Header="流转卡分批(_D)"></MenuItem>
                     <MenuItem Name="item_WorkCardClean"    Click="item_WorkCardClean_Click" ToolTip="快捷键 Alt + P + Q"  Header="流传卡清卡(_Q)"></MenuItem>
                     <MenuItem Name="item_WorkCardTransfer" Click="item_WorkCardTransfer_Click" ToolTip="快捷键 Alt + P  + T"  Header="流转卡转序(_T)"></MenuItem>
+                    <!--<MenuItem Name="item_WorkCardModify"  Click="ietm_WorkCardModify_Click" Header="流转卡修改(_M)" ToolTip="快捷键 Alt + P  + M" ></MenuItem>-->
+                    <MenuItem Name="item_WorkCardReproduce" Click="item_WorkCardReproduce_Click"  ToolTip="快捷键 Alt + P  + C" Header="返工流转卡(_C)"></MenuItem>
                 </MenuItem>
 
                 <MenuItem Header="库存管理(_O)" Name="item_StorageManage" >
-                    <MenuItem Header="完工日报表(_D)"         Name="item_DailyReport" Click="item_DailyReport_Click"></MenuItem>
+                    <MenuItem Header="完工日报表(_D)"         Name="item_DailyReport" ToolTip="快捷键 Alt + O + D" Click="item_DailyReport_Click"></MenuItem>
+                    <MenuItem Header="在制品报告(_C)" Name="item_StorageCounting" ToolTip="快捷键 Alt + O + C" Click="item_StorageCounting_Click"></MenuItem>
                     <MenuItem Header="完工报告审核(_F)"       Name="item_FinishReport"  Click="item_FinishReport_Click"></MenuItem>
                     <MenuItem Header="缴废单(_S)"             Name="item_ScrapReport" Click="item_ScrapReport_Click" Visibility="Collapsed"></MenuItem>
                 </MenuItem>

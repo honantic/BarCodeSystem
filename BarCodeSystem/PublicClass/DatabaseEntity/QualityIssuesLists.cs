@@ -63,16 +63,16 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 质量问题类型 0:责废 1:料废 2:返工
+        /// </summary>
+        public int QI_Type { get; set; }
+        /// <summary>
         /// 获取条码系统中质量问题信息清单
         /// </summary>
         /// <param name="_workCenterID">所属工作中心id，不填则会获取所有工作中心的质量问题信息</param>
         /// <returns></returns>
         public static List<QualityIssuesLists> FetchBCSQualityIssueInfo(Int64 _workCenterID = -1)
         {
-            MyDBController.GetConnection();
-            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
-            DataSet ds = new DataSet();
-            DataTable dt = new DataTable();
             string SQl = "";
 
 
@@ -84,8 +84,38 @@ namespace BarCodeSystem
             {
                 SQl = string.Format(@"Select * from [QualityIssue] where [QI_WorkCenterID]={0}", _workCenterID);
             }
+            return ExecuteSQlCommand(SQl);
+        }
 
-            MyDBController.GetDataSet(SQl, ds, "QualityIssue");
+        /// <summary>
+        /// 根据工序获取质量问题信息
+        /// </summary>
+        /// <param name="_pnl"></param>
+        /// <returns></returns>
+        public static List<QualityIssuesLists> FetchBCSQIInfoByPNL(ProcessNameLists _pnl)
+        {
+            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
+            if (!string.IsNullOrEmpty(_pnl.PN_AssociatedQI))
+            {
+                string SQl = "";
+                SQl = string.Format("Select * from [QualityIssue] where [Id] in ({0})", _pnl.PN_AssociatedQI);
+                qilList = ExecuteSQlCommand(SQl);
+            }
+            return qilList;
+        }
+
+        /// <summary>
+        /// 执行SQl命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<QualityIssuesLists> ExecuteSQlCommand(string _command)
+        {
+            MyDBController.GetConnection();
+            List<QualityIssuesLists> qilList = new List<QualityIssuesLists>();
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+            MyDBController.GetDataSet(_command, ds, "QualityIssue");
             dt = ds.Tables["QualityIssue"];
             int x = dt.Rows.Count;
             for (int i = 0; i < x; i++)
@@ -96,6 +126,7 @@ namespace BarCodeSystem
                 qil.QI_Name = dt.Rows[i]["QI_Name"].ToString();
                 qil.QI_BarCode = dt.Rows[i]["QI_BarCode"].ToString();
                 qil.QI_WorkCenterID = Convert.ToInt64(dt.Rows[i]["QI_WorkCenterID"]);
+                qil.QI_Type = dt.Rows[i]["QI_Type"] is DBNull ? 0 : Convert.ToInt32(dt.Rows[i]["QI_Type"]);
                 qilList.Add(qil);
             }
             qilList = qilList.OrderBy(p => p.QI_Code).ToList();
@@ -103,5 +134,30 @@ namespace BarCodeSystem
             return qilList;
         }
 
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_qil"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(QualityIssuesLists _qil)
+        {
+            return SaveInfo(new List<QualityIssuesLists>() { _qil });
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_qilList"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(List<QualityIssuesLists> _qilList)
+        {
+            string SQl = string.Format("select top 0 * from [QualityIssue]");
+            DataSet ds = new DataSet();
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "QualityIssue");
+            bool flag = MyDBController.InsertSqlBulk<QualityIssuesLists>(_qilList, ds.Tables["QualityIssue"]);
+            MyDBController.CloseConnection();
+            return flag;
+        }
     }
 }

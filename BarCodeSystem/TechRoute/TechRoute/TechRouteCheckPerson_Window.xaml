@@ -7,7 +7,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        WindowStartupLocation="CenterScreen" WindowStyle="None"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" Icon="/BarCodeSystem;component/Images/burn.ico"
         >
     <Grid>
         <Grid Name="grid_One" Visibility="Visible">

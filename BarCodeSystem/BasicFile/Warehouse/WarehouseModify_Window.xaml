@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="仓库信息修改窗口" Height="400" Width="600" Loaded="Window_Loaded">
+        Title="仓库信息修改窗口" Height="400" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"></RowDefinition>
@@ -13,6 +13,7 @@
         
         <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
@@ -39,6 +40,20 @@
             <StackPanel Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <RadioButton Name="rbtn_FromU9" Cursor="Hand" Content="U9系统导入" IsEnabled="False" FontSize="14"></RadioButton>
                 <RadioButton Name="rbtn_FromBcs" Cursor="Hand" Content="手工录入" IsEnabled="False" FontSize="14"></RadioButton>
+            </StackPanel>
+            
+            <TextBlock Text="关联工作中心:" Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">
+                <TextBox x:Name="txtb_workcenter" Height="30" Margin="5" FontSize="14" ></TextBox>
+                <TextBlock Name="txtbk_workcenter" Text="快捷获取部门编码" FontSize="14" HorizontalAlignment="Center"
+                           Foreground="Blue" Cursor="Hand" Height="30" PreviewMouseLeftButtonDown ="txtbk_workcenter_PreviewMouseLeftButtonDown"></TextBlock>
+            </StackPanel>
+            
+            
+            <TextBlock Text="是否默认仓库:" Grid.Row="2" Grid.Column="2" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <StackPanel Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <RadioButton x:Name="rbtn_isDefaultYes" Cursor="Hand" Content="是" ></RadioButton>
+                <RadioButton x:Name="rbtn_isDefaultNo" Cursor="Hand" Content="否"></RadioButton>
             </StackPanel>
         </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal">

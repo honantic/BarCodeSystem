@@ -89,6 +89,17 @@ namespace BarCodeSystem.BasicFile.WorkTeam
         /// 保存班组的时候，是否已经检查过编号
         /// </summary>
         bool haveChecked = false;
+
+        /// <summary>
+        /// 上次的点击的按钮名称
+        /// </summary>
+        string lastbtnName = "";
+
+        /// <summary>
+        /// 每次鼠标点击的时间
+        /// </summary>
+        DateTime clickTime = DateTime.Now;
+
         #endregion
 
 
@@ -103,7 +114,7 @@ namespace BarCodeSystem.BasicFile.WorkTeam
             {
                 InitWCGridInfo();
                 ChangeDisplayProperty(false);
-                //SetButtonVisiblity();
+                SetButtonVisiblity();
                 loadCount++;
             }
         }
@@ -168,54 +179,81 @@ namespace BarCodeSystem.BasicFile.WorkTeam
         private void OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            string key = ((Button)e.OriginalSource).Name;
-            try
+            bool flag = false;
+            flag = CheckIsDoubleClick(e);
+            if (!flag)
             {
-                #region
-                bool flag = IsNewChecking();
-                if (flag)
+                string key = ((Button)e.OriginalSource).Name;
+                try
                 {
-                    Thread th1 = new Thread(() => { Loading_Window lw = new Loading_Window("正在获取班组信息，请稍后"); lw.ShowDialog(); });
-                    th1.SetApartmentState(ApartmentState.STA);
-                    th1.Start();
-                    if (key.Equals("btn_AllWorkCenter"))
+                    #region
+                    flag = IsNewChecking();
+                    if (flag)
                     {
-                        wtmlList = new List<WorkTeamMemberLists>();
-                        wtlList = WorkTeamLists.FetchWTInfoByWCID();
-                        wclList.ForEach(
-                            p =>
-                            {
-                                wtmlList.AddRange(WorkTeamMemberLists.FetchWorkTeamInfo(p.department_id));
-                            });
-                        dg_WorkTeamTotal.ItemsSource = wtmlList;
-                        dg_WorkTeamTotal.Items.Refresh();
-                        ICollectionView view = CollectionViewSource.GetDefaultView(dg_WorkTeamTotal.ItemsSource);
-                        view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkCenterName"));
-                        view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
+                        Loading_Window lw = new Loading_Window("正在获取班组信息，请稍后");
+                        lw.Show();
+                        if (key.Equals("btn_AllWorkCenter"))
+                        {
+                            wtmlList = new List<WorkTeamMemberLists>();
+                            wtlList = WorkTeamLists.FetchWTInfoByWCID();
+                            wclList.ForEach(
+                                p =>
+                                {
+                                    wtmlList.AddRange(WorkTeamMemberLists.FetchWorkTeamInfo(p.department_id, true, true));
+                                });
+                            dg_WorkTeamTotal.ItemsSource = wtmlList;
+                            dg_WorkTeamTotal.Items.Refresh();
+                            ICollectionView view = CollectionViewSource.GetDefaultView(dg_WorkTeamTotal.ItemsSource);
+                            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkCenterName"));
+                            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
+                        }
+                        else
+                        {
+                            Int64 _wcID = wclList.Find(p => p.department_shortname.Equals(key)).department_id;
+                            wtlList = WorkTeamLists.FetchWTInfoByWCID(_wcID);
+                            dg_WorkTeamTotal.ItemsSource = wtmlList = WorkTeamMemberLists.FetchWorkTeamInfo(_wcID, true, true);
+                            dg_WorkTeamTotal.Items.Refresh();
+                            ICollectionView view = CollectionViewSource.GetDefaultView(dg_WorkTeamTotal.ItemsSource);
+                            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
+                        }
+                        lw.Close();
+                        GC.Collect();
+                        ClearInfo();
+                        ChangeDisplayProperty(false);
                     }
-                    else
-                    {
-                        Int64 _wcID = wclList.Find(p => p.department_shortname.Equals(key)).department_id;
-                        wtlList = WorkTeamLists.FetchWTInfoByWCID(_wcID);
-                        dg_WorkTeamTotal.ItemsSource = wtmlList = WorkTeamMemberLists.FetchWorkTeamInfo(_wcID);
-                        dg_WorkTeamTotal.Items.Refresh();
-                        ICollectionView view = CollectionViewSource.GetDefaultView(dg_WorkTeamTotal.ItemsSource);
-                        view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
-                    }
-                    th1.Abort();
-                    GC.Collect();
-                    ClearInfo();
-                    ChangeDisplayProperty(false);
+                    #endregion
                 }
-                #endregion
-            }
-            catch (Exception ee)
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                catch (Exception ee)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             this.Cursor = Cursors.Arrow;
         }
 
+
+        /// <summary>
+        /// 检查是否按钮双击
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private bool CheckIsDoubleClick(RoutedEventArgs e)
+        {
+            bool flag = false;
+            string btnName = ((Button)e.OriginalSource).Name;
+            if (btnName.Equals(lastbtnName))
+            {
+                TimeSpan diff = DateTime.Now - clickTime;
+                if (diff.TotalMilliseconds < 2 * System.Windows.Forms.SystemInformation.DoubleClickTime)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("请不要快速点击同一个按钮！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    flag = true;
+                }
+            }
+            clickTime = DateTime.Now;
+            lastbtnName = btnName;
+            return flag;
+        }
         /// <summary>
         /// 汇总列表双击事件
         /// </summary>
@@ -228,14 +266,18 @@ namespace BarCodeSystem.BasicFile.WorkTeam
             {
                 WorkTeamMemberLists wtml = (WorkTeamMemberLists)dg_WorkTeamTotal.SelectedItem;
                 lastWTL = wtlList.Find(p => p.ID.Equals(wtml.WTM_WorkTeamID));
-                if (!wtml.WTM_WorkTeamID.Equals(lastWTML.WTM_WorkTeamID))
+                bool flag = true;
+                if (dg_WorkTeamDetail.HasItems)
                 {
-                    bool flag = IsNewChecking();
-                    if (flag)
+                    if (!wtml.WTM_WorkTeamID.Equals(lastWTML.WTM_WorkTeamID))
                     {
-                        ShowSelectedWTInfo(lastWTL, wtmlList.FindAll(p => p.WTM_WorkTeamID.Equals(wtml.WTM_WorkTeamID)));
-                        lastWTML = wtml;
+                        flag = IsNewChecking();
                     }
+                }
+                if (flag)
+                {
+                    ShowSelectedWTInfo(lastWTL, wtmlList.FindAll(p => p.WTM_WorkTeamID.Equals(wtml.WTM_WorkTeamID)));
+                    lastWTML = wtml;
                 }
             }
             this.Cursor = Cursors.Arrow;
@@ -277,7 +319,7 @@ namespace BarCodeSystem.BasicFile.WorkTeam
             tb_WTCode.Text = _wtl.WT_Code;
             tb_WTName.Text = _wtl.WT_Name;
             tb_MemberCount.Text = _wtmlList.Count.ToString();
-            tsb_IsShown.IsChecked = _wtl.IsShown;
+            tsb_IsShown.IsChecked = _wtl.WT_IsShown;
         }
 
         /// <summary>
@@ -516,7 +558,7 @@ namespace BarCodeSystem.BasicFile.WorkTeam
         /// <param name="_wtl"></param>
         private void AcceptWTChange(WorkTeamLists _wtl)
         {
-            _wtl.IsShown = (tsb_IsShown.IsChecked == true);
+            _wtl.WT_IsShown = (tsb_IsShown.IsChecked == true);
             _wtl.WT_Code = tb_WTCode.Text;
             _wtl.WT_Name = tb_WTName.Text;
         }
@@ -550,7 +592,7 @@ namespace BarCodeSystem.BasicFile.WorkTeam
         {
             tb_MemberCount.Text = "0";
             tb_WorkCenter.Text = _wtl.workcenterName;
-            tsb_IsShown.IsChecked = _wtl.IsShown;
+            tsb_IsShown.IsChecked = _wtl.WT_IsShown;
             dg_WorkTeamDetail.ItemsSource = wtmlNewList;
             dg_WorkTeamDetail.Items.Refresh();
             wtmlTempList.Clear();
@@ -566,7 +608,7 @@ namespace BarCodeSystem.BasicFile.WorkTeam
             _wtl.WT_WorkCenterID = User_Info.User_Workcenter_ID;
             _wtl.workcenterCode = User_Info.User_Workcenter_Code;
             _wtl.workcenterName = User_Info.User_WorkcenterName;
-            _wtl.IsShown = true;
+            _wtl.WT_IsShown = true;
             return _wtl;
         }
 

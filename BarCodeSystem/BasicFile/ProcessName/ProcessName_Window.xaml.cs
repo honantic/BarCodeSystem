@@ -48,25 +48,8 @@ namespace BarCodeSystem
             MyDBController.GetConnection();
             ds.Clear();
             listBeforeSearch.Clear();
-            string SQl = string.Format(@"SELECT [ID],[PN_Code],[PN_Name],[PN_CodeInWorkCenter],[PN_WorkCenterID] FROM [ProcessName] where [PN_WorkCenterID]={0}", User_Info.User_Workcenter_ID);
-            dt = MyDBController.GetDataSet(SQl, ds, "ProcessName").Tables[0];
-            MyDBController.CloseConnection();
-
-            int x = dt.Rows.Count;
-            for (int i = 0; i < x; i++)
-            {
-                ProcessNameLists pnl = new ProcessNameLists();
-                pnl.ID = (Int64)dt.Rows[i]["ID"];
-                pnl.PN_Name = dt.Rows[i]["PN_Name"].ToString();
-                pnl.PN_Code = dt.Rows[i]["PN_Code"].ToString();
-                pnl.PN_CodeInWorkCenter = dt.Rows[i]["PN_CodeInWorkCenter"].ToString();
-                if (!(dt.Rows[i]["PN_WorkCenterID"] is DBNull))
-                {
-                    pnl.PN_WorkCenterID = Convert.ToInt64(dt.Rows[i]["PN_WorkCenterID"]);
-                }
-                listBeforeSearch.Add(pnl);
-            }
-            listBeforeSearch = listBeforeSearch.OrderBy(p => p.PN_Code).ToList();
+            listBeforeSearch = ProcessNameLists.FetchPNInfoByWC(User_Info.User_Workcenter_ID);
+            listBeforeSearch.Sort(new ListComparer<ProcessNameLists>((p1, p2) => p1.PN_Code.CompareTo(p2.PN_Code)));
             listview1.ItemsSource = null;
             listview1.ItemsSource = listBeforeSearch;
         }

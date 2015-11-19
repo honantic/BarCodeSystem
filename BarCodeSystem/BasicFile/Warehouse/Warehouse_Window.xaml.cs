@@ -50,7 +50,7 @@ namespace BarCodeSystem
             List<WarehouseLists> whls = new List<WarehouseLists> { };
             listBeforeSearch.Clear();
             ds.Clear();
-            string SQl = @"SELECT [ID],[W_ID],[W_Code],[W_Name],
+            string SQl = @"SELECT Warehouse.[ID],[W_ID],[W_Code],[W_Name],WorkCenter.WC_Department_Name,[W_WorkCenterID],
                         case [W_SourceType]
                             when 0 THEN 'U9录入'
                             when 1 THEN '手工录入'
@@ -61,21 +61,32 @@ namespace BarCodeSystem
                             when 1 THEN '是'
                             ELSE '未知' END
                             as [W_IsValidated_Show],
+                        case [W_IsDefault]
+                            when 0 THEN '否'
+                            when 1 THEN '是'
+                            ELSE '未知' END
+                            as [W_IsDefault_Show],
                         [W_SourceType] ,
-                        [W_IsValidated] 
-                        FROM Warehouse";
+                        [W_IsValidated],
+                        [W_IsDefault] 
+                        FROM Warehouse
+                        left join WorkCenter on (Warehouse.W_WorkCenterID = WorkCenter.WC_Department_ID)";
 
             dt = MyDBController.GetDataSet(SQl, ds).Tables[0];
             MyDBController.CloseConnection();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 WarehouseLists whl = new WarehouseLists();
+                whl.ID = (Int64)dt.Rows[i]["ID"];
                 whl.W_ID = (Int64)dt.Rows[i]["W_ID"];
                 whl.W_Code = dt.Rows[i]["W_Code"].ToString();
                 whl.W_Name = dt.Rows[i]["W_Name"].ToString();
+                whl.WC_Department_Name = dt.Rows[i]["WC_Department_Name"].ToString();
                 whl.W_SourceType_Show = dt.Rows[i]["W_SourceType_Show"].ToString();
                 whl.W_IsValidated_Show = dt.Rows[i]["W_IsValidated_Show"].ToString();
                 whl.W_IsValidated = (bool)dt.Rows[i]["W_IsValidated"];
+                whl.W_IsDefault = dt.Rows[i]["W_IsDefault"] is DBNull ? false : (bool)dt.Rows[i]["W_IsDefault"];
+                whl.W_IsDefault_Show = dt.Rows[i]["W_IsDefault_Show"].ToString();
                 whl.W_SourceType = (int)dt.Rows[i]["W_SourceType"];
                 whls.Add(whl);
                 listBeforeSearch.Add(whl);

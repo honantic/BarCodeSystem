@@ -140,7 +140,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
         {
             bool flag = false;
             MyDBController.GetConnection();
-            string SQl = string.Format(@"Select count(*) from [FlowCard] A left join  [FlowCardSub] B on A.[ID]=B.[FCS_FlowCradID]  where [FC_Code]='{0}' and  [FC_CardState] in {1} and A.[ID] in(select distinct FCS_FlowCradID from [FlowCardSub]  where [FCS_UnprocessedAm]>0)", _key, "(2,5)");
+            string SQl = string.Format(@"Select count(*) from [FlowCard] A left join  [FlowCardSub] B on A.[ID]=B.[FCS_FlowCardID]  where [FC_Code]='{0}' and  [FC_CardState] in {1} and A.[ID] in(select distinct FCS_FlowCardID from [FlowCardSub]  where [FCS_UnprocessedAm]>0)", _key, "(2,5)");
             int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
             if (count > 0)
             {
@@ -281,8 +281,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
             _newFC.FC_Amount = fcsls.Find(p => p.FCS_UnprocessedAm > 0).FCS_UnprocessedAm;
             _newFC.FC_FirstProcessNum = fcsls.Find(p => p.FCS_UnprocessedAm > 0).FCS_ProcessSequanece;
             _newFC.FC_CardState = 0;
-            _newFC.FC_CardType = 0;
-            _newFC.FC_Code = "PT-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", (_flowNum + 1));
+            _newFC.FC_CardType = 2;
+            _newFC.FC_Code = "ZX-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", (_flowNum + 1));
             _newFC.FC_CreateBy = User_Info.User_Name;
             _newFC.FC_CreateTime = _newFC.FC_CheckTime = DateTime.Now;
             _newFC.FC_FlowNum = _flowNum + 1;
@@ -292,6 +292,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
             _newFC.FC_SourceOrderID = fc.FC_SourceOrderID;
             _newFC.FC_WorkCenter = fc.FC_WorkCenter;
             _newFC.FC_BCSOrderID = fc.FC_BCSOrderID;
+            _newFC.FC_CanReproduce = _newFC.FC_CanTransfer = _newFC.FC_HasDistributed = _newFC.FC_HasReproduced = _newFC.FC_HasTransfered = false;
+            _newFC.FC_CanDistribute = true;
+            _newFC.FC_Remark = "本流转卡为转序流转卡,来源为:" + fc.FC_Code + "|";
+            _newFC.FC_IsSalaryCalculating = fc.FC_IsSalaryCalculating;
             return _newFC;
         }
 
@@ -335,7 +339,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
             while (!flag)
             {
                 newFC.FC_FlowNum = GetLatestFlowNum();
-                newFC.FC_Code = "PT-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", (newFC.FC_FlowNum + 1));
+                newFC.FC_Code = "ZX-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", (newFC.FC_FlowNum + 1));
                 flag = CheckWhetherRightFlowNum();
             }
             Int64 newID = CompileSaving();
@@ -367,12 +371,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
         private Int64 CompileSaving()
         {
             Int64 newID = 0;
-            string SQl = string.Format(@"Insert into [FlowCard]([FC_CardType],[FC_SourceOrderID],[FC_Code],[FC_ItemID],[FC_ItemTechVersionID],[FC_Amount],[FC_WorkCenter],[FC_CardState],[FC_DistriSourceCard],[FC_FlowNum],[FC_CreateBy],[FC_CreateTime],[FC_CheckBy],[FC_CheckTime],[FC_BCSOrderID],[FC_FirstProcessNum]) values({0},{1},'{2}',{3},{4},{5},{6},{7},{8},{9},'{10}','{11}','{12}','{13}',{14},{15})", newFC.FC_CardType, newFC.FC_SourceOrderID, newFC.FC_Code, newFC.FC_ItemID, newFC.FC_ItemTechVersionID, newFC.FC_Amount, newFC.FC_WorkCenter, newFC.FC_CardState, newFC.FC_DistriSourceCard, newFC.FC_FlowNum, newFC.FC_CreateBy, newFC.FC_CreateTime.ToString("yyyy/MM/dd HH:MM:ss"), newFC.FC_CheckBy, newFC.FC_CheckTime.ToString("yyyy/MM/dd HH:MM:ss"), newFC.FC_BCSOrderID, newFC.FC_FirstProcessNum);
+
             MyDBController.GetConnection();
+            FlowCardLists.SaveInfo(MyDBController.CreateSqlCon(), newFC);
+            fc.FC_Remark = "转序为流转卡:" + newFC.FC_Code + "|";
+            fc.FC_CheckTime = DateTime.Now;
+            string SQl = string.Format(@"Update [FlowCard] set [FC_CardState]=5,[FC_CheckTime]='{0}',[FC_HasTransfered]='true',[FC_CanTransfer]='false' ,[FC_Remark]='{1}' where [ID]={2}", fc.FC_CheckTime, fc.FC_Remark, fc.ID);
             int count = MyDBController.ExecuteNonQuery(SQl);
-            SQl = string.Format(@"Update [FlowCard] set [FC_CardState]=4 where [ID]={0}", fc.ID);
-            count += MyDBController.ExecuteNonQuery(SQl);
-            if (count == 2)
+            if (count > 0)
             {
                 SQl = string.Format(@"Select [ID] from  [FlowCard] where [FC_Code]='{0}'", newFC.FC_Code);
                 newID = Convert.ToInt64(MyDBController.ExecuteScalar(SQl));
@@ -407,7 +413,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
             foreach (FlowCardSubLists item in subList)
             {
                 DataRow row = ds.Tables["FlowCardSub"].NewRow();
-                row["FCS_FlowCradID"] = _newID;
+                row["FCS_FlowCardID"] = _newID;
                 row["FCS_ItemId"] = item.FCS_ItemId;
                 row["FCS_TechRouteID"] = item.FCS_TechRouteID;
                 row["FCS_ProcessID"] = item.FCS_ProcessID;
@@ -461,17 +467,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardTransfer
         }
         #endregion
 
-        //private void btn_test_Click(object sender, RoutedEventArgs e)
-        //{
-        //    List<string> strList = MyDBController.FindVisualParentName(this);
-        //    string nameList = "";
-        //    nameList += this.GetType().ToString() + "\n\r";
-        //    foreach (string item in strList)
-        //    {
-        //        nameList += string.IsNullOrEmpty(nameList) ? item + "\n\r" : "," + item + "\n\r";
-        //    }
-        //    Xceed.Wpf.Toolkit.MessageBox.Show(nameList);
-        //}
 
     }
 }

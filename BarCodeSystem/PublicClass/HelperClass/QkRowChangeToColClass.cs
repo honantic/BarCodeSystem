@@ -11,7 +11,6 @@ namespace BarCodeSystem
     /// </summary>
     public class QkRowChangeToColClass
     {
-
         /// <summary>
         /// 求天数差
         /// </summary>
@@ -139,7 +138,7 @@ namespace BarCodeSystem
         /// 缺点就是由于Excel里的智能识别功能，把数字首位的0去掉了，并且数字以科学记数法显式。
         /// </summary>
         /// <param name="dt"></param>
-        public void OutToExcel(System.Data.DataTable dt)
+        private void OutToExcel(System.Data.DataTable dt)
         {
             #region   验证可操作性
 
@@ -247,7 +246,7 @@ namespace BarCodeSystem
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static bool CreateExcelFileForDataTable(System.Data.DataTable dt)
+        private static bool CreateExcelFileForDataTable(System.Data.DataTable dt)
         {
             bool flag = false;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -295,7 +294,7 @@ namespace BarCodeSystem
                     mBook.SaveAs(saveFileDialog1.FileName, Excel.XlFileFormat.xlExcel7, miss, miss, miss, miss, Excel.XlSaveAsAccessMode.xlNoChange, miss, miss, miss, miss, miss);
                     flag = true;
                 }
-                catch (Exception )
+                catch (Exception)
                 {
                     flag = false;
                 }
@@ -320,12 +319,12 @@ namespace BarCodeSystem
         }
 
         /// <summary>
-        /// 
+        /// 将数据导出到excel
         /// </summary>
         /// <param name="MyStyle"></param>
         /// <param name="MyTable"></param>
         /// <param name="Stats"></param>
-        public void print_grid_to_excel(DataGridTableStyle MyStyle, DataTable MyTable, int Stats)
+        public static void CreateExcelFileForDataTable(DataTable MyTable, string name = "")
         {
             Excel.Application myexcel = new Excel.Application();
             if (myexcel == null)
@@ -335,16 +334,14 @@ namespace BarCodeSystem
             }
             myexcel.Application.Workbooks.Add(true);
             Excel.Worksheet ws = (Excel.Worksheet)myexcel.Workbooks[1].Worksheets[1];
-            if (Stats == 1)  //页签名称改为查询当前日期
+            if (string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(MyTable.TableName))
             {
-                string str = DateTime.Now.ToString().Trim();
-                str = str.Replace(":", "-");
-                str = str.Replace("/", "-");
-                ws.Name = str;
+                name = MyTable.TableName;
+                ws.Name = name;
             }
 
-            int grid_col_count = MyStyle.GridColumnStyles.Count;
-            int grid_row_count = MyTable.DefaultView.Count;
+            int grid_col_count = MyTable.Columns.Count;
+            int grid_row_count = MyTable.Rows.Count;
             object[,] obj_grid = new Object[grid_row_count + 1, grid_col_count];  //几行,几列
             char c1 = 'A';
             int char_to_int = (int)c1;
@@ -352,7 +349,7 @@ namespace BarCodeSystem
             for (i = 0; i < grid_col_count; i++)
             {
                 char_to_int = char_to_int + 1;
-                obj_grid[0, i] = MyStyle.GridColumnStyles[i].HeaderText.ToString().Trim();
+                obj_grid[0, i] = MyTable.Columns[i].ColumnName.Trim();
             }
             char_to_int--;
             c1 = (char)char_to_int;
@@ -385,59 +382,61 @@ namespace BarCodeSystem
             string[] s_format = new string[grid_col_count];
             string[] s_null_text_list = new string[grid_col_count];
             i = 0;
-            foreach (System.Windows.Forms.DataGridTextBoxColumn d in MyStyle.GridColumnStyles)
+            foreach (DataColumn col in MyTable.Columns)
             {
-                s_format[i] = d.Format.ToString().Trim();
-                s_null_text_list[i] = d.NullText.ToString().Trim();
+                //s_format[i] = d.DefaultCellStyle.Format.ToString().Trim();
+                //s_null_text_list[i] = d.DefaultCellStyle.NullValue.ToString().Trim();
+                s_format[i] = col.DataType.Name;
+                s_null_text_list[i] = col.DefaultValue.ToString();
                 i++;
             }
 
             //设置表头
             Excel.Range r = ws.get_Range(s_range1, s_range2);
-            DataRow roww;
+            DataRow row;
             string s_map_name;
             int j = 0;
 
             for (i = 0; i < grid_row_count; i++)
             {
-                roww = MyTable.DefaultView[i].Row;
+                row = MyTable.DefaultView[i].Row;
                 for (j = 0; j < grid_col_count; j++)
                 {
-                    s_map_name = MyStyle.GridColumnStyles[j].MappingName.ToString().Trim();
-                    if ((s_format[j].Length == 0) || (roww[s_map_name] is DBNull))
+                    s_map_name = MyTable.Columns[j].ColumnName;
+                    if ((s_format[j].Length == 0) || (row[s_map_name] is DBNull))
                     {
-                        obj_grid[i + 1, j] = "'" + roww[s_map_name].ToString().Trim();
+                        obj_grid[i + 1, j] = "'" + row[s_map_name].ToString().Trim();
                     }
                     else
                     {
                         if (s_format[j].Substring(0, 1) == "#")
                         {
-                            if (roww[s_map_name] is DBNull)
+                            if (row[s_map_name] is DBNull)
                             {
                                 if (s_null_text_list[j].Trim() == "-")
                                 {
-                                    roww[s_map_name] = 0m;
+                                    row[s_map_name] = 0m;
                                     obj_grid[i + 1, j] = "-";
                                 }
                                 else
                                 {
-                                    roww[s_map_name] = 0m;
-                                    obj_grid[i + 1, j] = String.Format("{0:" + s_format[j] + "}", decimal.Parse(roww[s_map_name].ToString()));
+                                    row[s_map_name] = 0m;
+                                    obj_grid[i + 1, j] = String.Format("{0:" + s_format[j] + "}", decimal.Parse(row[s_map_name].ToString()));
                                 }
                             }
                             else
                             {
-                                obj_grid[i + 1, j] = String.Format("{0:" + s_format[j] + "}", decimal.Parse(roww[s_map_name].ToString()));
+                                obj_grid[i + 1, j] = String.Format("{0:" + s_format[j] + "}", decimal.Parse(row[s_map_name].ToString()));
                             }
                         }
                         else
                         {
 
-                            if (roww[s_map_name] is DBNull)
+                            if (row[s_map_name] is DBNull)
                             {
-                                roww[s_map_name] = "";
+                                row[s_map_name] = "";
                             }
-                            obj_grid[i + 1, j] = roww[s_map_name].ToString().Trim();
+                            obj_grid[i + 1, j] = row[s_map_name].ToString().Trim();
                         }
                     }
                 }
@@ -447,7 +446,6 @@ namespace BarCodeSystem
             r.EntireColumn.AutoFit();
             myexcel.Visible = true;
             myexcel = null;
-
         }
     }
 }

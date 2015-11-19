@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using BarCodeSystem.PublicClass.HelperClass;
+using System.Collections.Generic;
 
 namespace BarCodeSystem
 {
@@ -17,7 +18,11 @@ namespace BarCodeSystem
     public partial class ProcessNameModify_Window : Window
     {
 
-
+        #region 变量
+        /// <summary>
+        /// qi信息列表
+        /// </summary>
+        List<QualityIssuesLists> qilList;
         /// <summary>
         /// 来自父窗体传值，修改工序信息的时候使用
         /// </summary>
@@ -27,6 +32,10 @@ namespace BarCodeSystem
             set;
         }
 
+        /// <summary>
+        /// 质量问题信息的cb列表
+        /// </summary>
+        List<CheckBox> cbList = new List<CheckBox>();
 
         /// <summary>
         /// 来自父窗体传值，系统中已有的工序名单
@@ -45,7 +54,7 @@ namespace BarCodeSystem
 
         //闪烁用的计时器
         System.Windows.Forms.Timer t1 = new System.Windows.Forms.Timer();
-
+        #endregion
 
         public ProcessNameModify_Window()
         {
@@ -81,12 +90,14 @@ namespace BarCodeSystem
                 this.Title = "工序信息修改窗口";
                 txtb_Code.Text = pnl.PN_Code;
                 txtb_Name.Text = pnl.PN_Name;
+                txtb_CodeInWorkCenter.Text = pnl.PN_CodeInWorkCenter;
                 txtb_Code.IsReadOnly = true;
             }
             else
             {
                 this.Title = "工序信息新增窗口";
             }
+            InitQIInfo();
         }
 
         //去除关闭按钮
@@ -110,6 +121,25 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 初始化qi区域信息
+        /// </summary>
+        private void InitQIInfo()
+        {
+            qilList = QualityIssuesLists.FetchBCSQualityIssueInfo(User_Info.User_Workcenter_ID);
+            qilList.ForEach(p =>
+            {
+                CheckBox cb = new CheckBox() { Name = "cb_" + p.ID.ToString(), Content = p.QI_Name, Margin = new Thickness(5) };
+                cb.SetValue(CheckBox.StyleProperty, Application.Current.FindResource("CB_NormalStyle"));
+                wp_QIInfo.Children.Add(cb);
+                if (pnl != null && pnl.PN_AssociatedQIList != null)
+                {
+                    cb.IsChecked = pnl.PN_AssociatedQIList.Contains(p.ID);
+                }
+                cbList.Add(cb);
+            });
+        }
+
+        /// <summary>
         /// 关闭按钮
         /// </summary>
         /// <param name="sender"></param>
@@ -126,10 +156,12 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (canImport && txtb_Name.Text.Length > 0)
             {
                 string SQl = "";
                 string mess = "";
+                string qiName = GetSelectCBName();
                 DBLog _dbLog = new DBLog();
                 _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
                 _dbLog.DBL_OperateTable = "ProcessName";
@@ -137,8 +169,7 @@ namespace BarCodeSystem
                 _dbLog.DBL_AssociateCode = txtb_Code.Text;
                 if (this.Title == "工序信息修改窗口")
                 {
-                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Name]='{0}',[PN_CodeInWorkCenter]='{1}' WHERE 
-                                 [PN_Code]='{2}'", txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), txtb_Code.Text);
+                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Name]='{0}',[PN_CodeInWorkCenter]='{1}',[PN_AssociatedQI]='{2}' WHERE [PN_Code]='{3}'", txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), qiName, txtb_Code.Text);
                     mess = "成功修改工序信息!";
                     _dbLog.DBL_OperateType = OperateType.Update;
                     _dbLog.DBL_Content = "更新工序信息:" + txtb_Code.Text;
@@ -146,8 +177,8 @@ namespace BarCodeSystem
                 }
                 else
                 {
-                    SQl = string.Format("INSERT INTO [ProcessName]([PN_Code],[PN_NAME],[PN_CodeInWorkCenter],[PN_WorkCenterID]) VALUES('{0}','{1}','{2}',{3})"
-                                , txtb_Code.Text, txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), User_Info.User_Workcenter_ID);
+                    SQl = string.Format("INSERT INTO [ProcessName]([PN_Code],[PN_NAME],[PN_CodeInWorkCenter],[PN_WorkCenterID],[PN_AssociatedQI]) VALUES('{0}','{1}','{2}',{3},'{4}')"
+                                , txtb_Code.Text, txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), User_Info.User_Workcenter_ID, qiName);
                     mess = "成功新增工序信息！";
                     _dbLog.DBL_OperateType = OperateType.Insert;
                     _dbLog.DBL_Content = "新增工序信息:" + txtb_Code.Text;
@@ -171,6 +202,7 @@ namespace BarCodeSystem
 
                 MyDBController.CloseConnection();
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -221,7 +253,6 @@ namespace BarCodeSystem
             return IsRightCode;
         }
 
-
         /// <summary>
         /// 利用Timer来实现文本框边框闪烁效果
         /// </summary>
@@ -262,6 +293,31 @@ namespace BarCodeSystem
         {
             t1.Enabled = false;
             txtb_Code.BorderBrush = txtb_Name.BorderBrush;
+        }
+
+        /// <summary>
+        /// 获取选中的质量问题列表
+        /// </summary>
+        /// <returns></returns>
+        private string GetSelectCBName()
+        {
+            string _qiName = "";
+            cbList.ForEach(p =>
+            {
+                if (p.IsChecked == true)
+                {
+                    _qiName += string.IsNullOrEmpty(_qiName) ? p.Name.Substring(3) : "," + p.Name.Substring(3);
+                }
+            });
+
+            //foreach (CheckBox p in cbList)
+            //{
+            //     if (p.IsChecked == true)
+            //    {
+            //        _qiName += string.IsNullOrEmpty(_qiName) ? p.Name.Substring(3) : "," + p.Name.Substring(3);
+            //    }
+            //}
+            return _qiName;
         }
     }
 }

@@ -23,7 +23,6 @@ namespace BarCodeSystem.TechRoute.TechRoute
             InitializeComponent();
             key = "检验员";
             Title = "人员选择窗口";
-
         }
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
         /// <summary>
         /// 选择方式 "手工","扫描"
         /// </summary>
-        public string SelectType = "";
+        private string SelectType = "";
         /// <summary>
         /// 岗位
         /// </summary>

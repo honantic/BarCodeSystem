@@ -246,7 +246,7 @@ namespace BarCodeSystem.PublicClass
 
             DataRow row = ds.Tables[0].Rows[ds.Tables[0].Rows.Count - 1];
             //flagTime = Convert.ToDateTime(row["POF_LastImportDate"]);//这个会受到电脑系统设置影响  会出现星期几 和上下午的中文
-            string lastOperateTime = Convert.ToDateTime(row["POF_LastImportDate"]).ToString("yyyy/MM/dd HH:MM:ss");
+            string lastOperateTime = Convert.ToDateTime(row["POF_LastImportDate"]).ToString("yyyy/MM/dd HH:mm:ss");
 
             //条码系统中现有的生产订单的编号列表
             List<string> PO_CodeList = new List<string>();
@@ -327,7 +327,7 @@ namespace BarCodeSystem.PublicClass
                                 newrow["PO_ProduceDepartName"] = originrow["部门名称"];
                                 newrow["PO_ProduceDepartCode"] = originrow["部门编号"];
                                 newrow["PO_IsReturn"] = false;
-                                newrow["PO_BCSCreateTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                                newrow["PO_BCSCreateTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                                 ds.Tables["ProduceOrder"].Rows.Add(newrow);
 
                                 sb.Append(sb.Length == 0 ? originrow["U9订单Id"].ToString() : "," + originrow["U9订单Id"].ToString());
@@ -337,17 +337,22 @@ namespace BarCodeSystem.PublicClass
                         int updateNum, insertNum;
                         MyDBController.InsertSqlBulk(ds.Tables["ProduceOrder"], colList, out updateNum, out insertNum);
 
-                        //修改最新操作时间
-                        SQl = string.Format(@"select max([PO_ModifyTime]) from  produceorder as A  where A.[PO_ModifyTime] > '{0}' ", lastOperateTime);
-                        lastOperateTime = Convert.ToDateTime(MyDBController.ExecuteScalar(SQl)).ToString("yyyy/MM/dd HH:MM:ss");
+                        if (ds.Tables["ProduceOrder"].Rows.Count > 0)
+                        {
+                            //修改最新操作时间
+                            SQl = string.Format(@"select max([PO_ModifyTime]) from  produceorder as A  where A.[PO_ModifyTime] > '{0}' ", lastOperateTime);
+                            lastOperateTime = Convert.ToDateTime(MyDBController.ExecuteScalar(SQl)).ToString("yyyy/MM/dd HH:mm:ss");
 
-                        //修改条码系统中订单时间戳，这次从条码系统中获取生产订单的最大修改时间
-                        SQl = string.Format(@"update [ProduceOrderFlag] set [POF_LastImportDate]='{0}' ,[POF_IsImportingFlag] ='false' where [ID]={1}", lastOperateTime, Convert.ToInt64(row["ID"]));
-                        MyDBController.ExecuteNonQuery(SQl);
-                        MyDBController.CloseConnection();
-
-                        SQl = string.Format(@"update [MO_MO] set [DescFlexField_PubDescSeg8]='{0}' where [ID] in ({1})", "已导入条码系统", sb);
-                        MyDBController.ExecuteNonQuery(new SqlConnection() { ConnectionString = sqlcon.ConnectionString }, SQl);
+                            //修改条码系统中订单时间戳，这次从条码系统中获取生产订单的最大修改时间
+                            SQl = string.Format(@"update [ProduceOrderFlag] set [POF_LastImportDate]='{0}' ,[POF_IsImportingFlag] ='false' where [ID]={1}", lastOperateTime, Convert.ToInt64(row["ID"]));
+                            MyDBController.ExecuteNonQuery(SQl);
+                            MyDBController.CloseConnection();
+                            if (sb.Length > 0)
+                            {
+                                SQl = string.Format(@"update [MO_MO] set [DescFlexField_PubDescSeg8]='{0}' where [ID] in ({1})", "已导入条码系统", sb);
+                                MyDBController.ExecuteNonQuery(new SqlConnection() { ConnectionString = sqlcon.ConnectionString }, SQl);
+                            }
+                        }
                     }
                 }
             }

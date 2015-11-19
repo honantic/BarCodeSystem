@@ -21,6 +21,12 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
             InitializeComponent();
         }
+
+        public FlowCardQuery_Page(Page _page)
+        {
+            InitializeComponent();
+            page = _page;
+        }
         #region 变量
         /// <summary>
         /// 加载次数
@@ -41,6 +47,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// 工艺路线版本
         /// </summary>
         TechVersion tv;
+        /// <summary>
+        /// 选择区域的页面
+        /// </summary>
+        Page page;
         #endregion
         /// <summary>
         /// 加载事件
@@ -51,7 +61,14 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
             if (loadCount == 0)
             {
-                frame_SelectWay.Navigate(new QueryWaySelect_Page(ShowFCInfo));
+                if (page != null)
+                {
+                    frame_SelectWay.Navigate(page);
+                }
+                else
+                {
+                    frame_SelectWay.Navigate(new QueryWaySelect_Page(ShowFCInfo));
+                }
                 loadCount++;
                 btn_ModifyData.Visibility = Visibility.Hidden;
                 btn_Check.Visibility = Visibility.Hidden;
@@ -80,6 +97,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             txtb_FlowCardCode.Text = _fc.FC_Code;
             txtb_FlowCardType.Text = (new FlowCardTypeConverter()).Convert(_fc.FC_CardType, typeof(string), null, new System.Globalization.CultureInfo("")).ToString();
             txtb_ItemInfo.Text = _fc.PO_ItemCode + " | " + _fc.PO_ItemName + " | " + _fc.PO_ItemSpec;
+            txtb_ItemVersion.Text = _fc.PO_ItemVersion;
             txtb_SourceOrderCode.Text = _fc.PO_Code;
             txtb_WorkCenter.Text = _fc.WC_Department_Name;
             txtb_VersionCode.Text = _fc.TRV_VersionName;
@@ -233,10 +251,13 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                 if (flag)
                 {
                     fc.FC_CardState = 5;
+                    fc.FC_CheckTime = DateTime.Now;
+                    fc = FlowCardLists.CheckCardStates(fc);
                     List<FlowCardLists> _fcList = new List<FlowCardLists>() { fc };
                     FlowCardLists.UpdateFCInfo(_fcList);
                     this.ClearInfo();
-                    MyDBController.FindVisualChild<FlowCardCheck_Page>(this).ForEach(p => p.FetchFlowCardInfo());
+                    MyDBController.FindVisualChild<FlowCardCheck_Page>(this).ForEach(p => { p.FetchFlowCardInfo(); p.txtb_FlowCardCode.Text = ""; p.txtb_FlowCardCode.Focus(); });
+                    Xceed.Wpf.Toolkit.MessageBox.Show("审核成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             this.Cursor = Cursors.Arrow;

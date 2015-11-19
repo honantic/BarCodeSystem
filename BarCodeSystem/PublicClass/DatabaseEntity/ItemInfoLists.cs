@@ -152,14 +152,12 @@ namespace BarCodeSystem
         }
 
         /// <summary>
-        /// 根据指定车间，返回拥有工艺路线的料品信息列表
+        /// 根据指定车间ID，返回拥有工艺路线的料品信息列表
         /// </summary>
         /// <param name="_wcID"></param>
         /// <returns></returns>
-        public static List<ItemInfoLists> FetchItemInfoByTechAndWC(params Int64[] _wcID)
+        public static List<ItemInfoLists> FetchItemInfoByTechAndWCID(params Int64[] _wcID)
         {
-            List<ItemInfoLists> iilList = new List<ItemInfoLists>();
-            DataSet ds = new DataSet();
             string SQl = "";
             if (_wcID.Length == 0)
             {
@@ -174,10 +172,56 @@ namespace BarCodeSystem
                 }
                 SQl = string.Format(@"select * from ItemInfo  where [ID] in (select distinct [TR_ItemID] from [TechRoute] where [TR_WorkCenterID] in ({0}))", idList);
             }
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "ItemInfo");
-            MyDBController.CloseConnection();
+            return ExecuteSQlCommand(SQl);
+        }
 
+        /// <summary>
+        /// 根据指定车间编号，返回拥有工艺路线的料品信息列表
+        /// </summary>
+        /// <param name="_wcCode"></param>
+        /// <returns></returns>
+        public static List<ItemInfoLists> FetchItemInfoByTechAndWCCode(params string[] _wcCode)
+        {
+            string SQl = "";
+            if (_wcCode.Length == 0)
+            {
+                SQl = string.Format(@"select * from ItemInfo  where [ID] in (select distinct [TR_ItemID] from [TechRoute] )");
+            }
+            else
+            {
+                string codeList = "";
+                foreach (string item in _wcCode)
+                {
+                    codeList += codeList.Length == 0 ? "'" + item + "'" : "," + "'" + item + "'";
+                }
+                SQl = string.Format(@"select * from ItemInfo  where [ID] in (select distinct [TR_ItemID] from [TechRoute] where [TR_WorkCenterID] in (select [WC_Department_ID] from [WorkCenter] where [WC_Department_Code] in ({0})))", codeList);
+            }
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 获取条码系统中，没有工艺路线的料品
+        /// </summary>
+        /// <returns></returns>
+        public static List<ItemInfoLists> FetchItemInfoWithoutTechRoute()
+        {
+            string SQl = @" SELECT * FROM [ItemInfo] WHERE [ID] NOT IN 
+                    ( SELECT DISTINCT [TRV_ItemID] FROM TechRouteVersion)";
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<ItemInfoLists> ExecuteSQlCommand(string _command)
+        {
+            List<ItemInfoLists> iilList = new List<ItemInfoLists>();
+            DataSet ds = new DataSet();
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(_command, ds, "ItemInfo");
+            MyDBController.CloseConnection();
             foreach (DataRow row in ds.Tables["ItemInfo"].Rows)
             {
                 ItemInfoLists iil = new ItemInfoLists();

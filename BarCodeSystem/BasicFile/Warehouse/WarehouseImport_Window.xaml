@@ -4,7 +4,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
         ResizeMode="NoResize"
-        Title="仓库导入窗体" Height="600" Width="600" Loaded="Window_Loaded">
+        Title="仓库导入窗体" Height="600" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
 
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>

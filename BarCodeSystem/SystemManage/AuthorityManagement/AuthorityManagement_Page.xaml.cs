@@ -152,31 +152,6 @@ namespace BarCodeSystem.SystemManage.AuthorityManagement
                       }
                   }
                 );
-            //saList.ForEach(
-            //    p =>
-            //    {
-            //        if (p.SA_HasItems)
-            //        {
-            //            Expander exp = new Expander() { Header = p.SA_AuthorityName, Cursor = Cursors.Hand, IsExpanded = true };
-            //            exp.SetValue(Button.StyleProperty, Application.Current.FindResource("Exp_NormalStyle"));
-            //            StackPanel sp = new StackPanel() { Orientation = Orientation.Horizontal };
-            //            exp.Content = sp;
-            //            expList.Add(exp);
-            //            sp_AuthorityList.Children.Add(exp);
-            //        }
-            //        else
-            //        {
-            //            if (p.SA_IsVisible)
-            //            {
-            //                CheckBox cb = new CheckBox() { Name = p.SA_AuthorityCode, Content = p.SA_AuthorityName, Cursor = Cursors.Hand };
-            //                cb.SetValue(CheckBox.StyleProperty, Application.Current.FindResource("CB_NormalStyle"));
-            //                cb.IsEnabled = false;
-            //                ((StackPanel)(expList.Last().Content)).Children.Add(cb);
-            //                cbList.Add(cb);
-            //            }
-            //        }
-            //    });
-
         }
 
         /// <summary>

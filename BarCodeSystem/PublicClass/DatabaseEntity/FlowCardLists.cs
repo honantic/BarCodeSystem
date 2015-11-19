@@ -3,11 +3,14 @@ using BarCodeSystem.SystemManage;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace BarCodeSystem.PublicClass.DatabaseEntity
 {
@@ -18,7 +21,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         public Int64 ID { get; set; }
         /// <summary>
-        /// 流转卡类型0：普通流转卡，1：返工流转卡，2：分批流转卡，3：无来源流转卡
+        /// 流转卡类型0：普通流转卡，1:分批流转卡 2:转序流转卡 3：返工流转卡 4:无来源流转卡 
         /// </summary>
         public int FC_CardType { get; set; }
         /// <summary>
@@ -90,6 +93,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         public string PO_ItemSpec { get; set; }
         /// <summary>
+        /// 料品型号，从生产订单表中关联得到
+        /// </summary>
+        public string PO_ItemVersion { get; set; }
+        /// <summary>
         /// 工艺路线版本编码，从工艺路线版本表中关联得到
         /// </summary>
         public string TRV_VersionCode { get; set; }
@@ -115,6 +122,45 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 第一道工序号
         /// </summary>
         public int FC_FirstProcessNum { get; set; }
+
+        /// <summary>
+        /// 是否可分批，默认否
+        /// </summary>
+        public bool FC_CanDistribute { get; set; }
+
+        /// <summary>
+        /// 是否已经分批，只有在可分批的情况下才会被分批
+        /// </summary>
+        public bool FC_HasDistributed { get; set; }
+
+        /// <summary>
+        /// 是否可转序，默认否
+        /// </summary>
+        public bool FC_CanTransfer { get; set; }
+
+        /// <summary>
+        /// 是否已经转序，只有在可转序的情况下才会被转序
+        /// </summary>
+        public bool FC_HasTransfered { get; set; }
+
+        /// <summary>
+        /// 是否可返工，默认否
+        /// </summary>
+        public bool FC_CanReproduce { get; set; }
+
+        /// <summary>
+        /// 是否已经返工，只有在可返工的情况下才会被返工
+        /// </summary>
+        public bool FC_HasReproduced { get; set; }
+        /// <summary>
+        ///是否计算工资
+        /// </summary>
+        public bool FC_IsSalaryCalculating { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string FC_Remark { get; set; }
 
         /// <summary>
         /// 检查流转卡编号是否存在
@@ -152,44 +198,8 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardLists> FetchFC_InfoByCode(string _fcCode)
         {
-            DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_Code] ='{0}'", _fcCode);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
-
-            List<FlowCardLists> fcls = new List<FlowCardLists>();
-            foreach (DataRow row in ds.Tables["FlowCard"].Rows)
-            {
-                fcls.Add(new FlowCardLists()
-                {
-                    FC_Amount = Convert.ToInt32(row["FC_Amount"]),
-                    FC_CardState = Convert.ToInt32(row["FC_CardState"]),
-                    FC_CardType = Convert.ToInt32(row["FC_CardType"]),
-                    FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
-                    FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
-                    FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
-                    FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
-                    FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
-                    FC_CheckBy = row["FC_CheckBy"].ToString(),
-                    FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
-                    FC_Code = row["FC_Code"].ToString(),
-                    FC_CreateBy = row["FC_CreateBy"].ToString(),
-                    FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
-                    ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
-                    WC_Department_Name = row["WC_Department_Name"].ToString(),
-                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
-                    TRV_VersionName = row["TRV_VersionName"].ToString(),
-                    PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
-                });
-            }
-            fcls = fcls.Distinct(new ListComparer<FlowCardLists>((x, y) => x.FC_Code.Equals(y.FC_Code))).ToList();
-            return fcls;
+            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],B.[PO_ItemVersion],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_Code] ='{0}'", _fcCode);
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -199,44 +209,8 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardLists> FetchFC_InfoByState(int _fcState)
         {
-            DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState] ={0}", _fcState);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
-
-            List<FlowCardLists> fcls = new List<FlowCardLists>();
-            foreach (DataRow row in ds.Tables["FlowCard"].Rows)
-            {
-                fcls.Add(new FlowCardLists()
-                {
-                    FC_Amount = Convert.ToInt32(row["FC_Amount"]),
-                    FC_CardState = Convert.ToInt32(row["FC_CardState"]),
-                    FC_CardType = Convert.ToInt32(row["FC_CardType"]),
-                    FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
-                    FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
-                    FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
-                    FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
-                    FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
-                    FC_CheckBy = row["FC_CheckBy"].ToString(),
-                    FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
-                    FC_Code = row["FC_Code"].ToString(),
-                    FC_CreateBy = row["FC_CreateBy"].ToString(),
-                    FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
-                    ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
-                    WC_Department_Name = row["WC_Department_Name"].ToString(),
-                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
-                    TRV_VersionName = row["TRV_VersionName"].ToString(),
-                    PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
-                });
-            }
-            fcls = fcls.Distinct(new ListComparer<FlowCardLists>((x, y) => x.FC_Code.Equals(y.FC_Code))).ToList();
-            return fcls;
+            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CardState] ={0}", _fcState);
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -244,51 +218,23 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         /// <param name="_fcState"></param>
         /// <returns></returns>
-        public static List<FlowCardLists> FetchFC_InfoByState(params int[] _fcState)
+        public static List<FlowCardLists> FetchFC_InfoByState(SqlConnection _sqlCon = null, params int[] _fcState)
         {
             string stateList = "";
             foreach (int _state in _fcState)
             {
                 stateList += stateList.Length == 0 ? _state.ToString() : "," + _state.ToString();
             }
-            DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CardState] in ({0})", stateList);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
-
-            List<FlowCardLists> fcls = new List<FlowCardLists>();
-            foreach (DataRow row in ds.Tables["FlowCard"].Rows)
+            string SQl = "";
+            if (stateList.Length > 0)
             {
-                fcls.Add(new FlowCardLists()
-                {
-                    FC_Amount = Convert.ToInt32(row["FC_Amount"]),
-                    FC_CardState = Convert.ToInt32(row["FC_CardState"]),
-                    FC_CardType = Convert.ToInt32(row["FC_CardType"]),
-                    FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
-                    FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
-                    FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
-                    FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
-                    FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
-                    FC_CheckBy = row["FC_CheckBy"].ToString(),
-                    FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
-                    FC_Code = row["FC_Code"].ToString(),
-                    FC_CreateBy = row["FC_CreateBy"].ToString(),
-                    FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
-                    ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
-                    WC_Department_Name = row["WC_Department_Name"].ToString(),
-                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
-                    TRV_VersionName = row["TRV_VersionName"].ToString(),
-                    PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
-                });
+                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CardState] in ({0})", stateList);
             }
-            fcls = fcls.Distinct(new ListComparer<FlowCardLists>((x, y) => x.FC_Code.Equals(y.FC_Code))).ToList();
-            return fcls;
+            else
+            {
+                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID]");
+            }
+            return ExecuteSQlCommand(SQl, _sqlCon);
         }
 
         /// <summary>
@@ -300,57 +246,21 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardLists> FetchFC_InfoByDate(DateTime _startTime, DateTime _endTime, int _dateType)
         {
-            DataSet ds = new DataSet();
-            List<FlowCardSubLists> fcsls = new List<FlowCardSubLists>();
             string SQl = "";
             if (_dateType == 0)
             {
-                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CreateTime] >='{0}' and A.[FC_CreateTime] <='{1}' and A.[FC_CardState] not in (3)", _startTime.ToString("yyyy/MM/dd HH:MM:ss"), _endTime.ToString("yyyy/MM/dd HH:MM:ss"));
+                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CreateTime] >='{0}' and A.[FC_CreateTime] <='{1}' and A.[FC_CardState] not in (3)", _startTime.ToString("yyyy/MM/dd HH:mm:ss"), _endTime.ToString("yyyy/MM/dd HH:mm:ss"));
             }
             else if (_dateType == 1)
             {
-                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where A.[FC_CheckTime] >='{0}' and A.[FC_CheckTime] <='{1}' and A.[FC_CardState] not in (3)", _startTime.ToString("yyyy/MM/dd HH:MM:ss"), _endTime.ToString("yyyy/MM/dd HH:MM:ss"));
+                SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CheckTime] >='{0}' and A.[FC_CheckTime] <='{1}' and A.[FC_CardState] not in (3)", _startTime.ToString("yyyy/MM/dd HH:mm:ss"), _endTime.ToString("yyyy/MM/dd HH:mm:ss"));
             }
             else
             {
                 return null;
             }
 
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
-
-            List<FlowCardLists> fcls = new List<FlowCardLists>();
-            foreach (DataRow row in ds.Tables["FlowCard"].Rows)
-            {
-                fcls.Add(new FlowCardLists()
-                {
-                    FC_Amount = Convert.ToInt32(row["FC_Amount"]),
-                    FC_CardState = Convert.ToInt32(row["FC_CardState"]),
-                    FC_CardType = Convert.ToInt32(row["FC_CardType"]),
-                    FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
-                    FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
-                    FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
-                    FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
-                    FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
-                    FC_CheckBy = row["FC_CheckBy"].ToString(),
-                    FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
-                    FC_Code = row["FC_Code"].ToString(),
-                    FC_CreateBy = row["FC_CreateBy"].ToString(),
-                    FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
-                    ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
-                    WC_Department_Name = row["WC_Department_Name"].ToString(),
-                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
-                    TRV_VersionName = row["TRV_VersionName"].ToString(),
-                    PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
-                });
-            }
-            return fcls;
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -360,47 +270,9 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardLists> FetchFC_InfoByItemCode(string _itemCode)
         {
-            DataSet ds = new DataSet();
-            List<FlowCardLists> fcls = new List<FlowCardLists>();
+            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where B.[PO_ItemCode] ='{0}' and A.[FC_CardState] not in (3)", _itemCode);
 
-            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where B.[PO_ItemCode] ='{0}' and A.[FC_CardState] not in (3)", _itemCode);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
-
-            foreach (DataRow row in ds.Tables["FlowCard"].Rows)
-            {
-                fcls.Add(new FlowCardLists()
-                {
-                    FC_Amount = Convert.ToInt32(row["FC_Amount"]),
-                    FC_CardState = Convert.ToInt32(row["FC_CardState"]),
-                    FC_CardType = Convert.ToInt32(row["FC_CardType"]),
-                    FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
-                    FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
-                    FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
-                    FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
-                    FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
-                    FC_CheckBy = row["FC_CheckBy"].ToString(),
-                    FC_CheckTime = Convert.ToDateTime(row["FC_CheckTime"]),
-                    FC_Code = row["FC_Code"].ToString(),
-                    FC_CreateBy = row["FC_CreateBy"].ToString(),
-                    FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
-                    ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
-                    WC_Department_Name = row["WC_Department_Name"].ToString(),
-                    TRV_VersionCode = row["TRV_VersionCode"].ToString(),
-                    TRV_VersionName = row["TRV_VersionName"].ToString(),
-                    PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
-                });
-            }
-
-            fcls = fcls.Distinct(new ListComparer<FlowCardLists>((x, y) => x.FC_Code.Equals(y.FC_Code))).ToList();
-
-            return fcls;
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -410,12 +282,274 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<FlowCardLists> FetchFC_InfoByOrderCode(string _orderCode)
         {
-            DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] where B.[PO_Code] ='{0}' and A.[FC_CardState] not in (3)", _orderCode);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "FlowCard");
-            MyDBController.CloseConnection();
 
+            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where B.[PO_Code] ='{0}' and A.[FC_CardState] not in (3)", _orderCode);
+            return ExecuteSQlCommand(SQl);
+        }
+
+
+        /// <summary>
+        /// 获取系统中可以 供返工的流转卡信息
+        /// </summary>
+        /// <param name="_year"></param>
+        /// <param name="_month"></param>
+        /// <returns></returns>
+        public static List<FlowCardLists> FetchReproduceFCInfo(string _year, string _month)
+        {
+            string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where  A.[FC_CardState]=5 and A.[FC_CanReproduce]='true' and YEAR(A.[FC_CheckTime])={0} and Month(A.[FC_CheckTime])={1}", _year, _month);
+            return ExecuteSQlCommand(SQl);
+        }
+        /// <summary>
+        /// 检查当前流转卡的 是否可转序/是否可分批/是否可返工等状态
+        /// </summary>
+        /// <param name="_fc"></param>
+        /// <returns></returns>
+        public static FlowCardLists CheckCardStates(FlowCardLists _fc, List<FlowCardSubLists> _fcslList = null)
+        {
+            MyDBController.GetConnection();
+            switch (_fc.FC_CardState)
+            {
+                case 0:
+                    _fc = CheckInitFCInfo(_fc, _fcslList);
+                    break;
+                case 3:
+                    _fc.FC_HasDistributed = true;
+                    _fc.FC_CanDistribute = false;
+                    _fc.FC_CardState = 5;
+                    break;
+                case 4:
+                    _fc.FC_HasTransfered = true;
+                    _fc.FC_CanTransfer = false;
+                    _fc.FC_CardState = 5;
+                    break;
+                case 1:
+                case 2:
+                case 5:
+                    break;
+                default:
+                    break;
+            }
+            _fc = CheckReportedFCInfo(_fc, _fcslList);
+            FlowCardLists.SaveInfo(_fc);
+            MyDBController.CloseConnection();
+            return _fc;
+        }
+
+        /// <summary>
+        /// 开工状态的流转卡
+        /// </summary>
+        /// <param name="_fc"></param>
+        /// <returns></returns>
+        private static FlowCardLists CheckInitFCInfo(FlowCardLists _fc, List<FlowCardSubLists> _fcslList = null)
+        {
+            _fc.FC_CanDistribute = true;
+            _fc.FC_CanReproduce = _fc.FC_CanTransfer = _fc.FC_HasDistributed = _fc.FC_HasReproduced = _fc.FC_HasTransfered = false;
+            return _fc;
+        }
+
+        /// <summary>
+        /// 已经报工的流转卡
+        /// </summary>
+        /// <param name="_fc"></param>
+        /// <returns></returns>
+        private static FlowCardLists CheckReportedFCInfo(FlowCardLists _fc, List<FlowCardSubLists> _fcslList = null)
+        {
+            if (_fcslList != null)
+            {
+            }
+            else
+            {
+                _fcslList = FlowCardSubLists.FetchFCS_InfoByFC(_fc);
+            }
+            List<FlowCardQualityLists> _fcqlList = FlowCardQualityLists.FetchFCQByFlowCardInfo(_fc);
+            if (_fcslList.Exists(p => p.FCS_UnprocessedAm > 0))
+            {
+                _fc.FC_CanTransfer = true;
+            }
+            if (_fcqlList.Exists(p => p.QI_Type == 2))
+            {
+                _fc.FC_CanReproduce = true;
+            }
+            if (_fc.FC_CheckTime.Year != 2015)
+            {
+                _fc.FC_CheckTime = _fc.FC_CreateTime;
+                _fc.FC_CheckBy = "";
+            }
+            _fc.FC_CanDistribute = false;
+            _fc.FC_HasDistributed = false;
+            return _fc;
+        }
+
+        /// <summary>
+        /// 由于返工模块加入，引起逻辑变化，对系统中所有的流转卡信息进行检查
+        /// </summary>
+        public static void CheckAllFCInfo()
+        {
+            MyDBController.GetConnection();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            FlowCardLists.FetchFC_InfoByState().ForEach(p => { CheckCardStates(p); });
+            sw.Stop();
+            MyDBController.CloseConnection();
+            MessageBox.Show("OK\r\n" + sw.Elapsed);
+        }
+
+        /// <summary>
+        /// 清除由于报工模块bug产生的错误数据
+        /// </summary>
+        public static void CheckAllFCSInfo()
+        {
+            string SQl = string.Format("select * from FlowCardSub where  FCS_ItemID=0");
+            DataSet ds = new DataSet();
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
+            List<FlowCardSubLists> fcslList = MyDBController.DataTableToList<FlowCardSubLists>(ds.Tables["FlowCardSub"]);
+            string _fcID = "";
+            if (fcslList.Count > 0)
+            {
+                foreach (var item in fcslList)
+                {
+                    if (_fcID.IndexOf(item.FCS_FlowCardID.ToString()) != -1)
+                    {
+                    }
+                    else
+                        _fcID += string.IsNullOrEmpty(_fcID) ? item.FCS_FlowCardID.ToString() : "," + item.FCS_FlowCardID.ToString();
+                }
+                SQl = string.Format("select * from FlowCard where ID in ({0})", _fcID);
+                MyDBController.GetDataSet(SQl, ds, "FlowCard");
+                List<FlowCardLists> _fcList = MyDBController.DataTableToList<FlowCardLists>(ds.Tables["FlowCard"]);
+                foreach (FlowCardSubLists item in fcslList)
+                {
+                    item.FCS_ItemId = _fcList.Find(p => p.ID.Equals(item.FCS_FlowCardID)).FC_ItemID;
+                    if (item.FCS_ReportTime.Year > 9999 || item.FCS_ReportTime.Year < 1723)
+                    {
+                        item.FCS_ReportTime = DateTime.Now;
+                    }
+                }
+                ds.Tables["FlowCardSub"].Clear();
+                MyDBController.InsertSqlBulk<FlowCardSubLists>(fcslList, ds.Tables["FlowCardSub"]);
+                MessageBox.Show("OK");
+            }
+            MyDBController.CloseConnection();
+        }
+
+        /// <summary>
+        /// 修正因为计算返工产生的错误审核时间信息
+        /// </summary>
+        public static void ModifyCheckTime()
+        {
+            string _conString = "server=.;database=fajianBarCodeSystem;uid=sa;pwd=Aa1";
+            SqlConnection _sqlCon = new SqlConnection() { ConnectionString = _conString };
+            List<FlowCardLists> _localList = FetchFC_InfoByState(_sqlCon);
+            List<FlowCardLists> _serverList = FetchFC_InfoByState();
+            bool flag = false;
+            _serverList.ForEach(p =>
+            {
+                if (_localList.Exists(item => item.FC_Code.Equals(p.FC_Code) && p.FC_CardState == 5 && item.FC_CheckTime.Year == 2015))
+                {
+                    p.FC_CheckTime = _localList.Find(item => item.FC_Code.Equals(p.FC_Code)).FC_CheckTime;
+                    flag = true;
+                }
+            });
+            FlowCardLists.SaveInfo(_serverList);
+            MessageBox.Show("OK" + flag);
+        }
+        /// <summary>
+        /// 检查是否能够返工
+        /// </summary>
+        /// <param name="_fc"></param>
+        /// <returns></returns>
+        public static bool CheckWhetherCanReproduce(FlowCardLists _fc, bool _needConnection = true)
+        {
+            if (_needConnection)
+            {
+                MyDBController.GetConnection();
+            }
+            string SQl = string.Format("select count(*) from [FlowCardQuality] A left join [FlowCardSub] B on A.[FCQ_FlowCardSubID]=B.[ID] left join [FlowCard] C on B.[FCS_FlowCardID]=C.[ID] left join [QualityIssue] D on A.[FCQ_QulityIssueID]= D.[ID] where C.[FC_Code]='{0}' and A.[FCQ_HasReproduced]='false' and D.[QI_Type]=2", _fc.FC_Code);
+            int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+            if (_needConnection)
+            {
+                MyDBController.CloseConnection();
+            }
+            return count > 0;
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_fc"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(FlowCardLists _fc, bool _needConnection = true)
+        {
+            return SaveInfo(new List<FlowCardLists>() { _fc }, _needConnection);
+        }
+
+        /// <summary>
+        /// 用指定的连接
+        /// </summary>
+        /// <param name="_sqlCon"></param>
+        /// <param name="_fcList"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(SqlConnection _sqlCon, FlowCardLists _fc)
+        {
+            return SaveInfo(_sqlCon, new List<FlowCardLists>() { _fc });
+        }
+
+        /// <summary>
+        /// 用指定的连接
+        /// </summary>
+        /// <param name="_sqlCon"></param>
+        /// <param name="_fcList"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(SqlConnection _sqlCon, List<FlowCardLists> _fcList)
+        {
+            string SQl = string.Format("select top 0 * from [FlowCard]");
+            DataSet ds = new DataSet();
+            MyDBController.GetDataSet(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, SQl, ds, "FlowCard");
+            bool flag = MyDBController.InsertSqlBulk<FlowCardLists>(new SqlConnection() { ConnectionString = _sqlCon.ConnectionString }, _fcList, ds.Tables["FlowCard"]);
+            GC.Collect();
+            return flag;
+        }
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_fcList">是否需要在函数里面打开连接上</param>
+        /// <returns></returns>
+        public static bool SaveInfo(List<FlowCardLists> _fcList, bool _needConnection = true)
+        {
+            string SQl = string.Format("select top 0 * from [FlowCard]");
+            DataSet ds = new DataSet();
+            if (_needConnection)
+            {
+                MyDBController.GetConnection();
+            }
+            MyDBController.GetDataSet(SQl, ds, "FlowCard");
+            bool flag = MyDBController.InsertSqlBulk<FlowCardLists>(_fcList, ds.Tables["FlowCard"]);
+            if (_needConnection)
+            {
+                MyDBController.CloseConnection();
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<FlowCardLists> ExecuteSQlCommand(string _command, SqlConnection _sqlCon = null)
+        {
+            DataSet ds = new DataSet();
+            if (_sqlCon == null)
+            {
+                MyDBController.GetConnection();
+                MyDBController.GetDataSet(_command, ds, "FlowCard");
+                MyDBController.CloseConnection();
+            }
+            else
+            {
+                MyDBController.GetDataSet(_sqlCon, _command, ds, "FlowCard");
+            }
             List<FlowCardLists> fcls = new List<FlowCardLists>();
             foreach (DataRow row in ds.Tables["FlowCard"].Rows)
             {
@@ -426,7 +560,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
                     FC_CardType = Convert.ToInt32(row["FC_CardType"]),
                     FC_ItemID = Convert.ToInt64(row["FC_ItemID"]),
                     FC_FlowNum = Convert.ToInt32(row["FC_FlowNum"]),
-                    FC_DistriSourceCard = Convert.ToInt64(row["FC_DistriSourceCard"]),
+                    FC_DistriSourceCard = row["FC_DistriSourceCard"] is DBNull ? -1 : Convert.ToInt64(row["FC_DistriSourceCard"]),
                     FC_ItemTechVersionID = Convert.ToInt64(row["FC_ItemTechVersionID"]),
                     FC_SourceOrderID = Convert.ToInt64(row["FC_SourceOrderID"]),
                     FC_WorkCenter = Convert.ToInt64(row["FC_WorkCenter"]),
@@ -436,14 +570,24 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
                     FC_CreateBy = row["FC_CreateBy"].ToString(),
                     FC_CreateTime = Convert.ToDateTime(row["FC_CreateTime"]),
                     ID = Convert.ToInt64(row["ID"]),
-                    PO_ItemCode = row["PO_ItemCode"].ToString(),
-                    PO_ItemName = row["PO_ItemName"].ToString(),
-                    PO_ItemSpec = row["PO_ItemSpec"].ToString(),
+                    PO_ItemCode = row["II_Code"].ToString(),
+                    PO_ItemName = row["II_Name"].ToString(),
+                    PO_ItemSpec = row["II_Spec"].ToString(),
+                    PO_ItemVersion = row["II_Version"].ToString(),
                     WC_Department_Name = row["WC_Department_Name"].ToString(),
                     TRV_VersionCode = row["TRV_VersionCode"].ToString(),
                     TRV_VersionName = row["TRV_VersionName"].ToString(),
                     PO_Code = row["PO_Code"].ToString(),
-                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"])
+                    FC_BCSOrderID = row["FC_BCSOrderID"] is DBNull ? -1 : Convert.ToInt64(row["FC_BCSOrderID"]),
+                    FC_FirstProcessNum = row["FC_FirstProcessNum"] is DBNull ? -1 : Convert.ToInt32(row["FC_FirstProcessNum"]),
+                    FC_CanDistribute = row["FC_CanDistribute"] is DBNull ? false : Convert.ToBoolean(row["FC_CanDistribute"]),
+                    FC_HasDistributed = row["FC_HasDistributed"] is DBNull ? false : Convert.ToBoolean(row["FC_HasDistributed"]),
+                    FC_CanTransfer = row["FC_CanTransfer"] is DBNull ? false : Convert.ToBoolean(row["FC_CanTransfer"]),
+                    FC_HasTransfered = row["FC_HasTransfered"] is DBNull ? false : Convert.ToBoolean(row["FC_HasTransfered"]),
+                    FC_CanReproduce = row["FC_CanReproduce"] is DBNull ? false : Convert.ToBoolean(row["FC_CanReproduce"]),
+                    FC_HasReproduced = row["FC_HasReproduced"] is DBNull ? false : Convert.ToBoolean(row["FC_CanDistribute"]),
+                    FC_Remark = row["FC_Remark"] is DBNull ? "" : row["FC_Remark"].ToString(),
+                    FC_IsSalaryCalculating = row["FC_IsSalaryCalculating"] is DBNull ? true : Convert.ToBoolean(row["FC_IsSalaryCalculating"])
                 });
             }
             fcls = fcls.Distinct(new ListComparer<FlowCardLists>((x, y) => x.FC_Code.Equals(y.FC_Code))).ToList();
@@ -490,7 +634,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             {
                 SQl = string.Format("update [flowcard] set [FC_Amount]={0} where [ID]={1} \r\n", _newFC.FC_Amount, _newFC.ID);
                 SQl += string.Format("update [produceorder] set [PO_StartAmount]=[PO_StartAmount]+{0} where [PO_ID]={2} \r\n", diff, _newFC.FC_BCSOrderID, _newFC.FC_SourceOrderID);
-                SQl += string.Format("update [FlowCardSub] set [FCS_BeginAmount]=[FCS_BeginAmount]+{0} where [FCS_FlowCradID]={1}", diff, _newFC.ID);
+                SQl += string.Format("update [FlowCardSub] set [FCS_BeginAmount]=[FCS_BeginAmount]+{0} where [FCS_FlowCardID]={1}", diff, _newFC.ID);
                 int count = MyDBController.ExecuteNonQuery(SQl);
                 if (count > 0)
                 {

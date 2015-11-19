@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
+        xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
         ResizeMode="NoResize"
-        Title="质量问题信息中心" Height="800" Width="600" Loaded="Window_Loaded">
+        Title="质量问题信息中心" Height="800" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >
@@ -12,6 +13,7 @@
                 <CheckBox  IsChecked="{Binding Path=IsSelected}" Cursor="Hand"/>
             </StackPanel>
         </DataTemplate>
+        <local:QualityIssueTypeConverter x:Key="QITypeConverter"></local:QualityIssueTypeConverter>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -27,10 +29,8 @@
                     <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}" Width="30"></GridViewColumn>
                     <GridViewColumn Header="质量问题编码" DisplayMemberBinding="{Binding Path=QI_Code}" Width="Auto"></GridViewColumn>
                     <GridViewColumn Header="质量问题原因" DisplayMemberBinding="{Binding Path=QI_Name}" Width="Auto"></GridViewColumn>
+                    <GridViewColumn Header="质量问题类型" DisplayMemberBinding="{Binding Path=QI_Type,Converter={StaticResource QITypeConverter}}" Width="Auto"></GridViewColumn>
                     <GridViewColumn Header="质量问题条码" DisplayMemberBinding="{Binding Path=QI_BarCode}" Width="Auto"></GridViewColumn>
-                    <!--<GridViewColumn Header="是否材料问题" DisplayMemberBinding="{Binding Path=QI_IsItemIssue_Show}" Width="80"></GridViewColumn>-->
-                    <!--<GridViewColumn Header="是否加工问题" DisplayMemberBinding="{Binding Path=QI_IsProduceIssue_Show}" Width="80"></GridViewColumn>-->
-                    <!--<GridViewColumn Header="是否上道工序问题" DisplayMemberBinding="{Binding Path=QI_IsPreviousIssue_Show}" Width="100"></GridViewColumn>-->
                 </GridView>
             </ListView.View>
         </ListView>
@@ -38,25 +38,26 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Name="btn_Add" Click="btn_Add_Click" Height="30" Grid.Column="0" HorizontalAlignment="Center" Content="  新增  "></Button>
-            <Button Name="btn_Delete" Click="btn_Delete_Click" Height="30" HorizontalAlignment="Center" Content="   删除  " Grid.Column="1"></Button>
-            <Button Name="btn_Print" Click="btn_Print_Click" Height="30" Content="  打印  " HorizontalAlignment="Center" Grid.Column="2"></Button>
-            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30"  Grid.Column="1" HorizontalAlignment="Center" Visibility="Hidden" Content="  删除  " ></Button>
-            <Button Name="btn_Import" Click="btn_Import_Click" Visibility="Hidden" Height="30" HorizontalAlignment="Center"  Grid.Column="2"  Content="Excel导入信息" ></Button>
-            <Button Name="btn_SelectAll" Click="btn_SelectAll_Click" Height="30"  Grid.Column="3"  Width="40" Content="全选"></Button>
-            <Button Name="btn_ReSelect" Click="btn_ReSelect_Click" Height="30"  Grid.Column="4"  Width="40" Content="重选"></Button>
-            <StackPanel  Grid.Column="5" Orientation="Horizontal">
+            <Button Name="btn_Delete" Click="btn_Delete_Click" Height="30" HorizontalAlignment="Center" Content="   删除  " Grid.Column="2"></Button>
+            <Button Name="btn_Print" Click="btn_Print_Click" Height="30" Content="  打印  " HorizontalAlignment="Center" Grid.Column="3"></Button>
+            <Button Name="btn_Modify" Click="btn_Modify_Click" Height="30"  Grid.Column="1" HorizontalAlignment="Center" Visibility="Visible" Content="  修改  " ></Button>
+            <Button Name="btn_Import" Click="btn_Import_Click" Visibility="Hidden" Height="30" HorizontalAlignment="Center"  Grid.Column="3"  Content="Excel导入信息" ></Button>
+            <Button Name="btn_SelectAll" Click="btn_SelectAll_Click" Height="30"  Grid.Column="4"  Width="40" Content="全选"></Button>
+            <Button Name="btn_ReSelect" Click="btn_ReSelect_Click" Height="30"  Grid.Column="5"  Width="40" Content="重选"></Button>
+            <StackPanel  Grid.Column="6" Orientation="Horizontal">
                 <TextBox Name="txtb_SearchKey" TextChanged="txtb_SearchKey_TextChanged" Height="30" Margin="10" Width="80" FontSize="14"></TextBox>
                 <Button Name="btn_Search" Click="btn_Search_Click" Height="30"   Content="搜索"></Button>
             </StackPanel>
 
-            <Button Name="btn_Close"  Grid.Column="6" Click="btn_Close_Click" Height="30" HorizontalAlignment="Center" Content="  关闭  "></Button>
+            <Button Name="btn_Close"  Grid.Column="7" Click="btn_Close_Click" Height="30" HorizontalAlignment="Center" Content="  关闭  "></Button>
         </Grid>
     </Grid>
 </Window>

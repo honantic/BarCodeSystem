@@ -116,13 +116,17 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         /// <param name="_QMSCode"></param>
         private void DeleteQMSInfo(string _QMSCode)
         {
-            string SQl = string.Format(@"Delete from [QualityMonthlySalary] where [QMS_Code]='{0}'", _QMSCode);
-            MyDBController.GetConnection();
-            MyDBController.ExecuteNonQuery(SQl);
-            MyDBController.CloseConnection();
-            datagrid_QMSInfo.ItemsSource = null;
-            localList.Clear();
-            Xceed.Wpf.Toolkit.MessageBox.Show("删除成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除" + _QMSCode + "单据吗？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (mbr == MessageBoxResult.Yes)
+            {
+                string SQl = string.Format(@"Delete from [QualityMonthlySalary] where [QMS_Code]='{0}'", _QMSCode);
+                MyDBController.GetConnection();
+                MyDBController.ExecuteNonQuery(SQl);
+                MyDBController.CloseConnection();
+                datagrid_QMSInfo.ItemsSource = null;
+                localList.Clear();
+                Xceed.Wpf.Toolkit.MessageBox.Show("删除成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         /// <summary>
@@ -163,14 +167,32 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (datagrid_QMSInfo.HasItems)
             {
                 bool flag = CheckForPersonCode(localList);
                 if (flag)
                 {
-                    SaveInfoToDB(localList);
+                    flag = SaveInfoToDB(localList);
+                    if (flag)
+                    {
+                        Xceed.Wpf.Toolkit.MessageBox.Show("保存成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        ClearInfo();
+                    }
                 }
             }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 清除信息
+        /// </summary>
+        private void ClearInfo()
+        {
+            localList.Clear();
+            datagrid_QMSInfo.Items.Refresh();
+            txtb_CreateBy.Text = txtb_QMSCode.Text =
+            txtb_EffectiveTime.Text = "";
         }
 
         /// <summary>
@@ -181,29 +203,38 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         private bool CheckForPersonCode(List<QualityMonthlySalaryList> _qmsList)
         {
             bool flag = true;
-            string codeList = "";
-            string existPersonCode = "";
-            DataSet ds = new DataSet();
-            foreach (QualityMonthlySalaryList item in _qmsList)
+            int count = _qmsList.Select(p => p.QMS_PersonCode).Distinct().Count();
+            if (count != _qmsList.Count)
             {
-                codeList += string.IsNullOrEmpty(codeList) ? item.QMS_PersonCode : "," + item.QMS_PersonCode;
-            }
-            string SQl = string.Format(@"select [QMS_PersonCode] from [QualityMonthlySalary] where MONTH([QMS_EffectiveTime])='{0}' and [QMS_PersonCode] in ('{1}')", DateTime.Now.Month, codeList);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "QMS_PersonCode");
-            MyDBController.CloseConnection();
-            if (ds.Tables["QMS_PersonCode"].Rows.Count == 0)
-            {
-
+                flag = false;
+                Xceed.Wpf.Toolkit.MessageBox.Show("当前信息中存在重复人员信息：\r\n请检查！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-                flag = false;
-                foreach (DataRow row in ds.Tables["QMS_PersonCode"].Rows)
+                string codeList = "";
+                string existPersonCode = "";
+                DataSet ds = new DataSet();
+                foreach (QualityMonthlySalaryList item in _qmsList)
                 {
-                    existPersonCode += string.IsNullOrEmpty(existPersonCode) ? row["QMS_PersonCode"].ToString() : "," + row["QMS_PersonCode"].ToString();
+                    codeList += string.IsNullOrEmpty(codeList) ? "'" + item.QMS_PersonCode + "'" : "," + "'" + item.QMS_PersonCode + "'";
                 }
-                Xceed.Wpf.Toolkit.MessageBox.Show("当前月份如下人员已经存在质量奖赔信息：\r\n" + existPersonCode + "\r\n请不要重复导入！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                string SQl = string.Format(@"select [QMS_PersonCode] from [QualityMonthlySalary] where MONTH([QMS_EffectiveTime])='{0}' and [QMS_PersonCode] in ({1})", DateTime.Now.Month, codeList);
+                MyDBController.GetConnection();
+                MyDBController.GetDataSet(SQl, ds, "QMS_PersonCode");
+                MyDBController.CloseConnection();
+                if (ds.Tables["QMS_PersonCode"].Rows.Count == 0)
+                {
+
+                }
+                else
+                {
+                    flag = false;
+                    foreach (DataRow row in ds.Tables["QMS_PersonCode"].Rows)
+                    {
+                        existPersonCode += string.IsNullOrEmpty(existPersonCode) ? row["QMS_PersonCode"].ToString() : "," + row["QMS_PersonCode"].ToString();
+                    }
+                    Xceed.Wpf.Toolkit.MessageBox.Show("当前月份如下人员已经存在质量奖赔信息：\r\n" + existPersonCode + "\r\n请不要重复导入！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             return flag;
         }
@@ -212,7 +243,7 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         /// 当前信息保存 到数据库
         /// </summary>
         /// <param name="_qmsList"></param>
-        private void SaveInfoToDB(List<QualityMonthlySalaryList> _qmsList)
+        private bool SaveInfoToDB(List<QualityMonthlySalaryList> _qmsList)
         {
             string SQl = string.Format(@"select top 0 * from QualityMonthlySalary");
             DataSet ds = new DataSet();
@@ -220,6 +251,8 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
             MyDBController.GetDataSet(SQl, ds, "QualityMonthlySalary");
             int updateNum, insertNum;
             MyDBController.AutoUpdateInsert<QualityMonthlySalaryList>(ds.Tables["QualityMonthlySalary"], _qmsList, out updateNum, out insertNum);
+            MyDBController.CloseConnection();
+            return _qmsList.Count == updateNum + insertNum;
         }
 
         /// <summary>
@@ -230,8 +263,7 @@ namespace BarCodeSystem.SalaryManage.QualityMonthlySalary
         private void btn_Export_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            QkRowChangeToColClass qk = new QkRowChangeToColClass();
-            qk.OutToExcel(templateDT);
+            QkRowChangeToColClass.CreateExcelFileForDataTable(templateDT);
             this.Cursor = Cursors.Arrow;
         }
 

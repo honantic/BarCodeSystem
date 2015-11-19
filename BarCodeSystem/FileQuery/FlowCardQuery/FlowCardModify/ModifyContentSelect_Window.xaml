@@ -7,7 +7,7 @@
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="选择流转卡修改内容" Height="200" Width="400">
+        Title="选择流转卡修改内容" Height="200" Width="400" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Grid>
         <Border BorderBrush="LightBlue" Grid.RowSpan="4" Grid.ColumnSpan="2" BorderThickness="10"></Border>
         <Grid Name="grid_ContentSelectGrid">

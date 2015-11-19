@@ -295,11 +295,7 @@ namespace BarCodeSystem
         {
             if (copiedData.Rows.Count > 0)
             {
-                bool flag = QkRowChangeToColClass.CreateExcelFileForDataTable(copiedData);
-                if (flag)
-                {
-                    MessageBox.Show("共导出" + copiedData.Rows.Count + "条数据到Excel", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                QkRowChangeToColClass.CreateExcelFileForDataTable(copiedData);
             }
             else
             {

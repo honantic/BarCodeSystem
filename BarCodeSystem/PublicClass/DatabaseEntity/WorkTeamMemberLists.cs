@@ -66,33 +66,12 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<List<WorkTeamMemberLists>> FetchWorkTeamMemberInfo(Int64 _workcenterID)
         {
-            DataSet ds = new DataSet();
             List<List<WorkTeamMemberLists>> teamMemberList = new List<List<WorkTeamMemberLists>>();
-            string SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _workcenterID);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
-            MyDBController.CloseConnection();
-
+            string SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0} and  (A.[WT_IsShown] !='false' or A.[WT_IsShown] is null)", _workcenterID);
             List<WorkTeamMemberLists> wtmList = new List<WorkTeamMemberLists>();
             try
             {
-                foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
-                {
-                    wtmList.Add(new WorkTeamMemberLists()
-                    {
-                        ID = Convert.ToInt64(row["ID"]),
-                        WTM_IsShown = row["WT_IsShown"] is DBNull ? true : Convert.ToBoolean(row["WT_IsShown"]),
-                        WTM_WorkTeamID = Convert.ToInt64(row["WTM_WorkTeamID"]),
-                        WTM_WorkTeamCode = row["WT_Code"].ToString(),
-                        WTM_WorkTeamName = row["WT_Name"].ToString(),
-                        WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
-                        WTM_MemberPersonName = row["P_Name"].ToString(),
-                        WTM_MemberPersonCode = row["P_Code"].ToString(),
-                        WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
-                        WTM_WorkCenterName = row["WC_Department_Name"].ToString()
-                    });
-                }
-
+                wtmList = ExecuteSQlCommand(SQl);
                 List<Int64> wtID = wtmList.Distinct(new ListComparer<WorkTeamMemberLists>((p1, p2) => { return p1.WTM_WorkTeamID.Equals(p2.WTM_WorkTeamID); })).Select(p => p.WTM_WorkTeamID).ToList();
                 wtID.ForEach((p) => { teamMemberList.Add(new List<WorkTeamMemberLists>()); });
                 wtmList.ForEach(
@@ -114,31 +93,19 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         /// <param name="_workcenterID"></param>
         /// <returns></returns>
-        public static List<WorkTeamMemberLists> FetchWorkTeamInfo(Int64 _workcenterID)
+        public static List<WorkTeamMemberLists> FetchWorkTeamInfo(Int64 _workcenterID, bool _isAll = false, bool _isWC = true)
         {
-            DataSet ds = new DataSet();
-            List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
-            string SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _workcenterID);
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
-            MyDBController.CloseConnection();
-            foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
+            string SQl = "";
+            if (_isAll)
             {
-                teamMemberList.Add(new WorkTeamMemberLists()
-                {
-                    ID = Convert.ToInt64(row["ID"]),
-                    WTM_IsShown = row["WT_IsShown"] is DBNull ? true : Convert.ToBoolean(row["WT_IsShown"]),
-                    WTM_WorkTeamID = Convert.ToInt64(row["WTM_WorkTeamID"]),
-                    WTM_WorkTeamCode = row["WT_Code"].ToString(),
-                    WTM_WorkTeamName = row["WT_Name"].ToString(),
-                    WTM_MemberPersonID = Convert.ToInt64(row["WTM_MemberPersonID"]),
-                    WTM_MemberPersonName = row["P_Name"].ToString(),
-                    WTM_MemberPersonCode = row["P_Code"].ToString(),
-                    WTM_WorkCenterID = Convert.ToInt64(row["WC_Department_ID"]),
-                    WTM_WorkCenterName = row["WC_Department_Name"].ToString()
-                });
+                SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0}", _workcenterID);
             }
-            return teamMemberList;
+            else
+            {
+                SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[WT_WorkCenterID]={0} and (A.[WT_IsShown] !='false' or A.[WT_IsShown] is null)", _workcenterID);
+            }
+
+            return ExecuteSQlCommand(SQl);
         }
 
 
@@ -149,11 +116,22 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// <returns></returns>
         public static List<WorkTeamMemberLists> FetchWorkTeamInfo(Int64 _workteamid, bool _isTeam = true)
         {
+            string SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[ID]={0} and (A.[WT_IsShown] !='false' or A.[WT_IsShown] is null)", _workteamid);
+            return ExecuteSQlCommand(SQl);
+        }
+
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<WorkTeamMemberLists> ExecuteSQlCommand(string _command)
+        {
             DataSet ds = new DataSet();
             List<WorkTeamMemberLists> teamMemberList = new List<WorkTeamMemberLists>();
-            string SQl = string.Format(@"Select B.[ID],B.[WTM_WorkTeamID],A.[WT_Code],A.[WT_Name],A.[WT_IsShown],B.[WTM_MemberPersonID],C.[P_Name],C.[P_Code],D.[WC_Department_Name],D.[WC_Department_ID] from [WorkTeam] A left join [WorkTeamMember] B on a.[ID]=b.[WTM_WorkTeamID] left join [Person] C on b.[WTM_MemberPersonID]=c.[ID] left join [WorkCenter] D on A.[WT_WorkCenterID]=D.[WC_Department_ID] where A.[ID]={0}", _workteamid);
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkTeamMember");
+            MyDBController.GetDataSet(_command, ds, "WorkTeamMember");
             MyDBController.CloseConnection();
             foreach (DataRow row in ds.Tables["WorkTeamMember"].Rows)
             {
@@ -173,7 +151,6 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             }
             return teamMemberList;
         }
-
 
         /// <summary>
         /// 保存信息

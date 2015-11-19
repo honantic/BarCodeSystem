@@ -4,7 +4,7 @@
         xmlns:namespc="clr-namespace:BarCodeSystem"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="人员导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
+        Title="人员导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:PersonLists x:Key="mySelector"/>
     </Window.Resources>

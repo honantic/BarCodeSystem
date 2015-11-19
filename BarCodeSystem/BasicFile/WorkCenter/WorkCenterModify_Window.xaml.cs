@@ -109,7 +109,7 @@ namespace BarCodeSystem
                                 [WC_IsOrderControled]='{1}',[WC_IsWorkCenter]='{2}',[WC_LastOperateTime]='{3}',
                                 [WC_LastOprateBy]='{4}',[WC_Department_ShortName] = '{5}',[WC_Department_Name] = '{6}' WHERE [WC_Department_ID]={7}", dept_info.isvalidated_DB,
                     dept_info.isordercontroled_DB, dept_info.isworkcenter_DB,
-                    DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss"), User_Info.User_Name, dept_info.department_shortname, dept_info.department_name, dept_info.department_id);
+                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), User_Info.User_Name, dept_info.department_shortname, dept_info.department_name, dept_info.department_id);
                 try
                 {
                     MyDBController.ExecuteNonQuery(SQl);

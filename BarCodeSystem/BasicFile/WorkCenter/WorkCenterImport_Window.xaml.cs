@@ -232,7 +232,7 @@ namespace BarCodeSystem
                                     WC_IsWorkCenter,WC_LastOperateTime,WC_LastOprateBy)
                                     values('{0}','{1}',{2},'{3}','{4}','{5}','{6}','{7}','{8}')", item.department_code,
                     item.department_name, "''", item.department_id, item.isvalidated,
-                    item.isordercontroled, item.isworkcenter, item.lastoperatetime_DB.ToString("yyyy/MM/dd HH:MM:ss"), item.lastoperateby);
+                    item.isordercontroled, item.isworkcenter, item.lastoperatetime_DB.ToString("yyyy/MM/dd HH:mm:ss"), item.lastoperateby);
                     try
                     {
                         MyDBController.ExecuteNonQuery(SQl);

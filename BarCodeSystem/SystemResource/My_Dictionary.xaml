@@ -364,6 +364,15 @@
         </Setter>
     </Style>
 
+    
+    <!--radiobutton样式-->
+    <Style TargetType="RadioButton" x:Key="rb_NormalStyle">
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="Blue"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
     
     

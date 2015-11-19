@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.ColumnSpan="3">
             <TextBlock FontSize="15" Foreground="White">流转卡查询页面</TextBlock>
@@ -94,24 +94,27 @@
 
                         <TextBlock VerticalAlignment="Center" Grid.Row="3" HorizontalAlignment="Right" Text="料品信息：" Margin="5"></TextBlock>
                         <TextBox Name="txtb_ItemInfo" Grid.Row="3" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        
+                        <TextBlock VerticalAlignment="Center" Grid.Row="4" HorizontalAlignment="Right" Text="料品型号：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_ItemVersion" Grid.Row="4" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="4" HorizontalAlignment="Right" Text="工艺版本：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_VersionCode" Grid.Row="4" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="5" HorizontalAlignment="Right" Text="工艺版本：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_VersionCode" Grid.Row="5" TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="5" HorizontalAlignment="Right" Text="派工数量：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_Amount" Grid.Row="5" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="6" HorizontalAlignment="Right" Text="派工数量：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_Amount" Grid.Row="6" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="6" HorizontalAlignment="Right" Text="生产车间：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_WorkCenter" Grid.Row="6" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="7" HorizontalAlignment="Right" Text="生产车间：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_WorkCenter" Grid.Row="7" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="7" HorizontalAlignment="Right" Text="单据状态：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_CardState" Grid.Row="7" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="8" HorizontalAlignment="Right" Text="单据状态：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CardState" Grid.Row="8" TextWrapping="Wrap"   Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="8" HorizontalAlignment="Right" Text="制单人：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_CreateBy" Grid.Row="8"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="9" HorizontalAlignment="Right" Text="制单人：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CreateBy" Grid.Row="9"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Row="9" HorizontalAlignment="Right" Text="制单日期：" Margin="5"></TextBlock>
-                        <TextBox Name="txtb_CreateOn" Grid.Row="9"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="10" HorizontalAlignment="Right" Text="制单日期：" Margin="5"></TextBlock>
+                        <TextBox Name="txtb_CreateOn" Grid.Row="10"  TextWrapping="Wrap"  Grid.Column="1" VerticalAlignment="Center" Background="LightGray" Margin="5" IsReadOnly="True"></TextBox>
 
                     </Grid>
                 </GroupBox>
@@ -194,7 +197,7 @@
                 </GroupBox>
             </Grid>
         </Grid>
-        <Grid Grid.Row="2" Margin="0,5,0,-5">
+        <Grid Grid.Row="2" VerticalAlignment="Top" Margin="5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>

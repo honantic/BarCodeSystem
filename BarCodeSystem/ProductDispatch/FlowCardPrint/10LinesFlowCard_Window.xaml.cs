@@ -102,6 +102,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
         List<TextBlock> scrapReasonList;
 
         /// <summary>
+        /// 报工时间的textblock列表
+        /// </summary>
+        List<TextBlock> reportdateList;
+
+        /// <summary>
         /// 边框列表
         /// </summary>
         List<Border> bdList = new List<Border>();
@@ -201,6 +206,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
                     {
                         processNameList[index].Text = trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p))[0].TR_ProcessName;
                         processCodeList[index].Text = trlList.FindAll(trl => trl.TR_ProcessSequence.Equals(p))[0].PN_CodeInWorkCenter;
+                        if (fcsList.Exists(item => item.FCS_ProcessSequanece.Equals(p) && item.FCS_IsReported))
+                        {
+                            reportdateList[index].Text = fcsList.Find(item => item.FCS_ProcessSequanece.Equals(p)).FCS_ReportTime.ToString("yyyy/MM/dd");
+                        }
                     }
                 }
                 startAmountList[0].Text = fcl.FC_Amount.ToString();
@@ -237,6 +246,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
             startAmountList = new List<TextBlock>();
             qualifiedAmountList = new List<TextBlock>();
             scrapReasonList = new List<TextBlock>();
+            reportdateList = new List<TextBlock>();
 
             for (int i = 0; i < lineCount; i++)
             {
@@ -274,6 +284,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
                 grid_CenterGrid.Children.Add(t7);
                 Grid.SetColumn(t7, 8); Grid.SetRow(t7, i + 1); Grid.SetColumnSpan(t7, 2);
                 scrapReasonList.Add(t7);
+
+                TextBlock t8 = new TextBlock() { Name = "txtb_ReportTime_" + string.Format("{0:00}", i + 1), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, FontSize = 10 };
+                grid_CenterGrid.Children.Add(t8);
+                Grid.SetColumn(t8, 0); Grid.SetRow(t8, i + 1); Grid.SetColumnSpan(t8, 2);
+                reportdateList.Add(t8);
             }
         }
 
@@ -425,6 +440,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
             this.Close();
         }
 
-      
+
     }
 }

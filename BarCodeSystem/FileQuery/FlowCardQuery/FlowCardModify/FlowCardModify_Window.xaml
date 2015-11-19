@@ -8,7 +8,7 @@
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="FlowCardModify_Window" Height="600" Width="600">
+        Title="报工数据修改窗口" Height="600" Width="600" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <local:TrueOrFalseConverter x:Key="boolConverter"></local:TrueOrFalseConverter>
     </Window.Resources>
@@ -22,14 +22,14 @@
         <DataGrid Name="datagrid_FlowCardSub"  Margin="20"  RowHeaderWidth="30" CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="行号" Binding="{Binding Path=FCS_ProcessSequanece}" IsReadOnly="True"></DataGridTextColumn>
-                <!--<DataGridTemplateColumn Header="工序名称"  Width="100" IsReadOnly="True" >
+                <DataGridTemplateColumn Header="工序名称"  Width="Auto" IsReadOnly="True" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=FCS_ProcessName}" TextWrapping="Wrap"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <DataGridTemplateColumn Header="操作工" Width="Auto" IsReadOnly="False">
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="操作工" Width="100" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=FCS_PersonName}" TextWrapping="Wrap"></TextBlock>

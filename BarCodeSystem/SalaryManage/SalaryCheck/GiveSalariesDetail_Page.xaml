@@ -6,56 +6,73 @@
       xmlns:extool="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-	Title="GiveSalariesDetail_Page" Loaded="Page_Loaded">
+	Title="工资发放核对表" Loaded="Page_Loaded">
 
     <Grid>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="30"></RowDefinition>
-            </Grid.RowDefinitions>
+            <Frame Name="frame_Detail" JournalOwnership="OwnsJournal" NavigationUIVisibility="Visible">
+                <Frame.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-            <Label >
-                <TextBlock Foreground="White">工资实际发放核对详细信息</TextBlock>
-                <Label.Background>
-                    <LinearGradientBrush>
-                        <LinearGradientBrush.GradientStops>
-                            <GradientStop Offset="1" Color="Chocolate"></GradientStop>
-                            <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
-                            <GradientStop Color="Crimson"></GradientStop>
-                        </LinearGradientBrush.GradientStops>
-                    </LinearGradientBrush>
-                </Label.Background>
-            </Label>
+                        <Label >
+                            <TextBlock Foreground="White">工资实际发放核对信息</TextBlock>
+                            <Label.Background>
+                                <LinearGradientBrush>
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStop Offset="1" Color="Chocolate"></GradientStop>
+                                        <GradientStop  Offset="0.5" Color="LightSalmon"></GradientStop>
+                                        <GradientStop Color="Crimson"></GradientStop>
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
 
-            <DataGrid ClipboardCopyMode="None"  x:Name="datagrid_GiveSalariesDetail" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto">
-                <DataGrid.Columns>
-                    <!--<DataGridTextColumn Header="流转卡编号" Binding="{Binding Path=FC_Code}"></DataGridTextColumn>-->
-                    <DataGridTextColumn Header="料号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="料名" Binding="{Binding Path=II_Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="型号" Binding="{Binding Path=II_Spec}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="工序" Binding="{Binding Path=FCS_ProcessName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="工序入库数量" Binding="{Binding Path= FCS_QulifiedAmount}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="成品出库数"></DataGridTextColumn>
-                    <DataGridTextColumn Header="单件工资(分)" Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="应发工资(元)" Binding="{Binding Path=TotalPayMount}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="单件工资(分)" Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="实发工资(元)" Binding="{Binding Path= FinalPayMount}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="数量"></DataGridTextColumn>
-                    <DataGridTextColumn Header="实发工资"></DataGridTextColumn>
-                    <DataGridTextColumn Header="调拨工时"></DataGridTextColumn>
-                    <DataGridTextColumn Header="质量奖赔"></DataGridTextColumn>
-                    <DataGridTextColumn Header="其它"></DataGridTextColumn>
-                    <DataGridTextColumn Header="合计实发工资"></DataGridTextColumn>
-                    <DataGridTextColumn Header="事业部核定工资与实际发放差额"></DataGridTextColumn>
-                    <DataGridTextColumn Header="公司额定工资与实际发放差额"></DataGridTextColumn>
+                        <DataGrid ClipboardCopyMode="None"  x:Name="datagrid_GiveSalariesDetail" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding}" Grid.Row="1" RowHeaderWidth="30" ColumnWidth="Auto" MouseLeftButtonDown="datagrid_GiveSalariesDetail_MouseLeftButtonDown">
+                            <DataGrid.Columns>
+                                <!--<DataGridTextColumn Header="流转卡编号" Binding="{Binding Path=FC_Code}"></DataGridTextColumn>-->
+                                <DataGridTextColumn Header="料号" Binding="{Binding Path=II_Code}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="料名" Binding="{Binding Path=II_Name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="型号" Binding="{Binding Path=II_Spec}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="工序" Binding="{Binding Path=FCS_ProcessName}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="工序入库数量" Binding="{Binding Path= FCS_QulifiedAmount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="成品出库数"></DataGridTextColumn>
+                                <DataGridTextColumn Header="单件工资(分)" Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="应发工资(元)" Binding="{Binding Path=TotalPayMount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="单件工资(分)" Binding="{Binding Path=WH_WorkHour}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="实发工资(元)" Binding="{Binding Path= FinalPayMount}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="数量"></DataGridTextColumn>
+                                <DataGridTextColumn Header="实发工资"></DataGridTextColumn>
+                                <DataGridTextColumn Header="调拨工时"></DataGridTextColumn>
+                                <DataGridTextColumn Header="质量奖赔"></DataGridTextColumn>
+                                <DataGridTextColumn Header="其它"></DataGridTextColumn>
+                                <DataGridTextColumn Header="合计实发工资"></DataGridTextColumn>
+                                <DataGridTextColumn Header="事业部核定工资与实际发放差额"></DataGridTextColumn>
+                                <DataGridTextColumn Header="公司额定工资与实际发放差额"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                </DataGrid.Columns>
-            </DataGrid>
-            <TextBlock Name="txb_Tip" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-            <Button Content="导出" MaxWidth="120" MinWidth="80"  Name="btn_export" Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Grid.Row="2" Click="btn_export_Click"></Button>
+                            <TextBlock Name="txb_Tip" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                            <Button Content="查看明细" MaxWidth="120" MinWidth="80" Name="btn_details" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_details_Click"></Button>
+                            <Button Content="导出" MaxWidth="120" MinWidth="80"  Name="btn_export" Grid.Column="2"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="80" Click="btn_export_Click"></Button>
+                        </Grid>
+                    </Grid>
+                </Frame.Content>
+            </Frame>
+            
+            
+                               
         </Grid>
     </Grid>
 </Page>

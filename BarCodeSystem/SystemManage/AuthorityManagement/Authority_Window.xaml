@@ -5,7 +5,7 @@
         xmlns:namespc="clr-namespace:BarCodeSystem"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        Title="权限管理中心" Height="800" Width="600" MouseMove="Window_MouseMove">
+        Title="权限管理中心" Height="800" Width="600" MouseMove="Window_MouseMove" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
     </Window.Resources>

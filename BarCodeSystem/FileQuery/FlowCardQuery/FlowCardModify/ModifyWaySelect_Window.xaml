@@ -7,7 +7,7 @@
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="ModifyWaySelect_Window" Height="400" Width="400">
+        Title="ModifyWaySelect_Window" Height="400" Width="400" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>

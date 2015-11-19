@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using BarCodeSystem.PublicClass.HelperClass;
+using System.Data;
 
 namespace BarCodeSystem
 {
@@ -21,6 +22,16 @@ namespace BarCodeSystem
     /// </summary>
     public partial class WarehouseModify_Window : Window
     {
+        /// <summary>
+        /// 当前选择工作中心ID,来自工作中心传值或数据库
+        /// </summary>
+        Int64 txtbwcid;
+
+        /// <summary>
+        /// 得到仓库所有信息
+        /// </summary>
+        List<WarehouseLists> whList;
+
         /// <summary>
         /// 当前仓库变量，来自父窗体传值
         /// </summary>
@@ -75,6 +86,7 @@ namespace BarCodeSystem
         {
             txtb_Code.Text = whl.W_Code;
             txtb_Name.Text = whl.W_Name;
+            txtb_workcenter.Text = whl.WC_Department_Name;
             if (whl.W_SourceType == 1)
             {
                 rbtn_FromBcs.IsChecked = true;
@@ -92,6 +104,17 @@ namespace BarCodeSystem
             {
                 rbtn_No.IsChecked = true;
             }
+
+            if (whl.W_IsDefault)
+            {
+                rbtn_isDefaultYes.IsChecked = true;
+            }
+            else
+            {
+                rbtn_isDefaultNo.IsChecked = true;
+            }
+            whList = WarehouseLists.Fetch_WInfo();
+            txtbwcid = whList.Find(p => p.W_Code.Equals(whl.W_Code)).W_WorkCenterID;
         }
 
 
@@ -102,10 +125,11 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            bool x=(bool)rbtn_Yes.IsChecked;
-            int count = 0;
-            string SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsValidated]='{0}'
-                                    WHERE [W_ID]={1}", x,whl.W_ID);
+            bool x = (bool)rbtn_Yes.IsChecked;
+            bool x2 = (bool)rbtn_isDefaultYes.IsChecked;
+            //int count = 0;
+            string SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsValidated]='{0}',[W_WorkCenterID] = '{1}',[W_IsDefault] = '{2}'
+                                    WHERE [W_ID]={3}", x, txtbwcid, x2, whl.W_ID);
             DBLog _dbLog = new DBLog();
             _dbLog.DBL_OperateBy = User_Info.User_Code + "|" + User_Info.User_Name;
             _dbLog.DBL_OperateTable = "Warehouse";
@@ -115,17 +139,33 @@ namespace BarCodeSystem
             _dbLog.DBL_Content = "启用仓库：" + whl.W_Code;
             try
             {
-                count = MyDBController.ExecuteNonQuery(SQl);
-                MessageBox.Show("修改成功","提示",MessageBoxButton.OK,MessageBoxImage.Information);
+                MyDBController.GetConnection();
+                MyDBController.ExecuteNonQuery(SQl);
+                //count = MyDBController.ExecuteNonQuery(SQl);
+
+                if (!string.IsNullOrEmpty(txtb_workcenter.Text.Trim()) && rbtn_isDefaultYes.IsChecked == true)
+                {
+                    if (whList.Exists(p => p.WC_Department_Name.Equals(txtb_workcenter.Text.Trim()) && p.W_IsDefault))
+                    {
+                        WarehouseLists _whl = new WarehouseLists();
+                        _whl = whList.Find(p => p.WC_Department_Name.Equals(txtb_workcenter.Text.Trim()) && p.W_IsDefault);
+                        SQl = string.Format(@"UPDATE [Warehouse] SET [W_IsDefault] = '{0}'
+                                    WHERE [W_ID]={1}", false, _whl.W_ID);
+                        MyDBController.ExecuteNonQuery(SQl);
+                    }
+                }
+                MessageBox.Show("修改成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 DBLog.WriteDBLog(_dbLog);
                 this.DialogResult = true;
+                MyDBController.CloseConnection();
             }
             catch (Exception ee)
-            {               
-                MessageBox.Show( ee.Message,"提示",MessageBoxButton.OK,MessageBoxImage.Error);
+            {
+                MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            
+
         }
+      
 
         /// <summary>
         /// 文本框双击全选
@@ -146,6 +186,22 @@ namespace BarCodeSystem
         private void btn_Close_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        /// <summary>
+        /// 关联工作中心
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtbk_workcenter_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            WorkTeamDepartList_Window wtdl = new WorkTeamDepartList_Window();
+            wtdl.ShowDialog();
+            if ((bool)wtdl.DialogResult)
+            {
+                this.txtbwcid = wtdl.choosedID;
+                txtb_workcenter.Text = wtdl.choosedName;
+            }
         }
     }
 }

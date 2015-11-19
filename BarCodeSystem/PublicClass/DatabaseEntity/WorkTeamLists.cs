@@ -59,7 +59,7 @@ namespace BarCodeSystem
         /// <summary>
         /// 是否展示
         /// </summary>
-        public bool IsShown { get; set; }
+        public bool WT_IsShown { get; set; }
 
         /// <summary>
         /// 检查当前编码是否在班组表中存在
@@ -256,7 +256,7 @@ namespace BarCodeSystem
                 wtl.ID = Convert.ToInt64(row["ID"]);
                 wtl.workcenterCode = row["WC_Department_Code"].ToString();
                 wtl.workcenterName = row["WC_Department_Name"].ToString();
-                wtl.IsShown = row["WT_IsShown"] is DBNull ? true : Convert.ToBoolean(row["WT_IsShown"]);
+                wtl.WT_IsShown = row["WT_IsShown"] is DBNull ? true : Convert.ToBoolean(row["WT_IsShown"]);
                 wtl.WT_Code = row["WT_Code"].ToString();
                 wtl.WT_Name = row["WT_Name"].ToString();
                 wtl.WT_WorkCenterID = Convert.ToInt64(row["WT_WorkCenterID"]);

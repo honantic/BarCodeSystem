@@ -83,7 +83,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             if (loadCount == 0)
             {
-                datagrid_WorkTeamInfo.ItemsSource = string.IsNullOrEmpty(departName) ? teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID) : teamMemberList = SaveWorkTeamInit();
+                datagrid_WorkTeamInfo.ItemsSource = string.IsNullOrEmpty(departName) ? teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID, false, true) : teamMemberList = SaveWorkTeamInit();
                 ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
                 view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
                 loadCount++;
@@ -326,6 +326,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             {
                 string key = txtb_TeamInfo.Text;
                 datagrid_WorkTeamInfo.ItemsSource = teamMemberList.FindAll(p => p.WTM_WorkTeamCode.IndexOf(key) != -1 || p.WTM_WorkTeamName.IndexOf(key) != -1);
+                ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
+                view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
                 datagrid_WorkTeamInfo.Items.Refresh();
             }
             else
@@ -354,9 +356,13 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID);
+            this.Cursor = Cursors.Wait;
+            teamMemberList = WorkTeamMemberLists.FetchWorkTeamInfo(departID, false, true);
             datagrid_WorkTeamInfo.ItemsSource = teamMemberList;
+            ICollectionView view = CollectionViewSource.GetDefaultView(datagrid_WorkTeamInfo.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("WTM_WorkTeamCode"));
             datagrid_WorkTeamInfo.Items.Refresh();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -366,6 +372,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// <param name="e"></param>
         private void btn_Submit_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             if (datagrid_WorkTeamInfo.SelectedIndex != -1)
             {
                 string code = ((WorkTeamMemberLists)datagrid_WorkTeamInfo.SelectedItem).WTM_WorkTeamCode;
@@ -374,12 +381,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 WorkTeamLists wtl = new WorkTeamLists() { WT_Code = code, WT_Name = name, ID = id };
                 List<WorkTeamMemberLists> wtmList = WorkTeamMemberLists.FetchWorkTeamInfo(wtl.ID, true);
                 swti.Invoke(wtl, wtmList);
-                //}
             }
             else
             {
                 MessageBox.Show("请选择一个班组！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>

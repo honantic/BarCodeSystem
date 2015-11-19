@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace BarCodeSystem.PublicClass.ValueConverters
 {
-    public class FinishReportStateConverter:IValueConverter
+    public class FinishReportStateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

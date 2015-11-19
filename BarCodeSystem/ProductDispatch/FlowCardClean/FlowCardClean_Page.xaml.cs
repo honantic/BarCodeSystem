@@ -142,7 +142,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardClean
             {
                 DataRow row = ds.Tables["FlowCardSub"].NewRow();
                 row["ID"] = row["IDNew"] = item.ID;
-                row["FCS_FlowCradID"] = item.FCS_FlowCradID;
+                row["FCS_FlowCardID"] = item.FCS_FlowCardID;
                 row["FCS_ItemId"] = item.FCS_ItemId;
                 row["FCS_TechRouteID"] = item.FCS_TechRouteID;
                 row["FCS_ProcessID"] = item.FCS_ProcessID;

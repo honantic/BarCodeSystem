@@ -91,7 +91,7 @@ namespace BarCodeSystem.FileQuery.InputOutput
                 "A.FCS_BeginAmount," +
                 "A.FCS_QulifiedAmount " +
                 " from FlowCardSub as A " +
-                " left join FlowCard as B on (A.FCS_FlowCradID = B.ID)" +
+                " left join FlowCard as B on (A.FCS_FlowCardID = B.ID)" +
                 " left join TechRoute as C on (A.FCS_TechRouteID = C.ID)" +
                 " left join ItemInfo as D on (C.TR_ItemID = D.ID)" +
                 " left join WorkCenter as E on (E.WC_Department_ID = C.TR_WorkCenterID)" +
@@ -182,8 +182,7 @@ namespace BarCodeSystem.FileQuery.InputOutput
                 dt.Columns["II_Spec"].ColumnName = "规格";
                 dt.Columns["FC_Amount"].ColumnName = "投入数";
                 dt.Columns["FCS_QulifiedAmount"].ColumnName = "产出数";
-                QkRowChangeToColClass qk = new QkRowChangeToColClass();
-                qk.OutToExcel(dt);
+                QkRowChangeToColClass.CreateExcelFileForDataTable(dt);
             }
         }
     }

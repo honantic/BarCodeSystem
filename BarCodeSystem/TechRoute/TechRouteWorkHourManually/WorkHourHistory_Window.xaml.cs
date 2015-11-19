@@ -1,6 +1,7 @@
 ﻿using BarCodeSystem.PublicClass.DatabaseEntity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,7 +81,10 @@ namespace BarCodeSystem.TechRoute.TechRouteWorkHourManually
         /// <param name="_techVersionCode"></param>
         private void FetchHistoryData(string _itemCode, string _techVersionCode)
         {
-            dg_HistoryData.ItemsSource = whlHistoryList = WorkHourLists.FetchWHInfo(_itemCode, _techVersionCode);
+            bool haveWHInfo = true;
+            dg_HistoryData.ItemsSource = whlHistoryList = WorkHourLists.FetchWHInfo(_itemCode, _techVersionCode, out haveWHInfo);
+            ICollectionView view = CollectionViewSource.GetDefaultView(dg_HistoryData.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("startDateShow"));
         }
 
         /// <summary>
@@ -119,6 +123,8 @@ namespace BarCodeSystem.TechRoute.TechRouteWorkHourManually
             dg_PresentData.Items.Refresh();
             dg_HistoryData.ItemsSource = SearchDataOnCondition(whlHistoryList);
             dg_HistoryData.Items.Refresh();
+            ICollectionView view = CollectionViewSource.GetDefaultView(dg_HistoryData.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("startDateShow"));
             this.Cursor = Cursors.Arrow;
         }
 
@@ -134,6 +140,8 @@ namespace BarCodeSystem.TechRoute.TechRouteWorkHourManually
             dg_PresentData.Items.Refresh();
             dg_HistoryData.ItemsSource = SearchDataOnCondition(whlHistoryList);
             dg_HistoryData.Items.Refresh();
+            ICollectionView view = CollectionViewSource.GetDefaultView(dg_HistoryData.ItemsSource);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("startDateShow"));
             this.Cursor = Cursors.Arrow;
         }
 

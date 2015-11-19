@@ -122,30 +122,32 @@
                         <TextBlock Text="料品信息:" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <TextBox Name="tb_ItemInfo" Grid.Column="1" TextWrapping="Wrap"  IsReadOnly="True"  Grid.Row="1"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="订单数量:" Grid.Row="2"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_OrderAmount" Grid.Column="1"  TextWrapping="Wrap" IsReadOnly="True"  Grid.Row="2"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="料品型号:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_ItemVersion" Grid.Column="1" TextWrapping="Wrap"  IsReadOnly="True"  Grid.Row="2"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="已开工数量:" TextWrapping="Wrap"  Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_StartAmount" Grid.Column="3"  Grid.Row="3"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="订单数量:" Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_OrderAmount" Grid.Column="1"  TextWrapping="Wrap" IsReadOnly="True"  Grid.Row="3"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="已完工数量:" Grid.Row="4"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_FinishedAmount"  Grid.Column="1" Grid.Row="4"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="已开工数量:" TextWrapping="Wrap"  Grid.Row="4"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_StartAmount" Grid.Column="3"  Grid.Row="4"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="生产部门:" Grid.Row="5"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_DepartmentName" Grid.Column="1" Grid.Row="5"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="已完工数量:" Grid.Row="5"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_FinishedAmount"  Grid.Column="1" Grid.Row="5"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="U9创建时间:"  Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_CreateTime" Grid.Column="1"  Grid.Row="6" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="生产部门:" Grid.Row="6"  VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_DepartmentName" Grid.Column="1" Grid.Row="6"  TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="导入条码时间:"  Grid.Row="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_BCSCreateTime" Grid.Column="1" TextWrapping="Wrap"  Grid.Row="7"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="U9创建时间:"  Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_CreateTime" Grid.Column="1"  Grid.Row="7" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="项目号:"  Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_ProjectCode" Grid.Column="1"  Grid.Row="8" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="导入条码时间:"  Grid.Row="8" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_BCSCreateTime" Grid.Column="1" TextWrapping="Wrap"  Grid.Row="8"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
+                        <TextBlock Text="项目号:"  Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_ProjectCode" Grid.Column="1"  Grid.Row="9" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
 
-                        <TextBlock Text="项目名称:"  Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                        <TextBox Name="tb_ProjectName" Grid.Column="1"  Grid.Row="9" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+                        <TextBlock Text="项目名称:"  Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Name="tb_ProjectName" Grid.Column="1"  Grid.Row="10" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
                     </Grid>
                 </GroupBox>
 
@@ -188,6 +190,31 @@
                             <RowDefinition Name="rd_QualityInfo"></RowDefinition>
                         </Grid.RowDefinitions>
                         <DataGrid Name="dg_FlowCardSubInfo" IsReadOnly="True" ColumnWidth="Auto" RowHeaderWidth="30" CanUserSortColumns="False" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                            <DataGrid.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.ContainerStyle>
+                                        <Style TargetType="{x:Type GroupItem}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                        <Expander IsExpanded="True">
+                                                            <Expander.Header>
+                                                                <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                                                            </Expander.Header>
+                                                            <ItemsPresenter></ItemsPresenter>
+                                                        </Expander>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </GroupStyle.ContainerStyle>
+                                    <GroupStyle.Panel>
+                                        <ItemsPanelTemplate>
+                                            <DataGridRowsPresenter/>
+                                        </ItemsPanelTemplate>
+                                    </GroupStyle.Panel>
+                                </GroupStyle>
+                            </DataGrid.GroupStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="行号" Binding="{Binding Path=FCS_ProcessSequanece}"></DataGridTextColumn>
                                 <DataGridTemplateColumn Header="工序名称"   >
@@ -197,6 +224,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="操作人员" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="投入数" Binding="{Binding Path=FCS_BeginAmount}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="转序新增数" Binding="{Binding Path=FCS_AddAmount}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="报废数" Binding="{Binding Path=FCS_ScrappedAmount}"></DataGridTextColumn>

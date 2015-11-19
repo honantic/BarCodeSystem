@@ -248,17 +248,22 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                 SqlDataReader sqlReader = MyDBController.GetDataReader(SQl);
                 while (sqlReader.Read())
                 {
-                    currentFlowNum = (int)sqlReader["FC_FlowNum"] + 1;
+                    if (sqlReader["FC_FlowNum"] is DBNull)
+                    {
+                        currentFlowNum = 1;
+                    }
+                    else
+                    {
+                        currentFlowNum = (int)sqlReader["FC_FlowNum"] + 1;
+                    }
                 }
                 sqlReader.Close();
             }
             catch (Exception ee)
             {
-                currentFlowNum = 0;
-                //MessageBox.Show(ee.Message);
+                currentFlowNum = 1;
+                MessageBox.Show(ee.Message + "\r\n请重试！");
             }
-
-
             MyDBController.CloseConnection();
             return currentFlowNum;
         }
@@ -276,8 +281,9 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
             {
                 FC_Amount = 0,
                 FC_CardState = 0,
-                FC_CardType = 0,
-                FC_Code = (_oldFlowCard.FC_Code.Split('-'))[0] + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", _currentFlowNum),
+                FC_CardType = 1,
+                //FC_Code = (_oldFlowCard.FC_Code.Split('-'))[0] + "-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", _currentFlowNum),
+                FC_Code = "FP-" + DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") + "-" + string.Format("{0:0000}", _currentFlowNum),
                 //FC_CreateTime = DateTime.Now,
                 FC_DistriSourceCard = _oldFlowCard.ID,
                 FC_FlowNum = _currentFlowNum,
@@ -291,7 +297,18 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                 PO_ItemName = _oldFlowCard.PO_ItemName,
                 PO_ItemSpec = _oldFlowCard.PO_ItemSpec,
                 FC_BCSOrderID = _oldFlowCard.FC_BCSOrderID,
-                FC_FirstProcessNum = _oldFlowCard.FC_FirstProcessNum
+                FC_FirstProcessNum = _oldFlowCard.FC_FirstProcessNum,
+                FC_CanDistribute = true,
+                FC_CanReproduce = false,
+                FC_CanTransfer = false,
+                FC_CheckBy = "",
+                FC_CheckTime = DateTime.Now,
+                FC_CreateTime = DateTime.Now,
+                FC_HasDistributed = false,
+                FC_HasReproduced = false,
+                FC_HasTransfered = false,
+                FC_Remark = "本流转卡为分批流转卡，来源为:" + _oldFlowCard.FC_Code + "|",
+                FC_IsSalaryCalculating = _oldFlowCard.FC_IsSalaryCalculating
             };
         }
 
@@ -431,15 +448,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
         /// </summary>
         private void InsertNewFlowCard(FlowCardLists _fc)
         {
-            string SQl = string.Format(@"insert into [FlowCard]([FC_CardType],[FC_SourceOrderID],[FC_Code],[FC_ItemID],[FC_ItemTechVersionID],[FC_Amount],[FC_WorkCenter],[FC_CardState],[FC_DistriSourceCard],[FC_FlowNum],[FC_CreateBy],[FC_CreateTime],[FC_CheckBy],[FC_CheckTime],[FC_BCSOrderID],[FC_FirstProcessNum]) values({0},{1},'{2}',{3},{4},{5},{6},{7},{8},{9},'{10}',getdate(),'','',{11},{12}) ", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_Code, _fc.FC_ItemID, _fc.FC_ItemTechVersionID, _fc.FC_Amount, _fc.FC_WorkCenter, _fc.FC_CardState, _fc.FC_DistriSourceCard, _fc.FC_FlowNum, _fc.FC_CreateBy, _fc.FC_BCSOrderID, _fc.FC_FirstProcessNum);
             string SQl1 = string.Format(@"Select [ID] from [FlowCard] where  [FC_CardType]={0} and [FC_SourceOrderID]={1} and [FC_DistriSourceCard]={2}  and [FC_Code]='{3}'", _fc.FC_CardType, _fc.FC_SourceOrderID, _fc.FC_DistriSourceCard, _fc.FC_Code);
-            int count = 0;
             Int64 ID = 0;
-            while (count == 0 || ID == 0)
+            while (ID == 0)
             {
-                count = MyDBController.ExecuteNonQuery(SQl);
+                FlowCardLists.SaveInfo(MyDBController.CreateSqlCon(), _fc);
                 ID = Convert.ToInt64(MyDBController.ExecuteScalar(SQl1));
             }
+            fc.FC_Remark += "拆分为流转卡:" + _fc.FC_Code + "|";
             _fc.ID = ID;
         }
 
@@ -469,7 +485,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                     {
                         DataRow row = ds.Tables["FlowCardSub"].NewRow();
                         row["ID"] = row["IDNew"] = -1;
-                        row["FCS_FlowCradID"] = _newfcl.ID;
+                        row["FCS_FlowCardID"] = _newfcl.ID;
                         row["FCS_ItemId"] = _oldfcl.FCS_ItemId;
                         row["FCS_TechRouteID"] = _oldfcl.FCS_TechRouteID;
                         row["FCS_ProcessID"] = _oldfcl.FCS_ProcessID;
@@ -488,15 +504,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCardDistribute
                         row["FCS_IsFirstProcess"] = _oldfcl.FCS_IsFirstProcess;
                         row["FCS_IsLastProcess"] = _oldfcl.FCS_IsLastProcess;
                         row["FCS_IsReported"] = _oldfcl.FCS_IsReported;
-                        //row["FCS_IsWorkTeam"] = _oldfcl.FCS_IsWorkTeam;
-                        //row["FCS_WorkTeamID"] = _oldfcl.FCS_WorkTeamID;
                         ds.Tables["FlowCardSub"].Rows.Add(row);
                     }
                 }
                 int updateNum, insertNum;
                 MyDBController.InsertSqlBulk(ds.Tables["FlowCardSub"], colList, out updateNum, out insertNum);
-                SQl = string.Format(@"update [FlowCard] set [FC_CardState]=3 where [ID]={0}", fc.ID);
-                MyDBController.ExecuteNonQuery(SQl);
+                fc.FC_HasDistributed = true;
+                fc.FC_CanDistribute = false;
+                fc.FC_CardState = 5;
+                fc.FC_CheckTime = DateTime.Now;
+                FlowCardLists.SaveInfo(fc);
                 if ((updateNum + insertNum).Equals(ds.Tables["FlowCardSub"].Rows.Count))
                 {
                     string message = "";

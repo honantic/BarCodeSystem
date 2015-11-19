@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="人员修改窗口" Height="400" Width="600" Loaded="Window_Loaded">
+        Title="人员修改窗口" Height="400" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}" x:Key="txtbForeground">
             <Setter Property="Foreground" Value="Blue"/>

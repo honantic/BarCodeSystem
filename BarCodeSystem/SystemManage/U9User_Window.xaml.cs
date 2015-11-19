@@ -195,6 +195,7 @@ namespace BarCodeSystem
         {
             listview2.ItemsSource = null;
             listview2.ItemsSource = GetBCSUserList();
+            listview2.Items.Refresh();
         }
 
 
@@ -246,12 +247,30 @@ namespace BarCodeSystem
                 int updateNum = 0, InsertNum = 0;
                 MyDBController.GetConnection();
                 MyDBController.InsertSqlBulk(temp, colList, out  updateNum, out InsertNum);
-                string info = string.Format(@"共成功导入条码系统 {0} 个账号！", InsertNum);
                 MyDBController.CloseConnection();
+
+                string info = string.Format(@"共成功导入条码系统 {0} 个账号！", InsertNum);
+
+                string SQl = "select top 0 * from [person]";
+                MyDBController.GetConnection();
+
+                MyDBController.GetDataSet(SQl, ds, "Person");
+                foreach (DataRow row in temp.Rows)
+                {
+                    DataRow item = ds.Tables["Person"].NewRow();
+                    item["P_Code"] = row["UA_LoginAccount"];
+                    item["P_Name"] = row["UA_UserName"];
+                    item["P_WorkCenterID"] = User_Info.User_Workcenter_ID;
+                    ds.Tables["Person"].Rows.Add(item);
+                }
+                MyDBController.InsertSqlBulk(ds.Tables["Person"]);
+                MyDBController.CloseConnection();
+
                 if (MessageBox.Show(info, "提示", MessageBoxButton.OK, MessageBoxImage.Information) ==
                     MessageBoxResult.OK)
                 {
                     RefreshAfterImport(0);
+                    btn_DisplayBCSUser_Click(null, null);
                 }
 
                 DBLog _dbLog = new DBLog();

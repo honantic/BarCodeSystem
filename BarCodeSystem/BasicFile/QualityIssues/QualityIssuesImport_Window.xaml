@@ -4,7 +4,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
         ResizeMode="NoResize"
-        Title="质量问题Excel导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
+        Title="质量问题Excel导入窗口" Height="600" Width="600" Loaded="Window_Loaded" KeyDown="Window_KeyDown" Icon="/BarCodeSystem;component/Images/burn.ico">
 
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>

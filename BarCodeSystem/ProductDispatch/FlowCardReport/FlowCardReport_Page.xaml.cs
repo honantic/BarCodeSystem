@@ -215,7 +215,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             bool flag = false;
             MyDBController.GetConnection();
-            string SQl = string.Format(@"Select count(*) from [FlowCard] A left join  [FlowCardSub] B on A.[ID]=B.[FCS_FlowCradID]  where [FC_Code]='{0}' and  [FC_CardState] in ({1},{2})", _key, 0, 1);
+            string SQl = string.Format(@"Select count(*) from [FlowCard] A left join  [FlowCardSub] B on A.[ID]=B.[FCS_FlowCardID]  where [FC_Code]='{0}' and  [FC_CardState] in ({1},{2})", _key, 0, 1);
             int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
             if (count > 0)
             {
@@ -312,7 +312,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             {
                 _fcslist.Sort((p1, p2) => p1.FCS_ProcessSequanece.CompareTo(p2.FCS_ProcessSequanece));
             }
-     
+
             var sequaneceList = fcsls.Select(p => p.FCS_ProcessSequanece).Distinct();
             for (int i = 0; i < fcsls.Count; i++)
             {
@@ -357,7 +357,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void GetTechRoute(TechVersion tv)
         {
             DataSet ds = new DataSet();
-            string SQl = string.Format(@"Select [ID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_DefaultCheckPersonName] from [TechRoute] where [TR_VersionID]={0} and [TR_ProcessSequence]>={1}", tv.ID, fcl.FC_FirstProcessNum);
+            string SQl = string.Format(@"Select [ID],[TR_ItemID],[TR_IsFirstProcess],[TR_IsLastProcess],[TR_IsTestProcess],[TR_IsBackProcess],[TR_ProcessSequence],[TR_ProcessName],[TR_ProcessCode],[TR_ProcessID],[TR_DefaultCheckPersonName] from [TechRoute] where [TR_VersionID]={0} and [TR_ProcessSequence]>={1}", tv.ID, fcl.FC_FirstProcessNum);
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRoute");
             MyDBController.CloseConnection();
@@ -373,9 +373,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     TR_IsTestProcess = Convert.ToBoolean(row["TR_IsTestProcess"]),
                     TR_IsBackProcess = Convert.ToBoolean(row["TR_IsBackProcess"]),
                     TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]),
+                    TR_ProcessID = Convert.ToInt64(row["TR_ProcessID"]),
                     TR_ProcessName = row["TR_ProcessName"].ToString(),
                     TR_ProcessCode = row["TR_ProcessCode"].ToString(),
-                    TR_DefaultCheckPersonName = row["TR_DefaultCheckPersonName"].ToString()
+                    TR_DefaultCheckPersonName = row["TR_DefaultCheckPersonName"].ToString(),
+                    TR_ItemID = Convert.ToInt64(row["TR_ItemID"])
                 });
             }
         }
@@ -444,7 +446,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             this.Cursor = Cursors.Wait;
             if (!isNewFlowCard)
             {
-
                 #region 操作
                 if (isAmountSaved)
                 {
@@ -487,7 +488,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     }
                 }
                 #endregion
-
             }
             this.Cursor = Cursors.Arrow;
         }
@@ -637,7 +637,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         /// <param name="e"></param>
         private void btn_QualityIssueSearch_Click(object sender, RoutedEventArgs e)
         {
-            FlowCardQualityIssues_Window fci = new FlowCardQualityIssues_Window(AcceptQualityIssue);
+            ProcessNameLists pnl = ProcessNameLists.FetchPNInfoByTRL((TechRouteLists)cb_ProcessSequence.SelectedItem);
+            FlowCardQualityIssues_Window fci = new FlowCardQualityIssues_Window(AcceptQualityIssue, pnl);
             fci.ShowDialog();
         }
 
@@ -650,7 +651,8 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         {
             if (datagrid_PersonInfo.HasItems)
             {
-                FlowCardQualityIssues_Window fci = new FlowCardQualityIssues_Window(AcceptQualityIssueList);
+                ProcessNameLists pnl = ProcessNameLists.FetchPNInfoByTRL((TechRouteLists)cb_ProcessSequence.SelectedItem);
+                FlowCardQualityIssues_Window fci = new FlowCardQualityIssues_Window(AcceptQualityIssueList, pnl);
                 fci.ShowDialog();
             }
         }
@@ -801,7 +803,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         {
                             FlowCardSubLists item = (FlowCardSubLists)datagrid_PersonInfo.SelectedItem;
                             personDataSource.RemoveAt(datagrid_PersonInfo.SelectedIndex);
-                            string SQl = string.Format(@"Delete from [FlowCardSub] where [FCS_PersonCode]='{0}' and [FCS_TechRouteID]={1} and [FCS_FlowCradID]={2} and [FCS_ProcessID]={3}", item.FCS_PersonCode, item.FCS_TechRouteID, item.FCS_FlowCradID, item.FCS_ProcessID);
+                            string SQl = string.Format(@"Delete from [FlowCardSub] where [FCS_PersonCode]='{0}' and [FCS_TechRouteID]={1} and [FCS_FlowCardID]={2} and [FCS_ProcessID]={3}", item.FCS_PersonCode, item.FCS_TechRouteID, item.FCS_FlowCardID, item.FCS_ProcessID);
                             MyDBController.GetConnection();
                             int x = MyDBController.ExecuteNonQuery(SQl);
                             MyDBController.CloseConnection();
@@ -840,7 +842,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FCS_BeginAmount = item.FCS_BeginAmount,
                         FCS_CheckByID = item.FCS_CheckByID,
                         FCS_CheckByName = item.FCS_CheckByName,
-                        FCS_FlowCradID = item.FCS_FlowCradID,
+                        FCS_FlowCardID = item.FCS_FlowCardID,
                         FCS_IsFirstProcess = item.FCS_IsFirstProcess,
                         FCS_IsLastProcess = item.FCS_IsLastProcess,
                         FCS_IsReported = item.FCS_IsReported,
@@ -869,7 +871,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FCS_BeginAmount = fcl.FC_Amount,
                         //FCS_CheckByID = item.FCS_CheckByID,
                         FCS_CheckByName = trl.TR_DefaultCheckPersonName,
-                        FCS_FlowCradID = fcl.ID,
+                        FCS_FlowCardID = fcl.ID,
                         FCS_IsFirstProcess = trl.TR_IsFirstProcess,
                         FCS_IsLastProcess = trl.TR_IsLastProcess,
                         FCS_IsReported = false,
@@ -933,7 +935,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FCS_BeginAmount = item.FCS_BeginAmount,
                         FCS_CheckByID = item.FCS_CheckByID,
                         FCS_CheckByName = item.FCS_CheckByName,
-                        FCS_FlowCradID = item.FCS_FlowCradID,
+                        FCS_FlowCardID = item.FCS_FlowCardID,
                         FCS_IsFirstProcess = item.FCS_IsFirstProcess,
                         FCS_IsLastProcess = item.FCS_IsLastProcess,
                         FCS_IsReported = item.FCS_IsReported,
@@ -972,7 +974,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                         FCS_BeginAmount = fcl.FC_Amount,
                         //FCS_CheckByID = item.FCS_CheckByID,
                         FCS_CheckByName = trl.TR_DefaultCheckPersonName,
-                        FCS_FlowCradID = fcl.ID,
+                        FCS_FlowCardID = fcl.ID,
                         FCS_IsFirstProcess = trl.TR_IsFirstProcess,
                         FCS_IsLastProcess = trl.TR_IsLastProcess,
                         FCS_IsReported = false,
@@ -1027,13 +1029,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             }
             else
             {
-                //int diff = 0;
-                //int amount = string.IsNullOrEmpty(txtb_ScrappedAmount.Text) ? 0 : Convert.ToInt32(txtb_ScrappedAmount.Text);
-
-                //List<FlowCardQualityLists> _list = (List<FlowCardQualityLists>)datagrid_AmountInfo.ItemsSource;
-                //int index = datagrid_AmountInfo.SelectedIndex;
-                //diff += (int)e.NewValue - ((e.OldValue == null) ? _list[index].FCQ_ScrapAmount : (int)e.OldValue);
-                //txtb_ScrappedAmount.Text = (amount + diff).ToString();
                 txtb_ScrappedAmount.Text = scrapamount.ToString();
             }
             isAmountSaved = false;
@@ -1256,6 +1251,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                             btn_TotalReport_Click(sender, e);
                             AfterReportSetting();
                         }
+                        textb_FlowCard.Focus();
                     }
                 }
             }
@@ -1395,7 +1391,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 item.FCS_PieceAmount = trList.Find(p => p.ID.Equals(item.FCS_TechRouteID)).TR_IsTestProcess ? item.FCS_BeginAmount + item.FCS_AddAmount : item.FCS_QulifiedAmount;
                 item.FCS_IsReported = true;
                 DataRow row = ds.Tables["FlowCardSub"].NewRow();
-                row["FCS_FlowCradID"] = item.FCS_FlowCradID;
+                row["FCS_FlowCardID"] = item.FCS_FlowCardID;
                 row["FCS_ItemId"] = item.FCS_ItemId;
                 row["FCS_TechRouteID"] = item.FCS_TechRouteID;
                 row["FCS_ProcessID"] = item.FCS_ProcessID;
@@ -1429,8 +1425,12 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                     row["FCS_PieceAmount"] = txtb_QulifiedAmount.Text.Trim();
                     row["FCS_PieceDivNum"] = personDataSource.Count;
                 }
-                row["FCS_ReportTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                row["FCS_ReportTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                 ds.Tables["FlowCardSub"].Rows.Add(row);
+            }
+            if (personDataSource.Exists(p => p.FCS_UnprocessedAm > 0))
+            {
+                fcl.FC_CanTransfer = true;
             }
 
             int updateNum1, insertNum1;
@@ -1462,7 +1462,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
                 row["FCQ_ScrapAmount"] = fcql.FCQ_ScrapAmount;
                 ds.Tables["FlowCardQuality"].Rows.Add(row);
             }
-
+            if (list.Exists(p => p.QI_Type == 2))
+            {
+                fcl.FC_CanReproduce = true;
+            }
             int updateNum2, insertNum2;
             MyDBController.InsertSqlBulk(ds.Tables["FlowCardQuality"], colList, out updateNum2, out insertNum2);
             MyDBController.CloseConnection();
@@ -1475,7 +1478,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
         private void UpdateFlowCard(bool? _flag)
         {
             fcl.FC_CardState = (bool)_flag ? 2 : 1;
-            string SQl = string.Format(@"Update [FlowCard] set [FC_CardState]={0} where [ID]={1}", fcl.FC_CardState, fcl.ID);
+            string SQl = string.Format(@"Update [FlowCard] set [FC_CardState]={0},[FC_CanDistribute]='false' where [ID]={1}", fcl.FC_CardState, fcl.ID);
             MyDBController.GetConnection();
             MyDBController.ExecuteNonQuery(SQl);
             MyDBController.CloseConnection();
@@ -1543,8 +1546,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCardReport
             }
         }
         #endregion
-
-
 
     }
 }

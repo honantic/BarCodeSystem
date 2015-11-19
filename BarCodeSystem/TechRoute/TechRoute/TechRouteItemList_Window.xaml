@@ -6,7 +6,7 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        Title="料品清单" Height="600" Width="400">
+        Title="料品清单" Height="600" Width="400" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
     </Window.Resources>

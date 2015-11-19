@@ -14,8 +14,8 @@ namespace BarCodeSystem
         private static string uid;
         public static string Uid
         {
-            get{ return Login_Check.uid;}
-            set{ Login_Check.uid = value;}
+            get { return Login_Check.uid; }
+            set { Login_Check.uid = value; }
         }
 
         private static string pwd;
@@ -30,7 +30,7 @@ namespace BarCodeSystem
         /// <param name="user_id"></param>
         /// <param name="user_pwd"></param>
         /// <returns></returns>
-        public static bool IsValidToLogin(string user_id,string user_pwd)
+        public static bool IsValidToLogin(string user_id, string user_pwd)
         {
             //这段代码将在正式程序中被保留，在U9库中进行登陆密码验证
             MyDBController.Server = User_Info.server[0];
@@ -38,9 +38,9 @@ namespace BarCodeSystem
             MyDBController.Uid = User_Info.uid[0];
             MyDBController.Pwd = User_Info.pwd[0];
             MyDBController.GetConnection();
-            string U9_pwd="", Input_pwd;
+            string U9_pwd = "", Input_pwd;
             Input_pwd = Encrypt(user_pwd);
-            string sqlstr = "select password  from base_user where Code='"+user_id+"'";
+            string sqlstr = "select password  from base_user where Code='" + user_id + "'";
             SqlDataReader sql_reader = MyDBController.GetDataReader(sqlstr);
             while (sql_reader.Read())
             {
@@ -48,7 +48,7 @@ namespace BarCodeSystem
             }
             sql_reader.Close();
             MyDBController.CloseConnection();
-            return U9_pwd==""?false: Equals(U9_pwd, Input_pwd);                  
+            return U9_pwd == "" ? false : Equals(U9_pwd, Input_pwd);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace BarCodeSystem
             }
             sql_reader.Close();
             MyDBController.CloseConnection();
-            return U9_pwd == "" ? false : Equals(U9_pwd, Input_pwd);     
+            return U9_pwd == "" ? false : Equals(U9_pwd, Input_pwd);
         }
         /// <summary>
         /// 加密
@@ -85,6 +85,24 @@ namespace BarCodeSystem
             MD5 md = MD5.Create();
             byte[] bytes = new UnicodeEncoding().GetBytes(source);
             return Convert.ToBase64String(md.ComputeHash(bytes));
+        }
+
+        /// <summary>
+        /// 检测账号在条码中是否存在
+        /// </summary>
+        /// <param name="_code"></param>
+        /// <returns></returns>
+        public static bool CheckIfExist(string _code)
+        {
+            //这段代码将在正式程序中被保留，在U9库中进行登陆密码验证
+            MyDBController.Server = User_Info.server[1];
+            MyDBController.Database = User_Info.database[1];
+            MyDBController.Uid = User_Info.uid[1];
+            MyDBController.Pwd = User_Info.pwd[1];
+            MyDBController.GetConnection();
+            string SQl = string.Format("select count(*) from [UserAccount] where [UA_LoginAccount] ='{0}'", _code);
+            int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
+            return count > 0;
         }
     }
 }

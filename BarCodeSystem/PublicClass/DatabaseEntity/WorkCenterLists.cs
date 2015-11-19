@@ -144,28 +144,8 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<WorkCenterLists> FetchWCInfo()
         {
-            List<WorkCenterLists> wclList = new List<WorkCenterLists>();
-            DataSet ds = new DataSet();
             string SQl = string.Format(@"select * from [WorkCenter] where [WC_IsValidated]='true' and [WC_Department_ShortName] !=''");
-            MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkCenter");
-            MyDBController.CloseConnection();
-            foreach (DataRow row in ds.Tables["WorkCenter"].Rows)
-            {
-                WorkCenterLists wcl = new WorkCenterLists();
-                wcl.ID = Convert.ToInt64(row["ID"]);
-                wcl.department_code = row["WC_Department_Code"].ToString();
-                wcl.department_name = row["WC_Department_Name"].ToString();
-                wcl.department_id = Convert.ToInt64(row["WC_Department_ID"]);
-                wcl.department_shortname = row["WC_Department_ShortName"].ToString();
-                wcl.isvalidated_DB = Convert.ToBoolean(row["WC_IsValidated"]);
-                wcl.isworkcenter_DB = Convert.ToBoolean(row["WC_IsWorkCenter"]);
-                wcl.isordercontroled_DB = Convert.ToBoolean(row["WC_IsOrderControled"]);
-                wcl.lastoperateby = row["WC_LastOprateBy"].ToString();
-                wcl.lastoperatetime_DB = Convert.ToDateTime(row["WC_LastOperateTime"]);
-                wclList.Add(wcl);
-            }
-            return wclList;
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -174,11 +154,21 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<WorkCenterLists> FetchWCInfoByWCCode(string _wcCode)
         {
+            string SQl = string.Format(@"select * from [WorkCenter] where [WC_Department_Code]='{0}'", _wcCode);
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<WorkCenterLists> ExecuteSQlCommand(string _command)
+        {
             List<WorkCenterLists> wclList = new List<WorkCenterLists>();
             DataSet ds = new DataSet();
-            string SQl = string.Format(@"select * from [WorkCenter] where [WC_Department_Code]='{0}'", _wcCode);
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkCenter");
+            MyDBController.GetDataSet(_command, ds, "WorkCenter");
             MyDBController.CloseConnection();
             foreach (DataRow row in ds.Tables["WorkCenter"].Rows)
             {
@@ -197,6 +187,5 @@ namespace BarCodeSystem
             }
             return wclList;
         }
-
     }
 }

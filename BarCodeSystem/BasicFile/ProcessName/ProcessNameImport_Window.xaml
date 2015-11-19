@@ -5,7 +5,7 @@
         ResizeMode="NoResize" 
         Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen"
-        Title="工序导入窗口" Height="600" Width="600" KeyDown="Window_KeyDown">
+        Title="工序导入窗口" Height="600" Width="600" KeyDown="Window_KeyDown" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >

@@ -40,7 +40,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="1.5*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -67,7 +67,7 @@
                     <DatePicker Name="date_PresentDate" Grid.Column="1" Grid.Row="1" Cursor="Hand" SelectedDate="{x:Static sys:DateTime.Today}" VerticalAlignment="Center" ></DatePicker>
 
                     <TextBlock Text="工序序号：" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <ComboBox Name="cb_ProcessSequence" SelectedIndex="0" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
+                    <ComboBox Name="cb_ProcessSequence" FontSize="30" SelectedIndex="0" SelectionChanged="cb_ProcessSequence_SelectionChanged" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" ></ComboBox>
 
                     <TextBlock Text="派工数量：" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                     <TextBox Name="txtb_Amount" Grid.Column="3" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
@@ -85,7 +85,7 @@
                     <TextBox Name="txtb_IsSpecialTechVersion" Grid.Column="5"  Grid.Row="1" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
 
                     <TextBlock Text="工序名称：" TextWrapping="Wrap"  TextAlignment="Center" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <TextBox Name="txtb_ProcessName" Grid.Column="3"  Grid.Row="2" VerticalAlignment="Center" TextAlignment="Left" Background="LightGray" IsReadOnly="True"></TextBox>
+                    <TextBox Name="txtb_ProcessName" Grid.Column="3"  Grid.Row="2" VerticalAlignment="Center" TextAlignment="Left" FontSize="30" Background="Salmon" IsReadOnly="True"></TextBox>
 
                 </Grid>
             </GroupBox>
@@ -338,7 +338,7 @@
                     <TextBlock Grid.Column="1" Text="该工序是否已经报工：" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                     <Image Grid.Column="2" Name="image_No"  ToolTip="未报工" Margin="10 0" Source="../../Images/no.ico" VerticalAlignment="Center"  Height="15" HorizontalAlignment="Left"></Image>
                     <Image Grid.Column="2" Name="image_Yes" Visibility="Hidden" ToolTip="已报工" Margin="10 0" Source="../../Images/yes.ico" Height="15" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
-                    <Button Name="btn_Report" Click="btn_Report_Click" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0">
+                    <Button Name="btn_Report" Height="30" FontSize="14"  Click="btn_Report_Click" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Center" Padding="15 0">
                         <Button.Content>
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>

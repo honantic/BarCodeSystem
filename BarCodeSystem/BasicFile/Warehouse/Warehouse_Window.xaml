@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterScreen"
         xmlns:namespc="clr-namespace:BarCodeSystem"
+        xmlns:local="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
         ResizeMode="NoResize"
-        Title="仓库中心" Height="800" Width="600" Loaded="Window_Loaded">
+        Title="仓库中心" Height="800" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >
@@ -12,6 +13,7 @@
                 <CheckBox  IsChecked="{Binding Path=IsSelected}" Cursor="Hand"/>
             </StackPanel>
         </DataTemplate>
+        <local:TrueOrFalseConverter x:Key="boolConverter"></local:TrueOrFalseConverter>
     </Window.Resources>
     
     <Grid>
@@ -23,11 +25,13 @@
         <ListView Name="listview1" Grid.Row="1" Margin="5" ItemContainerStyleSelector="{DynamicResource mySelector}" MouseDoubleClick="listview1_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}" Width="30"></GridViewColumn>
-                    <GridViewColumn Header="仓库编码" DisplayMemberBinding="{Binding Path=W_Code}" Width="160"></GridViewColumn>
-                    <GridViewColumn Header="仓库名称" DisplayMemberBinding="{Binding Path=W_Name}" Width="160"></GridViewColumn>
-                    <GridViewColumn Header="仓库来源" DisplayMemberBinding="{Binding Path=W_SourceType_Show}" Width="100"></GridViewColumn>
-                    <GridViewColumn Header="是否启用" DisplayMemberBinding="{Binding Path=W_IsValidated_Show}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="选择" CellTemplate="{StaticResource FirstCell}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="仓库编码" DisplayMemberBinding="{Binding Path=W_Code}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="仓库名称" DisplayMemberBinding="{Binding Path=W_Name}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="仓库来源" DisplayMemberBinding="{Binding Path=W_SourceType_Show}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="是否启用" DisplayMemberBinding="{Binding Path=W_IsValidated_Show}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="关联工作中心" DisplayMemberBinding="{Binding Path=WC_Department_Name}" Width="auto"></GridViewColumn>
+                    <GridViewColumn Header="是否默认" DisplayMemberBinding="{Binding Path=W_IsDefault, Converter={StaticResource boolConverter}}" Width="auto"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

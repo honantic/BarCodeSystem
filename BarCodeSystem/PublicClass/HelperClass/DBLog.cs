@@ -106,7 +106,7 @@ namespace BarCodeSystem.PublicClass.HelperClass
         {
             DBLog _dbLog = new DBLog();
             _dbLog.DBL_OperateBy = User_Info.User_Code;
-            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             _dbLog.DBL_OperateType = OperateType.Login;
             _dbLog.DBL_Content = User_Info.User_Name + "|登录操作" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position;
             DBLog.WriteDBLog(_dbLog);
@@ -119,7 +119,7 @@ namespace BarCodeSystem.PublicClass.HelperClass
         {
             DBLog _dbLog = new DBLog();
             _dbLog.DBL_OperateBy = User_Info.User_Code;
-            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             _dbLog.DBL_OperateType = OperateType.Logout;
             _dbLog.DBL_Content = User_Info.User_Name + "|退出登录操作" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position;
             DBLog.WriteDBLog(_dbLog);

@@ -46,23 +46,32 @@ namespace BarCodeSystem
         private void btn_Login_Click(object sender, RoutedEventArgs e)
         {
             bool CheckResult = false;
-            if (txtBox_Uid.Text.Equals("admin"))
+            CheckResult = Login_Check.CheckIfExist(this.txtBox_Uid.Text.ToString().Trim());
+            if (CheckResult)
             {
-                CheckResult = Login_Check.AdminValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+                if (txtBox_Uid.Text.Equals("admin"))
+                {
+                    CheckResult = Login_Check.AdminValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+                }
+                else
+                {
+                    CheckResult = Login_Check.IsValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+                }
+                if (!CheckResult)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("用户名或账号错误", "登陆失败", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    User_Info.User_Code = this.txtBox_Uid.Text.ToString().Trim();
+                    storyboard.Begin();
+                }
             }
             else
             {
-                CheckResult = Login_Check.IsValidToLogin(this.txtBox_Uid.Text.ToString().Trim(), this.pdBox_Pwd.Password.ToString());
+                Xceed.Wpf.Toolkit.MessageBox.Show("该账号在条码系统中不存在！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            if (!CheckResult)
-            {
-                MessageBox.Show("用户名或账号错误", "登陆失败", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            }
-            else
-            {
-                User_Info.User_Code = this.txtBox_Uid.Text.ToString().Trim();
-                storyboard.Begin();
-            }
+           
         }
 
         /// <summary>

@@ -32,13 +32,15 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         /// </summary>
         /// <param name="value"></param>
         /// <param name="_stri"></param>
-        public TechRouteSearch_Page(string value, SubmitTechRouteInfo _stri)
+        public TechRouteSearch_Page(string value, SubmitTechRouteInfo _stri, bool _isReproduce = false)
         {
             InitializeComponent();
             stri = _stri;
             itemCode = value;
             textb_PageTitle.Text = value + textb_PageTitle.Text;
+            isReproduce = _isReproduce;
         }
+
 
         #region 变量
         DataSet ds = new DataSet();
@@ -46,6 +48,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         List<TechRouteLists> trls = new List<TechRouteLists>();
         List<TechRouteLists> processGridSource = new List<TechRouteLists>();
         int loadCount = 0;
+        bool isReproduce = false;
         #endregion
 
         #region 加载事件
@@ -57,7 +60,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 if (datagrid_RouteVersion.Items.Count == 0)
                 {
                     label_ErrorInfo.Visibility = Visibility.Visible;
-                    Xceed.Wpf.Toolkit.MessageBox.Show("该料品没有工艺路线信息！请先维护！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    string message = "";
+                    if (isReproduce)
+                    {
+                        message = "该料品没有返工工艺路线信息!";
+                    }
+                    else
+                    {
+                        message = "该料品没有工艺路线信息！";
+                    }
+                    Xceed.Wpf.Toolkit.MessageBox.Show(message + "\r\n请先维护！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 FecthDefaultInfo();
                 loadCount++;
@@ -106,7 +119,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private List<TechVersion> FetchTechRouteInfo(string str)
         {
             //工艺路线版本datagrid数据源
-            string SQl = string.Format(@"Select A.[ID],A.[TRV_VersionCode],A.[TRV_VersionName],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}'", str);
+            string SQl = string.Format(@"Select A.[ID],A.[TRV_VersionCode],A.[TRV_VersionName],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}' and (A.[TRV_IsShown] ='true' or A.[TRV_IsShown] is null) and A.[TRV_IsBackVersion] !='true'", str);
+            if (isReproduce)
+            {
+                SQl += " and A.[TRV_IsBackVersion]='true'";
+            }
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRouteVersion");
 

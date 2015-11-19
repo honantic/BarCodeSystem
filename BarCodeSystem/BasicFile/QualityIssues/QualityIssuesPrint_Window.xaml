@@ -6,7 +6,7 @@
         ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Loaded="Window_Loaded"
-        Title="QualityIssuesPrint_Window" Height="750" Width="1050">
+        Title="QualityIssuesPrint_Window" Height="750" Width="1050" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>

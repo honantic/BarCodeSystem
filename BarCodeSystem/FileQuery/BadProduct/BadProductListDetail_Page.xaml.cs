@@ -83,7 +83,7 @@ namespace BarCodeSystem
                 "from FlowCardQuality as A " +
                 "left join QualityIssue as B on (A.FCQ_QulityIssueID = B.ID) " +
                 "left join FlowCardSub as C on (A.FCQ_FlowCardSubID = C.ID) " +
-                "left join FlowCard as D on (C.FCS_FlowCradID = D.ID) " +
+                "left join FlowCard as D on (C.FCS_FlowCardID = D.ID) " +
                 "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +
                 " left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
                 " where " +
@@ -110,7 +110,7 @@ namespace BarCodeSystem
                 "from FlowCardQuality as A " +
                 "left join QualityIssue as B on (A.FCQ_QulityIssueID = B.ID) " +
                 "left join FlowCardSub as C on (A.FCQ_FlowCardSubID = C.ID) " +
-                "left join FlowCard as D on (C.FCS_FlowCradID = D.ID) " +
+                "left join FlowCard as D on (C.FCS_FlowCardID = D.ID) " +
                 "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +
                 "left join WorkCenter as F on (D.FC_WorkCenter = F.WC_Department_ID) " +
                 "where " +
@@ -206,10 +206,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void export_btn_Click(object sender, RoutedEventArgs e)
         {
-            QkRowChangeToColClass qk = new QkRowChangeToColClass();
-            qk.OutToExcel(btable);
-
-            System.Windows.MessageBox.Show("导出成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            QkRowChangeToColClass.CreateExcelFileForDataTable(btable);
         }
     }
 }

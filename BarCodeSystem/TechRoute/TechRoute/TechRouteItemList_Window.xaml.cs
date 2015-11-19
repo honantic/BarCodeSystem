@@ -31,6 +31,18 @@ namespace BarCodeSystem
         }
 
         /// <summary>
+        /// 选中的料品规格
+        /// </summary>
+        public string II_Spec
+        { get; set; }
+
+        /// <summary>
+        /// 选中的料品型号
+        /// </summary>
+        public string II_Version
+        { get; set; }
+
+        /// <summary>
         /// 选中的料品编码
         /// </summary>
         public string II_Code
@@ -62,6 +74,7 @@ namespace BarCodeSystem
             //MyDBController.Uid = User_Info.uid[1];
 
             GetBCSItemList();
+            txtb_SearchKey.Focus();
         }
 
 
@@ -72,26 +85,7 @@ namespace BarCodeSystem
         /// </summary>
         private void GetBCSItemList()
         {
-            MyDBController.GetConnection();
-            ds.Clear();
-            string SQl = @" SELECT [ID],[II_Code],[II_Name] FROM [ItemInfo] WHERE [ID] NOT IN 
-                    ( SELECT DISTINCT [TRV_ItemID] FROM TechRouteVersion)";
-            dt = MyDBController.GetDataSet(SQl, ds, "item").Tables["item"];
-            MyDBController.CloseConnection();
-
-            iils = new List<ItemInfoLists> { };
-            int x = dt.Rows.Count;
-            for (int i = 0; i < x; i++)
-            {
-                ItemInfoLists iil = new ItemInfoLists();
-                iil.II_Code = dt.Rows[i]["II_Code"].ToString();
-                iil.II_Name = dt.Rows[i]["II_Name"].ToString();
-                iil.ID = (Int64)dt.Rows[i]["ID"];
-                iils.Add(iil);
-            }
-
-            listview1.ItemsSource = null;
-            listview1.ItemsSource = iils.OrderBy(p => p.II_Code);
+            listview1.ItemsSource = iils = ItemInfoLists.FetchItemInfoWithoutTechRoute();
         }
 
 
@@ -107,6 +101,8 @@ namespace BarCodeSystem
             {
                 II_Name = iil.II_Name;
                 II_Code = iil.II_Code;
+                II_Spec = iil.II_Spec;
+                II_Version = iil.II_Version;
                 II_ID = iil.ID;
                 this.DialogResult = true;
             }
@@ -119,12 +115,7 @@ namespace BarCodeSystem
         /// <param name="e"></param>
         private void listview1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Point formPoint = e.GetPosition(this);
-            if (formPoint.Y > 60 && formPoint.Y < 90)//表头部分不做响应
-            {
-
-            }
-            else
+            if (listview1.SelectedIndex != -1)
             {
                 btn_Chose_Click(sender, e);
             }

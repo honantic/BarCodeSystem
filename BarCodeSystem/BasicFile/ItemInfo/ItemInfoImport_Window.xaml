@@ -4,7 +4,7 @@
                 xmlns:namespc="clr-namespace:BarCodeSystem"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        Title="U9料品信息导入窗口" Height="600" Width="600">
+        Title="U9料品信息导入窗口" Height="600" Width="600" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>
         <DataTemplate x:Key="FirstCell" >

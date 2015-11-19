@@ -4,7 +4,7 @@
         xmlns:namespc="clr-namespace:BarCodeSystem"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Title="质检分类清单" Height="600" Width="400" Loaded="Window_Loaded">
+        Title="质检分类清单" Height="600" Width="400" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
 
     <Window.Resources>
         <namespc:ListViewItemStyleSelector x:Key="mySelector"/>

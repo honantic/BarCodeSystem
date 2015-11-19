@@ -5,7 +5,7 @@
         xmlns:namespc="clr-namespace:BarCodeSystem"
         xmlns:convert="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
         ResizeMode="NoResize"
-        Title="料品工艺路线导入错误信息" Height="600" Width="400" Loaded="Window_Loaded">
+        Title="料品工艺路线导入错误信息" Height="600" Width="400" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <convert:TrueOrFalseConverter x:Key="boolConvert"></convert:TrueOrFalseConverter>
         <convert:ReportWayConverter x:Key="reportWayConvert"></convert:ReportWayConverter>

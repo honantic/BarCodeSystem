@@ -33,6 +33,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         public DateTime WH_StartDate { get; set; }
 
         /// <summary>
+        /// 生效时间展示的信息
+        /// </summary>
+        public string startDateShow { get { return "生效时间：" + WH_StartDate.ToString("yyyy/MM/dd"); } }
+        /// <summary>
         /// 失效时间
         /// </summary>
         public DateTime WH_EndDate { get; set; }
@@ -47,6 +51,41 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         public int TR_ProcessSequence { get; set; }
 
+        /// <summary>
+        /// 料品编号
+        /// </summary>
+        public string TR_ItemCode { get; set; }
+
+        /// <summary>
+        /// 料品ID
+        /// </summary>
+        public Int64 TR_ItemID { get; set; }
+
+
+        /// <summary>
+        /// 工序编号
+        /// </summary>
+        public string TR_ProcessCode { get; set; }
+
+        /// <summary>
+        /// 所属工艺路线版本编号
+        /// </summary>
+        public string TRV_VersionCode { get; set; }
+
+        /// <summary>
+        /// 所属工艺路线版本名称
+        /// </summary>
+        public string TRV_VersionName { get; set; }
+
+        /// <summary>
+        /// 工作中心名称
+        /// </summary>
+        public string WC_Department_Name { get; set; }
+
+        /// <summary>
+        /// 默认检验员名字
+        /// </summary>
+        public string TR_DefaultCheckPersonName { get; set; }
         /// <summary>
         /// 检查工时数据的日期是否正确，保证各个工时版本能够衔接上，并且没有重复区域
         /// </summary>
@@ -99,7 +138,6 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
                     {
                         string command = string.Format(@"update [WorkHour] set [WH_EndDate]='{0}' where [ID] =(select Max(ID) from [WorkHour] where [WH_TechRouteID]={1})", _whl.WH_StartDate.AddDays(-1).ToString("yyyy/MM/dd"), _whl.WH_TechRouteID);
                         MyDBController.ExecuteNonQuery(command);
-                        //Trace.WriteLine(_whlList.IndexOf(_whl).ToString() + " |||| " + Task.CurrentId.ToString() + " |||| " + Thread.CurrentThread.ManagedThreadId.ToString());
                     });
 
                 DataSet ds = new DataSet();
@@ -123,26 +161,74 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 获取某个料品某个工艺版本的工时列表，包括历史数据
         /// </summary>
         /// <returns></returns>
-        public static List<WorkHourLists> FetchWHInfo(string _itemCode, string _techVersionCode)
+        public static List<WorkHourLists> FetchWHInfo(string _itemCode, string _techVersionCode,out bool _haveWHInfo)
+        {
+            _haveWHInfo = true;
+            string SQl = string.Format(@"select A.[ID],A.[WH_TechRouteID],A.[WH_WorkHour],A.[WH_StartDate],A.[WH_EndDate],B.[TR_ProcessSequence],B.[TR_ProcessName],B.[TR_ItemID],B.[TR_ItemCode],B.[TR_ProcessCode],B.[TR_DefaultCheckPersonName],C.[TRV_VersionName],C.[TRV_VersionCode],D.[WC_Department_Name] from [WorkHour] A left join [TechRoute] B on A.[WH_TechRouteID] = B.[ID] left join [TechRouteVersion] C on B.[TR_VersionID] = C.[ID] left join [WorkCenter] D on B.[TR_WorkCenterID]=D.[WC_Department_ID] where [WH_TechRouteID] in (select [ID] from [TechRoute] where [TR_VersionID] in (select [ID] from [TechRouteVersion] where [TRV_VersionCode]='{0}' and [TRV_ItemID] in (select ID from [ItemInfo] where [II_Code]='{1}'))) order by A.[ID]", _techVersionCode, _itemCode);
+            List<WorkHourLists> _whlList = ExecuteSQlCommand(SQl);
+            if (_whlList.Count == 0)
+            {
+                List<TechRouteLists> _trlList = TechRouteLists.FetchTechRouteByItemCode(_itemCode, _techVersionCode);
+                foreach (TechRouteLists item in _trlList)
+                {
+                    WorkHourLists whl = new WorkHourLists();
+                    whl.TR_ItemCode = item.TR_ItemCode;
+                    whl.TR_ItemID = item.TR_ItemID;
+                    whl.TR_ProcessCode = item.TR_ProcessCode;
+                    whl.TR_ProcessName = item.TR_ProcessName;
+                    whl.TR_ProcessSequence = item.TR_ProcessSequence;
+                    whl.TRV_VersionCode = item.TRV_VersionCode;
+                    whl.TRV_VersionName = item.TRV_VersionName;
+                    whl.WC_Department_Name = item.WC_Department_Name;
+                    whl.WH_EndDate = DateTime.Now.AddYears(1);
+                    whl.WH_StartDate = DateTime.Now;
+                    whl.WH_TechRouteID = item.ID;
+                    whl.WH_WorkHour = 0m;
+                    whl.TR_DefaultCheckPersonName = item.TR_DefaultCheckPersonName;
+                    _whlList.Add(whl);
+                }
+                _haveWHInfo = false;
+            }
+            return _whlList;
+        }
+
+        /// <summary>
+        /// 执行sql命令
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<WorkHourLists> ExecuteSQlCommand(string _command)
         {
             List<WorkHourLists> whlList = new List<WorkHourLists>();
             DataSet ds = new DataSet();
-            string SQl = string.Format(@"select A.[ID],A.[WH_TechRouteID],A.[WH_WorkHour],A.[WH_StartDate],A.[WH_EndDate],B.[TR_ProcessSequence],B.[TR_ProcessName] from [WorkHour] A left join [TechRoute] B on A.[WH_TechRouteID] = B.[ID] where [WH_TechRouteID] in (select [ID] from [TechRoute] where [TR_VersionID] in (select [ID] from [TechRouteVersion] where [TRV_VersionCode]='{0}' and [TRV_ItemID] in (select ID from [ItemInfo] where [II_Code]='{1}')))", _techVersionCode, _itemCode);
-
             MyDBController.GetConnection();
-            MyDBController.GetDataSet(SQl, ds, "WorkHour");
+            MyDBController.GetDataSet(_command, ds, "WorkHour");
             MyDBController.CloseConnection();
 
-            foreach (DataRow row in ds.Tables["WorkHour"].Rows)
+            try
             {
-                WorkHourLists whl = new WorkHourLists();
-                whl.ID = Convert.ToInt64(row["ID"]);
-                whl.TR_ProcessName = row["TR_ProcessName"].ToString();
-                whl.TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]);
-                whl.WH_StartDate = Convert.ToDateTime(row["WH_StartDate"]);
-                whl.WH_EndDate = Convert.ToDateTime(row["WH_EndDate"]);
-                whl.WH_WorkHour = Convert.ToDecimal(row["WH_WorkHour"]);
-                whlList.Add(whl);
+                foreach (DataRow row in ds.Tables["WorkHour"].Rows)
+                {
+                    WorkHourLists whl = new WorkHourLists();
+                    whl.ID = Convert.ToInt64(row["ID"]);
+                    whl.TR_ProcessName = row["TR_ProcessName"].ToString();
+                    whl.TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]);
+                    whl.WH_TechRouteID = Convert.ToInt64(row["WH_TechRouteID"]);
+                    whl.WH_StartDate = Convert.ToDateTime(row["WH_StartDate"]);
+                    whl.WH_EndDate = Convert.ToDateTime(row["WH_EndDate"]);
+                    whl.WH_WorkHour = Convert.ToDecimal(row["WH_WorkHour"]);
+                    whl.TR_ProcessCode = row["TR_ProcessCode"].ToString();
+                    whl.TR_DefaultCheckPersonName = row["TR_DefaultCheckPersonName"].ToString();
+                    whl.TR_ItemID = Convert.ToInt64(row["TR_ItemID"]);
+                    whl.TR_ItemCode = row["TR_ItemCode"].ToString();
+                    whl.TRV_VersionCode = row["TRV_VersionCode"].ToString();
+                    whl.TRV_VersionName = row["TRV_VersionName"].ToString();
+                    whl.WC_Department_Name = row["WC_Department_Name"].ToString();
+                    whlList.Add(whl);
+                }
+            }
+            catch (Exception)
+            {
             }
             return whlList;
         }

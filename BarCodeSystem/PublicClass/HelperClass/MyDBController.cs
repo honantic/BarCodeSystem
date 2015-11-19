@@ -10,14 +10,14 @@ using System.Windows.Media;
 using System.Reflection;
 using Xceed.Wpf.AvalonDock;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 /// <summary>
 ///MyDBController 的摘要说明
 /// </summary>
-public class MyDBController
+public static class MyDBController
 {
-    public MyDBController()
-    { }
-
 
     #region 模块级变量
 
@@ -52,7 +52,23 @@ public class MyDBController
     public static SqlConnection M_scn_myConn;   //数据库连接对象
     public static DataSet M_ds = new DataSet();                     //数据集对象
 
+    static string M_str_connstr = "";
+
     #endregion
+
+
+    /// <summary>
+    /// 创建一个和当前主连接一样的sql连接
+    /// </summary>
+    /// <returns></returns>
+    public static SqlConnection CreateSqlCon()
+    {
+        string _connectionString = "server=" + Server + ";database="
+              + Database + ";uid="
+              + Uid + ";pwd=" + Pwd;          //数据库连接字符串
+        SqlConnection _sqlcon = new SqlConnection() { ConnectionString = _connectionString };
+        return _sqlcon;
+    }
 
     /// <summary>
     /// 连接数据库
@@ -61,15 +77,15 @@ public class MyDBController
     {
         try
         {
-            string M_str_connstr = "server=" + Server + ";database="
+            M_str_connstr = "server=" + Server + ";database="
                 + Database + ";uid="
                 + Uid + ";pwd=" + Pwd;          //数据库连接字符串
-            M_scn_myConn = new SqlConnection(M_str_connstr);
+            M_scn_myConn = new SqlConnection() { ConnectionString = M_str_connstr };
             if (M_scn_myConn.State == ConnectionState.Closed)
             {
                 M_scn_myConn.Open();
             }
-            while (M_scn_myConn.State == ConnectionState.Connecting)
+            while (M_scn_myConn.State != ConnectionState.Open)
             {
 
             }
@@ -734,6 +750,18 @@ public class MyDBController
     }
 
     /// <summary>
+    /// 用list和带指定结构的dt来更新数据库
+    /// </summary>
+    /// <typeparam name="T">泛型类型</typeparam>
+    /// <param name="_list">数据列表</param>
+    /// <param name="_dt">跟数据库结构吻合的dt</param>
+    public static bool InsertSqlBulk<T>(SqlConnection _sqlCon, List<T> _list, DataTable _dt)
+    {
+        _dt = ListToDataTable(_list, _dt);
+        return InsertSqlBulk(_sqlCon, _dt);
+    }
+
+    /// <summary>
     /// 批量删除信息，输入的dt参数必须有TableName这个属性，这个属性值等于数据库中目标表的表名
     /// </summary>
     /// <param name="dt">dt参数</param>
@@ -989,6 +1017,43 @@ public class MyDBController
     }
 
     /// <summary>
+    /// 将dt转换成list
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="_dt"></param>
+    /// <returns></returns>
+    public static List<T> DataTableToList<T>(DataTable _dt) where T : new()
+    {
+        PropertyInfo[] props;
+        List<T> _tList = new List<T>();
+        if (_dt.Rows.Count > 0)
+        {
+            props = typeof(T).GetProperties();
+            List<string> _colList = new List<string>();
+            foreach (DataColumn col in _dt.Columns)
+            {
+                _colList.Add(col.ColumnName);
+            }
+            foreach (DataRow row in _dt.Rows)
+            {
+                T _t = new T();
+                foreach (PropertyInfo p in props)
+                {
+                    if (_colList.Contains(p.Name))
+                    {
+                        if (row[p.Name] is DBNull)
+                        {
+                        }
+                        else
+                            p.SetValue(_t, row[p.Name], null);
+                    }
+                }
+                _tList.Add(_t);
+            }
+        }
+        return _tList;
+    }
+    /// <summary>
     /// list的复制工作
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -1013,7 +1078,7 @@ public class MyDBController
                     {
                         if (!pi.PropertyType.IsGenericType)
                         {
-                            if (pi.SetMethod != null && pi.GetValue(p, null) != null)
+                            if (pi.GetSetMethod() != null && pi.GetValue(p, null) != null)
                             {
                                 pi.SetValue(item, Convert.ChangeType(pi.GetValue(p, null), pi.PropertyType), null);
                             }
@@ -1190,40 +1255,6 @@ public class MyDBController
         }
     }
 
-    /// <summary>
-    /// 利用VisualTreeHelper寻找指定依赖对象的父级对象，返回名称
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    static List<string> FindVisualParentName(DependencyObject obj)
-    {
-        try
-        {
-            List<string> strList = new List<string> { };
-            DependencyObject parent = VisualTreeHelper.GetParent(obj);
-            if (parent != null)
-            {
-                strList.Add(parent.GetType().ToString());
-                if (parent is DockingManager)
-                {
-                    strList.Add(((DockingManager)parent).Name);
-                }
-                List<string> parentOfParent = FindVisualParentName(parent);
-                if (parentOfParent != null)
-                {
-                    strList.AddRange(parentOfParent);
-                }
-            }
-
-            return strList;
-        }
-        catch (Exception ee)
-        {
-            MessageBox.Show(ee.Message);
-            return null;
-        }
-    }
-
 
     struct Person
     {
@@ -1234,7 +1265,7 @@ public class MyDBController
     /// <summary>
     /// 调用样例
     /// </summary>
-    public void DemoFunction()
+    public static void DemoFunction()
     {
         #region 以List<T>为数据源调用
         List<Person> personList = new List<Person>() { 
@@ -1270,5 +1301,77 @@ public class MyDBController
         //第三步:调用
         MyDBController.InsertSqlBulk(new SqlConnection() { ConnectionString = sqlcon.ConnectionString }, aimTable, colList, out updateNum, out insertNum);
         #endregion
+    }
+
+}
+
+public static class DataGridPlus
+{
+    /// <summary>
+    /// 获取DataGrid控件单元格
+    /// </summary>
+    /// <param name="dataGrid">DataGrid控件</param>
+    /// <param name="rowIndex">单元格所在的行号</param>
+    /// <param name="columnIndex">单元格所在的列号</param>
+    /// <returns>指定的单元格</returns>
+    public static DataGridCell GetCell(this DataGrid dataGrid, int rowIndex, int columnIndex)
+    {
+        DataGridRow rowContainer = dataGrid.GetRow(rowIndex);
+        if (rowContainer != null)
+        {
+            DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+            DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(columnIndex);
+            if (cell == null)
+            {
+                dataGrid.ScrollIntoView(rowContainer, dataGrid.Columns[columnIndex]);
+                cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(columnIndex);
+            }
+            return cell;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 获取DataGrid的行
+    /// </summary>
+    /// <param name="dataGrid">DataGrid控件</param>
+    /// <param name="rowIndex">DataGrid行号</param>
+    /// <returns>指定的行号</returns>
+    public static DataGridRow GetRow(this DataGrid dataGrid, int rowIndex)
+    {
+        DataGridRow rowContainer = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+        if (rowContainer == null)
+        {
+            dataGrid.UpdateLayout();
+            dataGrid.ScrollIntoView(dataGrid.Items[rowIndex]);
+            rowContainer = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+        }
+        return rowContainer;
+    }
+
+    /// <summary>
+    /// 获取父可视对象中第一个指定类型的子可视对象
+    /// </summary>
+    /// <typeparam name="T">可视对象类型</typeparam>
+    /// <param name="parent">父可视对象</param>
+    /// <returns>第一个指定类型的子可视对象</returns>
+    public static T GetVisualChild<T>(Visual parent) where T : Visual
+    {
+        T child = default(T);
+        int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < numVisuals; i++)
+        {
+            Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+            child = v as T;
+            if (child == null)
+            {
+                child = GetVisualChild<T>(v);
+            }
+            if (child != null)
+            {
+                break;
+            }
+        }
+        return child;
     }
 }

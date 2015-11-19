@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:namespc="clr-namespace:BarCodeSystem"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
-        Title="U9组织信息导入窗口" Height="600" Width="600" Loaded="Window_Loaded">
+        Title="U9组织信息导入窗口" Height="600" Width="600" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
 
 
     <Window.Resources>

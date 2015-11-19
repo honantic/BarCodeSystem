@@ -288,6 +288,11 @@ namespace BarCodeSystem
         public string personName
         { get; set; }
 
+        /// <summary>
+        /// 是否是盘库时统计工序
+        /// </summary>
+        public bool TR_IsCountingProcess { get; set; }
+
         ///// <summary>
         ///// 
         ///// </summary>
@@ -305,37 +310,8 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<TechRouteLists> FetchTechRouteByWCID(Int64 _wcID)
         {
-            List<TechRouteLists> trlList = new List<TechRouteLists>();
-            DataSet ds = new DataSet();
-            MyDBController.GetConnection();
-            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_WorkCenterID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _wcID);
-            MyDBController.GetDataSet(SQl, ds, "TechRoute");
-            MyDBController.CloseConnection();
-            foreach (DataRow row in ds.Tables["TechRoute"].Rows)
-            {
-                TechRouteLists trl = new TechRouteLists();
-                trl.ID = Convert.ToInt64(row["ID"]);
-                trl.TR_ItemID = Convert.ToInt64(row["TR_ItemID"]);
-                trl.TR_ItemCode = row["TR_ItemCode"].ToString();
-                trl.II_Name = row["II_Name"].ToString();
-                trl.TR_VersionID = Convert.ToInt64(row["TR_VersionID"]);
-                trl.TR_IsTestProcess = Convert.ToBoolean(row["TR_IsTestProcess"]);
-                trl.WC_Department_Name = row["WC_Department_Name"].ToString();
-                trl.TR_WorkCenterID = Convert.ToInt64(row["TR_WorkCenterID"]);
-                trl.TR_ProcessSequence = Convert.ToInt32(row["TR_ProcessSequence"]);
-                trl.TR_ProcessName = row["TR_ProcessName"].ToString();
-                trl.TR_ProcessCode = row["TR_ProcessCode"].ToString();
-                trl.TR_ProcessID = Convert.ToInt64(row["TR_ProcessID"]);
-                trl.TRV_VersionName = row["TRV_VersionName"].ToString();
-                trl.TRV_VersionCode = row["TRV_VersionCode"].ToString();
-                trl.TR_DefaultCheckPersonName = row["TR_DefaultCheckPersonName"].ToString();
-                trl.TR_WorkHour = Convert.ToDecimal(row["TR_WorkHour"]);
-                trl.TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]);
-                trl.TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]);
-                trl.PN_CodeInWorkCenter = row["PN_CodeInWorkCenter"].ToString();
-                trlList.Add(trl);
-            }
-            return trlList;
+            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_WorkCenterID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _wcID);
+            return ExecuteSQlCommand(SQl);
         }
 
         /// <summary>
@@ -346,20 +322,72 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<TechRouteLists> FetchTechRouteByItemCode(string _itemCode, string _techrouteVersionCode = "")
         {
-            List<TechRouteLists> trlList = new List<TechRouteLists>();
-            DataSet ds = new DataSet();
-            MyDBController.GetConnection();
+
             string SQl = "";
             if (string.IsNullOrEmpty(_techrouteVersionCode))
             {
-                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode);
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode);
             }
             else
             {
-                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' and  B.[TRV_VersionCode]='{1}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode, _techrouteVersionCode);
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' and  B.[TRV_VersionCode]='{1}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode, _techrouteVersionCode);
             }
+            return ExecuteSQlCommand(SQl);
+        }
 
-            MyDBController.GetDataSet(SQl, ds, "TechRoute");
+        /// <summary>
+        /// 根据工艺路线版本获取工艺路线信息
+        /// </summary>
+        /// <param name="_tv"></param>
+        /// <returns></returns>
+        public static List<TechRouteLists> FetchTechRouteByVersion(TechVersion _tv)
+        {
+            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where B.[ID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _tv.ID);
+            return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 查看料品各版本盘库时统计工序
+        /// </summary>
+        /// <returns></returns>
+        public static List<TechRouteLists> FetchTechRouteCheckIsCountingProcess()
+        {
+            List<TechRouteLists> trList = new List<TechRouteLists>();
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+
+            string SQl = string.Format(@"select A.TR_ItemCode,C.II_Name,B.TRV_VersionCode,B.TRV_VersionName,A.TR_ProcessSequence,A.TR_ProcessCode,A.TR_ProcessName,A.TR_IsCountingProcess from  TechRoute as A left join TechRouteVersion as B on (A.TR_VersionID = B.ID) left join ItemInfo as C on (A.TR_ItemID = C.ID)  where A.TR_IsCountingProcess = 1 order by A.TR_ItemCode,B.TRV_VersionCode,A.TR_ProcessSequence");
+
+            MyDBController.GetConnection();
+            dt = MyDBController.GetDataSet(SQl, ds, "TechRoute").Tables["TechRoute"];
+            MyDBController.CloseConnection();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                TechRouteLists tr = new TechRouteLists();
+                tr.II_Name = dr["II_Name"].ToString();
+                tr.TR_ItemCode = dr["TR_ItemCode"].ToString();
+                tr.TRV_VersionCode = dr["TRV_VersionCode"].ToString();
+                tr.TRV_VersionName = dr["TRV_VersionName"].ToString();
+                tr.TR_ProcessSequence = Convert.ToInt32(dr["TR_ProcessSequence"].ToString());
+                tr.TR_ProcessCode = dr["TR_ProcessCode"].ToString();
+                tr.TR_ProcessName = dr["TR_ProcessName"].ToString();
+                trList.Add(tr);
+            }
+            return trList;
+        }
+
+        /// <summary>
+        /// 执行sql命令 
+        /// </summary>
+        /// <param name="_command"></param>
+        /// <returns></returns>
+        private static List<TechRouteLists> ExecuteSQlCommand(string _command)
+        {
+            List<TechRouteLists> trlList = new List<TechRouteLists>();
+            DataSet ds = new DataSet();
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(_command, ds, "TechRoute");
             MyDBController.CloseConnection();
             foreach (DataRow row in ds.Tables["TechRoute"].Rows)
             {
@@ -383,9 +411,61 @@ namespace BarCodeSystem
                 trl.TR_IsLastProcess = Convert.ToBoolean(row["TR_IsLastProcess"]);
                 trl.TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]);
                 trl.PN_CodeInWorkCenter = row["PN_CodeInWorkCenter"].ToString();
+                trl.TR_IsCountingProcess = row["TR_IsCountingProcess"] is DBNull ? false : Convert.ToBoolean(row["TR_IsCountingProcess"]);
                 trlList.Add(trl);
             }
             return trlList;
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_trl"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(TechRouteLists _trl)
+        {
+            List<TechRouteLists> _trlList = new List<TechRouteLists>() { _trl };
+            return SaveInfo(_trlList);
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_trlList"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(List<TechRouteLists> _trlList)
+        {
+            DataSet ds = new DataSet();
+            string SQl = string.Format("select top 0 * from [TechRoute]");
+            MyDBController.GetConnection();
+            MyDBController.GetDataSet(SQl, ds, "TechRoute");
+            bool flag = MyDBController.InsertSqlBulk<TechRouteLists>(_trlList, ds.Tables["TechRoute"]);
+            MyDBController.CloseConnection();
+            return flag;
+        }
+
+        /// <summary>
+        /// 删除信息
+        /// </summary>
+        /// <param name="_trl"></param>
+        public static void DeleteInfo(TechRouteLists _trl)
+        {
+            List<TechRouteLists> _trlList = new List<TechRouteLists>() { _trl };
+            DeleteInfo(_trlList);
+        }
+
+        /// <summary>
+        /// 删除信息
+        /// </summary>
+        /// <param name="_trlList"></param>
+        public static void DeleteInfo(List<TechRouteLists> _trlList)
+        {
+            MyDBController.GetConnection();
+            string SQl = string.Format("select top 0 * from [TechRoute] ");
+            DataSet ds = new DataSet();
+            MyDBController.GetDataSet(SQl, ds, "TechRoute");
+            string message = "";
+            MyDBController.DeleteSqlBulk<TechRouteLists>(_trlList, ds.Tables["TechRoute"], out message);
         }
     }
 }

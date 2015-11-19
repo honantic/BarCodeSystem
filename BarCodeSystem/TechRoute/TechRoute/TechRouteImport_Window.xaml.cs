@@ -61,8 +61,8 @@ namespace BarCodeSystem.TechRoute.TechRoute
 
 
         string[] error = {   "",                                            //0
-                             "料号在U9系统中不存在!",                    //1
-                             "车间编码在U9系统中不存在!",             //2
+                             "料号在条码系统中不存在!",                    //1
+                             "车间编码在条码系统中不存在!",             //2
                              "是否默认版本,是否返工版本,是否测试工序应输入‘是’或‘否’",  //3
                              "报工方式应输入‘流水线’或‘离散’",    //4
                              "绑定工序不能为本道工序",                 //5
@@ -72,7 +72,8 @@ namespace BarCodeSystem.TechRoute.TechRoute
                              "请先复制数据!",                        //9
                              "绑定工序号不能为0或空",                  //10
                              "料品只有一个默认工艺路线版本",         //11
-                             "一个工艺路线版本中不能出现重复的工序号"  //12
+                             "一个工艺路线版本中不能出现重复的工序号",  //12
+                             "工序在条码系统中不存在"          //13
                          };                        
 
 
@@ -108,7 +109,7 @@ namespace BarCodeSystem.TechRoute.TechRoute
             GetBarCode_WorkCenter();
             GetBarCode_TechRouteVersion();
             GetBar_TechRoute();
-            GetBar_WorkHour();
+            //GetBar_WorkHour();
             GetBar_ProcessName();
 
             MyDBController.CloseConnection();
@@ -360,78 +361,83 @@ namespace BarCodeSystem.TechRoute.TechRoute
                     //检测条码系统中是否存在此料号
                     if (bar_iteminfo.Select("II_Code = '" + item.II_Code + "'").Length == 0)
                     {
-                        //U9中是否存在此料号,存在则插入,不存在则报错
-                        if (U9ItemmasterModifiedOnTable.Select("itemmaster_code = '" + item.II_Code + "'").Length > 0)
-                        {
-                            MyDBController.GetConnection();
-                            DataRow r1 = U9ItemmasterModifiedOnTable.Select("itemmaster_code = '" + item.II_Code + "'")[0];
-                            string SQl = string.Format(@"INSERT INTO [ItemInfo](II_Code,II_Spec,II_Version,II_Name,II_UnitID,II_UnitCode,II_UnitName,II_QualitySortID)
-                            VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')", r1["itemmaster_code"].ToString(), r1["itemmaster_specs"].ToString(), r1["itemmaster_descflexfield"].ToString(),
-                            r1["itemmaster_name"].ToString(),r1["itemmaster_uom_id"], r1["itemmaster_uom_code"].ToString(), r1["itemmaster_uom"].ToString(), "");
+                        //U9中是否存在此料号,存在则插入条码系统,不存在则报错
+                        //if (U9ItemmasterModifiedOnTable.Select("itemmaster_code = '" + item.II_Code + "'").Length > 0)
+                        //{
+                            //MyDBController.GetConnection();
+                            //DataRow r1 = U9ItemmasterModifiedOnTable.Select("itemmaster_code = '" + item.II_Code + "'")[0];
+                            //string SQl = string.Format(@"INSERT INTO [ItemInfo](II_Code,II_Spec,II_Version,II_Name,II_UnitID,II_UnitCode,II_UnitName,II_QualitySortID)
+                            //VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')", r1["itemmaster_code"].ToString(), r1["itemmaster_specs"].ToString(), r1["itemmaster_descflexfield"].ToString(),
+                            //r1["itemmaster_name"].ToString(),r1["itemmaster_uom_id"], r1["itemmaster_uom_code"].ToString(), r1["itemmaster_uom"].ToString(), "");
 
-                            MyDBController.ExecuteNonQuery(SQl);
-                            MyDBController.CloseConnection();
-                            DBLog _dbLog = new DBLog();
-                            _dbLog.DBL_OperateBy = User_Info.User_Code;
-                            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
-                            _dbLog.DBL_OperateType = OperateType.Insert;
-                            _dbLog.DBL_Content = User_Info.User_Name + "|新增料品信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的料品编号记录在DBL_AssociateCode";
-                            _dbLog.DBL_AssociateCode = r1["itemmaster_code"].ToString();
-                            _dbLog.DBL_OperateTime = "ItemInfo";
-                            DBLog.WriteDBLog(_dbLog);
+                            //MyDBController.ExecuteNonQuery(SQl);
+                            //MyDBController.CloseConnection();
+                            //DBLog _dbLog = new DBLog();
+                            //_dbLog.DBL_OperateBy = User_Info.User_Code;
+                            //_dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                            //_dbLog.DBL_OperateType = OperateType.Insert;
+                            //_dbLog.DBL_Content = User_Info.User_Name + "|新增料品信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的料品编号记录在DBL_AssociateCode";
+                            //_dbLog.DBL_AssociateCode = r1["itemmaster_code"].ToString();
+                            //_dbLog.DBL_OperateTable = "ItemInfo";
+                            //DBLog.WriteDBLog(_dbLog);
 
-                            //每次新料品插入后更新
-                            MyDBController.GetConnection();
-                            bar_iteminfo.Clear();
-                            GetBarCode_ItemInfo();
-                            MyDBController.CloseConnection();
-                        }
-                        else
-                        {
-                            item.Error_Remarks = error[1];
-                            IsRigth = false;
-                        }
+                            ////每次新料品插入后更新
+                            //MyDBController.GetConnection();
+                            //bar_iteminfo.Clear();
+                            //GetBarCode_ItemInfo();
+                        //    //MyDBController.CloseConnection();
+                        //}
+                        //else
+                        //{
+
+                        //}
+
+                        item.Error_Remarks = error[1];
+                        IsRigth = false;
                     }
                     //检测条码系统中是否存在此车间编码
                     if (bar_workcenter.Select("WC_Department_Code = '" + item.WC_Department_Code + "'").Length == 0)
                     {
-                        //U9系统中是否存在此车间编码,存在则插入,不存在则报错
-                        if (U9DepartmentTable.Select("department_code = '" + item.WC_Department_Code + "'").Length > 0)
-                        {
-                            MyDBController.GetConnection();
-                            DataRow r1 = U9DepartmentTable.Select("department_code = '" + item.WC_Department_Code + "'")[0];
+                        //U9系统中是否存在此车间编码,存在则插入条码系统,不存在则报错
+                        //if (U9DepartmentTable.Select("department_code = '" + item.WC_Department_Code + "'").Length > 0)
+                        //{
+//                            MyDBController.GetConnection();
+//                            DataRow r1 = U9DepartmentTable.Select("department_code = '" + item.WC_Department_Code + "'")[0];
 
-                            string x = User_Info.User_Name;
-                            string y = DateTime.Now.ToString();
+//                            string x = User_Info.User_Name;
+//                            string y = DateTime.Now.ToString();
 
-                            string SQl = string.Format(@"INSERT INTO [WorkCenter](WC_Department_Code,WC_Department_Name,WC_Department_ShortName,WC_Department_ID,WC_IsValidated,WC_IsOrderControled,
-                        WC_IsWorkCenter,WC_LastOperateTime,WC_LastOprateBy,WC_ReservedSegment1,WC_ReservedSegment2,WC_ReservedSegment3)
-                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')", r1["department_code"].ToString(), r1["department_name"].ToString(), "", r1["department_id"],
-                            0, 0, 0, DateTime.Now, User_Info.User_Name,"","","");
+//                            string SQl = string.Format(@"INSERT INTO [WorkCenter](WC_Department_Code,WC_Department_Name,WC_Department_ShortName,WC_Department_ID,WC_IsValidated,WC_IsOrderControled,
+//                        WC_IsWorkCenter,WC_LastOperateTime,WC_LastOprateBy,WC_ReservedSegment1,WC_ReservedSegment2,WC_ReservedSegment3)
+//                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')", r1["department_code"].ToString(), r1["department_name"].ToString(), "", r1["department_id"],
+//                            0, 0, 0, DateTime.Now, User_Info.User_Name,"","","");
 
-                            MyDBController.ExecuteNonQuery(SQl);
-                            MyDBController.CloseConnection();
+//                            MyDBController.ExecuteNonQuery(SQl);
+//                            MyDBController.CloseConnection();
 
-                            DBLog _dbLog = new DBLog();
-                            _dbLog.DBL_OperateBy = User_Info.User_Code;
-                            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
-                            _dbLog.DBL_OperateType = OperateType.Insert;
-                            _dbLog.DBL_Content = User_Info.User_Name + "|新增工作中心信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工作中心编号记录在DBL_AssociateCode";
-                            _dbLog.DBL_AssociateCode = r1["department_code"].ToString();
-                            _dbLog.DBL_OperateTime = "WorkCenter";
-                            DBLog.WriteDBLog(_dbLog);
-                            //每次插入工作部门后更新
+//                            DBLog _dbLog = new DBLog();
+//                            _dbLog.DBL_OperateBy = User_Info.User_Code;
+//                            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+//                            _dbLog.DBL_OperateType = OperateType.Insert;
+//                            _dbLog.DBL_Content = User_Info.User_Name + "|新增工作中心信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工作中心编号记录在DBL_AssociateCode";
+//                            _dbLog.DBL_AssociateCode = r1["department_code"].ToString();
+//                            _dbLog.DBL_OperateTable = "WorkCenter";
+//                            DBLog.WriteDBLog(_dbLog);
+//                            //每次插入工作部门后更新
 
-                            MyDBController.GetConnection();
-                            bar_workcenter.Clear();
-                            GetBarCode_WorkCenter();
-                            MyDBController.CloseConnection();
-                        }
-                        else
-                        {
-                            item.Error_Remarks = error[2];
-                            IsRigth = false;
-                        }
+//                            MyDBController.GetConnection();
+//                            bar_workcenter.Clear();
+//                            GetBarCode_WorkCenter();
+//                            MyDBController.CloseConnection();
+                        //}
+                        //else
+                        //{
+                        //    item.Error_Remarks = error[2];
+                        //    IsRigth = false;
+                        //}
+
+                        item.Error_Remarks = error[2];
+                        IsRigth = false;
 
                     }
                     //检测 是否默认版本,是否返工版本,是否测试工序应输入‘是’或‘否’
@@ -452,24 +458,27 @@ namespace BarCodeSystem.TechRoute.TechRoute
                     //检测工序号在条码系统中是否存在,存在则更新,不存在插入
                     if (bar_processname.Select("PN_Code ='" + item.TR_ProcessCode + "'").Length == 0)
                     {
-                        MyDBController.GetConnection();
+                        //MyDBController.GetConnection();
 
-                        string SQl = string.Format(@"INSERT INTO [ProcessName](PN_Code,PN_Name)VALUES('{0}','{1}')", item.TR_ProcessCode, item.TR_ProcessName);
-                        MyDBController.ExecuteNonQuery(SQl);
+                        //string SQl = string.Format(@"INSERT INTO [ProcessName](PN_Code,PN_Name)VALUES('{0}','{1}')", item.TR_ProcessCode, item.TR_ProcessName);
+                        //MyDBController.ExecuteNonQuery(SQl);
 
-                        //每次插入工序后更新
-                        bar_processname.Clear();
-                        GetBar_ProcessName();
+                        ////每次插入工序后更新
+                        //bar_processname.Clear();
+                        //GetBar_ProcessName();
 
-                        MyDBController.CloseConnection();
-                        DBLog _dbLog = new DBLog();
-                        _dbLog.DBL_OperateBy = User_Info.User_Code;
-                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
-                        _dbLog.DBL_OperateType = OperateType.Insert;
-                        _dbLog.DBL_Content = User_Info.User_Name + "|新增工序信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工序信息记录在DBL_AssociateCode";
-                        _dbLog.DBL_AssociateCode = item.TR_ProcessCode + "|" + item.TR_ProcessName;
-                        _dbLog.DBL_OperateTime = "WorkCenter";
-                        DBLog.WriteDBLog(_dbLog);
+                        //MyDBController.CloseConnection();
+                        //DBLog _dbLog = new DBLog();
+                        //_dbLog.DBL_OperateBy = User_Info.User_Code;
+                        //_dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                        //_dbLog.DBL_OperateType = OperateType.Insert;
+                        //_dbLog.DBL_Content = User_Info.User_Name + "|新增工序信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position + "。新增的工序信息记录在DBL_AssociateCode";
+                        //_dbLog.DBL_AssociateCode = item.TR_ProcessCode + "|" + item.TR_ProcessName;
+                        //_dbLog.DBL_OperateTable = "WorkCenter";
+                        //DBLog.WriteDBLog(_dbLog);
+
+                        item.Error_Remarks = error[13];
+                        IsRigth = false;
                     }
 
 
@@ -1045,47 +1054,48 @@ namespace BarCodeSystem.TechRoute.TechRoute
 
 
 
-                count = WorkHour.Rows.Count;
-                for (int i = 0; i < count; i++)
-                {
+                //count = WorkHour.Rows.Count;
+                //for (int i = 0; i < count; i++)
+                //{
 
-                    r1 = WorkHour.Rows[i];
+                //    r1 = WorkHour.Rows[i];
 
-                    r2 = copiedData.Rows[i];
+                //    r2 = copiedData.Rows[i];
 
-                    r3 = bar_iteminfo.Select("II_Code = '" + r2["II_Code"] + "'")[0];
+                //    r3 = bar_iteminfo.Select("II_Code = '" + r2["II_Code"] + "'")[0];
 
-                    //r4 = bar_TechRouteVersion.Select("TRV_ItemID = '" + r3["ID"] + "' and TRV_VersionCode = '" + r2["TRV_VersionCode"] + "'")[0];
-                    r4 = bar_techrouteversion.Select("TRV_ItemID = '" + r3["ID"] + "' and TRV_VersionCode = '" + r2["TRV_VersionCode"] + "'")[0];
+                //    //r4 = bar_TechRouteVersion.Select("TRV_ItemID = '" + r3["ID"] + "' and TRV_VersionCode = '" + r2["TRV_VersionCode"] + "'")[0];
+                //    r4 = bar_techrouteversion.Select("TRV_ItemID = '" + r3["ID"] + "' and TRV_VersionCode = '" + r2["TRV_VersionCode"] + "'")[0];
 
                     
 
-                    //得到工艺路线ID
-                    r1["WH_TechRouteID"] = bar_techroute.Select("TR_ItemCode = '" + r2["II_Code"] + "' and TR_VersionID = '" + r4["ID"] + "' and TR_ProcessSequence = '" + r2["TR_ProcessSequence"] + "'")[0]["ID"];
+                //    //得到工艺路线ID
+                //    r1["WH_TechRouteID"] = bar_techroute.Select("TR_ItemCode = '" + r2["II_Code"] + "' and TR_VersionID = '" + r4["ID"] + "' and TR_ProcessSequence = '" + r2["TR_ProcessSequence"] + "'")[0]["ID"];
 
-                    //检测价表ID,有则返回
-                    if (bar_workhour.Select("WH_TechRouteID  ='" + r1["WH_TechRouteID"]  + "'").Length  > 0)
-                    {
-                        r1["ID"] = bar_workhour.Select("WH_TechRouteID  ='" + r1["WH_TechRouteID"] + "'")[0]["ID"];
-                        r1["IDNew"] = r1["ID"];
-                    }
+                //    //检测价表ID,有则返回
+                //    if (bar_workhour.Select("WH_TechRouteID  ='" + r1["WH_TechRouteID"]  + "'").Length  > 0)
+                //    {
+                //        r1["ID"] = bar_workhour.Select("WH_TechRouteID  ='" + r1["WH_TechRouteID"] + "'")[0]["ID"];
+                //        r1["IDNew"] = r1["ID"];
+                //    }
 
 
-                }
+                //}
 
-                List<string> cloList3 = new List<string> { "ID", "WH_TechRouteID", "WH_WorkHour", "WH_StartDate", "WH_EndDate" };
+                //List<string> cloList3 = new List<string> { "ID", "WH_TechRouteID", "WH_WorkHour", "WH_StartDate", "WH_EndDate" };
 
-                MyDBController.GetConnection();
-                MyDBController.InsertSqlBulk(WorkHour, cloList3, out updateNum, out insertNum);
-                MyDBController.CloseConnection();
+                //MyDBController.GetConnection();
+                //MyDBController.InsertSqlBulk(WorkHour, cloList3, out updateNum, out insertNum);
+                //MyDBController.CloseConnection();
 
+                
+
+                ////刷新价表
+                //MyDBController.GetConnection();
+                //bar_workhour.Clear();
+                //GetBar_WorkHour();
+                //MyDBController.CloseConnection();
                 MessageBox.Show("导入成功", "提示", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-
-                //刷新价表
-                MyDBController.GetConnection();
-                bar_workhour.Clear();
-                GetBar_WorkHour();
-                MyDBController.CloseConnection();
                 IsCheck = false;
             
             }

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Loaded="Window_Loaded"
         ResizeMode="NoResize"
-        Title="派工方案确认界面" Height="350" Width="350" >
+        Title="派工方案确认界面" Height="350" Width="350" Icon="/BarCodeSystem;component/Images/burn.ico" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>

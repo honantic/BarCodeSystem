@@ -5,7 +5,7 @@
         xmlns:namespc="clr-namespace:BarCodeSystem"
         xmlns:convert="clr-namespace:BarCodeSystem.PublicClass.ValueConverters"
         ResizeMode="NoResize"
-        Title="料品工艺路线导入窗口" Height="800" Width="1000" Loaded="Window_Loaded">
+        Title="料品工艺路线导入窗口" Height="800" Width="1000" Loaded="Window_Loaded" Icon="/BarCodeSystem;component/Images/burn.ico">
     <Window.Resources>
         <convert:TrueOrFalseConverter x:Key="boolConvert"></convert:TrueOrFalseConverter>
         <convert:ReportWayConverter x:Key="reportWayConvert"></convert:ReportWayConverter>
@@ -53,7 +53,7 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="复制"  Height="30" Width="100" Name="btn_Copy" Click="btn_Copy_Click"></Button>
+            <Button Grid.Column="0" Content="复制到此窗口"  Height="30" Width="100" Name="btn_Copy" Click="btn_Copy_Click"></Button>
             <Button Grid.Column="1" Content="检测" Height="30" Width="100" Name="btn_Check" Click="btn_Check_Click"></Button>
             <Button Grid.Column="2" Content="导入条码系统"  Height="30" Width="100" Name="btn_Import" Click="btn_Import_Click"></Button>
             <Button Grid.Column="3" Content="清空" Height="30" Width="100" Name="btn_Clear" Click="btn_Clear_Click"></Button>

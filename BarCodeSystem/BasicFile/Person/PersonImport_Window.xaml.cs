@@ -151,7 +151,7 @@ namespace BarCodeSystem
 
             DBLog _dbLog = new DBLog();
             _dbLog.DBL_OperateBy = User_Info.User_Code;
-            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+            _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             _dbLog.DBL_OperateType = OperateType.Import;
             _dbLog.DBL_Content = User_Info.User_Name + "|Excel导入人员信息" + "|" + User_Info.User_WorkcenterName + "|" + User_Info.P_Position;
             for (int i = 0; i < y; i++)

@@ -174,6 +174,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     btn_Apply_Click(null, null);
                 }
                 AcceptNewData(newfcsls, fcsls);
+                FlowCardLists.CheckCardStates(fc, fcsls);
                 bool flag = FlowCardSubLists.SaveFCSInfo(fcsls);
                 if (flag)
                 {
@@ -254,7 +255,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             if (datagrid_FlowCardSub.SelectedIndex != -1)
             {
                 FlowCardSubLists fcs = (FlowCardSubLists)datagrid_FlowCardSub.SelectedItem;
-                if (fcs.FCS_IsReported)
+                if (CheckIsReported(fcs))
                 {
                     if (fcs.FCS_BeginAmount - fcs.FCS_ScrappedAmount - Convert.ToInt32(e.NewValue) + fcs.FCS_AddAmount < 0)//
                     {
@@ -271,13 +272,6 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                         btn_Apply_Click(null, null);
                     }
                 }
-                else
-                {
-                    e.Handled = true;
-                    Xceed.Wpf.Toolkit.MessageBox.Show("改道工序没有报工，不允许修改待处理信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Press(Key.Escape);
-                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Release(Key.Escape);
-                }
             }
         }
 
@@ -292,21 +286,30 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             if (datagrid_FlowCardSub.SelectedIndex != -1)
             {
                 FlowCardSubLists fcs = (FlowCardSubLists)datagrid_FlowCardSub.SelectedItem;
-                if (fcs.FCS_IsReported)
+                List<FlowCardSubLists> _fcsList = fcsls.FindAll(p => p.FCS_TechRouteID.Equals(fcs.FCS_TechRouteID));
+                if (CheckIsReported(fcs))
                 {
-                    ModifyWaySelect_Window mws = new ModifyWaySelect_Window(_fcs: fcs, _sfcqList: AcceptScrapInfo);
+                    ProcessNameLists pnl = ProcessNameLists.FetchPNInfoByFCS(fcs);
+                    ModifyWaySelect_Window mws = new ModifyWaySelect_Window(_fcsList: _fcsList, _sfcqList: AcceptScrapInfo, _pnl: pnl);
                     mws.ShowDialog();
-                    //KeyboardSimulation.Press(Key.Escape);
-                    //KeyboardSimulation.Release(Key.Escape);
                     btn_Apply_Click(null, null);
                 }
-                else
-                {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("改道工序没有报工，不允许修改报废信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Press(Key.Escape);
-                    BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Release(Key.Escape);
-                }
             }
+        }
+        /// <summary>
+        /// 检查选中的行表是否报工
+        /// </summary>
+        /// <param name="_fcsl"></param>
+        /// <returns></returns>
+        private bool CheckIsReported(FlowCardSubLists _fcsl)
+        {
+            if (!_fcsl.FCS_IsReported)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("改道工序没有报工，不允许修改报废信息！", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Press(Key.Escape);
+                BarCodeSystem.PublicClass.HelperClass.KeyboardSimulation.Release(Key.Escape);
+            }
+            return _fcsl.FCS_IsReported;
         }
 
         /// <summary>
@@ -335,7 +338,6 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
             this.Cursor = Cursors.Wait;
             ApplyDataChange(newfcsls);
-            //datagrid_FlowCardSub.Items.Refresh();
             haveChanged = false;
             this.Cursor = Cursors.Arrow;
         }
@@ -384,8 +386,15 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_ModifyPerson_Click(object sender, RoutedEventArgs e)
         {
-            FCPersonModify_Window fcpm = new FCPersonModify_Window(fc, fcsls.FindAll(p => p.FCS_ProcessSequanece.Equals(((FlowCardSubLists)datagrid_FlowCardSub.SelectedItem).FCS_ProcessSequanece)), RecieveNewPersonInfo);
-            fcpm.ShowDialog();
+            if (datagrid_FlowCardSub.SelectedIndex != -1)
+            {
+                FlowCardSubLists fcs = (FlowCardSubLists)datagrid_FlowCardSub.SelectedItem;
+                if (CheckIsReported(fcs))
+                {
+                    FCPersonModify_Window fcpm = new FCPersonModify_Window(fc, fcsls.FindAll(p => p.FCS_ProcessSequanece.Equals(((FlowCardSubLists)datagrid_FlowCardSub.SelectedItem).FCS_ProcessSequanece)), RecieveNewPersonInfo);
+                    fcpm.ShowDialog();
+                }
+            }
         }
 
         /// <summary>

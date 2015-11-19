@@ -202,7 +202,7 @@ namespace BarCodeSystem
                         MyDBController.CloseConnection();
                         DBLog _dbLog = new DBLog();
                         _dbLog.DBL_OperateBy = User_Info.User_Code;
-                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                         _dbLog.DBL_OperateType = OperateType.Update;
                         _dbLog.DBL_Content = User_Info.User_Name + "|修改人员信息" + "|人员编码由" + pl.code + "改为" + txtb_PersonCode.Text + "|工作中心为" + pl.departid + "|职位由" + pl.position + "变为" + txtb_Position.Text.Trim() + "|姓名由" + pl.name + "变为" + txtb_PersonName.Text;
                         DBLog.WriteDBLog(_dbLog);
@@ -231,7 +231,7 @@ namespace BarCodeSystem
                         MyDBController.CloseConnection();
                         DBLog _dbLog = new DBLog();
                         _dbLog.DBL_OperateBy = User_Info.User_Code;
-                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:MM:ss");
+                        _dbLog.DBL_OperateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                         _dbLog.DBL_OperateType = OperateType.Insert;
                         _dbLog.DBL_Content = User_Info.User_Name + "|新增人员信息" + "|人员编码为" + txtb_PersonCode.Text + "|工作中心为" + pl.departid + "|职位为" + txtb_Position.Text.Trim() + "|姓名为" + txtb_PersonName.Text;
                         DBLog.WriteDBLog(_dbLog);
