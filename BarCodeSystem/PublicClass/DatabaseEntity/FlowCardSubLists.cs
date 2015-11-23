@@ -451,7 +451,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         }
 
 
-      
+
 
         /// <summary>
         /// 执行sql命令
@@ -508,7 +508,7 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// 快速保存数据
         /// </summary>
         /// <param name="_fcsls"></param>
-        public static bool SaveFCSInfo(List<FlowCardSubLists> _fcsls)
+        public static bool SaveFCSInfo(List<FlowCardSubLists> _fcsls, bool _showInfo = true)
         {
             try
             {
@@ -518,7 +518,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
                 MyDBController.GetConnection();
                 MyDBController.GetDataSet(SQl, ds, "FlowCardSub");
                 MyDBController.AutoUpdateInsert(ds.Tables["FlowCardSub"], _fcsls, out updateNum, out insertNum);
-                Xceed.Wpf.Toolkit.MessageBox.Show("保存成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (_showInfo)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("保存成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 MyDBController.CloseConnection();
                 return true;
             }
@@ -527,7 +530,6 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
                 Xceed.Wpf.Toolkit.MessageBox.Show(ee.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-
         }
 
         /// <summary>

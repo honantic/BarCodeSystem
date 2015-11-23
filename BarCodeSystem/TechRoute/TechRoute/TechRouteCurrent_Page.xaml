@@ -155,6 +155,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="是否平分工序" IsReadOnly="True" Binding="{Binding Path=TR_IsEquallyDivideProcess,Converter={StaticResource boolConverter}}"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
                 <Grid Grid.Row ="2" Grid.ColumnSpan="2">

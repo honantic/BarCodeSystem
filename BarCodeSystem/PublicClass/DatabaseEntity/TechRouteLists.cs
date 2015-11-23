@@ -293,6 +293,10 @@ namespace BarCodeSystem
         /// </summary>
         public bool TR_IsCountingProcess { get; set; }
 
+        /// <summary>
+        /// 是否是平分工序，默认是
+        /// </summary>
+        public bool TR_IsEquallyDivideProcess { get; set; }
         ///// <summary>
         ///// 
         ///// </summary>
@@ -310,7 +314,7 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<TechRouteLists> FetchTechRouteByWCID(Int64 _wcID)
         {
-            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_WorkCenterID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _wcID);
+            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],A.[TR_IsEquallyDivideProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID]where A.[TR_WorkCenterID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _wcID);
             return ExecuteSQlCommand(SQl);
         }
 
@@ -326,11 +330,11 @@ namespace BarCodeSystem
             string SQl = "";
             if (string.IsNullOrEmpty(_techrouteVersionCode))
             {
-                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode);
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],A.[TR_IsEquallyDivideProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode);
             }
             else
             {
-                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' and  B.[TRV_VersionCode]='{1}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode, _techrouteVersionCode);
+                SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],A.[TR_IsEquallyDivideProcess],E.[PN_CodeInWorkCenter] FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[TR_ItemCode]='{0}' and  B.[TRV_VersionCode]='{1}' ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _itemCode, _techrouteVersionCode);
             }
             return ExecuteSQlCommand(SQl);
         }
@@ -342,8 +346,19 @@ namespace BarCodeSystem
         /// <returns></returns>
         public static List<TechRouteLists> FetchTechRouteByVersion(TechVersion _tv)
         {
-            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where B.[ID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _tv.ID);
+            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],A.[TR_IsEquallyDivideProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where B.[ID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", _tv.ID);
             return ExecuteSQlCommand(SQl);
+        }
+
+        /// <summary>
+        /// 根据流转卡行表信息获取对应的工艺路线记录
+        /// </summary>
+        /// <param name="flowCardSubLists"></param>
+        /// <returns></returns>
+        public static TechRouteLists FetchTRLInfoByFCS(PublicClass.DatabaseEntity.FlowCardSubLists flowCardSubLists)
+        {
+            string SQl = string.Format(@" SELECT A.[ID],A.[TR_ItemID],A.[TR_ItemCode],C.[II_Name],C.[II_Spec],C.[II_UnitName],C.[II_Version],A.[TR_VersionID],A.[TR_IsTestProcess],A.[TR_DefaultCheckPersonName],A.[TR_WorkHour],A.[TR_IsFirstProcess],A.[TR_IsLastProcess],A.[TR_IsBackProcess],B.[TRV_VersionCode],B.[TRV_VersionName],B.[TRV_IsDefaultVer],B.[TRV_IsSpecialVersion],B.[TRV_ReportWay],D.[WC_Department_Name],A.[TR_WorkCenterID],A.[TR_ProcessSequence],A.[TR_ProcessName],A.[TR_ProcessCode],A.[TR_ProcessID],A.[TR_IsCountingProcess],A.[TR_IsEquallyDivideProcess],E.[PN_CodeInWorkCenter]  FROM [TechRoute] A LEFT JOIN [TechRouteVersion] B ON A.[TR_ItemID]=B.[TRV_ItemID]  AND A.[TR_VersionID]=B.[ID]LEFT JOIN [ItemInfo] C ON A.[TR_ItemID]=C.[ID] LEFT JOIN [WorkCenter] D ON A.[TR_WorkCenterID]=D.[WC_Department_ID] left join [ProcessName] E on A.[TR_ProcessID] =E.[ID] where A.[ID]={0} ORDER BY A.[TR_ItemCode],B.[TRV_IsDefaultVer] desc,A.[TR_VersionID],A.[TR_ProcessSequence]", flowCardSubLists.FCS_TechRouteID);
+            return ExecuteSQlCommand(SQl).FirstOrDefault();
         }
 
         /// <summary>
@@ -412,6 +427,7 @@ namespace BarCodeSystem
                 trl.TR_IsFirstProcess = Convert.ToBoolean(row["TR_IsFirstProcess"]);
                 trl.PN_CodeInWorkCenter = row["PN_CodeInWorkCenter"].ToString();
                 trl.TR_IsCountingProcess = row["TR_IsCountingProcess"] is DBNull ? false : Convert.ToBoolean(row["TR_IsCountingProcess"]);
+                trl.TR_IsEquallyDivideProcess = row["TR_IsEquallyDivideProcess"] is DBNull ? true : Convert.ToBoolean(row["TR_IsEquallyDivideProcess"]);
                 trlList.Add(trl);
             }
             return trlList;
@@ -467,5 +483,7 @@ namespace BarCodeSystem
             string message = "";
             MyDBController.DeleteSqlBulk<TechRouteLists>(_trlList, ds.Tables["TechRoute"], out message);
         }
+
+
     }
 }

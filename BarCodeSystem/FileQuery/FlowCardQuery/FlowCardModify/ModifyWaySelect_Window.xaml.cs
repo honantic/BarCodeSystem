@@ -22,7 +22,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// 选择手动录入或者扫描录入的构造函数
         /// </summary>
         /// <param name="_sqi"></param>
-        public ModifyWaySelect_Window(SubmitFlowCardQualitiesList _sfcqList,   List<FlowCardSubLists> _fcsList, ProcessNameLists _pnl)
+        public ModifyWaySelect_Window(SubmitFlowCardQualitiesList _sfcqList, List<FlowCardSubLists> _fcsList, ProcessNameLists _pnl)
         {
             InitializeComponent();
             sfcqList = _sfcqList;
@@ -82,8 +82,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_SelectByHand_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             FlowCardQualityIssues_Window fcqi = new FlowCardQualityIssues_Window(AcceptQualityIssues, pnl);
             fcqi.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -95,7 +97,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             bool flag = CheckIfExsist(qil);
             if (flag)
             {
-                FlowCardQualityLists fcql = new FlowCardQualityLists() { FCQ_QulityIssueID = qil.ID, FCQ_FlowCardSubID = fcsList.FirstOrDefault().ID, QI_Name = qil.QI_Name, QI_Code = qil.QI_Code };
+                FlowCardQualityLists fcql = new FlowCardQualityLists() { FCQ_QualityIssueID = qil.ID, FCQ_FlowCardSubID = fcsList.FirstOrDefault().ID, QI_Name = qil.QI_Name, QI_Code = qil.QI_Code, FCQ_HasReproduced = false, FCQ_Remark = "" };
                 fcqlList.Add(fcql);
             }
             datagrid_AmountInfo.ItemsSource = fcqlList;
@@ -112,7 +114,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             bool flag = true;
             foreach (FlowCardQualityLists item in fcqlList)
             {
-                if (item.FCQ_QulityIssueID == _qil.ID)
+                if (item.FCQ_QualityIssueID == _qil.ID)
                 {
                     flag = false;
                     break;
@@ -128,8 +130,10 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         /// <param name="e"></param>
         private void btn_SelectByScanning_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             FlowCardQualityIssues_Window fcqi = new FlowCardQualityIssues_Window(AcceptQualityIssuesList, pnl);
             fcqi.ShowDialog();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -144,7 +148,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
                     bool flag = CheckIfExsist(p);
                     if (flag)
                     {
-                        FlowCardQualityLists fcql = new FlowCardQualityLists() { FCQ_QulityIssueID = p.ID, FCQ_FlowCardSubID = fcsList.FirstOrDefault().ID, QI_Name = p.QI_Name, QI_Code = p.QI_Code };
+                        FlowCardQualityLists fcql = new FlowCardQualityLists() { FCQ_QualityIssueID = p.ID, FCQ_FlowCardSubID = fcsList.FirstOrDefault().ID, QI_Name = p.QI_Name, QI_Code = p.QI_Code };
                         fcqlList.Add(fcql);
                     }
                 });

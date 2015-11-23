@@ -23,6 +23,17 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// 选择打印模板构造函数
+        /// </summary>
+        /// <param name="_fcCode"></param>
+        public PrintTemplateSelect_Window( string _fcCode)
+        {
+            InitializeComponent();
+            fcCode = _fcCode;
+        }
+
+        string fcCode = "";
 
         /// <summary>
         /// 选定打印模板
@@ -31,7 +42,24 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
         /// <param name="e"></param>
         private void btn_SelectTemplate_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Cursor = Cursors.Wait;
+            if (listb_PrintTemplate.SelectedIndex != -1)
+            {
+                switch (((ListBoxItem)listb_PrintTemplate.SelectedItem).Name)
+                {
+                    case "_10LinesTemplate":
+                        _10LinesFlowCard_Window _10LFC = new _10LinesFlowCard_Window(fcCode);
+                        _10LFC.ShowDialog();
+                        break;
+                    case "_20LinesTemplate":
+                        _20LinesFlowCard_Window _20LFC = new _20LinesFlowCard_Window(fcCode);
+                        _20LFC.ShowDialog();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -56,6 +84,16 @@ namespace BarCodeSystem.ProductDispatch.FlowCardPrint
             {
                 this.DragMove();
             }
+        }
+
+        /// <summary>
+        /// 双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listb_PrintTemplate_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            btn_SelectTemplate_Click(null, null);
         }
     }
 }

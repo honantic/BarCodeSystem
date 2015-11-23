@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
-        Title="打印模板选择窗口" Height="600" Width="800">
+        Title="打印模板选择窗口" Height="300" Width="600">
 
     <Grid Name="grid_FatherGrid" MouseLeftButtonDown="grid_FatherGrid_MouseLeftButtonDown">
 
@@ -24,7 +24,7 @@
             </Label.Background>
         </Label>
 
-        <ListBox Grid.Row="1" Name="listb_PrintTemplate" Margin="5">
+        <ListBox Grid.Row="1" MouseDoubleClick="listb_PrintTemplate_MouseDoubleClick" Name="listb_PrintTemplate" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
             <ListBox.Background>
                 <SolidColorBrush Color="LightBlue" Opacity="0.9"></SolidColorBrush>
             </ListBox.Background>
@@ -35,11 +35,17 @@
                     </ScrollViewer>
                 </ControlTemplate>
             </ListBox.Template>
-            <ListBoxItem Height="100" Width="100" >
+            <ListBoxItem Height="100" Width="100" Name="_10LinesTemplate" Background="LightGreen"  HorizontalContentAlignment="Center">
                 <ListBoxItem.Content>
                     <StackPanel>
-                        <TextBlock>sssssss</TextBlock>
-                        <TextBlock>tttttt</TextBlock>
+                        <TextBlock>10行模板</TextBlock>
+                    </StackPanel>
+                </ListBoxItem.Content>
+            </ListBoxItem>
+            <ListBoxItem Height="100" Width="100" Name="_20LinesTemplate" Background="LightBlue" HorizontalContentAlignment="Center">
+                <ListBoxItem.Content>
+                    <StackPanel>
+                        <TextBlock>20行模板</TextBlock>
                     </StackPanel>
                 </ListBoxItem.Content>
             </ListBoxItem>
@@ -50,8 +56,8 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Content="   选定打印模板  " Name="btn_SelectTemplate"  VerticalAlignment="Center" HorizontalAlignment="Center" ClickMode="Release" Click="btn_SelectTemplate_Click"></Button>
-            <Button Content="   关       闭  " VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" ClickMode="Release"  Click="btn_Close_Click" Grid.Column="1" ></Button>
+            <Button Content="   选定打印模板  " Padding="25 5" Name="btn_SelectTemplate"  VerticalAlignment="Center" HorizontalAlignment="Center" ClickMode="Release" Click="btn_SelectTemplate_Click"></Button>
+            <Button Content="   关       闭  "  Padding="25 5" VerticalAlignment="Center" HorizontalAlignment="Center" Name="btn_Close" ClickMode="Release"  Click="btn_Close_Click" Grid.Column="1" ></Button>
         </Grid>
     </Grid>
 

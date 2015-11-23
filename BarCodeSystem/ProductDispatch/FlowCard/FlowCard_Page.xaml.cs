@@ -18,6 +18,7 @@ using BarCodeSystem.PublicClass.HelperClass;
 using System.Threading.Tasks;
 using System.Threading;
 using BarCodeSystem.SystemManage;
+using System.Diagnostics;
 
 namespace BarCodeSystem.ProductDispatch.FlowCard
 {
@@ -399,10 +400,6 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 else
                     WT_NameList.Add(WT_Name);
             }
-            //if (WT_NameList.Count > 0)
-            //{
-            //    Xceed.Wpf.Toolkit.MessageBox.Show("系统检测到有班组信息与派工信息相吻合，自动替换！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            //}
 
             if (CheckIfCanLegal(out message))
             {
@@ -419,7 +416,11 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                     RemoveFCReportFrame();
                     if (isReproduceFC)
                     {
+                        Stopwatch sw = new Stopwatch();
+                        sw.Start();
                         UpdateSourceFCInfo(flowCardList);
+                        sw.Stop();
+                        MessageBox.Show(sw.Elapsed.ToString());
                     }
                     Xceed.Wpf.Toolkit.MessageBox.Show("派工完成！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -439,7 +440,23 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             _reproduceFCQLList.ForEach(p => { p.FCQ_Remark = "去往返工流转卡" + _flowCardList[0].FC_Code; p.FCQ_HasReproduced = true; });
             FlowCardQualityLists.SaveInfo(_reproduceFCQLList);
             MyDBController.GetConnection();
-            _reproduceFCList.ForEach(p => { p.FC_HasReproduced = true; p.FC_CanReproduce = FlowCardLists.CheckWhetherCanReproduce(p); p.FC_Remark += "去往返工流转卡" + _flowCardList[0].FC_Code; });
+
+            //foreach (FlowCardLists p in _reproduceFCList)
+            //{
+            //    p.FC_HasReproduced = true;
+            //    p.FC_CanReproduce = FlowCardLists.CheckWhetherCanReproduce(p, MyDBController.CreateSqlCon());
+            //    p.FC_Remark += "去往返工流转卡" + _flowCardList[0].FC_Code;
+            //}
+
+            Parallel.ForEach(_reproduceFCList, p =>
+            {
+                p.FC_HasReproduced = true;
+                p.FC_CanReproduce = FlowCardLists.CheckWhetherCanReproduce(p, MyDBController.CreateSqlCon());
+                p.FC_Remark += "去往返工流转卡" + _flowCardList[0].FC_Code;
+                //Trace.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            });
+
+            //_reproduceFCList.AsParallel().ToList().ForEach(p => { p.FC_HasReproduced = true; p.FC_CanReproduce = FlowCardLists.CheckWhetherCanReproduce(p, new SqlConnection() { ConnectionString = MyDBController.M_scn_myConn.ConnectionString }); p.FC_Remark += "去往返工流转卡" + _flowCardList[0].FC_Code; });
             MyDBController.CloseConnection();
             FlowCardLists.SaveInfo(_reproduceFCList);
         }
@@ -556,11 +573,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private List<FlowCardLists> GenerateFlowCardInfo(int maxNum, string flowCode)
         {
             List<FlowCardLists> flowCardList = new List<FlowCardLists>();
-            string remark = "";
-            if (isReproduceFC)
-            {
-                _reproduceFCQLList.ForEach(p => remark += (p.FC_Code + "," + p.QI_Name + "," + p.FCQ_ScrapAmount.ToString() + "|"));
-            }
+
             flowCardList.Add(new FlowCardLists()
             {
                 FC_CardType = cardType,
@@ -581,7 +594,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
                 FC_CanReproduce = false,
                 FC_CanTransfer = false,
                 FC_CheckBy = "",
-                FC_Remark = remark,
+                FC_Remark = "",
                 FC_CheckTime = DateTime.Now,
                 FC_HasDistributed = false,
                 FC_HasReproduced = false,
@@ -599,6 +612,27 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             try
             {
                 bool flag = FlowCardLists.SaveInfo(flowCardList);
+                if (flag)
+                {
+                    Int64 _fcID = FlowCardLists.FetchFC_InfoByCode(flowCardList[0].FC_Code)[0].ID;
+                    List<ReproduceFlowCardRemarkLists> _rfcrList = new List<ReproduceFlowCardRemarkLists>();
+                    if (isReproduceFC)
+                    {
+
+                        _reproduceFCQLList.ForEach(
+                            p =>
+                            {
+                                ReproduceFlowCardRemarkLists rfcr = new ReproduceFlowCardRemarkLists();
+                                rfcr.RFCR_FlowCardID = _fcID;
+                                rfcr.RFCR_FlowCardQualityID = p.ID;
+                                _rfcrList.Add(rfcr);
+                            }
+                            );
+
+                        ReproduceFlowCardRemarkLists.SaveInfo(_rfcrList);
+
+                    }
+                }
                 return flag;
             }
             catch (Exception ee)
@@ -1007,9 +1041,10 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         {
             //EmptyFlowCard_Window efc = new EmptyFlowCard_Window(txtb_FlowCode.Text);
             //efc.ShowDialog();
-
-            _10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window(txtb_FlowCode.Text);
-            _10lfc.ShowDialog();
+            PrintTemplateSelect_Window pts = new PrintTemplateSelect_Window(txtb_FlowCode.Text);
+            pts.ShowDialog();
+            //_10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window(txtb_FlowCode.Text);
+            //_10lfc.ShowDialog();
         }
 
         /// <summary>

@@ -33,8 +33,8 @@
     <SuiteName>生产条码软件</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.11.18.00</ApplicationVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>1.11.23.03</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -263,6 +263,9 @@
     <Compile Include="ProductDispatch\FlowCardPrint\10LinesFlowCard_Window.xaml.cs">
       <DependentUpon>10LinesFlowCard_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductDispatch\FlowCardPrint\20LinesFlowCard_Window.xaml.cs">
+      <DependentUpon>20LinesFlowCard_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductDispatch\FlowCardPrint\CustomedFlowCard_Window.xaml.cs">
       <DependentUpon>CustomedFlowCard_Window.xaml</DependentUpon>
     </Compile>
@@ -303,6 +306,7 @@
       <DependentUpon>DisPlanConfirm_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublicClass\DatabaseEntity\QualityMonthlySalarList.cs" />
+    <Compile Include="PublicClass\DatabaseEntity\ReproduceFlowCardRemarkLists.cs" />
     <Compile Include="PublicClass\DatabaseEntity\StaffSalariesList.cs" />
     <Compile Include="PublicClass\DatabaseEntity\SystemAuthority.cs" />
     <Compile Include="PublicClass\DatabaseEntity\WorkHourLists.cs" />
@@ -829,6 +833,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProductDispatch\FlowCardPrint\10LinesFlowCard_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDispatch\FlowCardPrint\20LinesFlowCard_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -32,7 +32,7 @@
                 <RowDefinition  Height="60"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
             </Grid.RowDefinitions>
-            <GroupBox Margin="5">
+            <GroupBox Margin="5" >
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}">流转卡表头信息</TextBlock>
                 </GroupBox.Header>
@@ -97,7 +97,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Margin="5" Name="gb_PersonInfo">
+                <GroupBox Margin="5" Name="gb_PersonInfo" >
                     <GroupBox.Header>
                         <TextBlock  Style="{StaticResource textb_NormalStyle}">工序操作人员信息</TextBlock>
                     </GroupBox.Header>
@@ -160,7 +160,7 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <DataGrid  CanUserAddRows="False" Grid.ColumnSpan="3" Name="datagrid_AmountInfo" ItemsSource="{Binding}" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
+                        <DataGrid   CanUserAddRows="False" Grid.ColumnSpan="3" Name="datagrid_AmountInfo" ItemsSource="{Binding}" RowHeaderWidth="30" AutoGenerateColumns="False" ColumnWidth="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="编号">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -218,11 +218,87 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
+
                         <Button Grid.Row="1" Content="扫描录入" Margin="5" Name="btn_ScanScrapInfo" Click="btn_ScanScrapInfo_Click" VerticalAlignment="Center"></Button>
                         <Button Content="添加行" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Name="btn_AddScrapInfo" Click="btn_AddScrapInfo_Click" Margin="5"></Button>
                         <Button Grid.Column="2" Grid.Row="1" Content="删除行" VerticalAlignment="Center" Name="btn_DeleteScrapInfo" Click="btn_DeleteScrapInfo_Click"  Margin="5"></Button>
                     </Grid>
                 </GroupBox>
+                
+                <GroupBox Grid.ColumnSpan="2" Margin="5" Grid.RowSpan="2" Name="gb_UnequallyDivideProcess">
+                    <GroupBox.Header>
+                        <TextBlock  Style="{StaticResource textb_NormalStyle}">非平分工序报工</TextBlock>
+                    </GroupBox.Header>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid Name="dg_UnquallyDivideProcessInfo" RowHeight="30"  Grid.ColumnSpan="3" RowHeaderWidth="30" ColumnWidth="Auto" AutoGenerateColumns="False" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="人员编号" Binding="{Binding Path=FCS_PersonCode}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="人员姓名" Binding="{Binding Path=FCS_PersonName}"></DataGridTextColumn>
+                                
+                                <DataGridTemplateColumn Header="报废数量">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=FCS_ScrappedAmount}"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <Button Content="管理报废信息" Click="btn_ManageScrapInfo_Click" Name="btn_ManageScrapInfo"></Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="合格数量">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=FCS_QulifiedAmount}"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <extool:IntegerUpDown Name="iud_QualifiedAmount" Minimum="0" ValueChanged="iud_QualifiedAmount_ValueChanged" Value="{Binding Path=FCS_QulifiedAmount,Mode=TwoWay}"></extool:IntegerUpDown>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button Grid.Row="1" Content="扫描添加" Padding="20 5" HorizontalAlignment="Center" Name="btn_ScanPersonInfoUnequallyDivide" Click="btn_ScanPersonInfoUnequallyDivide_Click" VerticalAlignment="Center"></Button>
+                        <Button Padding="20 5" HorizontalAlignment="Center"  Name="btn_AddPersonUnequallyDivide" Click="btn_AddPersonUnequallyDivide_Click" Grid.Column="1" Margin="5" Grid.Row="1" VerticalAlignment="Center">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="../../Images/person_add.ico" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="15"></Image>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="添加人员" TextAlignment="Right"></TextBlock>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <Button Padding="20 5" HorizontalAlignment="Center"  Name="btn_RemovePersonUnequallyDivide" Click="btn_RemovePersonUnequallyDivide_Click"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="../../Images/person_remove.ico" VerticalAlignment="Bottom" HorizontalAlignment="Left" Height="15"></Image>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Text="移除人员" TextAlignment="Right"></TextBlock>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </GroupBox>
+                
                 <GroupBox Margin="5" Grid.Column="2" Name="gb_AmountInfo">
                     <GroupBox.Header>
                         <TextBlock  Style="{StaticResource textb_NormalStyle}">数量信息</TextBlock>
@@ -323,6 +399,7 @@
                     </Grid>
                 </GroupBox>
             </Grid>
+            
             <GroupBox Grid.Row="2">
                 <GroupBox.Header>
                     <TextBlock  Style="{StaticResource textb_NormalStyle}">选择操作</TextBlock>

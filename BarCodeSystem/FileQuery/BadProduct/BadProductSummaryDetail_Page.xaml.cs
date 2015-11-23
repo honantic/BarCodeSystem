@@ -85,7 +85,7 @@ namespace BarCodeSystem
                 " distinct B.QI_Code, " +
                 " B.QI_Name " +
                 "from FlowCardQuality as A " +
-                "left join QualityIssue as B on (A.FCQ_QulityIssueID = B.ID) " +
+                "left join QualityIssue as B on (A.FCQ_QualityIssueID = B.ID) " +
                 "left join FlowCardSub as C on (A.FCQ_FlowCardSubID = C.ID) " +
                 "left join FlowCard as D on (C.FCS_FlowCardID = D.ID) " +
                 "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +
@@ -114,7 +114,7 @@ namespace BarCodeSystem
                "A.FCQ_ScrapAmount," +
                "B.QI_Name " +
                "from FlowCardQuality as A " +
-               "left join QualityIssue as B on (A.FCQ_QulityIssueID = B.ID) " +
+               "left join QualityIssue as B on (A.FCQ_QualityIssueID = B.ID) " +
                "left join FlowCardSub as C on (A.FCQ_FlowCardSubID = C.ID) " +
                "left join FlowCard as D on (C.FCS_FlowCardID = D.ID) " +
                "left join ItemInfo as E on (D.FC_ItemID = E.ID) " +

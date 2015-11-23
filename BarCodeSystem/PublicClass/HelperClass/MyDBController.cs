@@ -16,10 +16,20 @@ using System.Windows.Threading;
 /// <summary>
 ///MyDBController 的摘要说明
 /// </summary>
-public static class MyDBController
+public class MyDBController
 {
 
     #region 模块级变量
+
+    public MyDBController(SqlConnection _sqlCon)
+    {
+        sqlCon = _sqlCon;
+    }
+
+    /// <summary>
+    /// sql连接串
+    /// </summary>
+    private SqlConnection sqlCon;
 
     private static string server = ".";         //服务器
     public static string Server
@@ -56,6 +66,46 @@ public static class MyDBController
 
     #endregion
 
+    /// <summary>
+    /// 打开连接
+    /// </summary>
+    public void OpenConnection()
+    {
+        if (sqlCon.State != ConnectionState.Open)
+        {
+            sqlCon.Open();
+        }
+    }
+
+    /// <summary>
+    /// 关闭连接
+    /// </summary>
+    public void ShutConnection()
+    {
+        if (sqlCon.State != ConnectionState.Closed)
+        {
+            sqlCon.Close();
+        }
+    }
+
+    /// <summary>
+    /// 快速保存信息
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="_tList"></param>
+    /// <param name="_dt"></param>
+    /// <returns></returns>
+    public bool SaveInfo<T>(List<T> _tList, DataTable _dt) where T : new()
+    {
+        bool flag = false;
+        _dt = ListToDataTable(_tList, _dt);
+        List<string> colList = new List<string>();
+        foreach (DataColumn col in _dt.Columns)
+        {
+            colList.Add(col.ColumnName);
+        }
+        return flag;
+    }
 
     /// <summary>
     /// 创建一个和当前主连接一样的sql连接
@@ -443,6 +493,7 @@ public static class MyDBController
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message);
+                    flag = false;
                 }
             }
             #endregion
@@ -601,6 +652,7 @@ public static class MyDBController
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message);
+                    flag = false;
                 }
             }
             #endregion

@@ -211,8 +211,8 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
             }
             else
             {
-                _10LinesFlowCard_Window _10lfc = new _10LinesFlowCard_Window(txtb_FlowCardCode.Text);
-                _10lfc.ShowDialog();
+                PrintTemplateSelect_Window pts = new PrintTemplateSelect_Window(txtb_FlowCardCode.Text);
+                pts.ShowDialog();
             }
         }
 

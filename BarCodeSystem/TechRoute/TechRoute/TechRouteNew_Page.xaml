@@ -170,6 +170,18 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="是否平分工序" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TR_IsEquallyDivideProcess,Converter={StaticResource boolConverter}}"></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Path=TR_IsEquallyDivideProcess,Mode=TwoWay}" Content="{Binding Path=TR_IsEquallyDivideProcess,Converter={StaticResource boolConverter}}"></CheckBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 

@@ -459,18 +459,16 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         /// </summary>
         /// <param name="_fc"></param>
         /// <returns></returns>
-        public static bool CheckWhetherCanReproduce(FlowCardLists _fc, bool _needConnection = true)
+        public static bool CheckWhetherCanReproduce(FlowCardLists _fc, SqlConnection _sqlcon)
         {
-            if (_needConnection)
+            if (_sqlcon == null)
             {
-                MyDBController.GetConnection();
+                _sqlcon = MyDBController.M_scn_myConn;
             }
-            string SQl = string.Format("select count(*) from [FlowCardQuality] A left join [FlowCardSub] B on A.[FCQ_FlowCardSubID]=B.[ID] left join [FlowCard] C on B.[FCS_FlowCardID]=C.[ID] left join [QualityIssue] D on A.[FCQ_QulityIssueID]= D.[ID] where C.[FC_Code]='{0}' and A.[FCQ_HasReproduced]='false' and D.[QI_Type]=2", _fc.FC_Code);
-            int count = Convert.ToInt32(MyDBController.ExecuteScalar(SQl));
-            if (_needConnection)
-            {
-                MyDBController.CloseConnection();
-            }
+            _sqlcon.Open();
+            string SQl = string.Format("select count(*) from [FlowCardQuality] A left join [FlowCardSub] B on A.[FCQ_FlowCardSubID]=B.[ID] left join [FlowCard] C on B.[FCS_FlowCardID]=C.[ID] left join [QualityIssue] D on A.[FCQ_QualityIssueID]= D.[ID] where C.[FC_Code]='{0}' and A.[FCQ_HasReproduced]='false' and D.[QI_Type]=2", _fc.FC_Code);
+            int count = Convert.ToInt32(MyDBController.ExecuteScalar(_sqlcon, SQl));
+            _sqlcon.Close();
             return count > 0;
         }
 

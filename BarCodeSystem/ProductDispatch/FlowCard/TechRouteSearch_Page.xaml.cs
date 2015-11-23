@@ -119,10 +119,14 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
         private List<TechVersion> FetchTechRouteInfo(string str)
         {
             //工艺路线版本datagrid数据源
-            string SQl = string.Format(@"Select A.[ID],A.[TRV_VersionCode],A.[TRV_VersionName],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}' and (A.[TRV_IsShown] ='true' or A.[TRV_IsShown] is null) and A.[TRV_IsBackVersion] !='true'", str);
+            string SQl = string.Format(@"Select A.[ID],A.[TRV_VersionCode],A.[TRV_VersionName],A.[TRV_IsDefaultVer] from [TechRouteVersion] A left join [ItemInfo] B on A.[TRV_ItemID]=B.[ID]  where B.[II_Code]='{0}' and (A.[TRV_IsShown] ='true' or A.[TRV_IsShown] is null) ", str);
             if (isReproduce)
             {
                 SQl += " and A.[TRV_IsBackVersion]='true'";
+            }
+            else
+            {
+                SQl += " and A.[TRV_IsBackVersion]!='true'";
             }
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "TechRouteVersion");

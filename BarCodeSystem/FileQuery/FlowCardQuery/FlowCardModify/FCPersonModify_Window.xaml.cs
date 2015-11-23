@@ -205,22 +205,64 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery.FlowCardModify
             this.Cursor = Cursors.Wait;
             if (datagrid_PersonInfo.SelectedItem != null)
             {
-                List<FlowCardSubLists> _tempList = new List<FlowCardSubLists>();
-                foreach (FlowCardSubLists item in datagrid_PersonInfo.SelectedItems)
+                if (datagrid_PersonInfo.SelectedItems.Count == datagrid_PersonInfo.Items.Count)
                 {
-                    fcslList.Remove(item);
-                    _tempList.Add(item);
-                    if (tempList.Exists(p=>p.FCS_PersonCode.Equals(item.FCS_PersonCode)))
+                    MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("确定要删除全部人员吗？\r\n这可能导致报废信息丢失，是否继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (mbr == MessageBoxResult.Yes)
                     {
-                        tempList.Remove(item);
+                        DeleteInfo(true);
                     }
                 }
-                FlowCardSubLists.DeleteFCSInfo(_tempList);
+                else
+                {
+                    TechRouteLists trl =TechRouteLists.FetchTRLInfoByFCS((FlowCardSubLists)datagrid_PersonInfo.SelectedItem);
+                    if (trl.TR_IsEquallyDivideProcess)
+                    {
+                        DeleteInfo(false);
+                    }
+                    else
+                    {
+                        MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("当前工序为非平分工序！\r\n删除人员信息可能会导致报废信息丢失！\r\n是否继续？", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (mbr == MessageBoxResult.Yes)
+                        {
+                            DeleteInfo(true);
+                        } 
+                    }
+                }
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 执行更改操作
+        /// </summary>
+        private void DeleteInfo(bool isAllDelete)
+        {
+            List<FlowCardSubLists> _tempList = new List<FlowCardSubLists>();
+            foreach (FlowCardSubLists item in datagrid_PersonInfo.SelectedItems)
+            {
+                fcslList.Remove(item);
+                _tempList.Add(item);
+                if (tempList.Exists(p => p.FCS_PersonCode.Equals(item.FCS_PersonCode)))
+                {
+                    tempList.Remove(item);
+                }
+            }
+            bool flag = FlowCardSubLists.DeleteFCSInfo(_tempList);
+            if (flag)
+            {
+                if (isAllDelete)
+                {
+                    FlowCardQualityLists.DeleteInfo(_tempList);
+                }
+                else
+                {
+                    FlowCardQualityLists.ChangeFCSID(_tempList, fcslList.FirstOrDefault());
+                }
                 datagrid_PersonInfo.Items.Refresh();
                 IsDeleted = true;
                 IsChanged = true;
             }
-            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
