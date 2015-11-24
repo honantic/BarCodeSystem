@@ -148,6 +148,29 @@
 
                         <TextBlock Text="项目名称:"  Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
                         <TextBox Name="tb_ProjectName" Grid.Column="1"  Grid.Row="10" TextWrapping="Wrap"  IsReadOnly="True"  Background="LightGray" VerticalAlignment="Center" Margin="5"></TextBox>
+
+                        <TextBlock Text="是否显示:"  Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                        <CheckBox Name="CB_IsShown" Style="{StaticResource CB_NormalStyle}" IsEnabled="False" Grid.Column="1"  Grid.Row="11"  Background="LightGray" VerticalAlignment="Center" >
+                            <CheckBox.Content>
+                                <TextBlock Name="textb_IsShown" Width="100"  Text="{Binding ElementName=CB_IsShown,Path=IsChecked,Converter={StaticResource boolConverter}}" Background="LightGray"></TextBlock>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <TextBlock VerticalAlignment="Center" Text="备注:" Grid.Row="12" HorizontalAlignment="Right"></TextBlock>
+                        <TextBox Margin="5" IsReadOnly="True" Name="tb_Remark" Background="LightGray" Grid.Row="12" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center"></TextBox>
+                        
+                        <Button Content="修改" Name="btn_ModifyPO" Visibility="Hidden" Click="btn_ModifyPO_Click" Grid.Row="13" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="25 5">
+                            
+                        </Button>
+                        
+                        <Grid Grid.Row="13" Grid.ColumnSpan="2" Name="grid_SaveCancel">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button Name="btn_Save" Click="btn_Save_Click" Content="保存" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25 5"></Button>
+                            <Button Name="btn_Cancel" Click="btn_Cancel_Click" Grid.Column="1" Content="取消" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25 5"></Button>
+                        </Grid>
                     </Grid>
                 </GroupBox>
 

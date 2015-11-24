@@ -57,6 +57,11 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
         /// 报废信息列表
         /// </summary>
         List<FlowCardQualityLists> fcqlList = new List<FlowCardQualityLists>();
+
+        /// <summary>
+        /// 当前选中的生产订单信息
+        /// </summary>
+        ProduceOrderLists _selectedPOL = new ProduceOrderLists();
         #endregion
 
         /// <summary>
@@ -69,6 +74,10 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             if (loadCount == 0)
             {
                 frame_QueryWaySelect.Navigate(new QueryWaySelect_Page(AcceptProduceOrderInfo));
+                if (User_Info.P_Position.Equals("检验员") || User_Info.User_Code.Equals("admin"))
+                {
+                    SetVisibleProperties(false);
+                }
                 loadCount++;
             }
         }
@@ -126,8 +135,9 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             this.Cursor = Cursors.Wait;
             if (dg_POInfo.SelectedItem != null)
             {
-                ShowPOInfo((ProduceOrderLists)dg_POInfo.SelectedItem);
-                FetchFCInfoByPOInfo((ProduceOrderLists)dg_POInfo.SelectedItem);
+                _selectedPOL = (ProduceOrderLists)dg_POInfo.SelectedItem;
+                ShowPOInfo(_selectedPOL);
+                FetchFCInfoByPOInfo(_selectedPOL);
             }
             this.Cursor = Cursors.Arrow;
         }
@@ -159,6 +169,8 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             tb_ProjectCode.Text = _pol.PO_ProjectCode;
             tb_StartAmount.Text = _pol.PO_StartAmount.ToString();
             tb_ProjectName.Text = _pol.PO_ProjectName;
+            CB_IsShown.IsChecked = _pol.PO_IsShown;
+            tb_Remark.Text = _pol.PO_Remark;
         }
 
         /// <summary>
@@ -267,6 +279,67 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             MyDBController.FindVisualChild<TextBox>(this).ForEach(p => p.Text = "");
             textb_FCCountInfo.Text = "";
             textb_POCount.Text = "";
+        }
+
+        /// <summary>
+        /// 修改生产订单信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_ModifyPO_Click(object sender, RoutedEventArgs e)
+        {
+            SetVisibleProperties(true);
+        }
+
+        /// <summary>
+        /// 保存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            _selectedPOL.PO_Remark = tb_Remark.Text;
+            _selectedPOL.PO_IsShown = Convert.ToBoolean(CB_IsShown.IsChecked);
+            bool flag = ProduceOrderLists.SaveInfo(_selectedPOL);
+            if (flag)
+            {
+                SetVisibleProperties(false);
+                Xceed.Wpf.Toolkit.MessageBox.Show("保存成功!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                _selectedPOL = ProduceOrderLists.FetchProduceOrderInfo(_selectedPOL.PO_Code, 0).FirstOrDefault();
+                ShowPOInfo(_selectedPOL);
+            }
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("保存失败，请重试!", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 取消
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+            SetVisibleProperties(false);
+            ShowPOInfo(_selectedPOL);
+            this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 修改生产订单信息的时候的设置可见性、操作性的函数
+        /// </summary>
+        /// <param name="_isModification"></param>
+        private void SetVisibleProperties(bool _isModification)
+        {
+            CB_IsShown.IsEnabled = _isModification;
+            grid_SaveCancel.Visibility = _isModification ? Visibility.Visible : Visibility.Hidden;
+            btn_ModifyPO.Visibility = (!_isModification) ? Visibility.Visible : Visibility.Hidden;
+            tb_Remark.IsReadOnly = !_isModification;
+            tb_Remark.Background = _isModification ? Brushes.White : Brushes.LightGray;
         }
     }
 }

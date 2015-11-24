@@ -219,8 +219,22 @@ namespace BarCodeSystem.PublicClass
             set;
         }
 
-
-
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        public bool PO_IsShown
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string PO_Remark
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// 从U9系统中获取生产订单消息
         /// </summary>
@@ -327,6 +341,8 @@ namespace BarCodeSystem.PublicClass
                                 newrow["PO_ProduceDepartName"] = originrow["部门名称"];
                                 newrow["PO_ProduceDepartCode"] = originrow["部门编号"];
                                 newrow["PO_IsReturn"] = false;
+                                newrow["PO_IsShown"] = true;
+                                newrow["PO_Remark"] = "";
                                 newrow["PO_BCSCreateTime"] = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                                 ds.Tables["ProduceOrder"].Rows.Add(newrow);
 
@@ -421,11 +437,11 @@ namespace BarCodeSystem.PublicClass
             string SQl = "";
             if (User_Info.User_Code.Equals("admin"))
             {
-                SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount]");//订单数量>开工数量
+                SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount] and [PO_IsShown]=1");//订单数量>开工数量
             }
             else
             {
-                SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount] and [PO_ProduceDepartCode]='{0}'", User_Info.User_Workcenter_Code);//订单数量>开工数量
+                SQl = string.Format(@"Select * from [ProduceOrder] where [PO_OrderAmount]>[PO_StartAmount] and [PO_ProduceDepartCode]='{0}' and [PO_IsShown]=1", User_Info.User_Workcenter_Code);//订单数量>开工数量
             }
 
             MyDBController.GetConnection();
@@ -463,6 +479,8 @@ namespace BarCodeSystem.PublicClass
                     pol.PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]);
                     pol.PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]);
                     pol.PO_BCSCreateTime = row["PO_BCSCreateTime"] is DBNull ? new DateTime() : Convert.ToDateTime(row["PO_BCSCreateTime"]);
+                    pol.PO_IsShown = row["PO_IsShown"] is DBNull ? true : Convert.ToBoolean(row["PO_IsShown"]);
+                    pol.PO_Remark = row["PO_Remark"] is DBNull ? "" : row["PO_Remark"].ToString();
                     pols.Add(pol);
 
                 }
@@ -503,6 +521,13 @@ namespace BarCodeSystem.PublicClass
                 default:
                     break;
             }
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                if (type != 1)
+                {
+                    SQl += string.Format(" and [PO_ProduceDepartCode]='{0}'", User_Info.User_Workcenter_Code);
+                }
+            }
             MyDBController.GetConnection();
             MyDBController.GetDataSet(SQl, ds, "ProduceOrder");
             MyDBController.CloseConnection();
@@ -537,6 +562,8 @@ namespace BarCodeSystem.PublicClass
                     pol.PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]);
                     pol.PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]);
                     pol.PO_BCSCreateTime = row["PO_BCSCreateTime"] is DBNull ? new DateTime() : Convert.ToDateTime(row["PO_BCSCreateTime"]);
+                    pol.PO_IsShown = row["PO_IsShown"] is DBNull ? true : Convert.ToBoolean(row["PO_IsShown"]);
+                    pol.PO_Remark = row["PO_Remark"] is DBNull ? "" : row["PO_Remark"].ToString();
                     pols.Add(pol);
                 }
             }
@@ -591,6 +618,9 @@ namespace BarCodeSystem.PublicClass
                     pol.PO_FinishedAmount = Convert.ToInt32(row["PO_FinishedAmount"]);
                     pol.PO_OrderSource = Convert.ToInt32(row["PO_OrderSource"]);
                     pol.PO_IsReturn = Convert.ToBoolean(row["PO_IsReturn"]);
+                    pol.PO_BCSCreateTime = row["PO_BCSCreateTime"] is DBNull ? new DateTime() : Convert.ToDateTime(row["PO_BCSCreateTime"]);
+                    pol.PO_IsShown = row["PO_IsShown"] is DBNull ? true : Convert.ToBoolean(row["PO_IsShown"]);
+                    pol.PO_Remark = row["PO_Remark"] is DBNull ? "" : row["PO_Remark"].ToString();
                     pols.Add(pol);
 
                 }
@@ -603,6 +633,31 @@ namespace BarCodeSystem.PublicClass
             return pols;
         }
 
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_polList"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(List<ProduceOrderLists> _polList)
+        {
+            DataSet ds = new DataSet();
+            MyDBController.GetConnection();
+            string SQl = string.Format("select top 0 * from ProduceOrder");
+            MyDBController.GetDataSet(SQl, ds, "ProduceOrder");
+            bool flag = MyDBController.InsertSqlBulk<ProduceOrderLists>(_polList, ds.Tables["ProduceOrder"]);
+            MyDBController.CloseConnection();
+            return flag;
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        /// <param name="_pol"></param>
+        /// <returns></returns>
+        public static bool SaveInfo(ProduceOrderLists _pol)
+        {
+            return SaveInfo(new List<ProduceOrderLists>() { _pol });
+        }
         /// <summary>
         /// 检查输入的生产订单编号是否存在
         /// </summary>

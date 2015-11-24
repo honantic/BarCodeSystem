@@ -78,7 +78,7 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
             if (count > 0)
             {
                 RowDefinition rd = new RowDefinition() { Height = gl };
-                Button btn = new Button() { Name = "btn_AllWorkCenter", Content = "所有车间", Width = 125, Height = 25 };
+                Button btn = new Button() { Cursor = Cursors.Hand, Name = "btn_AllWorkCenter", Content = "所有车间", Width = 125, Height = 25 };
                 grid_WorkCenterInfo.RowDefinitions.Add(rd);
                 btn.SetValue(Button.StyleProperty, Application.Current.FindResource("bd_SelectStyle"));
                 btn.Click += OnClick;
@@ -88,13 +88,28 @@ namespace BarCodeSystem.FileQuery.ProduceOrderQuery
                 {
                     rd = new RowDefinition() { Height = gl };
                     grid_WorkCenterInfo.RowDefinitions.Add(rd);
-                    btn = new Button() { Name = item.department_shortname, Content = item.department_name, Width = 125, Height = 25 };
+                    btn = new Button() { Cursor = Cursors.Hand, Name = item.department_shortname, Content = item.department_name, Width = 125, Height = 25 };
                     btn.SetValue(Button.StyleProperty, Application.Current.FindResource("bd_SelectStyle"));
                     btn.Click += OnClick;
                     grid_WorkCenterInfo.Children.Add(btn);
                     Grid.SetRow(btn, grid_WorkCenterInfo.RowDefinitions.Count - 1);
+
                 }
                 grid_WorkCenterInfo.RowDefinitions.Add(new RowDefinition());
+                MyDBController.FindVisualChild<Button>(grid_WorkCenterInfo).ForEach(p =>
+                {
+                    if (!User_Info.User_Code.Equals("admin"))
+                    {
+                        if (p.Name.Equals(User_Info.User_Workcenter_ShortName))
+                        {
+                            p.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            p.Visibility = Visibility.Hidden;
+                        }
+                    }
+                });
             }
             else
             {

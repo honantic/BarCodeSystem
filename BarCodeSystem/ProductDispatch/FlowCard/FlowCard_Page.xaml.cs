@@ -33,6 +33,7 @@ namespace BarCodeSystem.ProductDispatch.FlowCard
             cardType = 0;
             cb_IsSalaryCalcuating.Visibility = Visibility.Hidden;
             textb_IsSalaryCalculating.Visibility = Visibility.Hidden;
+            sp_IsSalaryCalculating.Visibility = Visibility.Hidden;
         }
 
         /// <summary>

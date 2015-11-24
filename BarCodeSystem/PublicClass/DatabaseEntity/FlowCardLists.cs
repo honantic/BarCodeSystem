@@ -199,6 +199,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         public static List<FlowCardLists> FetchFC_InfoByCode(string _fcCode)
         {
             string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_Code],B.[PO_ItemVersion],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_Code] ='{0}'", _fcCode);
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
 
@@ -210,6 +214,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         public static List<FlowCardLists> FetchFC_InfoByState(int _fcState)
         {
             string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CardState] ={0}", _fcState);
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
 
@@ -229,10 +237,18 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             if (stateList.Length > 0)
             {
                 SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where A.[FC_CardState] in ({0})", stateList);
+                if (!User_Info.User_Code.Equals("admin"))
+                {
+                    SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+                }
             }
             else
             {
                 SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID]");
+                if (!User_Info.User_Code.Equals("admin"))
+                {
+                    SQl += string.Format(" where A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+                }
             }
             return ExecuteSQlCommand(SQl, _sqlCon);
         }
@@ -259,7 +275,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
             {
                 return null;
             }
-
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
 
@@ -271,7 +290,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         public static List<FlowCardLists> FetchFC_InfoByItemCode(string _itemCode)
         {
             string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where B.[PO_ItemCode] ='{0}' and A.[FC_CardState] not in (3)", _itemCode);
-
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
 
@@ -284,6 +306,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         {
 
             string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where B.[PO_Code] ='{0}' and A.[FC_CardState] not in (3)", _orderCode);
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
 
@@ -297,6 +323,10 @@ namespace BarCodeSystem.PublicClass.DatabaseEntity
         public static List<FlowCardLists> FetchReproduceFCInfo(string _year, string _month)
         {
             string SQl = string.Format(@"Select A.[ID],A.[FC_CardType],[FC_SourceOrderID],A.[FC_Code],A.[FC_ItemID],A.[FC_ItemTechVersionID],A.[FC_Amount],A.[FC_WorkCenter],A.[FC_CardState],A.[FC_DistriSourceCard],A.[FC_FlowNum],A.[FC_CreateBy],A.[FC_CreateTime],A.[FC_CheckBy],A.[FC_CheckTime],A.[FC_BCSOrderID],A.[FC_FirstProcessNum],A.[FC_CanDistribute],A.[FC_HasDistributed],A.[FC_CanTransfer],A.[FC_HasTransfered],A.[FC_CanReproduce],A.[FC_HasReproduced],A.[FC_IsSalaryCalculating],A.[FC_Remark],B.[PO_ItemCode],B.[PO_ItemName],B.[PO_ItemSpec],B.[PO_ItemVersion],B.[PO_Code],C.[TRV_VersionCode],C.[TRV_VersionName],D.[WC_Department_Name],E.[II_Code],E.[II_Name],E.[II_Spec],E.[II_Version] from [FlowCard] A left join [ProduceOrder] B on A.[FC_SourceOrderID]=B.[PO_ID] left join [TechRouteVersion] C on A.[FC_ItemTechVersionID]=C.[ID] left join [WorkCenter] D on A.[FC_WorkCenter]=D.[WC_Department_ID] left join [ItemInfo] E on A.[FC_ItemID]=E.[ID] where  A.[FC_CardState]=5 and A.[FC_CanReproduce]='true' and YEAR(A.[FC_CheckTime])={0} and Month(A.[FC_CheckTime])={1}", _year, _month);
+            if (!User_Info.User_Code.Equals("admin"))
+            {
+                SQl += string.Format(" and A.[FC_WorkCenter]={0}", User_Info.User_Workcenter_ID);
+            }
             return ExecuteSQlCommand(SQl);
         }
         /// <summary>

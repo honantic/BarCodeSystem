@@ -169,7 +169,7 @@ namespace BarCodeSystem
                 _dbLog.DBL_AssociateCode = txtb_Code.Text;
                 if (this.Title == "工序信息修改窗口")
                 {
-                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Name]='{0}',[PN_CodeInWorkCenter]='{1}',[PN_AssociatedQI]='{2}' WHERE [PN_Code]='{3}'", txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), qiName, txtb_Code.Text);
+                    SQl = string.Format(@"UPDATE [ProcessName] SET [PN_Name]='{0}',[PN_CodeInWorkCenter]='{1}',[PN_AssociatedQI]='{2}',[PN_WorkCenterID]={3} WHERE [PN_Code]='{4}'", txtb_Name.Text, txtb_CodeInWorkCenter.Text.Trim(), qiName, User_Info.User_Workcenter_ID, txtb_Code.Text);
                     mess = "成功修改工序信息!";
                     _dbLog.DBL_OperateType = OperateType.Update;
                     _dbLog.DBL_Content = "更新工序信息:" + txtb_Code.Text;

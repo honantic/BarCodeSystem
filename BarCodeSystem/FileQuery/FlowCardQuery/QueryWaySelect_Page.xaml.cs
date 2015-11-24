@@ -35,7 +35,7 @@ namespace BarCodeSystem.FileQuery.FlowCardQuery
         {
             if (loadCount == 0)
             {
-                if (User_Info.P_Position == "检验员")
+                if (User_Info.P_Position == "检验员" || User_Info.User_Code.Equals("admin"))
                 {
                 }
                 else
